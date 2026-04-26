@@ -22,6 +22,9 @@ end
 
 group :development, :test do
   gem "dotenv"
+
+  gem "irb"
+  gem "repl_type_completor"
 end
 
 group :cli, :development do
