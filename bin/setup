@@ -13,6 +13,8 @@ announce() {
   printf "${bold}${1}${reset}\n"
 }
 
+announce "Ensure that the database connection settings for development and test enviroments are configured..."
+
 announce "Running bundle install..."
 bundle check || bundle install
 
