@@ -23,13 +23,11 @@ Database: PostgreSQL
 | id | bigserial | PRIMARY KEY |
 | user_id | bigint | NOT NULL, REFERENCES users(id) ON DELETE CASCADE |
 | name | varchar | NOT NULL |
-| email | varchar | NOT NULL |
 | created_at | timestamptz | NOT NULL DEFAULT now() |
 
 Indexes:
 - UNIQUE on `user_id`
 - UNIQUE on `name`
-- UNIQUE on `email`
 
 ### credentials
 

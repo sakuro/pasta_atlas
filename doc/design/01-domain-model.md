@@ -26,7 +26,6 @@ Holds identity only. All other attributes are in UserProfile.
 | id | bigserial PK | |
 | user_id | FK → User (1:1) | |
 | name | string | unique; used as URL slug (e.g. `/users/sakuro`) |
-| email | string | NOT NULL; guest uses a dummy unreachable address |
 | created_at | timestamp | |
 
 A single guest User record exists and is shared by all unauthenticated operations.
