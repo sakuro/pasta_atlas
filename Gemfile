@@ -27,6 +27,9 @@ group :development do
   gem "rubocop-rspec", "~> 3.9"
   gem "rubocop-sequel", "~> 0.4.1"
   gem "rubocop-thread_safety", "~> 0.7.3"
+
+  gem "redcarpet", "~> 3.6"
+  gem "yard", "~> 0.9.43"
 end
 
 group :development, :test do
