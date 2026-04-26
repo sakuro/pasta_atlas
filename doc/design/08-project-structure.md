@@ -22,14 +22,13 @@ pasta_atlas/
       actions/
         maps/
         uploads/
-  frontend/              # Vite project (island bundles only)
-    src/
-      islands/
-        map_viewer/      # LeafletMapViewer island
-        upload_modal/    # UploadModal island
-    package.json
-    vite.config.ts
-    tsconfig.json
+  frontend/              # Vite source (island bundles only)
+    islands/
+      map_viewer/        # LeafletMapViewer island
+      upload_modal/      # UploadModal island
+  vite.config.ts
+  tsconfig.json
+  package.json           # single package.json for both hanami-assets and Vite
   public/                # Static files served by Hanami
   infra/                 # Terraform
     modules/             # Reusable modules (s3, cloudfront, rds, etc.)
