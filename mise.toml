@@ -1,0 +1,14 @@
+[env]
+_.path = ["bin", "node_modules/.bin"]
+
+[tasks.default]
+depends = ["dev"]
+
+[tasks.dev]
+depends = ["web", "assets"]
+
+[tasks.web]
+run = "bundle exec hanami server"
+
+[tasks.assets]
+run = "bundle exec hanami assets watch"
