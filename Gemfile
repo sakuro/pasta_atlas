@@ -30,6 +30,9 @@ group :development do
 
   gem "redcarpet", "~> 3.6"
   gem "yard", "~> 0.9.43"
+
+  gem "debug", "~> 1.11"
+  gem "ruby-lsp", "~> 0.26.9"
 end
 
 group :development, :test do
