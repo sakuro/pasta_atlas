@@ -54,4 +54,6 @@ group :test do
   # Web integration
   gem "capybara"
   gem "rack-test"
+
+  gem "simplecov", "~> 0.22.0"
 end
