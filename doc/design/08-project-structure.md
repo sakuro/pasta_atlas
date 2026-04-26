@@ -22,7 +22,7 @@ pasta_atlas/
       actions/
         maps/
         uploads/
-  frontend/              # Vite project (island bundles)
+  frontend/              # Vite project (island bundles only)
     src/
       islands/
         map_viewer/      # LeafletMapViewer island
@@ -30,7 +30,7 @@ pasta_atlas/
     package.json
     vite.config.ts
     tsconfig.json
-  public/                # Vite build output; served by Hanami as static files
+  public/                # Static files served by Hanami
   infra/                 # Terraform
     modules/             # Reusable modules (s3, cloudfront, rds, etc.)
     environments/
@@ -42,6 +42,13 @@ pasta_atlas/
     api/                 # YARD-generated API documentation
 ```
 
-## Frontend Deployment
+## Asset Pipeline
 
-Vite builds island bundles into `public/`. The `web` slice templates load the bundles as `<script>` tags. Hanami serves both the server-rendered pages and the static assets from the same origin — no CORS configuration needed.
+Two build pipelines are used with distinct responsibilities:
+
+| Pipeline | Tool | Output | Handles |
+|---|---|---|---|
+| General assets | hanami-assets (esbuild) | `public/assets/` | Global CSS (Bulma), fonts, images |
+| Island bundles | Vite + vite-plugin-solid | `public/islands/` | Solid.js islands (LeafletMapViewer, UploadModal) |
+
+The `web` slice templates load island bundles as `<script>` tags. Hanami serves both server-rendered pages and static assets from the same origin — no CORS configuration needed.
