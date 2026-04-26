@@ -5,10 +5,13 @@ _.path = ["bin", "node_modules/.bin"]
 depends = ["dev"]
 
 [tasks.dev]
-depends = ["web", "assets"]
+depends = ["web", "assets", "islands"]
 
 [tasks.web]
 run = "bundle exec hanami server"
 
 [tasks.assets]
 run = "bundle exec hanami assets watch"
+
+[tasks.islands]
+run = "npm run dev:islands"
