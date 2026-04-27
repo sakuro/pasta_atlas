@@ -10,7 +10,7 @@ ROM::SQL.migration do
       column :data, :jsonb, null: false, default: Sequel.lit("'{}'")
       column :created_at, :timestamptz, null: false, default: Sequel.lit("now()")
 
-      index [:provider, :uid], unique: true
+      index %i[provider uid], unique: true
       index :user_id
     end
   end

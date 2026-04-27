@@ -12,7 +12,7 @@ ROM::SQL.migration do
       column :created_at, :timestamptz, null: false, default: Sequel.lit("now()")
 
       index :ulid, unique: true
-      index [:user_id, :mapshot_map_id], unique: true
+      index %i[user_id mapshot_map_id], unique: true
       index :user_id
     end
   end
