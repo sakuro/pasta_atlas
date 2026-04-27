@@ -26,7 +26,7 @@ module PastaAtlas
             name: metadata["name"]
           )
 
-          within_transaction(
+          step within_transaction(
             map:,
             mapshot_map_id:,
             mapshot_unique_id:,

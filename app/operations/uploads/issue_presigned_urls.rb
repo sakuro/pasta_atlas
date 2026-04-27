@@ -22,7 +22,7 @@ module PastaAtlas
           prefix = "#{map.mapshot_map_id}/#{generation.mapshot_unique_id}/"
           existing_keys = step list_existing_keys(prefix)
 
-          Success(presigned_urls_for(filenames:, prefix:, existing_keys:))
+          presigned_urls_for(filenames:, prefix:, existing_keys:)
         end
 
         private def find_upload(ulid)

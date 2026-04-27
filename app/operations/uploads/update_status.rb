@@ -8,8 +8,7 @@ module PastaAtlas
 
         def call(upload_ulid:, status:)
           upload = step find_upload(upload_ulid)
-          updated = update_upload(upload, status)
-          Success(updated)
+          update_upload(upload, status)
         end
 
         private def find_upload(ulid)
