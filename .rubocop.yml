@@ -41,7 +41,8 @@ inherit_gem:
 
 inherit_from: .rubocop_todo.yml
 
-# Project-specific settings can be added here
-# Example:
-# Style/Documentation:
-#   Enabled: false
+Style/Documentation:
+  Exclude:
+    - app/relations/**/*.rb
+    - app/repos/**/*.rb
+    - app/structs/**/*.rb
