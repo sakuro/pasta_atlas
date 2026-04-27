@@ -45,9 +45,16 @@ Style/Documentation:
   Exclude:
     - app/action.rb
     - app/operation.rb
+    - app/operations/**/*.rb
     - app/relations/**/*.rb
     - app/repos/**/*.rb
     - app/structs/**/*.rb
     - app/views/helpers.rb
     - config/settings.rb
     - lib/pasta_atlas/types.rb
+
+Style/DocumentationMethod:
+  Exclude:
+    - app/operations/**/*.rb
+    - app/relations/**/*.rb
+    - app/repos/**/*.rb
