@@ -112,6 +112,101 @@ Steps 5–8 run inside a single transaction to ensure Generation, S3 write, and 
 
 ---
 
+## Operation Sequence
+
+```mermaid
+sequenceDiagram
+    actor Client
+    participant Action
+    participant UC as "Uploads::Create"
+    participant MFC as "Maps::FindOrCreate"
+    participant IPU as "Uploads::IssuePresignedUrls"
+    participant UUS as "Uploads::UpdateStatus"
+    participant DB
+    participant S3
+
+    Note over Client,S3: Step 1 — POST /api/v1/uploads
+
+    Client->>Action: POST /api/v1/uploads
+    Action->>UC: call(user_id, metadata, total_image_count)
+
+    UC->>MFC: call(user_id, mapshot_map_id, ...)
+    MFC->>DB: INSERT maps ON CONFLICT DO NOTHING
+    DB-->>MFC: map
+    MFC-->>UC: map
+
+    Note over UC,S3: DB transaction begins
+
+    UC->>DB: find generation by (map_id, mapshot_unique_id)
+
+    alt complete upload exists
+        UC-->>Action: Failure(:conflict)
+        Action-->>Client: 409 Conflict
+    else pending/failed upload exists
+        DB-->>UC: generation + upload
+        UC-->>Action: Success(existing_upload)
+        Action-->>Client: 200 OK
+    else no generation
+        DB-->>UC: nil
+        UC->>DB: INSERT generation
+        UC->>S3: PUT mapshot.json
+        alt S3 error
+            S3-->>UC: ServiceError
+            Note over UC,DB: rollback
+            UC-->>Action: Failure(:s3_error)
+            Action-->>Client: 502
+        else S3 success
+            UC->>DB: INSERT upload (status: pending)
+            DB-->>UC: upload
+            UC-->>Action: Success(upload)
+            Action-->>Client: 201 Created
+        end
+    end
+
+    Note over Client,S3: Step 2 — POST /api/v1/uploads/:ulid/presigned_urls
+
+    Client->>Action: POST /presigned_urls {filenames}
+    Action->>IPU: call(upload_ulid, filenames)
+    IPU->>DB: find upload by ULID
+    alt not found
+        IPU-->>Action: Failure(:not_found)
+        Action-->>Client: 404
+    else status != pending
+        IPU-->>Action: Failure(:unprocessable)
+        Action-->>Client: 422
+    else pending
+        DB-->>IPU: upload
+        IPU->>DB: find generation + map
+        IPU->>S3: ListObjectsV2(prefix)
+        S3-->>IPU: existing keys
+        Note over IPU: filter out existing keys,<br>generate presigned PUT URLs
+        IPU-->>Action: Success({filename => url, ...})
+        Action-->>Client: 200 OK
+    end
+
+    Note over Client,S3: Step 3 — Direct S3 PUT (per image file)
+
+    Client->>S3: PUT image (presigned URL)
+    S3-->>Client: 200 OK
+
+    Note over Client,S3: Step 4 — PATCH /api/v1/uploads/:ulid
+
+    Client->>Action: PATCH /uploads/:ulid {status: "complete"}
+    Action->>UUS: call(upload_ulid, status)
+    UUS->>DB: find upload by ULID
+    alt not found
+        UUS-->>Action: Failure(:not_found)
+        Action-->>Client: 404
+    else found
+        DB-->>UUS: upload
+        UUS->>DB: UPDATE status, completed_at
+        UUS-->>Action: Success(upload)
+        Action-->>Client: 200 OK
+    end
+```
+
+---
+
 ## S3 Configuration Requirements
 
 - Bucket CORS policy must allow `PUT` from the application's frontend origin (for direct browser upload via presigned URL)
