@@ -49,4 +49,5 @@ Style/Documentation:
     - app/repos/**/*.rb
     - app/structs/**/*.rb
     - app/views/helpers.rb
+    - config/settings.rb
     - lib/pasta_atlas/types.rb
