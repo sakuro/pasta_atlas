@@ -10,11 +10,13 @@ gem "hanami-router", "~> 2.3.0"
 gem "hanami-validations", "~> 2.3.0"
 gem "hanami-view", "~> 2.3.0"
 
+gem "aws-sdk-s3"
 gem "dry-operation", ">= 1.0.1"
 gem "dry-types", "~> 1.7"
 gem "pg"
 gem "puma"
 gem "rake"
+gem "ulid"
 
 group :development do
   gem "hanami-webconsole", "~> 2.3.0"
