@@ -5,4 +5,5 @@
 --files CHANGELOG.md,LICENSE.txt
 --exclude spec/
 --exclude vendor/
+app/**/*.rb
 lib/**/*.rb
