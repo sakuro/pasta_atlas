@@ -80,7 +80,9 @@ The `metadata_s3_key` stored in DB points to `mapshot.json` within this prefix.
 1. Parse `metadata` field (mapshot.json content)
 2. Extract `map_id` and `unique_id` from metadata
 3. Identify the current user (guest user if no session)
-4. Find or create `Map` by `(user_id, mapshot_map_id)`
+4. Find or create `Map` by `(user_id, mapshot_map_id)` using `INSERT ... ON CONFLICT DO NOTHING`
+   - A plain transaction is insufficient under `READ COMMITTED`: two concurrent requests can both find "not found" before either inserts
+   - The upsert is atomic at the DB level; no transaction wrapper is needed for this step alone
 5. Check if `Generation` with `(map_id, mapshot_unique_id)` already exists
    - If exists with a `complete` upload → return `409 Conflict`
    - If exists with a `pending`/`failed` upload → return the existing upload (allow retry)
@@ -89,6 +91,8 @@ The `metadata_s3_key` stored in DB points to `mapshot.json` within this prefix.
 7. Set `metadata_s3_key` on the Generation record
 8. Create `Upload` record (`status: pending`, `total_image_count` from request)
 9. Return `{ ulid, map_ulid, generation_ulid }`
+
+Steps 5–8 run inside a single transaction to ensure Generation, S3 write, and Upload are created atomically. Step 4 (map upsert) runs before this transaction; if the transaction rolls back (e.g. S3 failure), the Map record is retained — this is safe since Map creation is idempotent.
 
 ### POST /api/v1/uploads/:ulid/presigned_urls
 
