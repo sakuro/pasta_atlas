@@ -9,6 +9,10 @@ module PastaAtlas
         belongs_to :user
         has_many :generations
       end
+
+      def by_user_and_mapshot_id(user_id, mapshot_map_id)
+        where(user_id:, mapshot_map_id:)
+      end
     end
   end
 end
