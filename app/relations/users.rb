@@ -3,12 +3,12 @@
 module PastaAtlas
   module Relations
     class Users < PastaAtlas::DB::Relation
-      schema :users, infer: true
-
-      associations do
-        has_one :user_profile
-        has_many :credentials
-        has_many :maps
+      schema :users, infer: true do
+        associations do
+          has_one :user_profile
+          has_many :credentials
+          has_many :maps
+        end
       end
     end
   end
