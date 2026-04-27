@@ -6,7 +6,7 @@ module PastaAtlas
       schema :user_profiles, infer: true
 
       associations do
-        belongs_to :users
+        belongs_to :user
       end
     end
   end

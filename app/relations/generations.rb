@@ -6,8 +6,8 @@ module PastaAtlas
       schema :generations, infer: true
 
       associations do
-        belongs_to :maps
-        has_one :uploads
+        belongs_to :map
+        has_one :upload
       end
     end
   end

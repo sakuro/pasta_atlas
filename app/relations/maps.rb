@@ -6,7 +6,7 @@ module PastaAtlas
       schema :maps, infer: true
 
       associations do
-        belongs_to :users
+        belongs_to :user
         has_many :generations
       end
     end

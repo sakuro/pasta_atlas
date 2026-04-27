@@ -6,7 +6,7 @@ module PastaAtlas
       schema :uploads, infer: true
 
       associations do
-        belongs_to :generations
+        belongs_to :generation
       end
     end
   end
