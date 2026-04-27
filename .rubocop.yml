@@ -43,6 +43,10 @@ inherit_from: .rubocop_todo.yml
 
 Style/Documentation:
   Exclude:
+    - app/action.rb
+    - app/operation.rb
     - app/relations/**/*.rb
     - app/repos/**/*.rb
     - app/structs/**/*.rb
+    - app/views/helpers.rb
+    - lib/pasta_atlas/types.rb

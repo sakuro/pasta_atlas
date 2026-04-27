@@ -10,11 +10,3 @@
 Bundler/GemComment:
   Exclude:
     - 'Gemfile'
-
-# Configuration parameters: AllowedConstants.
-Style/Documentation:
-  Exclude:
-    - 'app/action.rb'
-    - 'app/operation.rb'
-    - 'app/views/helpers.rb'
-    - 'lib/pasta_atlas/types.rb'
