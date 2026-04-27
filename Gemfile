@@ -55,6 +55,7 @@ end
 group :test do
   # Database
   gem "database_cleaner-sequel"
+  gem "rom-factory"
 
   # Web integration
   gem "capybara"

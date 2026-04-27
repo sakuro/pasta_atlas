@@ -41,6 +41,14 @@ inherit_gem:
 
 inherit_from: .rubocop_todo.yml
 
+Lint/EmptyBlock:
+  Exclude:
+    - spec/factories/user.rb
+
+RSpec/SpecFilePathFormat:
+  CustomTransform:
+    PastaAtlas: ""
+
 Style/Documentation:
   Exclude:
     - app/action.rb
