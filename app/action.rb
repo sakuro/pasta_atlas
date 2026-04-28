@@ -3,10 +3,20 @@
 
 require "dry/monads"
 require "hanami/action"
+require "json"
 
 module PastaAtlas
   class Action < Hanami::Action
-    # Provide `Success` and `Failure` for pattern matching on operation results
     include Dry::Monads[:result]
+
+    private def json_response(response, data, status: 200)
+      response.status = status
+      response.headers["Content-Type"] = "application/json"
+      response.body = JSON.generate(data)
+    end
+
+    private def current_user_id(_request)
+      nil # TODO: implement session-based authentication
+    end
   end
 end
