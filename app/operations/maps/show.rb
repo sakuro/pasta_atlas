@@ -12,7 +12,7 @@ module PastaAtlas
 
         def call(ulid:)
           map = step find_map(ulid)
-          user_profile = user_profile_repo.find_by_user_id(map.user_id)
+          user_profile = step find_user_profile(map.user_id)
           generations = generation_repo.find_complete_by_map_id(map.id)
           {map:, user_profile:, generations:}
         end
@@ -20,6 +20,11 @@ module PastaAtlas
         private def find_map(ulid)
           map = map_repo.find_by_ulid(ulid)
           map ? Success(map) : Failure(:not_found)
+        end
+
+        private def find_user_profile(user_id)
+          profile = user_profile_repo.find_by_user_id(user_id)
+          profile ? Success(profile) : Failure(:not_found)
         end
       end
     end
