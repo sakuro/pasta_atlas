@@ -5,8 +5,11 @@
 ```
 pasta_atlas/
   app/                   # Application code (Hanami)
-    actions/             # HTTP actions
+    actions/             # HTTP actions (JSON API + HTML pages)
+      maps/
       uploads/
+    views/               # Hanami views (HTML rendering)
+    templates/           # ERB templates
     relations/           # ROM relations
     repos/               # Repositories
     operations/          # Use cases
@@ -34,4 +37,4 @@ Two build pipelines are used with distinct responsibilities:
 | General assets | hanami-assets (esbuild) | `public/assets/` | Global CSS (Bulma), fonts, images |
 | Island bundles | Vite + vite-plugin-solid | `public/islands/` | Solid.js islands (LeafletMapViewer, UploadModal) |
 
-The `web` slice templates load island bundles as `<script>` tags. Hanami serves both server-rendered pages and static assets from the same origin — no CORS configuration needed.
+App templates load island bundles as `<script>` tags. Hanami serves both server-rendered pages and static assets from the same origin — no CORS configuration needed.
