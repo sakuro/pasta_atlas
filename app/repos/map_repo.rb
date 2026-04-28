@@ -5,7 +5,7 @@ require "ulid"
 module PastaAtlas
   module Repos
     class MapRepo < PastaAtlas::DB::Repo
-      def find_by_id(id) = maps.where(id:).one
+      def find_by_id(id) = maps.where(id:).one!
       def find_by_ulid(ulid) = maps.where(ulid:).one
 
       def list_with_complete_generation(page:, per_page:)

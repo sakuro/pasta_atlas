@@ -3,7 +3,7 @@
 module PastaAtlas
   module Repos
     class GenerationRepo < PastaAtlas::DB::Repo
-      def find_by_id(id) = generations.where(id:).one
+      def find_by_id(id) = generations.where(id:).one!
 
       def find_complete_by_map_id(map_id)
         generations.where(map_id:)
