@@ -45,6 +45,13 @@ Lint/EmptyBlock:
   Exclude:
     - spec/factories/user.rb
 
+# ROM structs are anonymous subclasses sharing the same constant name as their base class.
+# RSpec resolves instance_double by constant name (NamedObjectReference), which picks up the
+# base class that has no attribute methods defined, making verifying doubles unusable here.
+RSpec/VerifiedDoubles:
+  Exclude:
+    - spec/actions/**/*.rb
+
 RSpec/SpecFilePathFormat:
   CustomTransform:
     PastaAtlas: ""
@@ -53,6 +60,7 @@ Style/Documentation:
   Exclude:
     - app/action.rb
     - app/actions/**/*.rb
+    - config/app.rb
     - app/operation.rb
     - app/operations/**/*.rb
     - app/relations/**/*.rb
