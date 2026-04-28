@@ -15,8 +15,6 @@ module PastaAtlas
       response.body = JSON.generate(data)
     end
 
-    private def current_user_id(_request)
-      nil # TODO: implement session-based authentication
-    end
+    private def current_user_id(request) = request.session[:user_id]
   end
 end
