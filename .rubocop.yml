@@ -52,6 +52,7 @@ RSpec/VerifiedDoubles:
   Exclude:
     - spec/actions/**/*.rb
     - spec/operations/**/*.rb
+    - spec/views/**/*.rb
 
 RSpec/SpecFilePathFormat:
   CustomTransform:
