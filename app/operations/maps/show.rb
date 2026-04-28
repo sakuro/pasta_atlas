@@ -11,13 +11,15 @@ module PastaAtlas
         ]
 
         def call(ulid:)
-          map = map_repo.find_by_ulid(ulid)
-          return Failure(:not_found) unless map
-
+          map = step find_map(ulid)
           user_profile = user_profile_repo.find_by_user_id(map.user_id)
           generations = generation_repo.find_complete_by_map_id(map.id)
+          {map:, user_profile:, generations:}
+        end
 
-          Success({map:, user_profile:, generations:})
+        private def find_map(ulid)
+          map = map_repo.find_by_ulid(ulid)
+          map ? Success(map) : Failure(:not_found)
         end
       end
     end
