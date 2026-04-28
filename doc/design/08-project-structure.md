@@ -4,24 +4,13 @@
 
 ```
 pasta_atlas/
-  app/                   # Shared domain logic (Hanami)
+  app/                   # Application code (Hanami)
+    actions/             # HTTP actions
+      uploads/
     relations/           # ROM relations
     repos/               # Repositories
     operations/          # Use cases
     services/            # External service adapters (S3, CloudFront)
-  slices/
-    web/                 # Server-rendered HTML pages
-      actions/
-        maps/
-      views/
-        maps/
-      templates/
-        maps/
-        layouts/
-    api/                 # REST API for client-side islands
-      actions/
-        maps/
-        uploads/
   frontend/              # Vite source (island bundles only)
     islands/
       map_viewer/        # LeafletMapViewer island
