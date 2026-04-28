@@ -19,11 +19,6 @@ pasta_atlas/
   tsconfig.json
   package.json           # single package.json for both hanami-assets and Vite
   public/                # Static files served by Hanami
-  infra/                 # Terraform
-    modules/             # Reusable modules (s3, cloudfront, rds, etc.)
-    environments/
-      development/
-      production/
   spec/                  # RSpec tests
   doc/
     design/              # Design documents
