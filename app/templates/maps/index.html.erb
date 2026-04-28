@@ -1,0 +1,22 @@
+<section class="section">
+  <div class="container">
+    <% maps.each do |map| %>
+      <% profile = user_profiles_by_id[map.user_id] %>
+      <div class="box">
+        <a href="/maps/<%= map.ulid %>"><%= map.display_name %></a>
+        <% if profile %>
+          <span class="has-text-grey-light is-size-7"><%= profile.name %></span>
+        <% end %>
+      </div>
+    <% end %>
+
+    <nav class="pagination" role="navigation">
+      <% if page > 1 %>
+        <a class="pagination-previous" href="/?page=<%= page - 1 %>">Previous</a>
+      <% end %>
+      <% if page * per_page < total %>
+        <a class="pagination-next" href="/?page=<%= page + 1 %>">Next</a>
+      <% end %>
+    </nav>
+  </div>
+</section>
