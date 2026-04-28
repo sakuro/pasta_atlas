@@ -51,6 +51,7 @@ Lint/EmptyBlock:
 RSpec/VerifiedDoubles:
   Exclude:
     - spec/actions/**/*.rb
+    - spec/operations/**/*.rb
 
 RSpec/SpecFilePathFormat:
   CustomTransform:
@@ -66,7 +67,7 @@ Style/Documentation:
     - app/relations/**/*.rb
     - app/repos/**/*.rb
     - app/structs/**/*.rb
-    - app/views/helpers.rb
+    - app/views/**/*.rb
     - config/routes.rb
     - config/settings.rb
     - lib/pasta_atlas/types.rb
