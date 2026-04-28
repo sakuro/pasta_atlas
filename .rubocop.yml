@@ -77,3 +77,4 @@ Style/DocumentationMethod:
     - app/operations/**/*.rb
     - app/relations/**/*.rb
     - app/repos/**/*.rb
+    - app/structs/**/*.rb
