@@ -11,7 +11,7 @@ app/
   actions/           # HTTP actions (parse request, call operation, render response)
     maps/
       index.rb                    # GET   /
-      viewer.rb                   # GET   /maps/:ulid
+      viewer.rb                   # GET   /@:userProfileName/maps/:ulid
       show.rb                     # GET   /api/v1/maps/:ulid
     uploads/
       create.rb                   # POST  /api/v1/uploads

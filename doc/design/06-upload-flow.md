@@ -58,7 +58,7 @@ The `metadata_s3_key` stored in DB points to `mapshot.json` within this prefix.
     Body: { status: "complete" }
 
 [done]
-  → Show link to /maps/:map_ulid?generation=:generation_ulid
+  → Show link to /@:userProfileName/maps/:map_ulid?generation=:generation_ulid
 ```
 
 ### Notes

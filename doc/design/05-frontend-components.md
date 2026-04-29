@@ -9,7 +9,7 @@ Regular page navigation uses server-rendered HTML (Hanami `web` slice). Client-s
 | Page | URL | Rendered by |
 |---|---|---|
 | Top page | `/` | `web` slice (server) |
-| Map viewer | `/maps/:mapUlid` | `web` slice (shell) + Leaflet island |
+| Map viewer | `/@:userProfileName/maps/:mapUlid` | `web` slice (shell) + Leaflet island |
 
 Map viewer query parameters (managed by the Leaflet island via `history.replaceState`):
 
@@ -31,11 +31,11 @@ Rendered by `web` slice. Fetches paginated map list from DB and renders MapCard 
 
 Shows only maps with at least one `complete` generation, ordered by most recent generation upload.
 
-MapCard displays: `display_name`, owner name, latest generation tick, created_at. Links to `/maps/:ulid`.
+MapCard displays: `display_name`, owner name, latest generation tick, created_at. Links to `/@:userProfileName/maps/:ulid`.
 
 `display_name` is resolved server-side: `name` → `savename` (if not empty) → `mapshot_map_id`.
 
-### Map viewer page (`/maps/:mapUlid`)
+### Map viewer page (`/@:userProfileName/maps/:mapUlid`)
 
 Rendered by `web` slice as an HTML shell. The shell embeds the map ULID as a `data-` attribute on the island mount point. The Leaflet island mounts on this element and fetches map data from the API.
 

@@ -36,6 +36,14 @@ ACM certificates for CloudFront must be provisioned in us-east-1 (AWS requiremen
 | production | `pasta-atlas-production-mapshots` |
 | development | `pasta-atlas-development-mapshots` |
 
+### Key structure
+
+```
+{user_profile_name}/{mapshot_map_id}/{mapshot_unique_id}/{filename}
+```
+
+Guest uploads use `guest` as the user profile name prefix, enabling S3 lifecycle rules to expire guest data automatically.
+
 ## DNS
 
 Gandi manages DNS. No Route 53 is used. The application domain CNAME points to the ALB DNS name; the CDN domain CNAME points to the CloudFront distribution.
