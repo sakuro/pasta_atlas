@@ -58,25 +58,3 @@ RSpec/SpecFilePathFormat:
   CustomTransform:
     PastaAtlas: ""
 
-Style/Documentation:
-  Exclude:
-    - app/action.rb
-    - app/actions/**/*.rb
-    - config/app.rb
-    - app/operation.rb
-    - app/operations/**/*.rb
-    - app/relations/**/*.rb
-    - app/repos/**/*.rb
-    - app/structs/**/*.rb
-    - app/views/**/*.rb
-    - config/routes.rb
-    - config/settings.rb
-    - lib/pasta_atlas/types.rb
-
-Style/DocumentationMethod:
-  Exclude:
-    - app/actions/**/*.rb
-    - app/operations/**/*.rb
-    - app/relations/**/*.rb
-    - app/repos/**/*.rb
-    - app/structs/**/*.rb
