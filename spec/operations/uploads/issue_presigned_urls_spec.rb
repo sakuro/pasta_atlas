@@ -6,7 +6,6 @@ RSpec.describe PastaAtlas::Operations::Uploads::IssuePresignedUrls, :db do
   let(:s3_client) { Hanami.app["s3.client"] }
 
   let(:user) { Factory[:user] }
-  let!(:user_profile) { Factory[:user_profile, user:, name: "testuser"] }
   let(:map) { Factory[:map, user:, mapshot_map_id: "ae8ec3ab"] }
   let(:generation) do
     Factory[:generation,
@@ -16,8 +15,9 @@ RSpec.describe PastaAtlas::Operations::Uploads::IssuePresignedUrls, :db do
       metadata_s3_key: "testuser/ae8ec3ab/550f41a9/mapshot.json"]
   end
   let!(:upload) { Factory[:upload, generation:, total_image_count: 10] }
-
   let(:filenames) { ["s1zoom_4/tile_0_0.jpg", "s1zoom_4/tile_0_1.jpg"] }
+
+  before { Factory[:user_profile, user:, name: "testuser"] }
 
   describe "#call" do
     before { s3_client.stub_responses(:list_objects_v2, {contents: []}) }
