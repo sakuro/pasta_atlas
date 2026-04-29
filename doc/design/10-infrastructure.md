@@ -22,6 +22,20 @@ pasta_atlas runs on AWS with container-based deployment. DNS is managed by Gandi
 
 ACM certificates for CloudFront must be provisioned in us-east-1 (AWS requirement). The ALB certificate is provisioned in the primary region (ap-northeast-1).
 
+## Domains
+
+| Environment | Application (ALB) | Assets (CloudFront) |
+|---|---|---|
+| production | `pasta-atlas.layer8.works` | `maps.pasta-atlas.layer8.works` |
+| development | `pasta-atlas-development.layer8.works` | `maps.pasta-atlas-development.layer8.works` |
+
+## S3 Buckets
+
+| Environment | Bucket |
+|---|---|
+| production | `pasta-atlas-production-mapshots` |
+| development | `pasta-atlas-development-mapshots` |
+
 ## DNS
 
 Gandi manages DNS. No Route 53 is used. The application domain CNAME points to the ALB DNS name; the CDN domain CNAME points to the CloudFront distribution.
@@ -53,3 +67,12 @@ Existing modules (`acm-validated-certificate`, `cloudfront-site`) are reused via
 | development | Local (Hanami dev server + local PostgreSQL) |
 
 No staging environment is defined at this time.
+
+### Local development
+
+The local Hanami dev server uses real AWS S3 and CloudFront (development bucket and distribution). No local S3 mock is used. Configure `.env.development.local` with:
+
+```
+S3_BUCKET=pasta-atlas-development-mapshots
+CLOUDFRONT_BASE_URL=https://maps.pasta-atlas-development.layer8.works
+```

@@ -27,7 +27,7 @@ Map details with all complete generations.
     {
       "ulid": "01HABC...",
       "tick": 29386437,
-      "metadata_url": "https://cdn.example.com/ae8ec3ab/550f41a9/mapshot.json"
+      "metadata_url": "https://maps.pasta-atlas.layer8.works/ae8ec3ab/550f41a9/mapshot.json"
     }
   ]
 }
