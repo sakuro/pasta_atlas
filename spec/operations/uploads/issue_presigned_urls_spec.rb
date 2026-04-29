@@ -5,13 +5,15 @@ RSpec.describe PastaAtlas::Operations::Uploads::IssuePresignedUrls, :db do
   let(:upload_repo) { Hanami.app["repos.upload_repo"] }
   let(:s3_client) { Hanami.app["s3.client"] }
 
-  let(:map) { Factory[:map, mapshot_map_id: "ae8ec3ab"] }
+  let(:user) { Factory[:user] }
+  let!(:user_profile) { Factory[:user_profile, user:, name: "testuser"] }
+  let(:map) { Factory[:map, user:, mapshot_map_id: "ae8ec3ab"] }
   let(:generation) do
     Factory[:generation,
       map:,
       mapshot_unique_id: "550f41a9",
       tick: 1000,
-      metadata_s3_key: "ae8ec3ab/550f41a9/mapshot.json"]
+      metadata_s3_key: "testuser/ae8ec3ab/550f41a9/mapshot.json"]
   end
   let!(:upload) { Factory[:upload, generation:, total_image_count: 10] }
 
@@ -34,7 +36,7 @@ RSpec.describe PastaAtlas::Operations::Uploads::IssuePresignedUrls, :db do
     context "when some files already exist in S3" do
       before do
         s3_client.stub_responses(:list_objects_v2, {
-          contents: [{key: "ae8ec3ab/550f41a9/s1zoom_4/tile_0_0.jpg"}]
+          contents: [{key: "testuser/ae8ec3ab/550f41a9/s1zoom_4/tile_0_0.jpg"}]
         })
       end
 

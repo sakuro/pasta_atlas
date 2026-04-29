@@ -8,6 +8,7 @@ module PastaAtlas
           "repos.upload_repo",
           "repos.generation_repo",
           "repos.map_repo",
+          "repos.user_profile_repo",
           "settings",
           s3_client: "s3.client"
         ]
@@ -18,8 +19,9 @@ module PastaAtlas
 
           generation = generation_repo.find_by_id(upload.generation_id)
           map = map_repo.find_by_id(generation.map_id)
+          user_profile = user_profile_repo.find_by_user_id(map.user_id)
 
-          prefix = "#{map.mapshot_map_id}/#{generation.mapshot_unique_id}/"
+          prefix = "#{user_profile.name}/#{map.mapshot_map_id}/#{generation.mapshot_unique_id}/"
           existing_keys = step list_existing_keys(prefix)
 
           presigned_urls_for(filenames:, prefix:, existing_keys:)

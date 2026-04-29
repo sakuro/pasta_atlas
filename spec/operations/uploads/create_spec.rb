@@ -7,6 +7,7 @@ RSpec.describe PastaAtlas::Operations::Uploads::Create, :db do
   let(:s3_client) { Hanami.app["s3.client"] }
 
   let(:user) { Factory[:user] }
+  let!(:user_profile) { Factory[:user_profile, user:, name: "testuser"] }
   let(:metadata) { {"map_id" => "ae8ec3ab", "unique_id" => "550f41a9", "tick" => "1000"} }
 
   describe "#call" do
@@ -28,7 +29,7 @@ RSpec.describe PastaAtlas::Operations::Uploads::Create, :db do
           map:,
           mapshot_unique_id: "550f41a9",
           tick: 1000,
-          metadata_s3_key: "ae8ec3ab/550f41a9/mapshot.json"]
+          metadata_s3_key: "testuser/ae8ec3ab/550f41a9/mapshot.json"]
       end
       let!(:existing_upload) { Factory[:upload, generation:, total_image_count: 3] }
 
@@ -47,7 +48,7 @@ RSpec.describe PastaAtlas::Operations::Uploads::Create, :db do
           map:,
           mapshot_unique_id: "550f41a9",
           tick: 1000,
-          metadata_s3_key: "ae8ec3ab/550f41a9/mapshot.json"]
+          metadata_s3_key: "testuser/ae8ec3ab/550f41a9/mapshot.json"]
       end
 
       before { Factory[:upload, :complete, generation:, total_image_count: 5] }
