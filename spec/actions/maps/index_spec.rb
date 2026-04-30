@@ -5,9 +5,9 @@ RSpec.describe PastaAtlas::Actions::Maps::Index do
   let(:action) { PastaAtlas::Actions::Maps::Index.new(list_maps:) }
 
   let(:map) { double("Map", user_id: 1, ulid: "01MAP", display_name: "My Map") }
-  let(:user_profile) { double("UserProfile", user_id: 1, name: "sakuro") }
+  let(:user) { double("User", id: 1, name: "sakuro") }
   let(:payload) do
-    {maps: [map], user_profiles_by_id: {1 => user_profile}, page: 1, per_page: 20, total: 1}
+    {maps: [map], users_by_id: {1 => user}, page: 1, per_page: 20, total: 1}
   end
 
   before do

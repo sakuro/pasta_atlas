@@ -6,10 +6,8 @@ RSpec.describe PastaAtlas::Operations::Uploads::Create, :db do
   let(:generation_repo) { Hanami.app["repos.generation_repo"] }
   let(:s3_client) { Hanami.app["s3.client"] }
 
-  let(:user) { Factory[:user] }
+  let(:user) { Factory[:user, name: "testuser"] }
   let(:metadata) { {"map_id" => "ae8ec3ab", "unique_id" => "550f41a9", "tick" => "1000"} }
-
-  before { Factory[:user_profile, user:, name: "testuser"] }
 
   describe "#call" do
     context "when no generation exists" do

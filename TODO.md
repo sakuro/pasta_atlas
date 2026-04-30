@@ -11,4 +11,4 @@
 
 ## Implementation
 
-(Not started yet)
+- [ ] User registration — create `users` and `user_profiles` in a single transaction; every user must have a profile

@@ -1,12 +1,10 @@
 <section class="section">
   <div class="container">
     <% maps.each do |map| %>
-      <% profile = user_profiles_by_id[map.user_id] %>
+      <% user = users_by_id[map.user_id] %>
       <div class="box">
-        <a href="/@<%= profile.name %>/maps/<%= map.ulid %>"><%= map.display_name %></a>
-        <% if profile %>
-          <span class="has-text-grey-light is-size-7"><%= profile.name %></span>
-        <% end %>
+        <a href="/@<%= user.name %>/maps/<%= map.ulid %>"><%= map.display_name %></a>
+        <span class="has-text-grey-light is-size-7"><%= user.name %></span>
       </div>
     <% end %>
 

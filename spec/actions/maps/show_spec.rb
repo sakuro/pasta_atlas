@@ -8,14 +8,14 @@ RSpec.describe PastaAtlas::Actions::Maps::Show do
 
   context "when the map is found" do
     let(:map) { double("Map", ulid: "01MAP", display_name: "my-save") }
-    let(:user_profile) { double("UserProfile", name: "sakuro") }
+    let(:user) { double("User", name: "sakuro") }
     let(:generation) do
       double("Generation", ulid: "01GEN", tick: 1000, metadata_s3_key: "ae8ec3ab/550f41a9/mapshot.json")
     end
 
     before do
       allow(show_map).to receive(:call).and_return(
-        Success({map:, user_profile:, generations: [generation]})
+        Success({map:, user:, generations: [generation]})
       )
     end
 

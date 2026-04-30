@@ -5,9 +5,10 @@ services:
       - "4566:4566"
       - "7001:7001"
     environment:
-      FLOCI_SERVICES_RDS_DEFAULT_POSTGRES_IMAGE: postgres:18-alpine
+      FLOCI_SERVICES_RDS_DEFAULT_POSTGRES_IMAGE: postgres:17-alpine
       FLOCI_SERVICES_RDS_PROXY_PORT_RANGE: "7001-7001"
       FLOCI_SERVICES_DOCKER_NETWORK: pasta_atlas_default
+      FLOCI_STORAGE_MODE: persistent
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - floci_data:/app/data

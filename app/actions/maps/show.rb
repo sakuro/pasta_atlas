@@ -12,11 +12,11 @@ module PastaAtlas
         def handle(request, response)
           result = show_map.call(ulid: request.params[:ulid])
           case result
-          in Success({map:, user_profile:, generations:})
+          in Success({map:, user:, generations:})
             json_response(response, {
               ulid: map.ulid,
               display_name: map.display_name,
-              owner: {name: user_profile.name},
+              owner: {name: user.name},
               generations: generations.map {|g|
                 {
                   ulid: g.ulid,

@@ -9,7 +9,7 @@ module PastaAtlas
         include Deps[
           "repos.generation_repo",
           "repos.upload_repo",
-          "repos.user_profile_repo",
+          "repos.user_repo",
           "settings",
           find_or_create_map: "operations.maps.find_or_create",
           s3_client: "s3.client"
@@ -19,7 +19,7 @@ module PastaAtlas
           mapshot_map_id = metadata["map_id"]
           mapshot_unique_id = metadata["unique_id"]
           tick = Integer(metadata["tick"])
-          user_profile_name = user_profile_repo.find_by_user_id(user_id).name
+          user_name = user_repo.find_by_id(user_id).name
 
           map = step find_or_create_map.call(
             user_id:,
@@ -30,7 +30,7 @@ module PastaAtlas
 
           step within_transaction(
             map:,
-            user_profile_name:,
+            user_name:,
             mapshot_map_id:,
             mapshot_unique_id:,
             tick:,
@@ -39,7 +39,7 @@ module PastaAtlas
           )
         end
 
-        private def within_transaction(map:, user_profile_name:, mapshot_map_id:, mapshot_unique_id:, tick:, metadata:, total_image_count:)
+        private def within_transaction(map:, user_name:, mapshot_map_id:, mapshot_unique_id:, tick:, metadata:, total_image_count:)
           result = nil
           generation_repo.db.transaction do
             generation = generation_repo.find_with_upload(
@@ -52,15 +52,15 @@ module PastaAtlas
               next
             end
             result = create_generation_and_upload(
-              map:, user_profile_name:, mapshot_map_id:, mapshot_unique_id:, tick:, metadata:, total_image_count:
+              map:, user_name:, mapshot_map_id:, mapshot_unique_id:, tick:, metadata:, total_image_count:
             )
             raise Sequel::Rollback if result.failure?
           end
           result
         end
 
-        private def create_generation_and_upload(map:, user_profile_name:, mapshot_map_id:, mapshot_unique_id:, tick:, metadata:, total_image_count:)
-          metadata_s3_key = "#{user_profile_name}/#{mapshot_map_id}/#{mapshot_unique_id}/mapshot.json"
+        private def create_generation_and_upload(map:, user_name:, mapshot_map_id:, mapshot_unique_id:, tick:, metadata:, total_image_count:)
+          metadata_s3_key = "#{user_name}/#{mapshot_map_id}/#{mapshot_unique_id}/mapshot.json"
           generation = generation_repo.create(
             ulid: ULID.generate,
             map_id: map.id,

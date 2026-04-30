@@ -17,13 +17,9 @@ uploads = Hanami.app["relations.uploads"]
 db = users.dataset.db
 
 db.transaction do
-  guest_profile = user_profiles.dataset.where(name: "guest").first
-  if guest_profile
-    guest_user_id = guest_profile[:user_id]
-  else
-    guest_user_id = users.dataset.insert({})
-    user_profiles.dataset.insert(user_id: guest_user_id, name: "guest")
-  end
+  users.dataset.insert_conflict(target: :name).insert(name: "guest")
+  guest_user_id = users.dataset.where(name: "guest").first[:id]
+  user_profiles.dataset.insert_conflict(target: :user_id).insert(user_id: guest_user_id)
 
   maps.dataset.insert_conflict(target: %i[user_id mapshot_map_id]).insert(
     ulid: ULID.generate,
