@@ -38,6 +38,7 @@ Style/Documentation:
     - 'app/repos/map_repo.rb'
     - 'app/repos/upload_repo.rb'
     - 'app/repos/user_profile_repo.rb'
+    - 'app/repos/user_repo.rb'
     - 'app/structs/map.rb'
     - 'app/views/helpers.rb'
     - 'app/views/maps/index.rb'
@@ -68,3 +69,4 @@ Style/DocumentationMethod:
     - 'app/repos/map_repo.rb'
     - 'app/repos/upload_repo.rb'
     - 'app/repos/user_profile_repo.rb'
+    - 'app/repos/user_repo.rb'

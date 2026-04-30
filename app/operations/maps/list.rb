@@ -13,7 +13,8 @@ module PastaAtlas
           maps = map_repo.list_with_complete_generation(page:, per_page: PER_PAGE)
           total = map_repo.count_with_complete_generation
 
-          user_ids = maps.map(&:user_id).uniq
+          user_ids = maps.map(&:user_id)
+          user_ids.uniq!
           users_by_id = user_repo.find_by_ids(user_ids).to_h {|u| [u.id, u] }
 
           {maps:, users_by_id:, page:, per_page: PER_PAGE, total:}
