@@ -1,0 +1,9 @@
+[extend]
+useDefault = true
+
+[[allowlists]]
+description = "Ignore RuboCop/Ruby style description"
+regexTarget = "secret"
+regexes = [
+  "ruby19_no_mixed_keys",
+]

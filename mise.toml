@@ -5,6 +5,7 @@ _.path = ["bin", "node_modules/.bin"]
 [tools]
 terraform = "1.14.3"
 "aqua:terraform-linters/tflint" = "0.60.0"
+gitleaks = "latest"
 
 [tasks.default]
 depends = ["dev"]
