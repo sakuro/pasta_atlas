@@ -1,4 +1,7 @@
 /.env*.local
+/terraform/environments/local/.terraform/
+/terraform/environments/local/terraform.tfstate
+/terraform/environments/local/terraform.tfstate.backup
 /coverage/
 /doc/api/
 /log/*

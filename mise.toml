@@ -1,17 +1,26 @@
 [env]
+_.file = [".env", ".env.development", ".env.local"]
 _.path = ["bin", "node_modules/.bin"]
+
+[tools]
+terraform = "1.14.3"
+"aqua:terraform-linters/tflint" = "0.60.0"
 
 [tasks.default]
 depends = ["dev"]
 
 [tasks.dev]
-depends = ["web", "assets", "islands"]
+depends = ["web", "assets", "islands", "floci"]
 
 [tasks.web]
 run = "bundle exec hanami server"
+depends = ["floci"]
 
 [tasks.assets]
 run = "bundle exec hanami assets watch"
 
 [tasks.islands]
 run = "npm run dev:islands"
+
+[tasks.floci]
+run = "docker compose up -d"
