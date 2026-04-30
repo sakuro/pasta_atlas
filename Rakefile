@@ -12,9 +12,6 @@ CLOBBER.include("doc/api")
 require "rubocop/rake_task"
 RuboCop::RakeTask.new
 
-require "rspec/core/rake_task"
-RSpec::Core::RakeTask.new(:spec)
-
 require "yard"
 YARD::Rake::YardocTask.new(:doc)
 
