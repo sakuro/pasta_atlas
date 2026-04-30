@@ -1,6 +1,6 @@
-<section class="section">
-  <div class="container">
-    <h1 class="title"><%= display_name %></h1>
-    <div id="map-viewer" data-ulid="<%= ulid %>"></div>
-  </div>
-</section>
+<h1><%= display_name %></h1>
+<% island_css_srcs("map_viewer").each do |href| %>
+<link rel="stylesheet" href="<%= href %>">
+<% end %>
+<div id="map-viewer" data-ulid="<%= ulid %>"></div>
+<script src="<%= island_src("map_viewer") %>" type="module"></script>
