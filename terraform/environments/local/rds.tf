@@ -5,7 +5,6 @@ resource "aws_db_instance" "main" {
   instance_class    = "db.t4g.micro"
   allocated_storage = 20
 
-  db_name  = "pasta_atlas"
   username = "pasta_atlas"
   password = var.db_password
 

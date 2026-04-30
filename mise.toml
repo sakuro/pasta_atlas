@@ -11,11 +11,11 @@ gitleaks = "latest"
 depends = ["dev"]
 
 [tasks.dev]
-depends = ["web", "assets", "islands", "floci"]
+depends = ["web", "assets", "islands"]
 
 [tasks.web]
 run = "bundle exec hanami server"
-depends = ["floci"]
+#depends = ["floci"]
 
 [tasks.assets]
 run = "bundle exec hanami assets watch"
@@ -23,5 +23,5 @@ run = "bundle exec hanami assets watch"
 [tasks.islands]
 run = "npm run dev:islands"
 
-[tasks.floci]
-run = "docker compose up -d"
+#[tasks.floci]
+#run = "docker compose up -d"
