@@ -153,7 +153,8 @@ CREATE TABLE public.user_profiles (
     id bigint NOT NULL,
     user_id bigint NOT NULL,
     created_at timestamp with time zone DEFAULT now() NOT NULL,
-    display_name text
+    display_name text,
+    timezone text DEFAULT 'UTC'::text NOT NULL
 );
 
 
@@ -389,4 +390,5 @@ INSERT INTO schema_migrations (filename) VALUES
 ('20260427133023_create_maps.rb'),
 ('20260427133024_create_generations.rb'),
 ('20260427133025_create_uploads.rb'),
-('20260501170231_add_display_name_to_user_profiles.rb');
+('20260501170231_add_display_name_to_user_profiles.rb'),
+('20260501180000_add_timezone_to_user_profiles.rb');
