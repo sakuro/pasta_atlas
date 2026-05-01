@@ -41,7 +41,7 @@ module PastaAtlas
           end
 
           user_profile_repo.update_display_name(user_id, display_name.empty? ? nil : display_name)
-          response.redirect_to "/@#{user_name}/profile/edit"
+          response.redirect_to "/@#{user_name}/profile"
         end
 
         private def validate_display_name(name)

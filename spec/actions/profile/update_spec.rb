@@ -39,11 +39,12 @@ RSpec.describe PastaAtlas::Actions::Profile::Update do
       allow(user_profile_repo).to receive(:update_display_name)
     end
 
-    it "updates the display name and redirects" do
+    it "updates the display name and redirects to the profile page" do
       response = action.call(env)
 
       expect(user_profile_repo).to have_received(:update_display_name).with(1, "Sakuro")
       expect(response.status).to eq(302)
+      expect(response.headers["Location"]).to eq("/@sakuro/profile")
     end
 
     context "when display_name is blank" do
