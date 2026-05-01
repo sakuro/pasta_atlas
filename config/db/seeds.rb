@@ -13,6 +13,8 @@ db = users.dataset.db
 
 db.transaction do
   users.dataset.insert_conflict(target: :name).insert(name: "guest")
-  guest_user_id = users.dataset.where(name: "guest").first[:id]
-  user_profiles.dataset.insert_conflict(target: :user_id).insert(user_id: guest_user_id)
+
+  users.dataset.each do |user|
+    user_profiles.dataset.insert_conflict(target: :user_id).insert(user_id: user[:id])
+  end
 end

@@ -13,8 +13,10 @@ module PastaAtlas
     }
 
     config.middleware.use OmniAuth::Builder do
-      provider :github, PastaAtlas::App.settings.github_client_id, PastaAtlas::App.settings.github_client_secret,
-               scope: "read:user"
+      provider :github,
+        PastaAtlas::App.settings.github_client_id,
+        PastaAtlas::App.settings.github_client_secret,
+        scope: "read:user"
     end
 
     config.actions.content_security_policy[:form_action] += " https://github.com"

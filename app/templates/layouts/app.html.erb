@@ -17,8 +17,8 @@
         <div class="navbar-end">
           <div class="navbar-item" id="upload-modal"></div>
           <div class="navbar-item">
-            <% if current_user_profile_name %>
-              <span class="mr-3"><%= current_user_profile_name %></span>
+            <% if current_user_name %>
+              <a class="mr-3" href="/@<%= current_user_name %>/profile/edit"><%= current_user_display_name %></a>
               <form action="/auth/session" method="post" style="display:inline">
                 <input type="hidden" name="_method" value="delete">
                 <input type="hidden" name="_csrf_token" value="<%= csrf_token %>">

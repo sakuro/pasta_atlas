@@ -5,10 +5,12 @@ module PastaAtlas
     module Auth
       module Registrations
         class Create < PastaAtlas::Action
-          include Deps["repos.credential_repo"]
+          include Deps["repos.credential_repo", "repos.user_profile_repo"]
 
           USERNAME_PATTERN = /\A[a-zA-Z0-9][a-zA-Z0-9_-]*[a-zA-Z0-9]\z|\A[a-zA-Z0-9]\z/
+          private_constant :USERNAME_PATTERN
           RESERVED_NAMES = %w[guest api admin].freeze
+          private_constant :RESERVED_NAMES
 
           params do
             required(:name).filled(:string)
@@ -22,7 +24,7 @@ module PastaAtlas
 
             error = validate_name(name)
             if error
-              response.render view, suggested_name: name, error: error
+              response.render(view, suggested_name: name, error:)
               return
             end
 
@@ -32,22 +34,23 @@ module PastaAtlas
               return
             end
 
-            user = user_repo.create(name:)
-            credential_repo.credentials.command(:create).call(
-              user_id: user.id,
-              provider: pending["provider"],
-              uid: pending["uid"],
-              data: {}
-            )
+            user_repo.db.transaction do
+              user = user_repo.create(name:)
+              user_profile_repo.user_profiles.command(:create).call(user_id: user.id)
+              credential_repo.credentials.command(:create).call(
+                user_id: user.id,
+                provider: pending["provider"],
+                uid: pending["uid"],
+                data: {}
+              )
+            end
 
             request.session.delete(:pending_auth)
             request.session[:user_id] = user.id
             response.redirect_to "/"
           end
 
-          private
-
-          def validate_name(name)
+          private def validate_name(name)
             return "Username must not be empty." if name.empty?
             return "Username must be 39 characters or fewer." if name.length > 39
             return "Username may only contain letters, numbers, hyphens, and underscores, and must start and end with a letter or number." unless name.match?(USERNAME_PATTERN)

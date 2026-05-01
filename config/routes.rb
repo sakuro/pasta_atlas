@@ -3,7 +3,10 @@
 module PastaAtlas
   class Routes < Hanami::Routes
     root to: "maps.index"
-    get "/@:user_profile_name/maps/:ulid", to: "maps.viewer"
+    get "/@:user_name/maps/:ulid", to: "maps.viewer"
+
+    get "/@:user_name/profile/edit", to: "profile.edit"
+    patch "/@:user_name/profile", to: "profile.update"
 
     get "/auth/github/callback", to: "auth.github.callback"
     get "/auth/failure", to: "auth.failure"

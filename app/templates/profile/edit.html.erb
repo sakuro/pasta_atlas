@@ -1,0 +1,26 @@
+<section class="section">
+  <div class="container" style="max-width: 480px">
+    <h1 class="title">Edit Profile</h1>
+    <% if error %>
+      <div class="notification is-danger is-light"><%= error %></div>
+    <% end %>
+    <form action="/@<%= current_user_name %>/profile" method="post">
+      <input type="hidden" name="_method" value="patch">
+      <input type="hidden" name="_csrf_token" value="<%= csrf_token %>">
+      <div class="field">
+        <label class="label" for="display_name">Display name</label>
+        <div class="control">
+          <input class="input" type="text" id="display_name" name="display_name"
+                 value="<%= display_name %>"
+                 maxlength="64">
+        </div>
+        <p class="help">Up to 64 characters. Leave blank to use your username.</p>
+      </div>
+      <div class="field">
+        <div class="control">
+          <button class="button is-primary" type="submit">Save</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</section>
