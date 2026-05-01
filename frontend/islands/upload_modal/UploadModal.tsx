@@ -41,9 +41,9 @@ function resolveDisplayName(m: MapshotJson): string {
 
 function formatBytes(n: number): string {
   if (n < 1024) return `${n} B`;
-  if (n < 1048576) return `${(n / 1024).toFixed(1)} KB`;
-  if (n < 1073741824) return `${(n / 1048576).toFixed(1)} MB`;
-  return `${(n / 1073741824).toFixed(1)} GB`;
+  if (n < 1048576) return `${(n / 1024).toFixed(1)} KiB`;
+  if (n < 1073741824) return `${(n / 1048576).toFixed(1)} MiB`;
+  return `${(n / 1073741824).toFixed(1)} GiB`;
 }
 
 async function runConcurrent(
