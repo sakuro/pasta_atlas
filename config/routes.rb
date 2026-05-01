@@ -5,6 +5,7 @@ module PastaAtlas
     root to: "maps.index"
     get "/@:user_name/maps/:ulid", to: "maps.viewer"
 
+    get "/@:user_name/profile", to: "profile.show"
     get "/@:user_name/profile/edit", to: "profile.edit"
     patch "/@:user_name/profile", to: "profile.update"
 

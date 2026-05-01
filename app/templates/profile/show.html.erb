@@ -1,0 +1,15 @@
+<section class="section">
+  <div class="container" style="max-width: 480px">
+    <div class="level">
+      <div class="level-left">
+        <h1 class="title"><%= display_name || user_name %></h1>
+      </div>
+      <% if own_profile %>
+        <div class="level-right">
+          <a class="button" href="/@<%= user_name %>/profile/edit">Edit</a>
+        </div>
+      <% end %>
+    </div>
+    <p class="subtitle">@<%= user_name %></p>
+  </div>
+</section>
