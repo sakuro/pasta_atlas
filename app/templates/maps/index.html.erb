@@ -18,7 +18,9 @@
               <p class="title is-6">
                 <a href="/@<%= user.name %>/maps/<%= map.ulid %>"><%= map.display_name %></a>
               </p>
-              <p class="subtitle is-7 has-text-grey"><%= user.name %></p>
+              <p class="subtitle is-7 has-text-grey">
+                <a href="/@<%= user.name %>/profile"><%= profiles_by_user_id[user.id].display_name || user.name %></a>
+              </p>
             </div>
           </div>
         </div>
