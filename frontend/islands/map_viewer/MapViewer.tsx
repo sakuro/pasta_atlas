@@ -173,8 +173,8 @@ function LeafletMap(props: { mapshot: Mapshot; assetBase: string }) {
     const initX = parseFloat(getParam("x") ?? "");
     const initY = parseFloat(getParam("y") ?? "");
     const initZ = parseFloat(getParam("z") ?? "");
-    const showTrains = getParam("lt") !== "0";
-    const showTags = getParam("lg") !== "0";
+    const showTrains = getParam("lt") === "1";
+    const showTags = getParam("lg") === "1";
 
     const map = L.map(mapEl, {
       crs: L.CRS.Simple,
