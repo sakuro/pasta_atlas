@@ -120,17 +120,20 @@ export function MapViewer(props: { ulid: string }) {
       <Show when={mapData()}>
         {(data) => (
           <div style={{ padding: "0.5rem", "flex-shrink": 0 }}>
-            <div class="select is-small">
-              <select
-                value={activeGeneration()?.ulid ?? ""}
-                onChange={(e) => handleGenerationChange(e.currentTarget.value)}
-              >
-                <For each={data().generations}>
-                  {(gen) => (
-                    <option value={gen.ulid}>{formatTicks(gen.tick)}</option>
-                  )}
-                </For>
-              </select>
+            <div class="control has-icons-left">
+              <div class="select is-small">
+                <select
+                  value={activeGeneration()?.ulid ?? ""}
+                  onChange={(e) => handleGenerationChange(e.currentTarget.value)}
+                >
+                  <For each={data().generations}>
+                    {(gen) => (
+                      <option value={gen.ulid}>{formatTicks(gen.tick)}</option>
+                    )}
+                  </For>
+                </select>
+              </div>
+              <span class="icon is-small is-left"><i class="fa-solid fa-timeline"></i></span>
             </div>
           </div>
         )}

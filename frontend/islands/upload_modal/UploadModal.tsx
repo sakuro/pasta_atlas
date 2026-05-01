@@ -248,7 +248,8 @@ export function UploadModal() {
         }}
       />
       <button class="button" onClick={openPicker}>
-        Upload
+        <span class="icon"><i class="fa-solid fa-upload"></i></span>
+        <span>Upload</span>
       </button>
       <Show when={state().type !== "idle"}>
         <Portal mount={document.body}>
@@ -267,19 +268,19 @@ export function UploadModal() {
                   <table class="table is-fullwidth">
                     <tbody>
                       <tr>
-                        <th>Map</th>
+                        <th><span class="icon-text"><span class="icon"><i class="fa-solid fa-map"></i></span><span>Map</span></span></th>
                         <td>{s.mapName}</td>
                       </tr>
                       <tr>
-                        <th>Surfaces</th>
+                        <th><span class="icon-text"><span class="icon"><i class="fa-solid fa-layer-group"></i></span><span>Surfaces</span></span></th>
                         <td>{s.surfaceCount}</td>
                       </tr>
                       <tr>
-                        <th>Images</th>
+                        <th><span class="icon-text"><span class="icon"><i class="fa-solid fa-images"></i></span><span>Images</span></span></th>
                         <td>{s.imageCount}</td>
                       </tr>
                       <tr>
-                        <th>Total size</th>
+                        <th><span class="icon-text"><span class="icon"><i class="fa-solid fa-chart-simple"></i></span><span>Total size</span></span></th>
                         <td>{formatBytes(s.totalBytes)}</td>
                       </tr>
                     </tbody>
@@ -314,11 +315,13 @@ export function UploadModal() {
               <footer class="modal-card-foot">
                 <Show when={state().type === "confirming"}>
                   <button class="button is-primary" onClick={startUpload}>
-                    Start Upload
+                    <span class="icon"><i class="fa-solid fa-upload"></i></span>
+                    <span>Start Upload</span>
                   </button>
                 </Show>
                 <button class="button" onClick={dismiss}>
-                  {state().type === "error" ? "Dismiss" : "Cancel"}
+                  <span class="icon"><i class="fa-solid fa-circle-xmark"></i></span>
+                  <span>{state().type === "error" ? "Dismiss" : "Cancel"}</span>
                 </button>
               </footer>
             </Show>

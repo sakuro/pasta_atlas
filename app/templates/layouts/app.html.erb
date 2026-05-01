@@ -22,16 +22,25 @@
               <form action="/auth/session" method="post" style="display:inline">
                 <input type="hidden" name="_method" value="delete">
                 <input type="hidden" name="_csrf_token" value="<%= csrf_token %>">
-                <button class="button is-small" type="submit">Log out</button>
+                <button class="button is-small" type="submit">
+                  <span class="icon"><i class="fa-solid fa-arrow-right-from-bracket"></i></span>
+                  <span>Log out</span>
+                </button>
               </form>
             </div>
           <% else %>
             <div class="navbar-item has-dropdown is-hoverable">
-              <a class="navbar-link">Log in</a>
+              <a class="navbar-link">
+                <span class="icon"><i class="fa-solid fa-arrow-right-to-bracket"></i></span>
+                <span>Log in</span>
+              </a>
               <div class="navbar-dropdown is-right">
                 <form action="/auth/github" method="post">
                   <input type="hidden" name="authenticity_token" value="<%= omniauth_authenticity_token %>">
-                  <button class="navbar-item" type="submit">Log in with GitHub</button>
+                  <button class="navbar-item" type="submit">
+                    <span class="icon"><i class="fa-brands fa-github"></i></span>
+                    <span>Log in with GitHub</span>
+                  </button>
                 </form>
               </div>
             </div>

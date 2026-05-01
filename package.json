@@ -10,6 +10,7 @@
     "test:frontend": "vitest"
   },
   "dependencies": {
+    "@fortawesome/fontawesome-free": "^7.2.0",
     "bulma": "^1.0.4",
     "hanami-assets": "^2.3.0",
     "leaflet": "^1.9.4",
