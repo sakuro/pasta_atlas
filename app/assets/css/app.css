@@ -43,6 +43,10 @@
     --bulma-scheme-main-ter-l: 32%;
   }
 }
+/* Leaflet controls reach z-index 800; modal must exceed that */
+.modal {
+  z-index: 1000;
+}
 
 /* Viewer page: map fills remaining viewport below navbar */
 .map-viewer-page {

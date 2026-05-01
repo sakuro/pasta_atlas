@@ -1,4 +1,5 @@
 import { createSignal, Show } from "solid-js";
+import { Portal } from "solid-js/web";
 
 function csrfToken(): string {
   return document.querySelector<HTMLMetaElement>('meta[name="csrf-token"]')?.content ?? "";
@@ -250,6 +251,7 @@ export function UploadModal() {
         Upload
       </button>
       <Show when={state().type !== "idle"}>
+        <Portal mount={document.body}>
         <div class="modal is-active">
           <div class="modal-background" onClick={dismiss} />
           <div class="modal-card">
@@ -322,6 +324,7 @@ export function UploadModal() {
             </Show>
           </div>
         </div>
+        </Portal>
       </Show>
     </>
   );
