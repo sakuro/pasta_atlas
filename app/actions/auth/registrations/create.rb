@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require "tzinfo"
+
 module PastaAtlas
   module Actions
     module Auth
@@ -14,6 +16,7 @@ module PastaAtlas
 
           params do
             required(:name).filled(:string)
+            optional(:timezone).maybe(:string)
           end
 
           def handle(request, response)
@@ -34,9 +37,11 @@ module PastaAtlas
               return
             end
 
-            user_repo.db.transaction do
+            timezone = valid_timezone(request.params[:timezone])
+
+            user_repo.transaction do
               user = user_repo.create(name:)
-              user_profile_repo.user_profiles.command(:create).call(user_id: user.id)
+              user_profile_repo.user_profiles.command(:create).call(user_id: user.id, timezone:)
               credential_repo.credentials.command(:create).call(
                 user_id: user.id,
                 provider: pending["provider"],
@@ -48,6 +53,12 @@ module PastaAtlas
             request.session.delete(:pending_auth)
             request.session[:user_id] = user.id
             response.redirect_to "/"
+          end
+
+          private def valid_timezone(name)
+            TZInfo::Timezone.get(name.to_s).name
+          rescue TZInfo::InvalidTimezoneIdentifier, TZInfo::InvalidDataFile
+            "UTC"
           end
 
           private def validate_name(name)

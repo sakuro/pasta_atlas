@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require "tzinfo"
+
 module PastaAtlas
   module Actions
     module Profile
@@ -12,7 +14,11 @@ module PastaAtlas
           halt 403 unless user_repo.find_by_id(user_id).name == request.params[:user_name]
 
           profile = user_profile_repo.find_by_user_id(user_id)
-          response.render view, display_name: profile.display_name.to_s
+          timezone_identifiers = TZInfo::Timezone.all_identifiers
+          response.render view,
+            display_name: profile.display_name.to_s,
+            timezone: profile.timezone,
+            timezone_identifiers:
         end
       end
     end

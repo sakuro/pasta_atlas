@@ -6,6 +6,7 @@
     <% end %>
     <form action="/auth/register" method="post">
       <input type="hidden" name="_csrf_token" value="<%= csrf_token %>">
+      <input type="hidden" id="timezone" name="timezone" value="UTC">
       <div class="field">
         <label class="label" for="name">Username</label>
         <div class="control">

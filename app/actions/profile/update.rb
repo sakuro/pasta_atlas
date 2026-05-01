@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require "tzinfo"
+
 module PastaAtlas
   module Actions
     module Profile
@@ -23,6 +25,7 @@ module PastaAtlas
         params do
           required(:user_name).filled(:string)
           required(:display_name).filled(:string)
+          optional(:timezone).maybe(:string)
         end
 
         def handle(request, response)
@@ -33,15 +36,23 @@ module PastaAtlas
           halt 403 unless user_repo.find_by_id(user_id).name == user_name
 
           display_name = request.params[:display_name].to_s
+          timezone = valid_timezone(request.params[:timezone])
 
           error = validate_display_name(display_name)
           if error
-            response.render(edit_view, display_name:, error:)
+            timezone_identifiers = TZInfo::Timezone.all_identifiers
+            response.render(edit_view, display_name:, timezone:, timezone_identifiers:, error:)
             return
           end
 
-          user_profile_repo.update_display_name(user_id, display_name.empty? ? nil : display_name)
+          user_profile_repo.update_profile(user_id, display_name: display_name.empty? ? nil : display_name, timezone:)
           response.redirect_to "/@#{user_name}/profile"
+        end
+
+        private def valid_timezone(name)
+          TZInfo::Timezone.get(name.to_s).name
+        rescue TZInfo::InvalidTimezoneIdentifier, TZInfo::InvalidDataFile
+          "UTC"
         end
 
         private def validate_display_name(name)

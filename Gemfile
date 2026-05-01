@@ -18,6 +18,7 @@ gem "omniauth-github", "~> 2.0"
 gem "pg"
 gem "puma"
 gem "rake"
+gem "tzinfo"
 gem "ulid"
 
 group :development do

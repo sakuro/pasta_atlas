@@ -33,39 +33,50 @@ RSpec.describe PastaAtlas::Actions::Profile::Update do
   end
 
   context "when logged in" do
-    let(:env) { {"rack.session" => {"user_id" => 1}, :user_name => "sakuro", :display_name => "Sakuro"} }
+    let(:env) { {"rack.session" => {"user_id" => 1}, :user_name => "sakuro", :display_name => "Sakuro", :timezone => "Asia/Tokyo"} }
 
     before do
-      allow(user_profile_repo).to receive(:update_display_name)
+      allow(user_profile_repo).to receive(:update_profile)
     end
 
-    it "updates the display name and redirects to the profile page" do
+    it "updates the profile and redirects to the profile page" do
       response = action.call(env)
 
-      expect(user_profile_repo).to have_received(:update_display_name).with(1, "Sakuro")
+      expect(user_profile_repo).to have_received(:update_profile).with(1, display_name: "Sakuro", timezone: "Asia/Tokyo")
       expect(response.status).to eq(302)
       expect(response.headers["Location"]).to eq("/@sakuro/profile")
     end
 
     context "when display_name is blank" do
-      let(:env) { {"rack.session" => {"user_id" => 1}, :user_name => "sakuro", :display_name => ""} }
+      let(:env) { {"rack.session" => {"user_id" => 1}, :user_name => "sakuro", :display_name => "", :timezone => "Asia/Tokyo"} }
 
       it "clears display name" do
         response = action.call(env)
 
-        expect(user_profile_repo).to have_received(:update_display_name).with(1, nil)
+        expect(user_profile_repo).to have_received(:update_profile).with(1, display_name: nil, timezone: "Asia/Tokyo")
         expect(response.status).to eq(302)
       end
     end
 
     context "when display_name exceeds 64 grapheme clusters" do
-      let(:env) { {"rack.session" => {"user_id" => 1}, :user_name => "sakuro", :display_name => "あ" * 65} }
+      let(:env) { {"rack.session" => {"user_id" => 1}, :user_name => "sakuro", :display_name => "あ" * 65, :timezone => "Asia/Tokyo"} }
 
       it "re-renders the form without updating" do
         response = action.call(env)
 
-        expect(user_profile_repo).not_to have_received(:update_display_name)
+        expect(user_profile_repo).not_to have_received(:update_profile)
         expect(response.status).to eq(200)
+      end
+    end
+
+    context "when timezone is invalid" do
+      let(:env) { {"rack.session" => {"user_id" => 1}, :user_name => "sakuro", :display_name => "Sakuro", :timezone => "Invalid/Zone"} }
+
+      it "falls back to UTC" do
+        response = action.call(env)
+
+        expect(user_profile_repo).to have_received(:update_profile).with(1, display_name: "Sakuro", timezone: "UTC")
+        expect(response.status).to eq(302)
       end
     end
   end
