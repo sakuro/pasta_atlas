@@ -1,0 +1,25 @@
+name: pasta_atlas
+
+services:
+  floci:
+    image: floci/floci:1.5.9
+    ports:
+      - "4566:4566"
+    environment:
+      FLOCI_STORAGE_MODE: persistent
+    volumes:
+      - floci_data:/app/data
+
+  postgres:
+    image: postgres:18-alpine
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_HOST_AUTH_METHOD: trust
+    volumes:
+      - pgdata:/var/lib/postgresql
+      - ./postgres/init.sql:/docker-entrypoint-initdb.d/init.sql
+
+volumes:
+  floci_data:
+  pgdata:

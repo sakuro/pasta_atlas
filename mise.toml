@@ -1,6 +1,7 @@
 [env]
-_.file = [".env", ".env.development", ".env.local"]
+_.file = [".env", ".env.development", ".env.development.local", ".env.local"]
 _.path = ["bin", "node_modules/.bin"]
+COMPOSE_FILE = "docker/compose.yml"
 
 [tools]
 terraform = "1.14.3"
@@ -11,11 +12,10 @@ gitleaks = "latest"
 depends = ["dev"]
 
 [tasks.dev]
-depends = ["web", "assets", "islands"]
+depends = ["web", "assets", "islands", "floci"]
 
 [tasks.web]
 run = "bundle exec hanami server"
-#depends = ["floci"]
 
 [tasks.assets]
 run = "bundle exec hanami assets watch"
@@ -23,5 +23,5 @@ run = "bundle exec hanami assets watch"
 [tasks.islands]
 run = "npm run dev:islands"
 
-#[tasks.floci]
-#run = "docker compose up -d"
+[tasks.floci]
+run = "docker compose up"
