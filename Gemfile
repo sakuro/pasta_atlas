@@ -11,6 +11,8 @@ gem "hanami-validations", "~> 2.3.0"
 gem "hanami-view", "~> 2.3.0"
 
 gem "aws-sdk-s3"
+gem "omniauth", "~> 2.1"
+gem "omniauth-github", "~> 2.0"
 gem "dry-operation", ">= 1.0.1"
 gem "dry-types", "~> 1.7"
 gem "pg"

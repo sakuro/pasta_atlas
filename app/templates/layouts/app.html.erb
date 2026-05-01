@@ -18,11 +18,17 @@
           <div class="navbar-item" id="upload-modal"></div>
           <div class="navbar-item">
             <% if current_user_profile_name %>
-              <span class="icon-text">
-                <span><%= current_user_profile_name %></span>
-              </span>
+              <span class="mr-3"><%= current_user_profile_name %></span>
+              <form action="/auth/session" method="post" style="display:inline">
+                <input type="hidden" name="_method" value="delete">
+                <input type="hidden" name="_csrf_token" value="<%= csrf_token %>">
+                <button class="button is-small" type="submit">Log out</button>
+              </form>
             <% else %>
-              <span class="has-text-grey">Guest</span>
+              <form action="/auth/github" method="post">
+                <input type="hidden" name="authenticity_token" value="<%= omniauth_authenticity_token %>">
+                <button class="button is-small" type="submit">Log in with GitHub</button>
+              </form>
             <% end %>
           </div>
         </div>

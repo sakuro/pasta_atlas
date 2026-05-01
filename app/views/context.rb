@@ -1,6 +1,8 @@
 # auto_register: false
 # frozen_string_literal: true
 
+require "rack/protection"
+
 module PastaAtlas
   module Views
     class Context < Hanami::View::Context
@@ -13,6 +15,10 @@ module PastaAtlas
         user_repo.find_by_id(user_id).name
       rescue ROM::TupleCountMismatchError
         nil
+      end
+
+      def omniauth_authenticity_token
+        Rack::Protection::AuthenticityToken.token(session)
       end
     end
   end

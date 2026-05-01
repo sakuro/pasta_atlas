@@ -1,0 +1,26 @@
+<section class="section">
+  <div class="container" style="max-width: 480px">
+    <h1 class="title">Create your account</h1>
+    <% if error %>
+      <div class="notification is-danger is-light"><%= error %></div>
+    <% end %>
+    <form action="/auth/register" method="post">
+      <input type="hidden" name="_csrf_token" value="<%= csrf_token %>">
+      <div class="field">
+        <label class="label" for="name">Username</label>
+        <div class="control">
+          <input class="input" type="text" id="name" name="name"
+                 value="<%= suggested_name %>"
+                 pattern="[a-zA-Z0-9][a-zA-Z0-9_\-]{0,37}[a-zA-Z0-9]|[a-zA-Z0-9]"
+                 maxlength="39" required autofocus>
+        </div>
+        <p class="help">1–39 characters. Letters, numbers, hyphens, and underscores. Must start and end with a letter or number.</p>
+      </div>
+      <div class="field">
+        <div class="control">
+          <button class="button is-primary" type="submit">Create account</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</section>
