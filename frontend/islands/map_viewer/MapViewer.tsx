@@ -45,6 +45,21 @@ interface MapData {
   generations: Generation[];
 }
 
+function formatTicks(tick: number): string {
+  const totalSeconds = Math.floor(tick / 60);
+  const seconds = totalSeconds % 60;
+  const totalMinutes = Math.floor(totalSeconds / 60);
+  const minutes = totalMinutes % 60;
+  const totalHours = Math.floor(totalMinutes / 60);
+  const hours = totalHours % 24;
+  const days = Math.floor(totalHours / 24);
+
+  if (days > 0) return `${days}d ${hours}h ${minutes}m ${seconds}s`;
+  if (hours > 0) return `${hours}h ${minutes}m ${seconds}s`;
+  if (minutes > 0) return `${minutes}m ${seconds}s`;
+  return `${seconds}s`;
+}
+
 function getParam(key: string): string | null {
   return new URLSearchParams(window.location.search).get(key);
 }
@@ -105,7 +120,7 @@ export function MapViewer(props: { ulid: string }) {
               >
                 <For each={data().generations}>
                   {(gen) => (
-                    <option value={gen.ulid}>Tick {gen.tick.toLocaleString()}</option>
+                    <option value={gen.ulid}>{formatTicks(gen.tick)}</option>
                   )}
                 </For>
               </select>
