@@ -8,7 +8,7 @@ module PastaAtlas
           include Deps[issue_presigned_urls: "operations.uploads.issue_presigned_urls"]
 
           def handle(request, response)
-            user_id = current_user_id(request)
+            user_id = current_or_guest_user_id(request)
             unless user_id
               response.status = 401
               return

@@ -3,12 +3,15 @@
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="<%= csrf_token %>">
     <title>Pasta atlas</title>
     <%= favicon_tag %>
     <%= stylesheet_tag "app" %>
   </head>
   <body>
     <%= yield %>
+    <div id="upload-modal"></div>
+    <script src="<%= island_src("upload_modal") %>" type="module"></script>
     <%= javascript_tag "app" %>
   </body>
 </html>

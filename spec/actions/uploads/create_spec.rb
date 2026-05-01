@@ -4,11 +4,13 @@ RSpec.describe PastaAtlas::Actions::Uploads::Create, :db do
   let(:create_upload) { instance_double(PastaAtlas::Operations::Uploads::Create) }
   let(:generation_repo) { instance_double(PastaAtlas::Repos::GenerationRepo) }
   let(:map_repo) { instance_double(PastaAtlas::Repos::MapRepo) }
+  let(:user_repo) { instance_double(PastaAtlas::Repos::UserRepo) }
   let(:action) do
     PastaAtlas::Actions::Uploads::Create.new(
       create_upload:,
       generation_repo:,
-      map_repo:
+      map_repo:,
+      user_repo:
     )
   end
 
@@ -17,7 +19,9 @@ RSpec.describe PastaAtlas::Actions::Uploads::Create, :db do
     {metadata: {map_id: "ae8ec3ab", unique_id: "550f41a9", tick: "1000"}, total_image_count: 5}
   end
 
-  context "when not authenticated" do
+  context "when no session and no guest user" do
+    before { allow(user_repo).to receive(:find_by_name).with("guest").and_return(nil) }
+
     it "returns 401" do
       response = action.call({"rack.session" => {}}.merge(action_params))
 

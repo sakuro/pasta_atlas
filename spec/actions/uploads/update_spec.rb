@@ -2,12 +2,15 @@
 
 RSpec.describe PastaAtlas::Actions::Uploads::Update, :db do
   let(:update_status) { instance_double(PastaAtlas::Operations::Uploads::UpdateStatus) }
-  let(:action) { PastaAtlas::Actions::Uploads::Update.new(update_status:) }
+  let(:user_repo) { instance_double(PastaAtlas::Repos::UserRepo) }
+  let(:action) { PastaAtlas::Actions::Uploads::Update.new(update_status:, user_repo:) }
 
   let(:session) { {"rack.session" => {"user_id" => 1}} }
   let(:action_params) { {ulid: "01UPLOAD", status: "complete"} }
 
-  context "when not authenticated" do
+  context "when no session and no guest user" do
+    before { allow(user_repo).to receive(:find_by_name).with("guest").and_return(nil) }
+
     it "returns 401" do
       response = action.call({"rack.session" => {}}.merge(action_params))
 
