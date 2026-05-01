@@ -92,5 +92,5 @@ function LeafletMap(props: { mapshot: Mapshot; assetBase: string }) {
     onCleanup(() => map.remove());
   });
 
-  return <div ref={mapEl} style={{ width: "100%", height: "100vh" }} />;
+  return <div ref={mapEl} style={{ width: "100%", height: "100%" }} />;
 }

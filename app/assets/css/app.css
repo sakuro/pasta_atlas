@@ -1,5 +1,57 @@
-body {
-  background-color: #fff;
-  color: #000;
-  font-family: sans-serif;
+/* Nord palette - Frost colors (shared across themes) */
+:root {
+  --bulma-primary-h: 213deg;
+  --bulma-primary-s: 32%;
+  --bulma-primary-l: 52%;
+
+  --bulma-link-h: 210deg;
+  --bulma-link-s: 34%;
+  --bulma-link-l: 63%;
+
+  --bulma-info-h: 193deg;
+  --bulma-info-s: 43%;
+  --bulma-info-l: 68%;
+
+  --bulma-success-h: 92deg;
+  --bulma-success-s: 28%;
+  --bulma-success-l: 65%;
+
+  --bulma-warning-h: 40deg;
+  --bulma-warning-s: 71%;
+  --bulma-warning-l: 73%;
+
+  --bulma-danger-h: 354deg;
+  --bulma-danger-s: 42%;
+  --bulma-danger-l: 56%;
+
+  /* Scheme base hue: Nord polar night / snow storm */
+  --bulma-scheme-h: 220;
+  --bulma-scheme-s: 16%;
+
+  /* Light theme: Snow Storm */
+  --bulma-scheme-main-l: 94%;
+  --bulma-scheme-main-bis-l: 92%;
+  --bulma-scheme-main-ter-l: 88%;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    /* Dark theme: Polar Night */
+    --bulma-scheme-brightness: dark;
+    --bulma-scheme-main-l: 22%;
+    --bulma-scheme-main-bis-l: 28%;
+    --bulma-scheme-main-ter-l: 32%;
+  }
+}
+
+/* Viewer page: map fills remaining viewport below navbar */
+.map-viewer-page {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+#map-viewer {
+  flex: 1;
+  min-height: 0;
 }

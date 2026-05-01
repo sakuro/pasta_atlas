@@ -4,13 +4,31 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="<%= csrf_token %>">
-    <title>Pasta atlas</title>
+    <title>Pasta Atlas</title>
     <%= favicon_tag %>
     <%= stylesheet_tag "app" %>
   </head>
   <body>
+    <nav class="navbar" role="navigation" aria-label="main navigation">
+      <div class="navbar-brand">
+        <a class="navbar-item" href="/"><strong>Pasta Atlas</strong></a>
+      </div>
+      <div class="navbar-menu">
+        <div class="navbar-end">
+          <div class="navbar-item" id="upload-modal"></div>
+          <div class="navbar-item">
+            <% if current_user_profile_name %>
+              <span class="icon-text">
+                <span><%= current_user_profile_name %></span>
+              </span>
+            <% else %>
+              <span class="has-text-grey">Guest</span>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    </nav>
     <%= yield %>
-    <div id="upload-modal"></div>
     <script src="<%= island_src("upload_modal") %>" type="module"></script>
     <%= javascript_tag "app" %>
   </body>

@@ -1,19 +1,31 @@
 <section class="section">
   <div class="container">
-    <% maps.each do |map| %>
-      <% user = users_by_id[map.user_id] %>
-      <div class="box">
-        <% if (thumbnail_url = thumbnail_urls_by_map_ulid[map.ulid]) %>
-          <a href="/@<%= user.name %>/maps/<%= map.ulid %>">
-            <img src="<%= thumbnail_url %>" width="256" height="256" alt="<%= map.display_name %>">
-          </a>
-        <% end %>
-        <a href="/@<%= user.name %>/maps/<%= map.ulid %>"><%= map.display_name %></a>
-        <span class="has-text-grey-light is-size-7"><%= user.name %></span>
-      </div>
-    <% end %>
+    <div class="columns is-multiline">
+      <% maps.each do |map| %>
+        <% user = users_by_id[map.user_id] %>
+        <div class="column is-half-tablet is-one-quarter-desktop">
+          <div class="card">
+            <% if (thumbnail_url = thumbnail_urls_by_map_ulid[map.ulid]) %>
+              <div class="card-image">
+                <figure class="image is-square">
+                  <a href="/@<%= user.name %>/maps/<%= map.ulid %>">
+                    <img src="<%= thumbnail_url %>" alt="<%= map.display_name %>">
+                  </a>
+                </figure>
+              </div>
+            <% end %>
+            <div class="card-content">
+              <p class="title is-6">
+                <a href="/@<%= user.name %>/maps/<%= map.ulid %>"><%= map.display_name %></a>
+              </p>
+              <p class="subtitle is-7 has-text-grey"><%= user.name %></p>
+            </div>
+          </div>
+        </div>
+      <% end %>
+    </div>
 
-    <nav class="pagination" role="navigation">
+    <nav class="pagination is-centered mt-5" role="navigation" aria-label="pagination">
       <% if page > 1 %>
         <a class="pagination-previous" href="/?page=<%= page - 1 %>">Previous</a>
       <% end %>
