@@ -5,6 +5,15 @@ module PastaAtlas
     class GenerationRepo < PastaAtlas::DB::Repo
       def find_by_id(id) = generations.where(id:).one!
 
+      def find_latest_complete_by_map_ids(map_ids)
+        generations.where(map_id: map_ids)
+          .combine(:upload)
+          .to_a
+          .select {|g| g.upload&.status == "complete" }
+          .group_by(&:map_id)
+          .transform_values {|gens| gens.max_by(&:tick) }
+      end
+
       def find_complete_by_map_id(map_id)
         generations.where(map_id:)
           .combine(:upload)
