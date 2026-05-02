@@ -131,6 +131,12 @@ export function MapViewer(props: { ulid: string }) {
   });
 
   const [showInfo, setShowInfo] = createSignal(false);
+  const [showMapExchange, setShowMapExchange] = createSignal(false);
+
+  function closeInfo() {
+    setShowInfo(false);
+    setShowMapExchange(false);
+  }
 
   function handleGenerationChange(ulid: string) {
     setGenerationUlid(ulid);
@@ -168,7 +174,7 @@ export function MapViewer(props: { ulid: string }) {
       <Show when={showInfo() && mapshot()}>
         <Portal mount={document.body}>
           <div class="modal is-active">
-            <div class="modal-background" onClick={() => setShowInfo(false)} />
+            <div class="modal-background" onClick={closeInfo} />
             <div class="modal-card" style={{ width: "90vw", "max-width": "960px" }}>
               <header class="modal-card-head">
                 <p class="modal-card-title">
@@ -177,7 +183,7 @@ export function MapViewer(props: { ulid: string }) {
                     <span>Map Info</span>
                   </span>
                 </p>
-                <button class="delete" aria-label="close" onClick={() => setShowInfo(false)} />
+                <button class="delete" aria-label="close" onClick={closeInfo} />
               </header>
               <section class="modal-card-body">
                 <table class="table is-fullwidth">
@@ -188,7 +194,15 @@ export function MapViewer(props: { ulid: string }) {
                     <Show when={mapshot()!.map_exchange}>
                       <tr>
                         <th class="map-info-label"><span class="icon-text"><span class="icon"><i class="fa-solid fa-code"></i></span><span>Map exchange</span></span></th>
-                        <td><CopyButton text={mapshot()!.map_exchange!} /><pre style={{ "white-space": "pre-wrap", "word-break": "break-all" }}>{mapshot()!.map_exchange}</pre></td>
+                        <td>
+                          <button class="button is-small" onClick={() => setShowMapExchange((v) => !v)} title={showMapExchange() ? "Hide" : "Show"}>
+                            <span class="icon is-small"><i class={showMapExchange() ? "fa-solid fa-eye-slash" : "fa-solid fa-eye"} /></span>
+                          </button>
+                          <CopyButton text={mapshot()!.map_exchange!} />
+                          <Show when={showMapExchange()}>
+                            <pre style={{ "white-space": "pre-wrap", "word-break": "break-all" }}>{mapshot()!.map_exchange}</pre>
+                          </Show>
+                        </td>
                       </tr>
                     </Show>
                     <Show when={mapshot()!.tick != null}>
@@ -216,7 +230,7 @@ export function MapViewer(props: { ulid: string }) {
                 </table>
               </section>
               <footer class="modal-card-foot">
-                <button class="button" onClick={() => setShowInfo(false)}>
+                <button class="button" onClick={closeInfo}>
                   <span class="icon"><i class="fa-solid fa-circle-xmark"></i></span>
                   <span>Close</span>
                 </button>
