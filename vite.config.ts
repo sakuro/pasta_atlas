@@ -12,6 +12,7 @@ export default defineConfig({
       input: {
         map_viewer: "frontend/islands/map_viewer/index.tsx",
         upload_modal: "frontend/islands/upload_modal/index.tsx",
+        avatar_upload: "frontend/islands/avatar_upload/index.tsx",
       },
       output: {
         entryFileNames: "[name]-[hash].js",

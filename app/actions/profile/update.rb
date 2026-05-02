@@ -26,6 +26,7 @@ module PastaAtlas
           required(:user_name).filled(:string)
           required(:display_name).filled(:string)
           optional(:timezone).maybe(:string)
+          optional(:avatar_s3_key).maybe(:string)
         end
 
         def handle(request, response)
@@ -46,6 +47,12 @@ module PastaAtlas
           end
 
           user_profile_repo.update_profile(user_id, display_name: display_name.empty? ? nil : display_name, timezone:)
+
+          avatar_s3_key = request.params[:avatar_s3_key].to_s
+          if !avatar_s3_key.empty? && avatar_s3_key.start_with?("avatars/#{user_id}/")
+            user_profile_repo.update_avatar(user_id, avatar_s3_key:)
+          end
+
           response.redirect_to "/@#{user_name}/profile"
         end
 

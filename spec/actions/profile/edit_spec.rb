@@ -3,10 +3,11 @@
 RSpec.describe PastaAtlas::Actions::Profile::Edit do
   let(:user_repo) { instance_double(PastaAtlas::Repos::UserRepo) }
   let(:user_profile_repo) { instance_double(PastaAtlas::Repos::UserProfileRepo) }
-  let(:action) { PastaAtlas::Actions::Profile::Edit.new(user_repo:, user_profile_repo:) }
+  let(:settings) { double("Settings", cloudfront_base_url: "http://cdn.example.com") }
+  let(:action) { PastaAtlas::Actions::Profile::Edit.new(user_repo:, user_profile_repo:, settings:) }
 
   let(:user) { double("User", id: 1, name: "sakuro") }
-  let(:profile) { double("UserProfile", display_name: "Sakuro", timezone: "Asia/Tokyo") }
+  let(:profile) { double("UserProfile", display_name: "Sakuro", timezone: "Asia/Tokyo", avatar_s3_key: nil) }
 
   before do
     allow(user_repo).to receive(:find_by_id).with(1).and_return(user)

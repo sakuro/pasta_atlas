@@ -9,7 +9,7 @@ RSpec.describe PastaAtlas::Actions::Profile::Show do
   let(:action) { PastaAtlas::Actions::Profile::Show.new(user_repo:, user_profile_repo:, map_repo:, generation_repo:, settings:) }
 
   let(:user) { double("User", id: 1, name: "sakuro") }
-  let(:profile) { double("UserProfile", display_name: "Sakuro") }
+  let(:profile) { double("UserProfile", display_name: "Sakuro", avatar_s3_key: nil) }
   let(:map) { double("Map", id: 1, ulid: "01MAP1", display_name: "My Map") }
   let(:generation) { double("Generation", metadata_s3_key: "sakuro/map1/gen1/mapshot.json") }
 

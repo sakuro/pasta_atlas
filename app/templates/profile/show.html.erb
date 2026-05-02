@@ -2,7 +2,8 @@
   <div class="container" style="max-width: 480px">
     <div class="level">
       <div class="level-left">
-        <h1 class="title"><%= display_name || user_name %></h1>
+        <%= render "shared/avatar", avatar_url:, avatar_size: 64 %>
+        <h1 class="title ml-3"><%= display_name || user_name %></h1>
       </div>
       <% if own_profile %>
         <div class="level-right">
@@ -31,6 +32,7 @@
                   map_display_name: map.display_name,
                   user_name: user_name.to_s,
                   author_display_name: display_name || user_name.to_s,
+                  author_avatar_url: avatar_url,
                   thumbnail_url: thumbnail_urls_by_map_ulid[map.ulid] %>
           </div>
         <% end %>

@@ -8,6 +8,7 @@ module PastaAtlas
     get "/@:user_name/profile", to: "profile.show"
     get "/@:user_name/profile/edit", to: "profile.edit"
     patch "/@:user_name/profile", to: "profile.update"
+    patch "/@:user_name/profile/avatar", to: "profile.avatar.update"
 
     get "/auth/github/callback", to: "auth.github.callback"
     get "/auth/failure", to: "auth.failure"
@@ -16,6 +17,7 @@ module PastaAtlas
     delete "/auth/session", to: "auth.session.destroy"
 
     get "/api/v1/maps/:ulid", to: "maps.show"
+    post "/api/v1/profile/avatar_presigned_url", to: "profile.avatar_presigned_url.create"
     post "/api/v1/uploads", to: "uploads.create"
     post "/api/v1/uploads/:ulid/presigned_urls", to: "uploads.presigned_urls.create"
     patch "/api/v1/uploads/:ulid", to: "uploads.update"

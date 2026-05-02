@@ -25,10 +25,13 @@ module PastaAtlas
             [id_to_ulid[map_id], url]
           }
 
+          avatar_url = profile.avatar_s3_key ? "#{settings.cloudfront_base_url}/#{profile.avatar_s3_key}" : nil
+
           response.render view,
             user_name: user.name,
             display_name: profile.display_name,
             own_profile:,
+            avatar_url:,
             recent_maps:,
             thumbnail_urls_by_map_ulid:
         end

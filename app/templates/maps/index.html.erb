@@ -9,6 +9,7 @@
                 map_display_name: map.display_name,
                 user_name: user.name,
                 author_display_name: profiles_by_user_id[user.id].display_name || user.name,
+                author_avatar_url: avatar_urls_by_user_id[user.id],
                 thumbnail_url: thumbnail_urls_by_map_ulid[map.ulid] %>
         </div>
       <% end %>

@@ -6,7 +6,7 @@ module PastaAtlas
   module Actions
     module Profile
       class Edit < PastaAtlas::Action
-        include Deps["repos.user_profile_repo"]
+        include Deps["repos.user_profile_repo", "settings"]
 
         def handle(request, response)
           user_id = current_user_id(request)
@@ -15,10 +15,12 @@ module PastaAtlas
 
           profile = user_profile_repo.find_by_user_id(user_id)
           timezone_identifiers = TZInfo::Timezone.all_identifiers
+          avatar_url = profile.avatar_s3_key ? "#{settings.cloudfront_base_url}/#{profile.avatar_s3_key}" : nil
           response.render view,
             display_name: profile.display_name.to_s,
             timezone: profile.timezone,
-            timezone_identifiers:
+            timezone_identifiers:,
+            avatar_url:
         end
       end
     end
