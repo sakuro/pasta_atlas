@@ -14,6 +14,8 @@
     "bulma": "^1.0.4",
     "hanami-assets": "^2.3.0",
     "leaflet": "^1.9.4",
+    "leaflet-control-boxzoom": "^1.5.0",
+    "leaflet.zoomslider": "^0.7.1",
     "solid-js": "^1.9.12"
   },
   "devDependencies": {

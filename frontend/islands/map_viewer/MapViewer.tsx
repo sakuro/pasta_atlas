@@ -2,6 +2,18 @@ import { createResource, createSignal, createMemo, Show, Suspense, For, onMount,
 import { Portal } from "solid-js/web";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
+import "leaflet.zoomslider";
+import "leaflet-control-boxzoom";
+import zoomsliderCss from "leaflet.zoomslider/src/L.Control.Zoomslider.css?raw";
+import boxzoomCss from "leaflet-control-boxzoom/dist/leaflet-control-boxzoom.css?raw";
+
+const pluginStyle = document.createElement("style");
+pluginStyle.textContent = zoomsliderCss + boxzoomCss +
+  `.leaflet-control-zoomslider-body,.leaflet-control-zoomslider-knob{box-sizing:content-box!important}` +
+  `.leaflet-control-boxzoom{display:flex!important;align-items:center!important;justify-content:center!important;width:26px!important;height:26px!important;line-height:26px!important;box-sizing:content-box!important}` +
+  `.leaflet-touch .leaflet-control-boxzoom{width:30px!important;height:30px!important;line-height:30px!important}` +
+  `.leaflet-control-boxzoom i{font-size:18px}`;
+document.head.appendChild(pluginStyle);
 import markerIcon from "leaflet/dist/images/marker-icon.png";
 import markerIcon2x from "leaflet/dist/images/marker-icon-2x.png";
 import markerShadow from "leaflet/dist/images/marker-shadow.png";
@@ -366,6 +378,10 @@ function LeafletMap(props: { mapshot: Mapshot; assetBase: string }) {
       );
       map.fitBounds(bounds);
     }
+
+    // Add after zoom bounds and initial view are set so Zoomslider computes correct track height
+    new (L as unknown as { Control: { Zoomslider: new (opts: object) => L.Control } }).Control.Zoomslider({ position: "topleft", stepHeight: 20 }).addTo(map);
+    L.Control.boxzoom({ position: "topleft", iconClasses: "fa-solid fa-magnifying-glass" }).addTo(map);
 
     let currentSurface = initSurface;
 
