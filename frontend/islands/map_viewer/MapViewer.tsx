@@ -1,4 +1,5 @@
 import { createResource, createSignal, createMemo, Show, Suspense, For, onMount, onCleanup } from "solid-js";
+import { Portal } from "solid-js/web";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import markerIcon from "leaflet/dist/images/marker-icon.png";
@@ -46,6 +47,13 @@ interface Surface {
 
 interface Mapshot {
   surfaces: Surface[];
+  game_version?: string;
+  active_mods?: Record<string, string>;
+  tick?: number;
+  ticks_played?: number;
+  seed?: number;
+  savename?: string;
+  map_exchange?: string;
 }
 
 interface MapData {
@@ -110,6 +118,8 @@ export function MapViewer(props: { ulid: string }) {
     return { mapshot: ms, assetBase: gen.metadata_url.replace(/mapshot\.json$/, "") };
   });
 
+  const [showInfo, setShowInfo] = createSignal(false);
+
   function handleGenerationChange(ulid: string) {
     setGenerationUlid(ulid);
     setParams({ generation: ulid, s: null, x: null, y: null, z: null });
@@ -119,7 +129,7 @@ export function MapViewer(props: { ulid: string }) {
     <div style={{ display: "flex", "flex-direction": "column", height: "100%" }}>
       <Show when={mapData()}>
         {(data) => (
-          <div style={{ padding: "0.5rem", "flex-shrink": 0 }}>
+          <div style={{ padding: "0.5rem", "flex-shrink": 0, display: "flex", gap: "0.5rem", "align-items": "center" }}>
             <div class="control has-icons-left">
               <div class="select is-small">
                 <select
@@ -135,8 +145,73 @@ export function MapViewer(props: { ulid: string }) {
               </div>
               <span class="icon is-small is-left"><i class="fa-solid fa-timeline"></i></span>
             </div>
+            <Show when={mapshot()}>
+              <button class="button is-small" onClick={() => setShowInfo(true)}>
+                <span class="icon is-small"><i class="fa-solid fa-circle-info"></i></span>
+              </button>
+            </Show>
           </div>
         )}
+      </Show>
+      <Show when={showInfo() && mapshot()}>
+        <Portal mount={document.body}>
+          <div class="modal is-active">
+            <div class="modal-background" onClick={() => setShowInfo(false)} />
+            <div class="modal-card" style={{ width: "90vw", "max-width": "960px" }}>
+              <header class="modal-card-head">
+                <p class="modal-card-title">
+                  <span class="icon-text">
+                    <span class="icon"><i class="fa-solid fa-circle-info"></i></span>
+                    <span>Map Info</span>
+                  </span>
+                </p>
+                <button class="delete" aria-label="close" onClick={() => setShowInfo(false)} />
+              </header>
+              <section class="modal-card-body">
+                <table class="table is-fullwidth">
+                  <tbody>
+                    <Show when={mapshot()!.seed != null}>
+                      <tr><th class="map-info-label"><span class="icon-text"><span class="icon"><i class="fa-solid fa-seedling"></i></span><span>Seed</span></span></th><td>{mapshot()!.seed}<CopyButton text={String(mapshot()!.seed)} /></td></tr>
+                    </Show>
+                    <Show when={mapshot()!.map_exchange}>
+                      <tr>
+                        <th class="map-info-label"><span class="icon-text"><span class="icon"><i class="fa-solid fa-code"></i></span><span>Map exchange</span></span></th>
+                        <td><CopyButton text={mapshot()!.map_exchange!} /><pre style={{ "white-space": "pre-wrap", "word-break": "break-all" }}>{mapshot()!.map_exchange}</pre></td>
+                      </tr>
+                    </Show>
+                    <Show when={mapshot()!.tick != null}>
+                      <tr><th class="map-info-label"><span class="icon-text"><span class="icon"><i class="fa-solid fa-hourglass"></i></span><span>Tick</span></span></th><td>{mapshot()!.tick!.toLocaleString()} ({formatTicks(mapshot()!.tick!)})</td></tr>
+                    </Show>
+                    <Show when={mapshot()!.ticks_played != null}>
+                      <tr><th class="map-info-label"><span class="icon-text"><span class="icon"><i class="fa-solid fa-hourglass-half"></i></span><span>Ticks played</span></span></th><td>{mapshot()!.ticks_played!.toLocaleString()} ({formatTicks(mapshot()!.ticks_played!)})</td></tr>
+                    </Show>
+                    <Show when={mapshot()!.game_version}>
+                      <tr><th class="map-info-label"><span class="icon-text"><span class="icon"><i class="fa-solid fa-gear"></i></span><span>Game version</span></span></th><td>{mapshot()!.game_version}</td></tr>
+                    </Show>
+                    <Show when={mapshot()!.active_mods}>
+                      <tr>
+                        <th class="map-info-label"><span class="icon-text"><span class="icon"><i class="fa-solid fa-puzzle-piece"></i></span><span>Mods</span></span></th>
+                        <td>
+                          <ul>
+                            <For each={sortedMods(mapshot()!.active_mods!)}>
+                              {([name, version]) => <li><a href={`https://mods.factorio.com/mod/${name}`} target="_blank" rel="noopener">{name}</a> {version}</li>}
+                            </For>
+                          </ul>
+                        </td>
+                      </tr>
+                    </Show>
+                  </tbody>
+                </table>
+              </section>
+              <footer class="modal-card-foot">
+                <button class="button" onClick={() => setShowInfo(false)}>
+                  <span class="icon"><i class="fa-solid fa-circle-xmark"></i></span>
+                  <span>Close</span>
+                </button>
+              </footer>
+            </div>
+          </div>
+        </Portal>
       </Show>
       <div style={{ flex: 1, "min-height": 0 }}>
         <Suspense fallback={<div class="p-4">Loading...</div>}>
@@ -147,6 +222,39 @@ export function MapViewer(props: { ulid: string }) {
       </div>
     </div>
   );
+}
+
+function CopyButton(props: { text: string }) {
+  const [copied, setCopied] = createSignal(false);
+
+  function copy() {
+    navigator.clipboard.writeText(props.text).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1500);
+    });
+  }
+
+  return (
+    <button class="button is-small ml-2" onClick={copy} title="Copy">
+      <span class="icon is-small">
+        <i class={copied() ? "fa-solid fa-check" : "fa-solid fa-copy"} />
+      </span>
+    </button>
+  );
+}
+
+const PINNED_MODS = ["elevated-rails", "quality", "space-age"];
+
+function sortedMods(mods: Record<string, string>): [string, string][] {
+  const entries = Object.entries(mods);
+  const pinned = PINNED_MODS.flatMap((name) => {
+    const entry = entries.find(([n]) => n === name);
+    return entry ? [entry] : [];
+  });
+  const rest = entries
+    .filter(([name]) => !PINNED_MODS.includes(name))
+    .sort(([a], [b]) => a.toLowerCase().localeCompare(b.toLowerCase()));
+  return [...pinned, ...rest];
 }
 
 function worldToLatLng(surface: Surface, x: number, y: number): L.LatLng {

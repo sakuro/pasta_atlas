@@ -48,6 +48,12 @@
   z-index: 1000;
 }
 
+/* Map info modal label column */
+.map-info-label {
+  white-space: nowrap;
+  min-width: 12rem;
+}
+
 /* Viewer page: map fills remaining viewport below navbar */
 .map-viewer-page {
   display: flex;
