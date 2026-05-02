@@ -311,20 +311,20 @@ export function UploadModal() {
                 {(s) => <p class="has-text-danger">{s.message}</p>}
               </Show>
             </section>
-            <Show when={state().type === "confirming" || state().type === "error"}>
-              <footer class="modal-card-foot">
-                <Show when={state().type === "confirming"}>
-                  <button class="button is-primary" onClick={startUpload}>
-                    <span class="icon"><i class="fa-solid fa-upload"></i></span>
-                    <span>Start Upload</span>
-                  </button>
-                </Show>
+            <footer class="modal-card-foot">
+              <Show when={state().type === "confirming"}>
+                <button class="button is-primary" onClick={startUpload}>
+                  <span class="icon"><i class="fa-solid fa-upload"></i></span>
+                  <span>Start Upload</span>
+                </button>
+              </Show>
+              <Show when={state().type === "confirming" || state().type === "error"}>
                 <button class="button" onClick={dismiss}>
                   <span class="icon"><i class="fa-solid fa-circle-xmark"></i></span>
                   <span>{state().type === "error" ? "Dismiss" : "Cancel"}</span>
                 </button>
-              </footer>
-            </Show>
+              </Show>
+            </footer>
           </div>
         </div>
         </Portal>
