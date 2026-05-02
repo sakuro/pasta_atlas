@@ -8,7 +8,12 @@
       <input type="hidden" name="_method" value="patch">
       <input type="hidden" name="_csrf_token" value="<%= csrf_token %>">
       <div class="field">
-        <p class="label">Avatar</p>
+        <p class="label">
+          <span class="icon-text">
+            <span class="icon"><i class="fa-solid fa-user"></i></span>
+            <span>Avatar</span>
+          </span>
+        </p>
         <div class="control" id="avatar-upload"
              data-current-avatar-url="<%= avatar_url %>"
              data-user-name="<%= current_user_name %>"></div>

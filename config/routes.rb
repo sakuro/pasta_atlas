@@ -9,6 +9,7 @@ module PastaAtlas
     get "/@:user_name/profile/edit", to: "profile.edit"
     patch "/@:user_name/profile", to: "profile.update"
     patch "/@:user_name/profile/avatar", to: "profile.avatar.update"
+    delete "/@:user_name/profile/avatar", to: "profile.avatar.destroy"
 
     get "/auth/github/callback", to: "auth.github.callback"
     get "/auth/failure", to: "auth.failure"

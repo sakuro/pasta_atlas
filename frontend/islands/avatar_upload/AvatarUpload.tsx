@@ -11,6 +11,7 @@ function jsonHeaders(): HeadersInit {
 type State =
   | { type: "idle" }
   | { type: "selected"; file: File; previewUrl: string }
+  | { type: "removing" }
   | { type: "uploading" }
   | { type: "error"; message: string };
 
@@ -86,6 +87,27 @@ export function AvatarUpload(props: Props) {
 
   async function handleFormSubmit(e: SubmitEvent) {
     const s = state();
+
+    if (s.type === "removing") {
+      e.preventDefault();
+      setState({ type: "uploading" });
+      try {
+        const resp = await fetch(`/@${props.userName}/profile/avatar`, {
+          method: "DELETE",
+          headers: { "X-CSRF-Token": csrfToken() },
+        });
+        if (!resp.ok) {
+          setState({ type: "error", message: `Failed to remove avatar (HTTP ${resp.status}).` });
+          return;
+        }
+      } catch {
+        setState({ type: "error", message: "Network error. Please try again." });
+        return;
+      }
+      props.form!.submit();
+      return;
+    }
+
     if (s.type !== "selected") return;
 
     e.preventDefault();
@@ -140,6 +162,7 @@ export function AvatarUpload(props: Props) {
   }
 
   const avatarStyle = "border-radius:50%;object-fit:cover";
+  const defaultIcon = <i class="fa-solid fa-circle-user" style="font-size:64px;line-height:1;display:block"></i>;
 
   return (
     <div>
@@ -156,9 +179,9 @@ export function AvatarUpload(props: Props) {
 
       <div style={{ display: "flex", "align-items": "center", gap: "1rem" }}>
         <Show when={selectedState()} keyed fallback={
-          props.currentAvatarUrl
-            ? <img src={props.currentAvatarUrl} width="64" height="64" style={avatarStyle} />
-            : <i class="fa-solid fa-circle-user" style="font-size:64px;line-height:1;display:block"></i>
+          state().type === "removing" || !props.currentAvatarUrl
+            ? defaultIcon
+            : <img src={props.currentAvatarUrl} width="64" height="64" style={avatarStyle} />
         }>
           {(s) => <img src={s.previewUrl} width="64" height="64" style={avatarStyle} />}
         </Show>
@@ -169,8 +192,14 @@ export function AvatarUpload(props: Props) {
               <span class="icon"><i class="fa-solid fa-image"></i></span>
               <span>Change</span>
             </button>
+            <Show when={props.currentAvatarUrl}>
+              <button class="button is-small ml-2" type="button" onClick={() => setState({ type: "removing" })}>
+                <span class="icon"><i class="fa-solid fa-trash"></i></span>
+                <span>Remove</span>
+              </button>
+            </Show>
           </Show>
-          <Show when={state().type === "selected"}>
+          <Show when={state().type === "selected" || state().type === "removing"}>
             <button class="button is-small" type="button" onClick={cancel}>
               <span class="icon"><i class="fa-solid fa-circle-xmark"></i></span>
               <span>Cancel</span>
