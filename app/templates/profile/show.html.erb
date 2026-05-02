@@ -15,4 +15,26 @@
     </div>
     <p class="subtitle">@<%= user_name %></p>
   </div>
+  <% unless recent_maps.empty? %>
+    <div class="container mt-5">
+      <h2 class="title is-4">
+        <span class="icon-text">
+          <span class="icon"><i class="fa-solid fa-map"></i></span>
+          <span>Recent Maps</span>
+        </span>
+      </h2>
+      <div class="columns is-multiline">
+        <% recent_maps.each do |map| %>
+          <div class="column is-half-tablet is-one-quarter-desktop">
+            <%= render "maps/map_card",
+                  map_ulid: map.ulid,
+                  map_display_name: map.display_name,
+                  user_name: user_name.to_s,
+                  author_display_name: display_name || user_name.to_s,
+                  thumbnail_url: thumbnail_urls_by_map_ulid[map.ulid] %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  <% end %>
 </section>
