@@ -66,3 +66,21 @@ The server issues presigned URLs; the frontend uploads tile images directly to S
 ### Frontend
 
 SolidJS islands live in `frontend/islands/`. They are bundled by Vite into `public/assets/islands/` and loaded via `<script>` tags in ERB templates. Bulma CSS + FontAwesome for styling.
+
+## Design documents
+
+Detailed design documents are in `doc/design/`:
+
+| # | Document |
+|---|---|
+| 01 | [Domain Model](doc/design/01-domain-model.md) |
+| 02 | [DB Schema](doc/design/02-db-schema.md) |
+| 03 | [API Endpoints](doc/design/03-api-endpoints.md) |
+| 04 | [Application Structure](doc/design/04-application-structure.md) |
+| 05 | [Frontend Components](doc/design/05-frontend-components.md) |
+| 06 | [Upload Flow](doc/design/06-upload-flow.md) |
+| 07 | [Code Quality](doc/design/07-code-quality.md) |
+| 08 | [Project Structure](doc/design/08-project-structure.md) |
+| 09 | [Frontend Styling](doc/design/09-frontend-styling.md) |
+| 10 | [Infrastructure](doc/design/10-infrastructure.md) |
+| 11 | [Local Development](doc/design/11-local-development.md) |

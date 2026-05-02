@@ -78,9 +78,4 @@ No staging environment is defined at this time.
 
 ### Local development
 
-The local Hanami dev server uses real AWS S3 and CloudFront (development bucket and distribution). No local S3 mock is used. Configure `.env.development.local` with:
-
-```
-S3_BUCKET=pasta-atlas-development-mapshots
-CLOUDFRONT_BASE_URL=https://maps.pasta-atlas-development.layer8.works
-```
+See [11-local-development.md](11-local-development.md).
