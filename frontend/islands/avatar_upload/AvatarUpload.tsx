@@ -1,12 +1,12 @@
 import { createSignal, onMount, onCleanup, Show } from "solid-js";
 
-function csrfToken(): string {
-  return document.querySelector<HTMLMetaElement>('meta[name="csrf-token"]')?.content ?? "";
-}
+const csrfToken = (): string =>
+  document.querySelector<HTMLMetaElement>('meta[name="csrf-token"]')?.content ?? "";
 
-function jsonHeaders(): HeadersInit {
-  return { "Content-Type": "application/json", "X-CSRF-Token": csrfToken() };
-}
+const jsonHeaders = (): HeadersInit => ({
+  "Content-Type": "application/json",
+  "X-CSRF-Token": csrfToken(),
+});
 
 type State =
   | { type: "idle" }
@@ -19,8 +19,8 @@ const MAX_BYTES = 5 * 1024 * 1024;
 const MIN_PX = 64;
 const MAX_PX = 1024;
 
-function validateImage(file: File): Promise<string | null> {
-  return new Promise((resolve) => {
+const validateImage = (file: File): Promise<string | null> =>
+  new Promise((resolve) => {
     if (file.size > MAX_BYTES) {
       resolve("File must be 5 MB or smaller.");
       return;
@@ -43,7 +43,6 @@ function validateImage(file: File): Promise<string | null> {
     };
     img.src = url;
   });
-}
 
 interface Props {
   currentAvatarUrl: string | null;
@@ -51,32 +50,32 @@ interface Props {
   form: HTMLFormElement | null;
 }
 
-export function AvatarUpload(props: Props) {
+export const AvatarUpload = (props: Props) => {
   const [state, setState] = createSignal<State>({ type: "idle" });
   let inputRef!: HTMLInputElement;
 
   const selectedState = () => { const s = state(); return s.type === "selected" ? s : null; };
   const errorState = () => { const s = state(); return s.type === "error" ? s : null; };
 
-  function openPicker() {
+  const openPicker = () => {
     inputRef.value = "";
     inputRef.click();
-  }
+  };
 
-  function cancel() {
+  const cancel = () => {
     const s = state();
     if (s.type === "selected") URL.revokeObjectURL(s.previewUrl);
     setState({ type: "idle" });
-  }
+  };
 
-  async function onFileSelected(file: File) {
+  const onFileSelected = async (file: File) => {
     const error = await validateImage(file);
     if (error) {
       setState({ type: "error", message: error });
       return;
     }
     setState({ type: "selected", file, previewUrl: URL.createObjectURL(file) });
-  }
+  };
 
   onMount(() => {
     if (!props.form) return;
@@ -85,7 +84,7 @@ export function AvatarUpload(props: Props) {
     onCleanup(() => props.form?.removeEventListener("submit", handler));
   });
 
-  async function handleFormSubmit(e: SubmitEvent) {
+  const handleFormSubmit = async (e: SubmitEvent) => {
     const s = state();
 
     if (s.type === "removing") {
@@ -159,7 +158,7 @@ export function AvatarUpload(props: Props) {
     props.form!.appendChild(hidden);
 
     props.form!.submit();
-  }
+  };
 
   const avatarStyle = "border-radius:50%;object-fit:cover";
   const defaultIcon = <i class="fa-solid fa-circle-user" style="font-size:64px;line-height:1;display:block"></i>;
@@ -220,4 +219,4 @@ export function AvatarUpload(props: Props) {
       </div>
     </div>
   );
-}
+};

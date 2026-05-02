@@ -72,7 +72,7 @@ interface MapData {
   generations: Generation[];
 }
 
-function formatTicks(tick: number): string {
+const formatTicks = (tick: number): string => {
   const totalSeconds = Math.floor(tick / 60);
   const seconds = totalSeconds % 60;
   const totalMinutes = Math.floor(totalSeconds / 60);
@@ -85,22 +85,21 @@ function formatTicks(tick: number): string {
   if (hours > 0) return `${hours}h ${minutes}m ${seconds}s`;
   if (minutes > 0) return `${minutes}m ${seconds}s`;
   return `${seconds}s`;
-}
+};
 
-function getParam(key: string): string | null {
-  return new URLSearchParams(window.location.search).get(key);
-}
+const getParam = (key: string): string | null =>
+  new URLSearchParams(window.location.search).get(key);
 
-function setParams(updates: Record<string, string | null>) {
+const setParams = (updates: Record<string, string | null>) => {
   const params = new URLSearchParams(window.location.search);
   for (const [key, value] of Object.entries(updates)) {
     if (value === null) params.delete(key);
     else params.set(key, value);
   }
   history.replaceState(null, "", `?${params}`);
-}
+};
 
-export function MapViewer(props: { ulid: string }) {
+export const MapViewer = (props: { ulid: string }) => {
   const [mapData] = createResource(() =>
     fetch(`/api/v1/maps/${props.ulid}`).then((r) => r.json() as Promise<MapData>)
   );
@@ -133,15 +132,15 @@ export function MapViewer(props: { ulid: string }) {
   const [showInfo, setShowInfo] = createSignal(false);
   const [showMapExchange, setShowMapExchange] = createSignal(false);
 
-  function closeInfo() {
+  const closeInfo = () => {
     setShowInfo(false);
     setShowMapExchange(false);
-  }
+  };
 
-  function handleGenerationChange(ulid: string) {
+  const handleGenerationChange = (ulid: string) => {
     setGenerationUlid(ulid);
     setParams({ generation: ulid, s: null, x: null, y: null, z: null });
-  }
+  };
 
   return (
     <div style={{ display: "flex", "flex-direction": "column", height: "100%" }}>
@@ -248,17 +247,17 @@ export function MapViewer(props: { ulid: string }) {
       </div>
     </div>
   );
-}
+};
 
-function CopyButton(props: { text: string }) {
+const CopyButton = (props: { text: string }) => {
   const [copied, setCopied] = createSignal(false);
 
-  function copy() {
+  const copy = () => {
     navigator.clipboard.writeText(props.text).then(() => {
       setCopied(true);
       setTimeout(() => setCopied(false), 1500);
     });
-  }
+  };
 
   return (
     <button class="button is-small ml-2" onClick={copy} title="Copy">
@@ -267,11 +266,11 @@ function CopyButton(props: { text: string }) {
       </span>
     </button>
   );
-}
+};
 
 const PINNED_MODS = ["elevated-rails", "quality", "space-age"];
 
-function sortedMods(mods: Record<string, string>): [string, string][] {
+const sortedMods = (mods: Record<string, string>): [string, string][] => {
   const entries = Object.entries(mods);
   const pinned = PINNED_MODS.flatMap((name) => {
     const entry = entries.find(([n]) => n === name);
@@ -281,23 +280,22 @@ function sortedMods(mods: Record<string, string>): [string, string][] {
     .filter(([name]) => !PINNED_MODS.includes(name))
     .sort(([a], [b]) => a.toLowerCase().localeCompare(b.toLowerCase()));
   return [...pinned, ...rest];
-}
+};
 
-function worldToLatLng(surface: Surface, x: number, y: number): L.LatLng {
+const worldToLatLng = (surface: Surface, x: number, y: number): L.LatLng => {
   const ratio = surface.render_size / surface.tile_size;
   return L.latLng(-y * ratio, x * ratio);
-}
+};
 
-function latLngToWorld(surface: Surface, latlng: L.LatLng): { x: number; y: number } {
+const latLngToWorld = (surface: Surface, latlng: L.LatLng): { x: number; y: number } => {
   const ratio = surface.render_size / surface.tile_size;
   return { x: latlng.lng / ratio, y: -latlng.lat / ratio };
-}
+};
 
-function surfaceLabel(surface: Surface): string {
-  return surface.surface_localised_name || surface.surface_name;
-}
+const surfaceLabel = (surface: Surface): string =>
+  surface.surface_localised_name || surface.surface_name;
 
-function LeafletMap(props: { mapshot: Mapshot; assetBase: string }) {
+const LeafletMap = (props: { mapshot: Mapshot; assetBase: string }) => {
   let mapEl!: HTMLDivElement;
 
   onMount(() => {
@@ -359,12 +357,12 @@ function LeafletMap(props: { mapshot: Mapshot; assetBase: string }) {
         .map((t) => L.marker(toLL(t.position.x, t.position.y)).bindPopup(t.text ?? ""));
     }
 
-    function populateOverlays(label: string) {
+    const populateOverlays = (label: string) => {
       trainLayerGroup.clearLayers();
       tagLayerGroup.clearLayers();
       for (const m of stationMarkers[label] ?? []) trainLayerGroup.addLayer(m);
       for (const m of tagMarkers[label] ?? []) tagLayerGroup.addLayer(m);
-    }
+    };
 
     // Activate initial surface
     const initSurface = surfaces[initSurfaceIdx] ?? surfaces[defaultSurfaceIdx];
@@ -431,4 +429,4 @@ function LeafletMap(props: { mapshot: Mapshot; assetBase: string }) {
   });
 
   return <div ref={mapEl} style={{ width: "100%", height: "100%" }} />;
-}
+};

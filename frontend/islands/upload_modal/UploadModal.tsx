@@ -1,13 +1,13 @@
 import { createSignal, Show } from "solid-js";
 import { Portal } from "solid-js/web";
 
-function csrfToken(): string {
-  return document.querySelector<HTMLMetaElement>('meta[name="csrf-token"]')?.content ?? "";
-}
+const csrfToken = (): string =>
+  document.querySelector<HTMLMetaElement>('meta[name="csrf-token"]')?.content ?? "";
 
-function jsonHeaders(): HeadersInit {
-  return { "Content-Type": "application/json", "X-CSRF-Token": csrfToken() };
-}
+const jsonHeaders = (): HeadersInit => ({
+  "Content-Type": "application/json",
+  "X-CSRF-Token": csrfToken(),
+});
 
 interface MapshotJson {
   map_id: string;
@@ -33,50 +33,49 @@ type State =
   | { type: "done"; viewerUrl: string }
   | { type: "error"; message: string };
 
-function resolveDisplayName(m: MapshotJson): string {
+const resolveDisplayName = (m: MapshotJson): string => {
   if (m.name) return m.name;
   if (m.savename) return m.savename;
   return m.map_id;
-}
+};
 
-function formatBytes(n: number): string {
+const formatBytes = (n: number): string => {
   if (n < 1024) return `${n} B`;
   if (n < 1048576) return `${(n / 1024).toFixed(1)} KiB`;
   if (n < 1073741824) return `${(n / 1048576).toFixed(1)} MiB`;
   return `${(n / 1073741824).toFixed(1)} GiB`;
-}
+};
 
-async function runConcurrent(
+const runConcurrent = async (
   tasks: (() => Promise<void>)[],
   limit: number,
   onProgress: (done: number) => void
-): Promise<void> {
+): Promise<void> => {
   if (tasks.length === 0) return;
   let done = 0;
   let idx = 0;
-  async function worker() {
+  const worker = async (): Promise<void> => {
     while (idx < tasks.length) {
       await tasks[idx++]();
       onProgress(++done);
     }
-  }
+  };
   await Promise.all(Array.from({ length: Math.min(limit, tasks.length) }, worker));
-}
+};
 
-function relPath(file: File): string {
-  return file.webkitRelativePath.split("/").slice(1).join("/");
-}
+const relPath = (file: File): string =>
+  file.webkitRelativePath.split("/").slice(1).join("/");
 
-export function UploadModal() {
+export const UploadModal = () => {
   const [state, setState] = createSignal<State>({ type: "idle" });
   let inputRef!: HTMLInputElement;
 
-  function openPicker() {
+  const openPicker = () => {
     inputRef.value = "";
     inputRef.click();
-  }
+  };
 
-  async function onFilesSelected(files: FileList) {
+  const onFilesSelected = async (files: FileList) => {
     const allFiles = Array.from(files);
 
     const mapshotFile = allFiles.find((f) => relPath(f) === "mapshot.json");
@@ -106,9 +105,9 @@ export function UploadModal() {
       imageCount: imageFiles.length,
       totalBytes: imageFiles.reduce((sum, f) => sum + f.size, 0),
     });
-  }
+  };
 
-  async function startUpload() {
+  const startUpload = async () => {
     const s = state();
     if (s.type !== "confirming") return;
 
@@ -210,11 +209,11 @@ export function UploadModal() {
     }
 
     setState({ type: "done", viewerUrl });
-  }
+  };
 
-  function dismiss() {
+  const dismiss = () => {
     setState({ type: "idle" });
-  }
+  };
 
   const confirmingState = () => {
     const s = state();
@@ -331,4 +330,4 @@ export function UploadModal() {
       </Show>
     </>
   );
-}
+};
