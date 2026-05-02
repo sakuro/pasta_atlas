@@ -4,25 +4,12 @@
       <% maps.each do |map| %>
         <% user = users_by_id[map.user_id] %>
         <div class="column is-half-tablet is-one-quarter-desktop">
-          <div class="card">
-            <% if (thumbnail_url = thumbnail_urls_by_map_ulid[map.ulid]) %>
-              <div class="card-image">
-                <figure class="image is-square">
-                  <a href="/@<%= user.name %>/maps/<%= map.ulid %>">
-                    <img src="<%= thumbnail_url %>" alt="<%= map.display_name %>">
-                  </a>
-                </figure>
-              </div>
-            <% end %>
-            <div class="card-content">
-              <p class="title is-6">
-                <a href="/@<%= user.name %>/maps/<%= map.ulid %>"><%= map.display_name %></a>
-              </p>
-              <p class="subtitle is-7 has-text-grey">
-                <a href="/@<%= user.name %>/profile"><%= profiles_by_user_id[user.id].display_name || user.name %></a>
-              </p>
-            </div>
-          </div>
+          <%= render "map_card",
+                map_ulid: map.ulid,
+                map_display_name: map.display_name,
+                user_name: user.name,
+                author_display_name: profiles_by_user_id[user.id].display_name || user.name,
+                thumbnail_url: thumbnail_urls_by_map_ulid[map.ulid] %>
         </div>
       <% end %>
     </div>
