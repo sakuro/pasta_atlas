@@ -13,11 +13,12 @@ PostgreSQL native ENUM types are not used due to ROM.rb limitations (no schema D
 
 ### User
 
-Holds identity only. All other attributes are in UserProfile.
-
 | Field | Type | Notes |
 |---|---|---|
 | id | bigserial PK | |
+| name | string | unique; used as URL slug (e.g. `/@sakuro/profile`) |
+
+A single guest User record (`name: "guest"`) exists and is shared by all unauthenticated operations.
 
 ### UserProfile
 
@@ -25,10 +26,10 @@ Holds identity only. All other attributes are in UserProfile.
 |---|---|---|
 | id | bigserial PK | |
 | user_id | FK → User (1:1) | |
-| name | string | unique; used as URL slug (e.g. `/users/sakuro`) |
+| display_name | string | nullable; human-readable name shown in the UI |
+| timezone | string | IANA timezone identifier; defaults to `"UTC"` |
+| avatar_s3_key | string | nullable; S3 key for the user's avatar image |
 | created_at | timestamp | |
-
-A single guest User record exists and is shared by all unauthenticated operations.
 
 ### Credential
 

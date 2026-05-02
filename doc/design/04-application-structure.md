@@ -9,10 +9,12 @@
 ```
 app/
   actions/           # HTTP actions (parse request, call operation, render response)
+    auth/            # OmniAuth callbacks, registration, session management (namespace mirrors /auth/* paths by convention)
     maps/
       index.rb                    # GET   /
-      viewer.rb                   # GET   /@:userProfileName/maps/:ulid
+      viewer.rb                   # GET   /@:user_name/maps/:ulid
       show.rb                     # GET   /api/v1/maps/:ulid
+    profile/         # Profile view/edit and avatar management
     uploads/
       create.rb                   # POST  /api/v1/uploads
       update.rb                   # PATCH /api/v1/uploads/:ulid
@@ -22,8 +24,8 @@ app/
   templates/         # ERB templates
   relations/         # ROM relations (DB table mappings)
   repos/             # Repositories
-  operations/        # Use cases (orchestrate repos and services)
-  services/          # External service adapters (S3, etc.)
+  structs/           # Immutable value objects (ROM structs)
+  operations/        # Use cases (orchestrate repos, S3, etc.)
 ```
 
 ## Responsibility split
@@ -32,9 +34,8 @@ app/
 |---|---|---|
 | HTML delivery | `app/actions/` + `app/views/` | Parse request, call operation, render HTML |
 | JSON delivery | `app/actions/` | Parse request, call operation, render JSON |
-| Use cases | `app/operations/` | Create map, start upload, issue presigned URLs |
+| Use cases | `app/operations/` | Create map, start upload, issue presigned URLs, generate avatar URL |
 | Data access | `app/repos/` | Find/persist domain entities |
-| External services | `app/services/` | S3 presigned URL generation, CloudFront URL building |
 | DB mapping | `app/relations/` | ROM relation definitions |
 
 ## Why not slices
@@ -45,9 +46,4 @@ Introducing a `web` slice would place repos and operations in the app container 
 
 | Slice | Purpose | Trigger to add |
 |---|---|---|
-| `auth` | User registration, login, OAuth callbacks, password reset | When user authentication is implemented |
 | `admin` | Administrative interface | When admin tooling is needed |
-
-### Notes on `auth` slice
-
-Authentication concerns should be kept separate from the main API actions. OAuth callback routing (e.g. `/auth/google/callback`) and session management require a different middleware stack from the REST API, making a dedicated slice the right boundary.

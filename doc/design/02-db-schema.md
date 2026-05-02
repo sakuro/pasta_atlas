@@ -15,6 +15,10 @@ Database: PostgreSQL
 | Column | Type | Constraints |
 |---|---|---|
 | id | bigserial | PRIMARY KEY |
+| name | varchar | NOT NULL |
+
+Indexes:
+- UNIQUE on `name`
 
 ### user_profiles
 
@@ -22,12 +26,13 @@ Database: PostgreSQL
 |---|---|---|
 | id | bigserial | PRIMARY KEY |
 | user_id | bigint | NOT NULL, REFERENCES users(id) ON DELETE CASCADE |
-| name | varchar | NOT NULL |
+| display_name | varchar | |
+| timezone | varchar | NOT NULL DEFAULT 'UTC' |
+| avatar_s3_key | varchar | |
 | created_at | timestamptz | NOT NULL DEFAULT now() |
 
 Indexes:
 - UNIQUE on `user_id`
-- UNIQUE on `name`
 
 ### credentials
 

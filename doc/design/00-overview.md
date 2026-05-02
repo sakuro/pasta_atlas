@@ -25,7 +25,7 @@ Pasta Atlas is a web application for uploading and browsing Factorio map screens
 | 01 | [Domain Model](01-domain-model.md) |
 | 02 | [DB Schema](02-db-schema.md) |
 | 03 | [API Endpoints](03-api-endpoints.md) |
-| 04 | [Hanami Slice Structure](04-hanami-slices.md) |
+| 04 | [Application Structure](04-application-structure.md) |
 | 05 | [Frontend Components](05-frontend-components.md) |
 | 06 | [Upload Flow](06-upload-flow.md) |
 | 07 | [Code Quality](07-code-quality.md) |

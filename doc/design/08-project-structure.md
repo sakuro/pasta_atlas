@@ -6,16 +6,19 @@
 pasta_atlas/
   app/                   # Application code (Hanami)
     actions/             # HTTP actions (JSON API + HTML pages)
+      auth/              # OAuth callbacks, registration, session
       maps/
+      profile/           # Profile view/edit and avatar management
       uploads/
     views/               # Hanami views (HTML rendering)
     templates/           # ERB templates
     relations/           # ROM relations
     repos/               # Repositories
-    operations/          # Use cases
-    services/            # External service adapters (S3, CloudFront)
+    structs/             # Immutable value objects (ROM structs)
+    operations/          # Use cases (orchestrate repos, S3, etc.)
   frontend/              # Vite source (island bundles only)
     islands/
+      avatar_upload/     # AvatarUpload island
       map_viewer/        # LeafletMapViewer island
       upload_modal/      # UploadModal island
   vite.config.ts

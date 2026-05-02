@@ -1,12 +1,101 @@
 # API Endpoints
 
-All endpoints return JSON. Base path: `/api/v1`
-
-Images and mapshot.json are served directly via CloudFront, not through the API.
-
-Page navigation (map list, map viewer) is handled by the `web` slice as server-rendered HTML. The API serves only the client-side islands (map viewer, upload).
+Images and mapshot.json are served directly via CloudFront, not through the application server.
 
 Presigned PUT URLs are generated locally by the AWS SDK (no S3 API call). The presigned_urls endpoint does make one S3 ListObjectsV2 call to filter already-uploaded files.
+
+---
+
+## Auth
+
+Authentication uses OmniAuth. Currently GitHub OAuth is the only supported provider; the design allows adding providers in the future without changing the session or credential schema.
+
+### GET /auth/github/callback
+
+OmniAuth GitHub OAuth callback. On success, either sets `session[:user_id]` and redirects to `/` (existing user), or stores OAuth data in `session[:pending_auth]` and redirects to `/auth/register` (new user).
+
+### GET /auth/failure
+
+Displays an auth error page. OmniAuth redirects here on failure.
+
+### GET /auth/register
+
+Displays the username registration form for new users. Requires `session[:pending_auth]`.
+
+### POST /auth/register
+
+Creates a new User, UserProfile, and Credential. Validates username (max 39 chars, alphanumeric + `-_`, reserved names `guest`/`api`/`admin` are rejected). On success, sets `session[:user_id]` and redirects to `/`.
+
+### DELETE /auth/session
+
+Clears `session[:user_id]`. Redirects to `/`.
+
+---
+
+## Profile
+
+Profile pages are server-rendered HTML. The avatar upload uses a JSON API endpoint for the presigned URL.
+
+### GET /@:user_name/profile
+
+Displays a user's public profile page: display name, avatar, and recent maps.
+
+### GET /@:user_name/profile/edit
+
+Displays the profile edit form (authenticated, own profile only).
+
+### PATCH /@:user_name/profile
+
+Updates `display_name` and `timezone`. Authenticated, own profile only.
+
+**Form params:**
+
+| Field | Notes |
+|---|---|
+| `display_name` | Max 64 grapheme clusters; no whitespace or control characters |
+| `timezone` | IANA timezone identifier (e.g. `"Asia/Tokyo"`); defaults to `"UTC"` if invalid |
+
+**Error:** Re-renders edit form with validation error message. Redirects to profile page on success.
+
+### PATCH /@:user_name/profile/avatar
+
+Sets `avatar_s3_key` on the UserProfile. The S3 key must be under `avatars/{user_id}/`. Authenticated, own profile only.
+
+**Response:** `204 No Content`
+
+### DELETE /@:user_name/profile/avatar
+
+Clears `avatar_s3_key`. Authenticated, own profile only.
+
+**Response:** `204 No Content`
+
+### POST /api/v1/profile/avatar_presigned_url
+
+Issues a presigned S3 PUT URL for an avatar image. Requires authentication.
+
+**Request body:**
+
+```json
+{ "content_type": "image/jpeg" }
+```
+
+Supported content types: `image/jpeg`, `image/png`, `image/webp`.
+
+**Response `200 OK`:**
+
+```json
+{
+  "presigned_url": "https://s3.amazonaws.com/bucket/avatars/42/01HXY....jpg?...",
+  "s3_key": "avatars/42/01HXY....jpg"
+}
+```
+
+**Error responses:**
+
+| Status | Condition |
+|---|---|
+| `403 Forbidden` | Not authenticated |
+| `422 Unprocessable Entity` | Unsupported content type |
 
 ---
 

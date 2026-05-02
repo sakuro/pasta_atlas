@@ -2,21 +2,23 @@
 
 ## S3 Key Structure
 
-All files for a generation are stored under a common prefix:
+All files for a generation are stored under a per-user prefix:
 
 ```
-{mapshot_map_id}/{mapshot_unique_id}/mapshot.json
-{mapshot_map_id}/{mapshot_unique_id}/{surface_file_prefix}{zoom}/tile_{x}_{y}.jpg
+{user_name}/{mapshot_map_id}/{mapshot_unique_id}/mapshot.json
+{user_name}/{mapshot_map_id}/{mapshot_unique_id}/{surface_file_prefix}{zoom}/tile_{x}_{y}.jpg
 ```
 
-Example:
+Example (user `sakuro`, guest uploads use `guest`):
 ```
-ae8ec3ab/550f41a9/mapshot.json
-ae8ec3ab/550f41a9/s1zoom_4/tile_0_0.jpg
-ae8ec3ab/550f41a9/s1zoom_3/tile_0_0.jpg
+sakuro/ae8ec3ab/550f41a9/mapshot.json
+sakuro/ae8ec3ab/550f41a9/s1zoom_4/tile_0_0.jpg
+sakuro/ae8ec3ab/550f41a9/s1zoom_3/tile_0_0.jpg
 ```
 
 The `metadata_s3_key` stored in DB points to `mapshot.json` within this prefix.
+
+Avatar images use a separate prefix: `avatars/{user_id}/{ulid}.{ext}`
 
 ---
 
@@ -87,7 +89,7 @@ The `metadata_s3_key` stored in DB points to `mapshot.json` within this prefix.
    - If exists with a `complete` upload → return `409 Conflict`
    - If exists with a `pending`/`failed` upload → return the existing upload (allow retry)
    - If not exists → create `Generation`
-6. Write mapshot.json to S3 at `{mapshot_map_id}/{mapshot_unique_id}/mapshot.json`
+6. Write mapshot.json to S3 at `{user_name}/{mapshot_map_id}/{mapshot_unique_id}/mapshot.json`
 7. Set `metadata_s3_key` on the Generation record
 8. Create `Upload` record (`status: pending`, `total_image_count` from request)
 9. Return `{ ulid, map_ulid, generation_ulid }`
@@ -98,7 +100,7 @@ Steps 5–8 run inside a single transaction to ensure Generation, S3 write, and 
 
 1. Find `Upload` by ULID; return `404` if not found
 2. Validate `status` is `pending`; return `422` if `complete` or `failed`
-3. Call S3 ListObjectsV2 with prefix `{mapshot_map_id}/{mapshot_unique_id}/` to get existing keys (1 API call)
+3. Call S3 ListObjectsV2 with prefix `{user_name}/{mapshot_map_id}/{mapshot_unique_id}/` to get existing keys (1 API call)
 4. For each requested filename, skip if the corresponding S3 key already exists
 5. Generate presigned PUT URL for each remaining (missing) key (expiry: configurable, default 1 hour)
 6. Return `{ presigned_urls: { filename: url, ... } }` — contains only files that need uploading
