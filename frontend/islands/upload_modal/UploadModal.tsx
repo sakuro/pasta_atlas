@@ -20,6 +20,7 @@ interface MapshotJson {
 
 type State =
   | { type: "idle" }
+  | { type: "instructions" }
   | {
       type: "confirming";
       mapshotJson: MapshotJson;
@@ -70,9 +71,17 @@ export const UploadModal = () => {
   const [state, setState] = createSignal<State>({ type: "idle" });
   let inputRef!: HTMLInputElement;
 
+  const openModal = () => {
+    setState({ type: "instructions" });
+  };
+
   const openPicker = () => {
     inputRef.value = "";
     inputRef.click();
+  };
+
+  const backToInstructions = () => {
+    setState({ type: "instructions" });
   };
 
   const onFilesSelected = async (files: FileList) => {
@@ -246,7 +255,7 @@ export const UploadModal = () => {
           if (files && files.length > 0) onFilesSelected(files);
         }}
       />
-      <button class="button" onClick={openPicker}>
+      <button class="button" onClick={openModal}>
         <span class="icon"><i class="fa-solid fa-upload"></i></span>
         <span>Upload</span>
       </button>
@@ -254,7 +263,7 @@ export const UploadModal = () => {
         <Portal mount={document.body}>
         <div class="modal is-active">
           <div class="modal-background" onClick={dismiss} />
-          <div class="modal-card">
+          <div class="modal-card" style={{ width: "90vw", "max-width": "1000px" }}>
             <header class="modal-card-head">
               <p class="modal-card-title">Upload Mapshot</p>
               <Show when={state().type !== "uploading"}>
@@ -262,6 +271,45 @@ export const UploadModal = () => {
               </Show>
             </header>
             <section class="modal-card-body">
+              <Show when={state().type === "instructions"}>
+                <div class="content">
+                  <div class="notification is-warning is-light">
+                    <span class="icon-text">
+                      <span class="icon"><i class="fa-solid fa-triangle-exclamation"></i></span>
+                      <span>Uploads from guest accounts are deleted after approximately one week.</span>
+                    </span>
+                  </div>
+                  <p>
+                    <span class="icon-text">
+                      <span class="icon"><i class="fa-solid fa-folder-open"></i></span>
+                      <span>Select the folder containing <code>mapshot.json</code>.</span>
+                    </span>
+                  </p>
+                  <div class="notification is-info is-light">
+                    <p class="has-text-weight-semibold mb-2">Typical mapshot directory:</p>
+                    <ul>
+                      <li>
+                        <span class="icon-text">
+                          <span class="icon"><i class="fa-brands fa-windows"></i></span>
+                          <span><code>C:\Users\&lt;username&gt;\AppData\Roaming\Factorio\script-output\mapshot\map-abcd1234\d-abcd1234\</code></span>
+                        </span>
+                      </li>
+                      <li>
+                        <span class="icon-text">
+                          <span class="icon"><i class="fa-brands fa-apple"></i></span>
+                          <span><code>~/Library/Application Support/factorio/script-output/mapshot/map-abcd1234/d-abcd1234/</code></span>
+                        </span>
+                      </li>
+                      <li>
+                        <span class="icon-text">
+                          <span class="icon"><i class="fa-brands fa-linux"></i></span>
+                          <span><code>~/.factorio/script-output/mapshot/map-abcd1234/d-abcd1234/</code></span>
+                        </span>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </Show>
               <Show when={confirmingState()} keyed>
                 {(s) => (
                   <table class="table is-fullwidth">
@@ -311,16 +359,31 @@ export const UploadModal = () => {
               </Show>
             </section>
             <footer class="modal-card-foot">
+              <Show when={state().type === "instructions"}>
+                <button class="button is-primary" onClick={openPicker}>
+                  <span class="icon"><i class="fa-solid fa-folder-open"></i></span>
+                  <span>Select Folder</span>
+                </button>
+                <button class="button" onClick={dismiss}>Cancel</button>
+              </Show>
               <Show when={state().type === "confirming"}>
                 <button class="button is-primary" onClick={startUpload}>
                   <span class="icon"><i class="fa-solid fa-upload"></i></span>
                   <span>Start Upload</span>
                 </button>
+                <button class="button" onClick={backToInstructions}>
+                  <span class="icon"><i class="fa-solid fa-arrow-left"></i></span>
+                  <span>Back</span>
+                </button>
               </Show>
-              <Show when={state().type === "confirming" || state().type === "error"}>
-                <button class="button" onClick={dismiss}>
-                  <span class="icon"><i class="fa-solid fa-circle-xmark"></i></span>
-                  <span>{state().type === "error" ? "Dismiss" : "Cancel"}</span>
+              <Show when={state().type === "done"}>
+                <button class="button" onClick={dismiss}>Close</button>
+              </Show>
+              <Show when={state().type === "error"}>
+                <button class="button" onClick={dismiss}>Dismiss</button>
+                <button class="button" onClick={backToInstructions}>
+                  <span class="icon"><i class="fa-solid fa-arrow-left"></i></span>
+                  <span>Back</span>
                 </button>
               </Show>
             </footer>
