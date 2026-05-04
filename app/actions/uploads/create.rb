@@ -21,7 +21,7 @@ module PastaAtlas
             user_id:,
             metadata: request.params[:metadata].to_h.transform_keys(&:to_s),
             total_image_count: request.params[:total_image_count],
-            name: request.params[:name].then { |n| n&.empty? ? nil : n }
+            name: request.params[:name].then {|n| n&.empty? ? nil : n }
           )
 
           case result

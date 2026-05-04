@@ -14,11 +14,9 @@ module PastaAtlas
         {deleted_generations:, deleted_maps:}
       end
 
-      private
+      private def delete_expired_generations = Success(generation_repo.delete_expired)
 
-      def delete_expired_generations = Success(generation_repo.delete_expired)
-
-      def delete_orphan_maps = Success(map_repo.delete_guest_orphans)
+      private def delete_orphan_maps = Success(map_repo.delete_guest_orphans)
     end
   end
 end
