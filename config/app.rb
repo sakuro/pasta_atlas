@@ -21,6 +21,7 @@ module PastaAtlas
 
     config.actions.content_security_policy[:form_action] += " https://github.com"
     config.actions.content_security_policy[:img_src] += " blob:"
+    config.actions.content_security_policy[:script_src] += " 'nonce'"
 
     if Hanami.env?(:development)
       config.actions.content_security_policy[:connect_src] += " http://localhost:4566"

@@ -7,6 +7,10 @@
     <form action="/auth/register" method="post">
       <input type="hidden" name="_csrf_token" value="<%= csrf_token %>">
       <input type="hidden" id="timezone" name="timezone" value="UTC">
+      <script nonce="<%= content_security_policy_nonce %>">
+        document.getElementById("timezone").value =
+          Intl.DateTimeFormat().resolvedOptions().timeZone;
+      </script>
       <div class="field">
         <label class="label" for="name">
           <span class="icon-text">
