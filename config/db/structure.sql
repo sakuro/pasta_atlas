@@ -59,7 +59,8 @@ CREATE TABLE public.generations (
     mapshot_unique_id text NOT NULL,
     tick bigint NOT NULL,
     metadata_s3_key text NOT NULL,
-    created_at timestamp with time zone DEFAULT now() NOT NULL
+    created_at timestamp with time zone DEFAULT now() NOT NULL,
+    expires_at timestamp with time zone
 );
 
 
@@ -268,6 +269,13 @@ CREATE INDEX credentials_user_id_index ON public.credentials USING btree (user_i
 
 
 --
+-- Name: generations_expires_at_index; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX generations_expires_at_index ON public.generations USING btree (expires_at);
+
+
+--
 -- Name: generations_map_id_index; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -393,4 +401,5 @@ INSERT INTO schema_migrations (filename) VALUES
 ('20260427133025_create_uploads.rb'),
 ('20260501170231_add_display_name_to_user_profiles.rb'),
 ('20260501180000_add_timezone_to_user_profiles.rb'),
-('20260502133550_add_avatar_s3_key_to_user_profiles.rb');
+('20260502133550_add_avatar_s3_key_to_user_profiles.rb'),
+('20260504120000_add_expires_at_to_generations.rb');

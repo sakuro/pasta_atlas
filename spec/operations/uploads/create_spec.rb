@@ -19,6 +19,34 @@ RSpec.describe PastaAtlas::Operations::Uploads::Create, :db do
         expect(upload.status).to eq("pending")
         expect(upload.total_image_count).to eq(5)
       end
+
+      it "does not set expires_at for a regular user" do
+        operation.call(user_id: user.id, metadata:, total_image_count: 5)
+
+        generation = generation_repo.find_with_upload(
+          map_id: map_repo.find_or_create_by_user_and_mapshot_id(
+            user_id: user.id, mapshot_map_id: metadata["map_id"]
+          ).id,
+          mapshot_unique_id: metadata["unique_id"]
+        )
+        expect(generation.expires_at).to be_nil
+      end
+    end
+
+    context "when uploading as a guest user" do
+      let(:user) { Factory[:user, name: "guest"] }
+
+      it "sets expires_at approximately 8 days from now" do
+        operation.call(user_id: user.id, metadata:, total_image_count: 5)
+
+        generation = generation_repo.find_with_upload(
+          map_id: map_repo.find_or_create_by_user_and_mapshot_id(
+            user_id: user.id, mapshot_map_id: metadata["map_id"]
+          ).id,
+          mapshot_unique_id: metadata["unique_id"]
+        )
+        expect(generation.expires_at).to be_within(60).of(Time.now + (8 * 86400))
+      end
     end
 
     context "when a pending upload already exists for the generation" do

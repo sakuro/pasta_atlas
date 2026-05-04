@@ -6,6 +6,10 @@ module PastaAtlas
   module Operations
     module Uploads
       class Create < PastaAtlas::Operation
+        # Must match the S3 lifecycle expiration for the guest/ prefix.
+        GUEST_TTL_DAYS = 8
+        private_constant :GUEST_TTL_DAYS
+
         include Deps[
           "repos.generation_repo",
           "repos.upload_repo",
@@ -66,7 +70,8 @@ module PastaAtlas
             map_id: map.id,
             mapshot_unique_id:,
             tick:,
-            metadata_s3_key:
+            metadata_s3_key:,
+            expires_at: user_name == "guest" ? Time.now + (GUEST_TTL_DAYS * 86400) : nil
           )
           write_result = write_metadata_to_s3(key: metadata_s3_key, body: metadata.to_json)
           return write_result unless write_result.success?

@@ -54,6 +54,16 @@ module PastaAtlas
         ordered_ids.filter_map {|id| id_to_map[id] }
       end
 
+      def delete_guest_orphans
+        guest_id = users.dataset.where(name: "guest").get(:id)
+        return 0 unless guest_id
+
+        maps.dataset
+          .where(user_id: guest_id)
+          .exclude(id: generations.dataset.unordered.select(:map_id))
+          .delete
+      end
+
       def find_or_create_by_user_and_mapshot_id(user_id:, mapshot_map_id:, savename: "", name: nil)
         conflict_opts = if name
           {target: %i[user_id mapshot_map_id], update: {name:}}
