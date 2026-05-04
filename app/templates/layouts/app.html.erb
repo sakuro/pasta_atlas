@@ -12,25 +12,29 @@
     <nav class="navbar" role="navigation" aria-label="main navigation">
       <div class="navbar-brand">
         <a class="navbar-item" href="/"><strong>Pasta Atlas</strong></a>
+        <div class="navbar-item" id="upload-modal" data-guest="<%= current_user_name ? 'false' : 'true' %>"></div>
+        <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navbar-main">
+          <span aria-hidden="true"></span>
+          <span aria-hidden="true"></span>
+          <span aria-hidden="true"></span>
+          <span aria-hidden="true"></span>
+        </a>
       </div>
-      <div class="navbar-menu">
+      <div id="navbar-main" class="navbar-menu">
         <div class="navbar-end">
-          <div class="navbar-item" id="upload-modal" data-guest="<%= current_user_name ? 'false' : 'true' %>"></div>
           <% if current_user_name %>
-            <div class="navbar-item">
-              <a class="mr-3" href="/@<%= current_user_name %>/profile" style="display:inline-flex;align-items:center;gap:0.4rem">
-                <%= render "shared/avatar", avatar_url: current_avatar_url, avatar_size: 24 %>
-                <%= current_user_display_name %>
-              </a>
-              <form action="/auth/session" method="post" style="display:inline">
-                <input type="hidden" name="_method" value="delete">
-                <input type="hidden" name="_csrf_token" value="<%= csrf_token %>">
-                <button class="button" type="submit">
-                  <span class="icon"><i class="fa-solid fa-arrow-right-from-bracket"></i></span>
-                  <span>Log out</span>
-                </button>
-              </form>
-            </div>
+            <a class="navbar-item" href="/@<%= current_user_name %>/profile">
+              <%= render "shared/avatar", avatar_url: current_avatar_url, avatar_size: 24 %>
+              <span class="ml-2"><%= current_user_display_name %></span>
+            </a>
+            <form action="/auth/session" method="post" style="display: contents">
+              <input type="hidden" name="_method" value="delete">
+              <input type="hidden" name="_csrf_token" value="<%= csrf_token %>">
+              <button class="navbar-item" type="submit">
+                <span class="icon"><i class="fa-solid fa-arrow-right-from-bracket"></i></span>
+                <span>Log out</span>
+              </button>
+            </form>
           <% else %>
             <div class="navbar-item has-dropdown is-hoverable">
               <a class="navbar-link">
