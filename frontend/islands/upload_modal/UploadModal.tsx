@@ -67,7 +67,7 @@ const runConcurrent = async (
 const relPath = (file: File): string =>
   file.webkitRelativePath.split("/").slice(1).join("/");
 
-export const UploadModal = () => {
+export const UploadModal = (props: { isGuest: boolean }) => {
   const [state, setState] = createSignal<State>({ type: "idle" });
   const [displayName, setDisplayName] = createSignal("");
   let inputRef!: HTMLInputElement;
@@ -275,12 +275,14 @@ export const UploadModal = () => {
             <section class="modal-card-body">
               <Show when={state().type === "instructions"}>
                 <div class="content">
-                  <div class="notification is-warning is-light">
-                    <span class="icon-text">
-                      <span class="icon"><i class="fa-solid fa-triangle-exclamation"></i></span>
-                      <span>Uploads from guest accounts are deleted after approximately one week.</span>
-                    </span>
-                  </div>
+                  <Show when={props.isGuest}>
+                    <div class="notification is-warning is-light">
+                      <span class="icon-text">
+                        <span class="icon"><i class="fa-solid fa-triangle-exclamation"></i></span>
+                        <span>Uploads from guest accounts are deleted after approximately one week.</span>
+                      </span>
+                    </div>
+                  </Show>
                   <p>
                     <span class="icon-text">
                       <span class="icon"><i class="fa-solid fa-folder-open"></i></span>

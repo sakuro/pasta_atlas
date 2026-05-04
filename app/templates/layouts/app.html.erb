@@ -15,7 +15,7 @@
       </div>
       <div class="navbar-menu">
         <div class="navbar-end">
-          <div class="navbar-item" id="upload-modal"></div>
+          <div class="navbar-item" id="upload-modal" data-guest="<%= current_user_name ? 'false' : 'true' %>"></div>
           <% if current_user_name %>
             <div class="navbar-item">
               <a class="mr-3" href="/@<%= current_user_name %>/profile" style="display:inline-flex;align-items:center;gap:0.4rem">

@@ -3,5 +3,6 @@ import { UploadModal } from "./UploadModal";
 
 const mountEl = document.getElementById("upload-modal");
 if (mountEl) {
-  render(() => <UploadModal />, mountEl);
+  const isGuest = mountEl.dataset.guest === "true";
+  render(() => <UploadModal isGuest={isGuest} />, mountEl);
 }
