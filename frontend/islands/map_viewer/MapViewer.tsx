@@ -217,11 +217,14 @@ export const MapViewer = (props: { ulid: string }) => {
                       <tr>
                         <th class="map-info-label"><span class="icon-text"><span class="icon"><i class="fa-solid fa-puzzle-piece"></i></span><span>Mods</span></span></th>
                         <td>
-                          <ul>
-                            <For each={sortedMods(mapshot()!.active_mods!)}>
-                              {([name, version]) => <li><a href={`https://mods.factorio.com/mod/${name}`} target="_blank" rel="noopener">{name}</a> {version}</li>}
-                            </For>
-                          </ul>
+                          <details>
+                            <summary>{Object.keys(mapshot()!.active_mods!).length} mods</summary>
+                            <ul>
+                              <For each={sortedMods(mapshot()!.active_mods!)}>
+                                {([name, version]) => <li><a href={`https://mods.factorio.com/mod/${name}`} target="_blank" rel="noopener">{name}</a> {version}</li>}
+                              </For>
+                            </ul>
+                          </details>
                         </td>
                       </tr>
                     </Show>
