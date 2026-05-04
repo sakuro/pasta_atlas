@@ -22,14 +22,26 @@ A single guest User record (`name: "guest"`) exists and is shared by all unauthe
 
 ### UserProfile
 
+Public-facing identity information.
+
 | Field | Type | Notes |
 |---|---|---|
 | id | bigserial PK | |
 | user_id | FK → User (1:1) | |
 | display_name | string | nullable; human-readable name shown in the UI |
-| timezone | string | IANA timezone identifier; defaults to `"UTC"` |
 | avatar_s3_key | string | nullable; S3 key for the user's avatar image |
 | created_at | timestamp | |
+
+### UserPreference
+
+Private per-user app behavior settings.
+
+| Field | Type | Notes |
+|---|---|---|
+| id | bigserial PK | |
+| user_id | FK → User (1:1) | |
+| timezone | string | IANA timezone identifier; defaults to `"UTC"` |
+| locale | string | nullable; BCP 47 language tag (e.g. `"ja"`, `"en-US"`); NULL = use browser default |
 
 ### Credential
 

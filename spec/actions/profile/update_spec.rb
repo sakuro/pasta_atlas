@@ -3,7 +3,8 @@
 RSpec.describe PastaAtlas::Actions::Profile::Update do
   let(:user_repo) { instance_double(PastaAtlas::Repos::UserRepo) }
   let(:user_profile_repo) { instance_double(PastaAtlas::Repos::UserProfileRepo) }
-  let(:action) { PastaAtlas::Actions::Profile::Update.new(user_repo:, user_profile_repo:, edit_view:) }
+  let(:user_preference_repo) { instance_double(PastaAtlas::Repos::UserPreferenceRepo) }
+  let(:action) { PastaAtlas::Actions::Profile::Update.new(user_repo:, user_profile_repo:, user_preference_repo:, edit_view:) }
   let(:edit_view) { Hanami.app["views.profile.edit"] }
 
   let(:user) { double("User", id: 1, name: "sakuro") }
@@ -37,12 +38,14 @@ RSpec.describe PastaAtlas::Actions::Profile::Update do
 
     before do
       allow(user_profile_repo).to receive(:update_profile)
+      allow(user_preference_repo).to receive(:update_preferences)
     end
 
     it "updates the profile and redirects to the profile page" do
       response = action.call(env)
 
-      expect(user_profile_repo).to have_received(:update_profile).with(1, display_name: "Sakuro", timezone: "Asia/Tokyo")
+      expect(user_profile_repo).to have_received(:update_profile).with(1, display_name: "Sakuro")
+      expect(user_preference_repo).to have_received(:update_preferences).with(1, timezone: "Asia/Tokyo")
       expect(response.status).to eq(302)
       expect(response.headers["Location"]).to eq("/@sakuro/profile")
     end
@@ -53,7 +56,8 @@ RSpec.describe PastaAtlas::Actions::Profile::Update do
       it "clears display name" do
         response = action.call(env)
 
-        expect(user_profile_repo).to have_received(:update_profile).with(1, display_name: nil, timezone: "Asia/Tokyo")
+        expect(user_profile_repo).to have_received(:update_profile).with(1, display_name: nil)
+        expect(user_preference_repo).to have_received(:update_preferences).with(1, timezone: "Asia/Tokyo")
         expect(response.status).to eq(302)
       end
     end
@@ -65,6 +69,7 @@ RSpec.describe PastaAtlas::Actions::Profile::Update do
         response = action.call(env)
 
         expect(user_profile_repo).not_to have_received(:update_profile)
+        expect(user_preference_repo).not_to have_received(:update_preferences)
         expect(response.status).to eq(200)
       end
     end
@@ -75,7 +80,8 @@ RSpec.describe PastaAtlas::Actions::Profile::Update do
       it "falls back to UTC" do
         response = action.call(env)
 
-        expect(user_profile_repo).to have_received(:update_profile).with(1, display_name: "Sakuro", timezone: "UTC")
+        expect(user_profile_repo).to have_received(:update_profile).with(1, display_name: "Sakuro")
+        expect(user_preference_repo).to have_received(:update_preferences).with(1, timezone: "UTC")
         expect(response.status).to eq(302)
       end
     end

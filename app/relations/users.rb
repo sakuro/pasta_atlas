@@ -6,6 +6,7 @@ module PastaAtlas
       schema :users, infer: true do
         associations do
           has_one :user_profile
+          has_one :user_preference
           has_many :credentials
           has_many :maps
         end

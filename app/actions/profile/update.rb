@@ -8,6 +8,7 @@ module PastaAtlas
       class Update < PastaAtlas::Action
         include Deps[
           "repos.user_profile_repo",
+          "repos.user_preference_repo",
           edit_view: "views.profile.edit"
         ]
 
@@ -46,7 +47,8 @@ module PastaAtlas
             return
           end
 
-          user_profile_repo.update_profile(user_id, display_name: display_name.empty? ? nil : display_name, timezone:)
+          user_profile_repo.update_profile(user_id, display_name: display_name.empty? ? nil : display_name)
+          user_preference_repo.update_preferences(user_id, timezone:)
 
           avatar_s3_key = request.params[:avatar_s3_key].to_s
           if !avatar_s3_key.empty? && avatar_s3_key.start_with?("avatars/#{user_id}/")

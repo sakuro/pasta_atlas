@@ -24,7 +24,7 @@ Displays the username registration form for new users. Requires `session[:pendin
 
 ### POST /auth/register
 
-Creates a new User, UserProfile, and Credential. Validates username (max 39 chars, alphanumeric + `-_`, reserved names `guest`/`api`/`admin` are rejected). On success, sets `session[:user_id]` and redirects to `/`.
+Creates a new User, UserProfile, UserPreference, and Credential. Validates username (max 39 chars, alphanumeric + `-_`, reserved names `guest`/`api`/`admin` are rejected). On success, sets `session[:user_id]` and redirects to `/`.
 
 ### DELETE /auth/session
 
@@ -53,7 +53,7 @@ Updates `display_name` and `timezone`. Authenticated, own profile only.
 | Field | Notes |
 |---|---|
 | `display_name` | Max 64 grapheme clusters; no whitespace or control characters |
-| `timezone` | IANA timezone identifier (e.g. `"Asia/Tokyo"`); defaults to `"UTC"` if invalid |
+| `timezone` | IANA timezone identifier (e.g. `"Asia/Tokyo"`); defaults to `"UTC"` if invalid; stored in `user_preferences` |
 
 **Error:** Re-renders edit form with validation error message. Redirects to profile page on success.
 

@@ -10,6 +10,7 @@ module PastaAtlas
           include Deps[
             "repos.credential_repo",
             "repos.user_profile_repo",
+            "repos.user_preference_repo",
             "operations.registrations.import_github_avatar"
           ]
 
@@ -45,7 +46,8 @@ module PastaAtlas
 
             user_repo.transaction do
               user = user_repo.create(name:)
-              user_profile_repo.user_profiles.command(:create).call(user_id: user.id, timezone:)
+              user_profile_repo.user_profiles.command(:create).call(user_id: user.id)
+              user_preference_repo.user_preferences.command(:create).call(user_id: user.id, timezone:)
               credential_repo.credentials.command(:create).call(
                 user_id: user.id,
                 provider: pending["provider"],

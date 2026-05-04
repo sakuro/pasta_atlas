@@ -27,9 +27,20 @@ Indexes:
 | id | bigserial | PRIMARY KEY |
 | user_id | bigint | NOT NULL, REFERENCES users(id) ON DELETE CASCADE |
 | display_name | varchar | |
-| timezone | varchar | NOT NULL DEFAULT 'UTC' |
 | avatar_s3_key | varchar | |
 | created_at | timestamptz | NOT NULL DEFAULT now() |
+
+Indexes:
+- UNIQUE on `user_id`
+
+### user_preferences
+
+| Column | Type | Constraints |
+|---|---|---|
+| id | bigserial | PRIMARY KEY |
+| user_id | bigint | NOT NULL, REFERENCES users(id) ON DELETE CASCADE |
+| timezone | varchar | NOT NULL DEFAULT 'UTC' |
+| locale | varchar | |
 
 Indexes:
 - UNIQUE on `user_id`
@@ -103,6 +114,6 @@ Indexes:
 
 | Delete | Cascades to |
 |---|---|
-| users | user_profiles, credentials, maps |
+| users | user_profiles, user_preferences, credentials, maps |
 | maps | generations |
 | generations | uploads |
