@@ -295,19 +295,19 @@ export const UploadModal = (props: { isGuest: boolean }) => {
                       <li>
                         <span class="icon-text">
                           <span class="icon"><i class="fa-brands fa-windows"></i></span>
-                          <span><code>C:\Users\&lt;username&gt;\AppData\Roaming\Factorio\script-output\mapshot\map-abcd1234\d-abcd1234\</code></span>
+                          <span><code>C:\Users\<var>username</var>\AppData\Roaming\Factorio\script-output\mapshot\<var>map-abcd1234</var>\<var>d-abcd1234</var>\</code></span>
                         </span>
                       </li>
                       <li>
                         <span class="icon-text">
                           <span class="icon"><i class="fa-brands fa-apple"></i></span>
-                          <span><code>~/Library/Application Support/factorio/script-output/mapshot/map-abcd1234/d-abcd1234/</code></span>
+                          <span><code>~/Library/Application Support/factorio/script-output/mapshot/<var>map-abcd1234</var>/<var>d-abcd1234</var>/</code></span>
                         </span>
                       </li>
                       <li>
                         <span class="icon-text">
                           <span class="icon"><i class="fa-brands fa-linux"></i></span>
-                          <span><code>~/.factorio/script-output/mapshot/map-abcd1234/d-abcd1234/</code></span>
+                          <span><code>~/.factorio/script-output/mapshot/<var>map-abcd1234</var>/<var>d-abcd1234</var>/</code></span>
                         </span>
                       </li>
                     </ul>
