@@ -39,7 +39,7 @@
             <span>Timezone</span>
           </span>
         </label>
-        <div class="control">
+        <div class="control is-flex is-align-items-center">
           <div class="select">
             <select id="timezone-select" name="timezone">
               <% timezone_identifiers.group_by { |tz| tz.include?("/") ? tz.split("/").first : "Other" }.each do |region, tzs| %>
