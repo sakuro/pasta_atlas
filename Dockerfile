@@ -10,7 +10,8 @@ RUN apt-get update -qq && \
       build-essential \
       curl \
       gnupg \
-      libpq-dev && \
+      libpq-dev \
+      libyaml-dev && \
     curl -fsSL https://deb.nodesource.com/setup_${NODE_MAJOR}.x | bash - && \
     apt-get install -y --no-install-recommends nodejs && \
     rm -rf /var/lib/apt/lists/*
@@ -28,7 +29,12 @@ RUN npm ci
 
 COPY . .
 
-RUN bundle exec hanami assets compile && \
+RUN SESSION_SECRET=dummy \
+    GITHUB_CLIENT_ID=dummy \
+    GITHUB_CLIENT_SECRET=dummy \
+    S3_BUCKET=dummy \
+    CLOUDFRONT_BASE_URL=https://dummy.example.com \
+    bundle exec hanami assets compile && \
     npm run build:islands
 
 # ---- Runtime: minimal image with pre-built artifacts ----
