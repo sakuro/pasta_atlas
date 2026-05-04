@@ -84,13 +84,11 @@ resource "aws_lb_listener" "http" {
   port              = 80
   protocol          = "HTTP"
 
+  # Forward instead of redirect: CloudFront connects to this port and handles
+  # HTTPS enforcement for viewers.
   default_action {
-    type = "redirect"
-    redirect {
-      port        = "443"
-      protocol    = "HTTPS"
-      status_code = "HTTP_301"
-    }
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.app.arn
   }
 }
 

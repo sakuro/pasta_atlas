@@ -73,3 +73,8 @@ variable "app_desired_count" {
   type    = number
   default = 1
 }
+
+variable "cloudfront_price_class" {
+  type    = string
+  default = "PriceClass_100"
+}

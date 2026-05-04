@@ -3,5 +3,5 @@ resource "gandi_livedns_record" "app" {
   name   = trimsuffix(var.app_domain_name, ".layer8.works")
   type   = "CNAME"
   ttl    = 300
-  values = ["${aws_lb.app.dns_name}."]
+  values = ["${aws_cloudfront_distribution.app.domain_name}."]
 }

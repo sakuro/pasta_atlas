@@ -69,17 +69,19 @@ module "backend" {
   source = "../../module/backend"
 
   providers = {
-    aws   = aws
-    gandi = gandi
+    aws           = aws
+    aws.us_east_1 = aws.us_east_1
+    gandi         = gandi
   }
 
-  app_name            = "pasta-atlas"
-  environment         = "production"
-  app_domain_name     = "pasta-atlas.layer8.works"
-  s3_bucket_name      = module.mapshots.s3_bucket_name
-  s3_bucket_arn       = module.mapshots.s3_bucket_arn
-  cloudfront_base_url = module.mapshots.cloudfront_domain_name
-  db_password         = var.db_password
-  db_instance_class   = var.db_instance_class
-  db_allocated_storage = var.db_allocated_storage
+  app_name               = "pasta-atlas"
+  environment            = "production"
+  app_domain_name        = "pasta-atlas.layer8.works"
+  s3_bucket_name         = module.mapshots.s3_bucket_name
+  s3_bucket_arn          = module.mapshots.s3_bucket_arn
+  cloudfront_base_url    = module.mapshots.cloudfront_domain_name
+  cloudfront_price_class = var.cloudfront_price_class
+  db_password            = var.db_password
+  db_instance_class      = var.db_instance_class
+  db_allocated_storage   = var.db_allocated_storage
 }
