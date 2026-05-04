@@ -9,9 +9,9 @@
   </div>
   <div class="media-content">
     <% if thumbnail_url %>
-      <figure class="image is-square mb-2">
+      <figure class="image is-square mb-2" style="width: 96px">
         <a href="/@<%= user_name %>/maps/<%= map_ulid %>">
-          <img src="<%= thumbnail_url %>" alt="<%= map_display_name %>">
+          <img src="<%= thumbnail_url %>" alt="<%= map_display_name %>" width="96" height="96">
         </a>
       </figure>
     <% end %>
