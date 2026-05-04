@@ -275,14 +275,6 @@ export const UploadModal = (props: { isGuest: boolean }) => {
             <section class="modal-card-body">
               <Show when={state().type === "instructions"}>
                 <div class="content">
-                  <Show when={props.isGuest}>
-                    <div class="notification is-warning is-light">
-                      <span class="icon-text">
-                        <span class="icon"><i class="fa-solid fa-triangle-exclamation"></i></span>
-                        <span>Uploads from guest accounts are deleted after approximately one week.</span>
-                      </span>
-                    </div>
-                  </Show>
                   <p>
                     <span class="icon-text">
                       <span class="icon"><i class="fa-solid fa-folder-open"></i></span>
@@ -318,6 +310,14 @@ export const UploadModal = (props: { isGuest: boolean }) => {
                       <span>You can upload different generations of an existing map.</span>
                     </span>
                   </p>
+                  <Show when={props.isGuest}>
+                    <p>
+                      <span class="icon-text">
+                        <span class="icon"><i class="fa-solid fa-triangle-exclamation"></i></span>
+                        <span>Uploads from guest accounts are deleted <strong>after approximately one week</strong>.</span>
+                      </span>
+                    </p>
+                  </Show>
                 </div>
               </Show>
               <Show when={confirmingState()} keyed>
