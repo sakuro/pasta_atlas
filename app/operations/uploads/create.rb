@@ -6,8 +6,8 @@ module PastaAtlas
   module Operations
     module Uploads
       class Create < PastaAtlas::Operation
-        # Must match the S3 lifecycle expiration for the guest/ prefix.
-        GUEST_TTL_DAYS = 8
+        # One day shorter than the S3 lifecycle (8 days) so DB records are cleaned up before S3 objects disappear.
+        GUEST_TTL_DAYS = 7
         private_constant :GUEST_TTL_DAYS
 
         include Deps[

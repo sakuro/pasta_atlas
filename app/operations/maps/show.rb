@@ -14,12 +14,17 @@ module PastaAtlas
           map = step find_map(ulid)
           user = user_repo.find_by_id(map.user_id)
           generations = generation_repo.find_complete_by_map_id(map.id)
+          step check_has_generations(generations)
           {map:, user:, generations:}
         end
 
         private def find_map(ulid)
           map = map_repo.find_by_ulid(ulid)
           map ? Success(map) : Failure(:not_found)
+        end
+
+        private def check_has_generations(generations)
+          generations.any? ? Success(generations) : Failure(:not_found)
         end
       end
     end

@@ -45,7 +45,7 @@ RSpec.describe PastaAtlas::Operations::Uploads::Create, :db do
           ).id,
           mapshot_unique_id: metadata["unique_id"]
         )
-        expect(generation.expires_at).to be_within(60).of(Time.now + (8 * 86400))
+        expect(generation.expires_at).to be_within(60).of(Time.now + (7 * 86400))
       end
     end
 

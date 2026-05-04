@@ -5,6 +5,9 @@ require "ulid"
 module PastaAtlas
   module Repos
     class MapRepo < PastaAtlas::DB::Repo
+      NOT_EXPIRED_GENERATION = Sequel.lit("(generations.expires_at IS NULL OR generations.expires_at > NOW())")
+      private_constant :NOT_EXPIRED_GENERATION
+
       def find_by_id(id) = maps.where(id:).one!
       def find_by_ulid(ulid) = maps.where(ulid:).one
 
@@ -12,6 +15,7 @@ module PastaAtlas
         ordered_ids = uploads
           .where(status: "complete")
           .join(:generations, id: :generation_id)
+          .where(NOT_EXPIRED_GENERATION)
           .group(Sequel[:generations][:map_id])
           .order(Sequel.desc(Sequel.function(:max, Sequel[:uploads][:completed_at])))
           .offset((page - 1) * per_page)
@@ -28,6 +32,7 @@ module PastaAtlas
         uploads
           .where(status: "complete")
           .join(:generations, id: :generation_id)
+          .where(NOT_EXPIRED_GENERATION)
           .dataset
           .unordered
           .select(Sequel[:generations][:map_id])
@@ -42,6 +47,7 @@ module PastaAtlas
         ordered_ids = uploads
           .where(status: "complete")
           .join(:generations, id: :generation_id)
+          .where(NOT_EXPIRED_GENERATION)
           .where(Sequel[:generations][:map_id] => user_map_ids)
           .group(Sequel[:generations][:map_id])
           .order(Sequel.desc(Sequel.function(:max, Sequel[:uploads][:completed_at])))

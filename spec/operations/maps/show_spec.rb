@@ -41,5 +41,20 @@ RSpec.describe PastaAtlas::Operations::Maps::Show do
         expect(result.failure).to eq(:not_found)
       end
     end
+
+    context "when all generations have expired" do
+      before do
+        allow(map_repo).to receive(:find_by_ulid).with("01MAP1").and_return(map)
+        allow(user_repo).to receive(:find_by_id).with(1).and_return(user)
+        allow(generation_repo).to receive(:find_complete_by_map_id).with(1).and_return([])
+      end
+
+      it "returns failure with :not_found" do
+        result = operation.call(ulid: "01MAP1")
+
+        expect(result).to be_failure
+        expect(result.failure).to eq(:not_found)
+      end
+    end
   end
 end
