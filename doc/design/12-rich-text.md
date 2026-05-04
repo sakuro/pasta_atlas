@@ -89,33 +89,35 @@ Special cases:
 
 ## Icon Assets
 
-Sprites are stored under `public/assets/factorio-icons/{type}/{name}.png` and served as static files.
+Sprites are tracked in `app/assets/images/factorio-icons/{type}/{name}.png` and processed by Vite at build time — no manual copy step is needed.
 
-`richtext-icons.css` (imported by `richtext.css`) maps each sprite to its CSS class:
+`richtext-icons.css` (imported by `richtext.css`) maps each sprite to its CSS class using relative paths:
 
 ```css
-.factorio-item--iron-ore        { background-image: url('/assets/factorio-icons/item/iron-ore.png'); }
-.factorio-img--item-iron-ore    { background-image: url('/assets/factorio-icons/item/iron-ore.png'); }
-.factorio-planet--nauvis        { background-image: url('/assets/factorio-icons/space-location/nauvis.png'); }
+.factorio-item--iron-ore        { background-image: url('../../../app/assets/images/factorio-icons/item/iron-ore.png'); }
+.factorio-img--item-iron-ore    { background-image: url('../../../app/assets/images/factorio-icons/item/iron-ore.png'); }
+.factorio-planet--nauvis        { background-image: url('../../../app/assets/images/factorio-icons/space-location/nauvis.png'); }
 ```
+
+Vite rewrites these relative paths during bundling and emits the PNG files alongside the built CSS. `vite.config.ts` sets `assetsInlineLimit: 0` to prevent small sprites from being base64-inlined.
 
 ### Regenerating CSS
 
-Run from the project root after updating sprites:
+Run from the project root after adding or removing sprites:
 
 ```bash
 {
-  echo "/* Auto-generated from public/assets/factorio-icons — do not edit manually */"
-  for dir in public/assets/factorio-icons/*/; do
+  echo "/* Auto-generated from app/assets/images/factorio-icons — do not edit manually */"
+  for dir in app/assets/images/factorio-icons/*/; do
     type="${dir%/}"; type="${type##*/}"
     for file in "$dir"*.png; do
       [ -f "$file" ] || continue
       name="${file%.png}"; name="${name##*/}"
-      echo ".factorio-${type}--${name}{background-image:url('/assets/factorio-icons/${type}/${name}.png')}"
-      echo ".factorio-img--${type}-${name}{background-image:url('/assets/factorio-icons/${type}/${name}.png')}"
+      echo ".factorio-${type}--${name}{background-image:url('../../../app/assets/images/factorio-icons/${type}/${name}.png')}"
+      echo ".factorio-img--${type}-${name}{background-image:url('../../../app/assets/images/factorio-icons/${type}/${name}.png')}"
       if [ "$type" = "space-location" ]; then
-        echo ".factorio-planet--${name}{background-image:url('/assets/factorio-icons/space-location/${name}.png')}"
-        echo ".factorio-img--planet-${name}{background-image:url('/assets/factorio-icons/space-location/${name}.png')}"
+        echo ".factorio-planet--${name}{background-image:url('../../../app/assets/images/factorio-icons/space-location/${name}.png')}"
+        echo ".factorio-img--planet-${name}{background-image:url('../../../app/assets/images/factorio-icons/space-location/${name}.png')}"
       fi
     done
   done
@@ -130,4 +132,4 @@ Run from the project root after updating sprites:
 | `frontend/islands/map_viewer/richtext.test.ts` | Vitest unit tests |
 | `frontend/islands/map_viewer/richtext.css` | Base `.factorio-icon` styles; imports `richtext-icons.css` |
 | `frontend/islands/map_viewer/richtext-icons.css` | Generated `background-image` mappings (do not edit manually) |
-| `public/assets/factorio-icons/` | Sprite PNG files |
+| `app/assets/images/factorio-icons/` | Sprite PNG source files (git-tracked; Vite processes at build time) |

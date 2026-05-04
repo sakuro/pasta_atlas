@@ -4,7 +4,9 @@ import solid from "vite-plugin-solid";
 export default defineConfig({
   plugins: [solid()],
   publicDir: false,
+  base: "/assets/islands/",
   build: {
+    assetsInlineLimit: 0,
     manifest: true,
     outDir: "public/assets/islands",
     emptyOutDir: true,
