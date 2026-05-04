@@ -55,7 +55,12 @@ module PastaAtlas
       end
 
       def find_or_create_by_user_and_mapshot_id(user_id:, mapshot_map_id:, savename: "", name: nil)
-        maps.dataset.insert_conflict(target: %i[user_id mapshot_map_id]).insert(
+        conflict_opts = if name
+          {target: %i[user_id mapshot_map_id], update: {name:}}
+        else
+          {target: %i[user_id mapshot_map_id]}
+        end
+        maps.dataset.insert_conflict(**conflict_opts).insert(
           user_id:, mapshot_map_id:, ulid: ULID.generate, savename:, name:
         )
         maps.by_user_and_mapshot_id(user_id, mapshot_map_id).one!

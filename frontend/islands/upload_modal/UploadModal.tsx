@@ -69,6 +69,7 @@ const relPath = (file: File): string =>
 
 export const UploadModal = () => {
   const [state, setState] = createSignal<State>({ type: "idle" });
+  const [displayName, setDisplayName] = createSignal("");
   let inputRef!: HTMLInputElement;
 
   const openModal = () => {
@@ -105,6 +106,7 @@ export const UploadModal = () => {
     const fileMap = new Map<string, File>();
     for (const f of imageFiles) fileMap.set(relPath(f), f);
 
+    setDisplayName(resolveDisplayName(mapshotJson));
     setState({
       type: "confirming",
       mapshotJson,
@@ -130,7 +132,7 @@ export const UploadModal = () => {
       const resp = await fetch("/api/v1/uploads", {
         method: "POST",
         headers: jsonHeaders(),
-        body: JSON.stringify({ metadata: mapshotJson, total_image_count: imageCount }),
+        body: JSON.stringify({ metadata: mapshotJson, total_image_count: imageCount, name: displayName() || null }),
       });
       if (resp.status === 409) {
         setState({ type: "error", message: "This generation has already been uploaded." });
@@ -315,8 +317,16 @@ export const UploadModal = () => {
                   <table class="table is-fullwidth">
                     <tbody>
                       <tr>
-                        <th><span class="icon-text"><span class="icon"><i class="fa-solid fa-map"></i></span><span>Map</span></span></th>
-                        <td>{s.mapName}</td>
+                        <th><span class="icon-text"><span class="icon"><i class="fa-solid fa-map"></i></span><span>Map title</span></span></th>
+                        <td>
+                          <input
+                            class="input"
+                            type="text"
+                            value={displayName()}
+                            placeholder={s.mapName}
+                            onInput={(e) => setDisplayName(e.currentTarget.value)}
+                          />
+                        </td>
                       </tr>
                       <tr>
                         <th><span class="icon-text"><span class="icon"><i class="fa-solid fa-layer-group"></i></span><span>Surfaces</span></span></th>

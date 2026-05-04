@@ -15,7 +15,7 @@ module PastaAtlas
           s3_client: "s3.client"
         ]
 
-        def call(user_id:, metadata:, total_image_count:)
+        def call(user_id:, metadata:, total_image_count:, name: nil)
           mapshot_map_id = metadata["map_id"]
           mapshot_unique_id = metadata["unique_id"]
           tick = Integer(metadata["tick"])
@@ -25,7 +25,7 @@ module PastaAtlas
             user_id:,
             mapshot_map_id:,
             savename: metadata.fetch("savename", "").to_s,
-            name: metadata["name"]
+            name:
           )
 
           step within_transaction(

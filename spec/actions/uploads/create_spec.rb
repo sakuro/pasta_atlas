@@ -18,6 +18,7 @@ RSpec.describe PastaAtlas::Actions::Uploads::Create, :db do
   let(:action_params) do
     {metadata: {map_id: "ae8ec3ab", unique_id: "550f41a9", tick: "1000"}, total_image_count: 5}
   end
+  let(:action_params_with_name) { action_params.merge(name: "My Map") }
 
   context "when no session and no guest user" do
     before { allow(user_repo).to receive(:find_by_name).with("guest").and_return(nil) }
@@ -47,6 +48,24 @@ RSpec.describe PastaAtlas::Actions::Uploads::Create, :db do
         expect(response.status).to eq(201)
         body = JSON.parse(response.body.join)
         expect(body).to include("ulid" => "01UPLOAD", "map_ulid" => "01MAP", "generation_ulid" => "01GEN")
+      end
+
+      it "passes name to the operation when provided" do
+        action.call(session.merge(action_params_with_name))
+
+        expect(create_upload).to have_received(:call).with(hash_including(name: "My Map"))
+      end
+
+      it "passes nil name to the operation when not provided" do
+        action.call(session.merge(action_params))
+
+        expect(create_upload).to have_received(:call).with(hash_including(name: nil))
+      end
+
+      it "passes nil name to the operation when name is empty" do
+        action.call(session.merge(action_params.merge(name: "")))
+
+        expect(create_upload).to have_received(:call).with(hash_including(name: nil))
       end
     end
 
