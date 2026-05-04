@@ -1,6 +1,7 @@
 import { createResource, createSignal, createMemo, Show, Suspense, For, onMount, onCleanup } from "solid-js";
 import L from "leaflet";
 import { MapInfoModal, formatTicks, type Mapshot as MapInfoMapshot } from "../../components/MapInfoModal";
+import { ShareButtons } from "../share_buttons/ShareButtons";
 import { renderRichText } from "./richtext";
 import "leaflet/dist/leaflet.css";
 import "./richtext.css";
@@ -64,6 +65,9 @@ interface Mapshot extends MapInfoMapshot {
 }
 
 interface MapData {
+  ulid: string;
+  display_name: string;
+  owner: { name: string };
   generations: Generation[];
 }
 
@@ -141,6 +145,10 @@ export const MapViewer = (props: { ulid: string }) => {
                 <span class="icon is-small"><i class="fa-solid fa-circle-info"></i></span>
               </button>
             </Show>
+            <ShareButtons
+              mapPath={`/@${data().owner.name}/maps/${data().ulid}`}
+              mapName={data().display_name}
+            />
           </div>
         )}
       </Show>

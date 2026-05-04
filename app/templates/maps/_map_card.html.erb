@@ -26,9 +26,11 @@
     </div>
   </div>
   <footer class="card-footer">
-    <div class="map-info-button-mount card-footer-item" data-metadata-url="<%= metadata_url %>"></div>
-    <div class="share-buttons-mount card-footer-item"
-         data-map-path="/@<%= user_name %>/maps/<%= map_ulid %>"
-         data-map-name="<%= map_display_name %>"></div>
+    <div class="card-footer-item" style="gap:0.5rem">
+      <div class="map-info-button-mount" data-metadata-url="<%= metadata_url %>"></div>
+      <div class="share-buttons-mount"
+           data-map-path="/@<%= user_name %>/maps/<%= map_ulid %>"
+           data-map-name="<%= map_display_name %>"></div>
+    </div>
   </footer>
 </div>

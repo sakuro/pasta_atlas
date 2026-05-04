@@ -26,17 +26,17 @@ export const ShareButtons = (props: Props) => {
   };
 
   return (
-    <div class="is-flex" style="gap:0.75rem">
-      <a href={xUrl()} target="_blank" rel="noopener noreferrer" title="Share on X">
+    <div class="buttons has-addons">
+      <a class="button is-small" href={xUrl()} target="_blank" rel="noopener noreferrer" title="Share on X">
         <span class="icon is-small"><i class="fa-brands fa-x-twitter"></i></span>
       </a>
-      <a href={bskyUrl()} target="_blank" rel="noopener noreferrer" title="Share on Bluesky">
+      <a class="button is-small" href={bskyUrl()} target="_blank" rel="noopener noreferrer" title="Share on Bluesky">
         <span class="icon is-small"><i class="fa-brands fa-bluesky"></i></span>
       </a>
-      <a href={redditUrl()} target="_blank" rel="noopener noreferrer" title="Share on Reddit">
+      <a class="button is-small" href={redditUrl()} target="_blank" rel="noopener noreferrer" title="Share on Reddit">
         <span class="icon is-small"><i class="fa-brands fa-reddit-alien"></i></span>
       </a>
-      <a role="button" onClick={handleCopy} title="Copy link">
+      <a class="button is-small" role="button" onClick={handleCopy} title="Copy link">
         <span class="icon is-small">
           <i class={copied() ? "fa-solid fa-check" : "fa-solid fa-link"}></i>
         </span>
