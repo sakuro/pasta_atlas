@@ -1,0 +1,16 @@
+@import "./richtext-icons.css";
+
+.factorio-icon {
+  display: inline-block;
+  font-style: normal;
+  width: 1.25em;
+  height: 1.25em;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  vertical-align: middle;
+  /* Hides the preserved original value text while keeping it in the DOM.
+   * color: transparent (not font-size: 0) so em units remain relative to parent font-size. */
+  color: transparent;
+  overflow: hidden;
+}

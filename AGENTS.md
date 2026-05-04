@@ -84,3 +84,4 @@ Detailed design documents are in `doc/design/`:
 | 09 | [Frontend Styling](doc/design/09-frontend-styling.md) |
 | 10 | [Infrastructure](doc/design/10-infrastructure.md) |
 | 11 | [Local Development](doc/design/11-local-development.md) |
+| 12 | [Factorio Rich Text](doc/design/12-rich-text.md) |

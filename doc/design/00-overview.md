@@ -33,3 +33,4 @@ Pasta Atlas is a web application for uploading and browsing Factorio map screens
 | 09 | [Frontend Styling](09-frontend-styling.md) |
 | 10 | [Infrastructure](10-infrastructure.md) |
 | 11 | [Local Development](11-local-development.md) |
+| 12 | [Factorio Rich Text](12-rich-text.md) |

@@ -1,7 +1,9 @@
 import { createResource, createSignal, createMemo, Show, Suspense, For, onMount, onCleanup } from "solid-js";
 import L from "leaflet";
 import { MapInfoModal, formatTicks, type Mapshot as MapInfoMapshot } from "../../components/MapInfoModal";
+import { renderRichText } from "./richtext";
 import "leaflet/dist/leaflet.css";
+import "./richtext.css";
 import "leaflet.zoomslider";
 import "leaflet-control-boxzoom";
 import zoomsliderCss from "leaflet.zoomslider/src/L.Control.Zoomslider.css?raw";
@@ -202,7 +204,7 @@ const LeafletMap = (props: { mapshot: Mapshot; assetBase: string }) => {
     const tagMarkers: Record<string, L.Marker[]> = {};
 
     for (const surface of surfaces) {
-      const label = surfaceLabel(surface);
+      const label = renderRichText(surfaceLabel(surface));
       const toLL = (x: number, y: number) => worldToLatLng(surface, x, y);
       const bounds = L.latLngBounds(
         toLL(surface.world_min.x, surface.world_min.y),
@@ -224,7 +226,7 @@ const LeafletMap = (props: { mapshot: Mapshot; assetBase: string }) => {
       stationMarkers[label] = stationsArray.map((s) => {
         const cx = (s.bounding_box.left_top.x + s.bounding_box.right_bottom.x) / 2;
         const cy = (s.bounding_box.left_top.y + s.bounding_box.right_bottom.y) / 2;
-        return L.marker(toLL(cx, cy)).bindPopup(s.backer_name);
+        return L.marker(toLL(cx, cy)).bindPopup(renderRichText(s.backer_name));
       });
       tagMarkers[label] = Object.values(surface.tags ?? {})
         .filter((t) => t?.position != null)
@@ -240,7 +242,7 @@ const LeafletMap = (props: { mapshot: Mapshot; assetBase: string }) => {
 
     // Activate initial surface
     const initSurface = surfaces[initSurfaceIdx] ?? surfaces[defaultSurfaceIdx];
-    const initLabel = surfaceLabel(initSurface);
+    const initLabel = renderRichText(surfaceLabel(initSurface));
 
     baseLayers[initLabel].addTo(map);
     populateOverlays(initLabel);
@@ -272,7 +274,7 @@ const LeafletMap = (props: { mapshot: Mapshot; assetBase: string }) => {
     let currentSurface = initSurface;
 
     map.on("baselayerchange", (e: L.LayersControlEvent) => {
-      const idx = surfaces.findIndex((s) => surfaceLabel(s) === e.name);
+      const idx = surfaces.findIndex((s) => renderRichText(surfaceLabel(s)) === e.name);
       currentSurface = surfaces[idx] ?? initSurface;
       populateOverlays(e.name);
       map.setMinZoom(currentSurface.zoom_min);

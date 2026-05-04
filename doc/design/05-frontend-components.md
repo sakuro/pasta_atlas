@@ -127,7 +127,7 @@ worldToLatLng(x, y) {
 }
 ```
 
-Station markers: `backer_name` is used as-is. Factorio rich text parsing is out of scope.
+Station markers: `backer_name` is parsed via `renderRichText()` (`richtext.ts`) before being passed to Leaflet's `bindPopup`. Icon tags become `<i>` elements with CSS class names; wrapping tags become `<span>` elements. Unknown tags are escaped and output as literal text.
 
 URL sync (via `history.replaceState`):
 - `baselayerchange` → update `?s=`
