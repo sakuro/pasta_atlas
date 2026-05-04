@@ -312,6 +312,12 @@ export const UploadModal = (props: { isGuest: boolean }) => {
                       </li>
                     </ul>
                   </div>
+                  <p>
+                    <span class="icon-text">
+                      <span class="icon"><i class="fa-solid fa-timeline"></i></span>
+                      <span>You can upload different generations of an existing map.</span>
+                    </span>
+                  </p>
                 </div>
               </Show>
               <Show when={confirmingState()} keyed>
