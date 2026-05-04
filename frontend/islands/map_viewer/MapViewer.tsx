@@ -188,7 +188,7 @@ export const MapViewer = (props: { ulid: string }) => {
                 <table class="table is-fullwidth">
                   <tbody>
                     <Show when={mapshot()!.seed != null}>
-                      <tr><th class="map-info-label"><span class="icon-text"><span class="icon"><i class="fa-solid fa-seedling"></i></span><span>Seed</span></span></th><td>{mapshot()!.seed}<CopyButton text={String(mapshot()!.seed)} /></td></tr>
+                      <tr><th class="map-info-label"><span class="icon-text"><span class="icon"><i class="fa-solid fa-seedling"></i></span><span>Map seed</span></span></th><td>{mapshot()!.seed}<CopyButton text={String(mapshot()!.seed)} /></td></tr>
                     </Show>
                     <Show when={mapshot()!.map_exchange}>
                       <tr>
