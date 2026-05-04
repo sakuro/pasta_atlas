@@ -15,9 +15,9 @@ export const MapInfoButton = (props: { metadataUrl: string }) => {
 
   return (
     <>
-      <button class="button is-small" onClick={handleOpen}>
+      <a role="button" onClick={handleOpen}>
         <span class="icon is-small"><i class="fa-solid fa-circle-info"></i></span>
-      </button>
+      </a>
       <Show when={show() && mapshot()}>
         <MapInfoModal mapshot={mapshot()!} onClose={() => setShow(false)} />
       </Show>

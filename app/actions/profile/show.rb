@@ -24,6 +24,9 @@ module PastaAtlas
             url = "#{settings.cloudfront_base_url}/#{g.metadata_s3_key.sub("mapshot.json", "s1zoom_4/tile_0_0.jpg")}"
             [id_to_ulid[map_id], url]
           }
+          metadata_urls_by_map_ulid = latest_generations.to_h {|map_id, g|
+            [id_to_ulid[map_id], "#{settings.cloudfront_base_url}/#{g.metadata_s3_key}"]
+          }
 
           avatar_url = profile.avatar_s3_key ? "#{settings.cloudfront_base_url}/#{profile.avatar_s3_key}" : nil
 
@@ -33,7 +36,8 @@ module PastaAtlas
             own_profile:,
             avatar_url:,
             recent_maps:,
-            thumbnail_urls_by_map_ulid:
+            thumbnail_urls_by_map_ulid:,
+            metadata_urls_by_map_ulid:
         end
       end
     end

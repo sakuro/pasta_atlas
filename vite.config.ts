@@ -16,6 +16,7 @@ export default defineConfig({
         upload_modal: "frontend/islands/upload_modal/index.tsx",
         avatar_upload: "frontend/islands/avatar_upload/index.tsx",
         map_info_button: "frontend/islands/map_info_button/index.tsx",
+        share_buttons: "frontend/islands/share_buttons/index.tsx",
       },
       output: {
         entryFileNames: "[name]-[hash].js",

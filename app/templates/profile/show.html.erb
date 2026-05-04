@@ -34,10 +34,13 @@
                   author_display_name: display_name || user_name.to_s,
                   author_avatar_url: avatar_url,
                   thumbnail_url: thumbnail_urls_by_map_ulid[map.ulid],
-                  metadata_url: nil %>
+                  metadata_url: metadata_urls_by_map_ulid[map.ulid] %>
           </div>
         <% end %>
       </div>
+
+      <script src="<%= island_src("map_info_button") %>" type="module"></script>
+      <script src="<%= island_src("share_buttons") %>" type="module"></script>
     </div>
   <% end %>
 </section>

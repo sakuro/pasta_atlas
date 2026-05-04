@@ -1,27 +1,34 @@
-<article class="media box">
-  <div class="media-left">
-    <a href="/@<%= user_name %>/profile">
-      <%= render "shared/avatar", avatar_url: author_avatar_url, avatar_size: 48 %>
-    </a>
-    <p class="is-size-7 has-text-grey mt-1">
-      <a href="/@<%= user_name %>/profile"><%= author_display_name %></a>
-    </p>
-  </div>
-  <div class="media-content">
-    <% if thumbnail_url %>
-      <figure class="image is-square mb-2" style="width: 96px">
+<div class="card">
+  <% if thumbnail_url %>
+    <div class="card-image">
+      <figure class="image is-square">
         <a href="/@<%= user_name %>/maps/<%= map_ulid %>">
-          <img src="<%= thumbnail_url %>" alt="<%= map_display_name %>" width="96" height="96">
+          <img src="<%= thumbnail_url %>" alt="<%= map_display_name %>">
         </a>
       </figure>
-    <% end %>
-    <p class="title is-6">
-      <a href="/@<%= user_name %>/maps/<%= map_ulid %>"><%= map_display_name %></a>
-    </p>
-  </div>
-  <% if metadata_url %>
-    <div class="media-right">
-      <div class="map-info-button-mount" data-metadata-url="<%= metadata_url %>"></div>
     </div>
   <% end %>
-</article>
+  <div class="card-content">
+    <div class="media">
+      <div class="media-left">
+        <a href="/@<%= user_name %>/profile">
+          <%= render "shared/avatar", avatar_url: author_avatar_url, avatar_size: 32 %>
+        </a>
+      </div>
+      <div class="media-content">
+        <p class="title is-6">
+          <a href="/@<%= user_name %>/maps/<%= map_ulid %>"><%= map_display_name %></a>
+        </p>
+        <p class="subtitle is-7">
+          <a href="/@<%= user_name %>/profile"><%= author_display_name %></a>
+        </p>
+      </div>
+    </div>
+  </div>
+  <footer class="card-footer">
+    <div class="map-info-button-mount card-footer-item" data-metadata-url="<%= metadata_url %>"></div>
+    <div class="share-buttons-mount card-footer-item"
+         data-map-path="/@<%= user_name %>/maps/<%= map_ulid %>"
+         data-map-name="<%= map_display_name %>"></div>
+  </footer>
+</div>
