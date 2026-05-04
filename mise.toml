@@ -4,8 +4,8 @@ _.path = ["bin", "node_modules/.bin"]
 COMPOSE_FILE = "docker/compose.yml"
 
 [tools]
-terraform = "1.14.3"
-"aqua:terraform-linters/tflint" = "0.60.0"
+terraform = "1.15.1"
+"aqua:terraform-linters/tflint" = "0.62.0"
 gitleaks = "latest"
 
 [tasks.default]
