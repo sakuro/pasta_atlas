@@ -28,7 +28,8 @@ module PastaAtlas
               request.session[:pending_auth] = {
                 "provider" => provider,
                 "uid" => uid,
-                "login" => info["nickname"].to_s.downcase
+                "login" => info["nickname"].to_s.downcase,
+                "avatar_url" => info["image"].to_s
               }
               response.redirect_to "/auth/register"
             end
