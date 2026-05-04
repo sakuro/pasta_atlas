@@ -1,0 +1,14 @@
+.bundle
+.git
+.github
+.rspec*
+.rubocop*
+.yardoc
+coverage
+doc
+log
+node_modules
+public/assets
+spec
+terraform
+vendor/bundle

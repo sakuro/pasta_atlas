@@ -1,7 +1,6 @@
 [env]
 _.file = [".env", ".env.development", ".env.development.local", ".env.local"]
 _.path = ["bin", "node_modules/.bin"]
-COMPOSE_FILE = "docker/compose.yml"
 
 [tools]
 terraform = "1.15.1"

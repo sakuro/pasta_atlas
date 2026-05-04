@@ -15,10 +15,11 @@ services:
     ports:
       - "5432:5432"
     environment:
+      POSTGRES_USER: pasta_atlas
+      POSTGRES_PASSWORD: pasta_atlas
       POSTGRES_HOST_AUTH_METHOD: trust
     volumes:
       - pgdata:/var/lib/postgresql
-      - ./postgres/init.sql:/docker-entrypoint-initdb.d/init.sql
 
 volumes:
   floci_data:
