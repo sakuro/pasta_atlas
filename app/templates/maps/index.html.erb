@@ -14,11 +14,13 @@
                 user_name: user.name,
                 author_display_name: profiles_by_user_id[user.id].display_name || user.name,
                 author_avatar_url: avatar_urls_by_user_id[user.id],
-                thumbnail_url: thumbnail_urls_by_map_ulid[map.ulid] %>
+                thumbnail_url: thumbnail_urls_by_map_ulid[map.ulid],
+                metadata_url: metadata_urls_by_map_ulid[map.ulid] %>
         </div>
       <% end %>
     </div>
 
+    <script src="<%= island_src("map_info_button") %>" type="module"></script>
     <nav class="pagination is-centered mt-5" role="navigation" aria-label="pagination">
       <% if page > 1 %>
         <a class="pagination-previous" href="/?page=<%= page - 1 %>">Previous</a>

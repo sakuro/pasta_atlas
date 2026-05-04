@@ -9,10 +9,15 @@
     </div>
   <% end %>
   <div class="card-content">
-    <p class="title is-6">
-      <a href="/@<%= user_name %>/maps/<%= map_ulid %>"><%= map_display_name %></a>
-    </p>
-    <p class="subtitle is-7 has-text-grey">
+    <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+      <p class="title is-6" style="margin-bottom: 0;">
+        <a href="/@<%= user_name %>/maps/<%= map_ulid %>"><%= map_display_name %></a>
+      </p>
+      <% if metadata_url %>
+        <div class="map-info-button-mount" data-metadata-url="<%= metadata_url %>"></div>
+      <% end %>
+    </div>
+    <p class="subtitle is-7 has-text-grey mt-2">
       <a href="/@<%= user_name %>/profile">
         <%= render "shared/avatar", avatar_url: author_avatar_url, avatar_size: 32 %>
         <%= author_display_name %>

@@ -26,11 +26,15 @@ module PastaAtlas
             [id_to_ulid[map_id], url]
           }
 
+          metadata_urls_by_map_ulid = latest_generations.to_h {|map_id, g|
+            [id_to_ulid[map_id], "#{settings.cloudfront_base_url}/#{g.metadata_s3_key}"]
+          }
+
           avatar_urls_by_user_id = profiles_by_user_id.transform_values {|p|
             p.avatar_s3_key ? "#{settings.cloudfront_base_url}/#{p.avatar_s3_key}" : nil
           }
 
-          {maps:, users_by_id:, profiles_by_user_id:, avatar_urls_by_user_id:, thumbnail_urls_by_map_ulid:, page:, per_page: PER_PAGE, total:}
+          {maps:, users_by_id:, profiles_by_user_id:, avatar_urls_by_user_id:, thumbnail_urls_by_map_ulid:, metadata_urls_by_map_ulid:, page:, per_page: PER_PAGE, total:}
         end
       end
     end
