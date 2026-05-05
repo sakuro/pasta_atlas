@@ -7,7 +7,8 @@ module PastaAtlas
 
     get "/@:user_name", to: "user.show"
     get "/@:user_name/edit", to: "user.edit"
-    patch "/@:user_name", to: "user.update"
+    patch "/@:user_name/profile", to: "user.profile.update"
+    patch "/@:user_name/preferences", to: "user.preferences.update"
     patch "/@:user_name/avatar", to: "user.avatar.update"
     delete "/@:user_name/avatar", to: "user.avatar.destroy"
 

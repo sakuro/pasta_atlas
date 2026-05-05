@@ -21,6 +21,7 @@ module PastaAtlas
             display_name: profile.display_name.to_s,
             timezone: preference.timezone,
             timezone_identifiers:,
+            locale: preference.locale,
             avatar_url:
         end
       end

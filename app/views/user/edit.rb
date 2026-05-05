@@ -4,7 +4,7 @@ module PastaAtlas
   module Views
     module User
       class Edit < Hanami::View
-        expose :display_name, :timezone, :timezone_identifiers, :error, :avatar_url
+        expose :display_name, :timezone, :timezone_identifiers, :locale, :error, :avatar_url
       end
     end
   end

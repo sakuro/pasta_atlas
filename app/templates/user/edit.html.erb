@@ -1,67 +1,108 @@
 <section class="section">
   <div class="container is-max-tablet">
-    <h1 class="title">Edit Profile</h1>
-    <% if error %>
-      <div class="notification is-danger is-light"><%= error %></div>
-    <% end %>
-    <form action="/@<%= current_user_name %>" method="post">
-      <input type="hidden" name="_method" value="patch">
-      <input type="hidden" name="_csrf_token" value="<%= csrf_token %>">
-      <div class="field">
-        <p class="label">
-          <span class="icon-text">
-            <span class="icon"><i class="fa-solid fa-user"></i></span>
-            <span>Avatar</span>
-          </span>
-        </p>
-        <div class="control" id="avatar-upload"
-             data-current-avatar-url="<%= avatar_url %>"
-             data-user-name="<%= current_user_name %>"></div>
-      </div>
-      <div class="field">
-        <label class="label" for="display_name">
-          <span class="icon-text">
-            <span class="icon"><i class="fa-solid fa-address-card"></i></span>
-            <span>Display name</span>
-          </span>
-        </label>
-        <div class="control">
-          <input class="input" type="text" id="display_name" name="display_name"
-                 value="<%= display_name %>"
-                 maxlength="64">
+    <h1 class="title">Edit</h1>
+    <div class="tabs" data-tabs="user-edit">
+      <ul>
+        <li data-target="edit-profile" class="is-active"><a>Profile</a></li>
+        <li data-target="edit-preferences"><a>Preferences</a></li>
+      </ul>
+    </div>
+
+    <div id="edit-profile" data-tab-panel="user-edit">
+      <% if error %>
+        <div class="notification is-danger is-light"><%= error %></div>
+      <% end %>
+      <form action="/@<%= current_user_name %>/profile" method="post">
+        <input type="hidden" name="_method" value="patch">
+        <input type="hidden" name="_csrf_token" value="<%= csrf_token %>">
+        <div class="field">
+          <p class="label">
+            <span class="icon-text">
+              <span class="icon"><i class="fa-solid fa-user"></i></span>
+              <span>Avatar</span>
+            </span>
+          </p>
+          <div class="control" id="avatar-upload"
+               data-current-avatar-url="<%= avatar_url %>"
+               data-user-name="<%= current_user_name %>"></div>
         </div>
-        <p class="help">Up to 64 characters. Leave blank to use your username.</p>
-      </div>
-      <div class="field">
-        <label class="label" for="timezone-select">
-          <span class="icon-text">
-            <span class="icon"><i class="fa-solid fa-clock"></i></span>
-            <span>Timezone</span>
-          </span>
-        </label>
-        <div class="control is-flex is-align-items-center">
-          <div class="select">
-            <select id="timezone-select" name="timezone">
-              <% timezone_identifiers.group_by { |tz| tz.include?("/") ? tz.split("/").first : "Other" }.each do |region, tzs| %>
-                <optgroup label="<%= region %>">
-                  <% tzs.each do |tz| %>
-                    <option value="<%= tz %>"<%= " selected" if tz.to_s == timezone.to_s %>><%= tz %></option>
-                  <% end %>
-                </optgroup>
-              <% end %>
-            </select>
+        <div class="field">
+          <label class="label" for="display_name">
+            <span class="icon-text">
+              <span class="icon"><i class="fa-solid fa-address-card"></i></span>
+              <span>Display name</span>
+            </span>
+          </label>
+          <div class="control">
+            <input class="input" type="text" id="display_name" name="display_name"
+                   value="<%= display_name %>"
+                   maxlength="64">
           </div>
-          <span class="ml-3" id="timezone-time"></span>
+          <p class="help">Up to 64 characters. Leave blank to use your username.</p>
         </div>
-      </div>
-      <div class="field">
-        <div class="control">
-          <button class="button is-primary" type="submit">
-            <span class="icon"><i class="fa-solid fa-floppy-disk"></i></span>
-            <span>Save</span>
-          </button>
+        <div class="field">
+          <div class="control">
+            <button class="button is-primary" type="submit">
+              <span class="icon"><i class="fa-solid fa-floppy-disk"></i></span>
+              <span>Save Profile</span>
+            </button>
+          </div>
         </div>
-      </div>
-    </form>
+      </form>
+    </div>
+
+    <div id="edit-preferences" class="is-hidden" data-tab-panel="user-edit">
+      <form action="/@<%= current_user_name %>/preferences" method="post">
+        <input type="hidden" name="_method" value="patch">
+        <input type="hidden" name="_csrf_token" value="<%= csrf_token %>">
+        <div class="field">
+          <label class="label" for="timezone-select">
+            <span class="icon-text">
+              <span class="icon"><i class="fa-solid fa-clock"></i></span>
+              <span>Timezone</span>
+            </span>
+          </label>
+          <div class="control is-flex is-align-items-center">
+            <div class="select">
+              <select id="timezone-select" name="timezone">
+                <% timezone_identifiers.group_by { |tz| tz.include?("/") ? tz.split("/").first : "Other" }.each do |region, tzs| %>
+                  <optgroup label="<%= region %>">
+                    <% tzs.each do |tz| %>
+                      <option value="<%= tz %>"<%= " selected" if tz.to_s == timezone.to_s %>><%= tz %></option>
+                    <% end %>
+                  </optgroup>
+                <% end %>
+              </select>
+            </div>
+            <span class="ml-3" id="timezone-time"></span>
+          </div>
+        </div>
+        <div class="field">
+          <label class="label" for="locale-select">
+            <span class="icon-text">
+              <span class="icon"><i class="fa-solid fa-language"></i></span>
+              <span>Locale</span>
+            </span>
+          </label>
+          <div class="control">
+            <div class="select">
+              <select id="locale-select" name="locale">
+                <option value=""<%= " selected" if locale.nil? || locale.empty? %>>(not set)</option>
+                <option value="en"<%= " selected" if locale == "en" %>>English</option>
+                <option value="ja"<%= " selected" if locale == "ja" %>>Japanese</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="field">
+          <div class="control">
+            <button class="button is-primary" type="submit">
+              <span class="icon"><i class="fa-solid fa-floppy-disk"></i></span>
+              <span>Save Preferences</span>
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
   </div>
 </section>

@@ -9,7 +9,7 @@ RSpec.describe PastaAtlas::Actions::User::Edit do
 
   let(:user) { double("User", id: 1, name: "sakuro") }
   let(:profile) { double("UserProfile", display_name: "Sakuro", avatar_s3_key: nil) }
-  let(:preference) { double("UserPreference", timezone: "Asia/Tokyo") }
+  let(:preference) { double("UserPreference", timezone: "Asia/Tokyo", locale: nil) }
 
   before do
     allow(user_repo).to receive(:find_by_id).with(1).and_return(user)
