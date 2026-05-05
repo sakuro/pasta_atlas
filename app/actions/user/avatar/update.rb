@@ -2,7 +2,7 @@
 
 module PastaAtlas
   module Actions
-    module Profile
+    module User
       module Avatar
         class Update < PastaAtlas::Action
           include Deps["repos.user_profile_repo"]

@@ -2,7 +2,7 @@
 
 module PastaAtlas
   module Actions
-    module Profile
+    module User
       class Show < PastaAtlas::Action
         include Deps["repos.user_profile_repo", "repos.map_repo", "repos.generation_repo", "settings"]
 

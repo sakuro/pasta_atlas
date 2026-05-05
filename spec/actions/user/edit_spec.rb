@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
-RSpec.describe PastaAtlas::Actions::Profile::Edit do
+RSpec.describe PastaAtlas::Actions::User::Edit do
   let(:user_repo) { instance_double(PastaAtlas::Repos::UserRepo) }
   let(:user_profile_repo) { instance_double(PastaAtlas::Repos::UserProfileRepo) }
   let(:user_preference_repo) { instance_double(PastaAtlas::Repos::UserPreferenceRepo) }
   let(:settings) { double("Settings", cloudfront_base_url: "http://cdn.example.com") }
-  let(:action) { PastaAtlas::Actions::Profile::Edit.new(user_repo:, user_profile_repo:, user_preference_repo:, settings:) }
+  let(:action) { PastaAtlas::Actions::User::Edit.new(user_repo:, user_profile_repo:, user_preference_repo:, settings:) }
 
   let(:user) { double("User", id: 1, name: "sakuro") }
   let(:profile) { double("UserProfile", display_name: "Sakuro", avatar_s3_key: nil) }

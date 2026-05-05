@@ -4,7 +4,7 @@ require "tzinfo"
 
 module PastaAtlas
   module Actions
-    module Profile
+    module User
       class Edit < PastaAtlas::Action
         include Deps["repos.user_profile_repo", "repos.user_preference_repo", "settings"]
 

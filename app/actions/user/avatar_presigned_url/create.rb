@@ -4,7 +4,7 @@ require "ulid"
 
 module PastaAtlas
   module Actions
-    module Profile
+    module User
       module AvatarPresignedUrl
         class Create < PastaAtlas::Action
           include Deps["settings", s3_client: "s3.client"]

@@ -11,7 +11,7 @@
   <div class="card-content">
     <div class="media">
       <div class="media-left">
-        <a href="/@<%= user_name %>/profile">
+        <a href="/@<%= user_name %>">
           <%= render "shared/avatar", avatar_url: author_avatar_url, avatar_size: 32 %>
         </a>
       </div>
@@ -20,7 +20,7 @@
           <a href="/@<%= user_name %>/maps/<%= map_ulid %>"><%= map_display_name %></a>
         </p>
         <p class="subtitle is-7">
-          <a href="/@<%= user_name %>/profile"><%= author_display_name %></a>
+          <a href="/@<%= user_name %>"><%= author_display_name %></a>
         </p>
       </div>
     </div>

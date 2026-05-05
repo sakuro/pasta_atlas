@@ -26,7 +26,7 @@ RSpec.describe PastaAtlas::Views::Maps::Index do
   it "renders the user display name with a profile link" do
     html = render(maps: [alice_map], users_by_id: {1 => alice}, profiles_by_user_id: {1 => alice_profile}, page: 1, per_page: 20, total: 1)
 
-    expect(html).to include('href="/@alice/profile"', "Alice")
+    expect(html).to include('href="/@alice"', "Alice")
   end
 
   it "renders no pagination when all maps fit on one page" do

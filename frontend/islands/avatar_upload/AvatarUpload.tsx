@@ -91,7 +91,7 @@ export const AvatarUpload = (props: Props) => {
       e.preventDefault();
       setState({ type: "uploading" });
       try {
-        const resp = await fetch(`/@${props.userName}/profile/avatar`, {
+        const resp = await fetch(`/@${props.userName}/avatar`, {
           method: "DELETE",
           headers: { "X-CSRF-Token": csrfToken() },
         });

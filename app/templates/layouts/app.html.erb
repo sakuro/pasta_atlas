@@ -23,7 +23,7 @@
       <div id="navbar-main" class="navbar-menu">
         <div class="navbar-end">
           <% if current_user_name %>
-            <a class="navbar-item" href="/@<%= current_user_name %>/profile">
+            <a class="navbar-item" href="/@<%= current_user_name %>">
               <%= render "shared/avatar", avatar_url: current_avatar_url, avatar_size: 24 %>
               <span class="ml-2"><%= current_user_display_name %></span>
             </a>

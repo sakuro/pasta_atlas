@@ -4,12 +4,12 @@ require "tzinfo"
 
 module PastaAtlas
   module Actions
-    module Profile
+    module User
       class Update < PastaAtlas::Action
         include Deps[
           "repos.user_profile_repo",
           "repos.user_preference_repo",
-          edit_view: "views.profile.edit"
+          edit_view: "views.user.edit"
         ]
 
         DISPLAY_NAME_MAX_GRAPHEME_CLUSTERS = 64
@@ -55,7 +55,7 @@ module PastaAtlas
             user_profile_repo.update_avatar(user_id, avatar_s3_key:)
           end
 
-          response.redirect_to "/@#{user_name}/profile"
+          response.redirect_to "/@#{user_name}"
         end
 
         private def valid_timezone(name)

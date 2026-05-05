@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
-RSpec.describe PastaAtlas::Actions::Profile::Update do
+RSpec.describe PastaAtlas::Actions::User::Update do
   let(:user_repo) { instance_double(PastaAtlas::Repos::UserRepo) }
   let(:user_profile_repo) { instance_double(PastaAtlas::Repos::UserProfileRepo) }
   let(:user_preference_repo) { instance_double(PastaAtlas::Repos::UserPreferenceRepo) }
-  let(:action) { PastaAtlas::Actions::Profile::Update.new(user_repo:, user_profile_repo:, user_preference_repo:, edit_view:) }
-  let(:edit_view) { Hanami.app["views.profile.edit"] }
+  let(:action) { PastaAtlas::Actions::User::Update.new(user_repo:, user_profile_repo:, user_preference_repo:, edit_view:) }
+  let(:edit_view) { Hanami.app["views.user.edit"] }
 
   let(:user) { double("User", id: 1, name: "sakuro") }
 
@@ -41,13 +41,13 @@ RSpec.describe PastaAtlas::Actions::Profile::Update do
       allow(user_preference_repo).to receive(:update_preferences)
     end
 
-    it "updates the profile and redirects to the profile page" do
+    it "updates the profile and redirects to the user page" do
       response = action.call(env)
 
       expect(user_profile_repo).to have_received(:update_profile).with(1, display_name: "Sakuro")
       expect(user_preference_repo).to have_received(:update_preferences).with(1, timezone: "Asia/Tokyo")
       expect(response.status).to eq(302)
-      expect(response.headers["Location"]).to eq("/@sakuro/profile")
+      expect(response.headers["Location"]).to eq("/@sakuro")
     end
 
     context "when display_name is blank" do

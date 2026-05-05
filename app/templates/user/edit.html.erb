@@ -4,7 +4,7 @@
     <% if error %>
       <div class="notification is-danger is-light"><%= error %></div>
     <% end %>
-    <form action="/@<%= current_user_name %>/profile" method="post">
+    <form action="/@<%= current_user_name %>" method="post">
       <input type="hidden" name="_method" value="patch">
       <input type="hidden" name="_csrf_token" value="<%= csrf_token %>">
       <div class="field">
