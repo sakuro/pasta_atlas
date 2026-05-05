@@ -7,6 +7,7 @@ A web application for browsing Factorio map screenshots captured by the [mapshot
 - [mise](https://mise.jdx.dev/) — task runner and tool version manager
 - Docker — runs PostgreSQL and the S3 emulator (floci) via Docker Compose
 - A GitHub OAuth app — required for authentication
+- A Discord OAuth app — required for authentication
 
 ## Setup
 
@@ -28,16 +29,27 @@ terraform init   # first time only
 terraform apply
 ```
 
-### 3. Configure GitHub OAuth
+### 3. Configure OAuth
 
-Create a GitHub OAuth app at <https://github.com/settings/applications/new> with the callback URL `http://localhost:2300/auth/github/callback`, then create `.env.development.local`:
+Create `.env.development.local` with credentials for each provider. All other environment variables have working defaults in `.env.development`.
+
+#### GitHub
+
+Create a GitHub OAuth app at <https://github.com/settings/applications/new> with the callback URL `http://localhost:2300/auth/github/callback`, then add to `.env.development.local`:
 
 ```sh
 GITHUB_CLIENT_ID=your_client_id
 GITHUB_CLIENT_SECRET=your_client_secret
 ```
 
-All other environment variables have working defaults in `.env.development`.
+#### Discord
+
+Create a Discord OAuth app at <https://discord.com/developers/applications>, add `http://localhost:2300/auth/discord/callback` as a redirect URL, then add to `.env.development.local`:
+
+```sh
+DISCORD_CLIENT_ID=your_client_id
+DISCORD_CLIENT_SECRET=your_client_secret
+```
 
 ### 4. Install dependencies and prepare the database
 
@@ -46,6 +58,7 @@ bin/setup
 ```
 
 This runs `bundle install`, `npm install`, and `hanami db prepare` (create + migrate + seed).
+
 
 ## Running the development server
 
