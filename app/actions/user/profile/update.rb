@@ -46,13 +46,15 @@ module PastaAtlas
               profile = user_profile_repo.find_by_user_id(user_id)
               timezone_identifiers = TZInfo::Timezone.all_identifiers
               avatar_url = profile.avatar_s3_key ? "#{settings.cloudfront_base_url}/#{profile.avatar_s3_key}" : nil
-              response.render(edit_view,
+              response.render(
+                edit_view,
                 display_name:,
                 timezone: preference.timezone,
                 timezone_identifiers:,
                 locale: preference.locale,
                 avatar_url:,
-                error:)
+                error:
+              )
               return
             end
 

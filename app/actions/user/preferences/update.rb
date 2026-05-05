@@ -39,6 +39,7 @@ module PastaAtlas
 
           private def valid_locale(value)
             return nil if value.nil? || value.empty?
+
             SUPPORTED_LOCALES.include?(value) ? value : nil
           end
         end

@@ -59,7 +59,7 @@ RSpec.describe PastaAtlas::Actions::User::Preferences::Update do
       let(:env) { {"rack.session" => {"user_id" => 1}, :user_name => "sakuro", :timezone => "UTC", :locale => "fr"} }
 
       it "saves nil for locale" do
-        response = action.call(env)
+        action.call(env)
 
         expect(user_preference_repo).to have_received(:update_preferences).with(1, timezone: "UTC", locale: nil)
       end
