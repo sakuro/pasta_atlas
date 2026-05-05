@@ -5,6 +5,8 @@ require "uri"
 module PastaAtlas
   class Settings < Hanami::Settings
     setting :session_secret, constructor: Types::String
+    setting :discord_client_id, constructor: Types::String
+    setting :discord_client_secret, constructor: Types::String
     setting :github_client_id, constructor: Types::String
     setting :github_client_secret, constructor: Types::String
     setting :s3_bucket, constructor: Types::String

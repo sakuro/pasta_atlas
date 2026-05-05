@@ -42,6 +42,14 @@
                 <span>Log in</span>
               </a>
               <div class="navbar-dropdown is-right">
+                <form action="/auth/discord" method="post">
+                  <input type="hidden" name="authenticity_token" value="<%= omniauth_authenticity_token %>">
+                  <button class="navbar-item" type="submit">
+                    <span class="icon"><i class="fa-brands fa-discord"></i></span>
+                    <span>Log in with Discord</span>
+                  </button>
+                </form>
+                <hr class="navbar-divider">
                 <form action="/auth/github" method="post">
                   <input type="hidden" name="authenticity_token" value="<%= omniauth_authenticity_token %>">
                   <button class="navbar-item" type="submit">

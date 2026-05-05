@@ -11,7 +11,7 @@ module PastaAtlas
             "repos.credential_repo",
             "repos.user_profile_repo",
             "repos.user_preference_repo",
-            "operations.registrations.import_github_avatar"
+            "operations.registrations.import_avatar"
           ]
 
           USERNAME_PATTERN = /\A[a-zA-Z0-9][a-zA-Z0-9_-]*[a-zA-Z0-9]\z|\A[a-zA-Z0-9]\z/
@@ -56,7 +56,7 @@ module PastaAtlas
               )
             end
 
-            avatar_result = import_github_avatar.call(user_id: user.id, avatar_url: pending["avatar_url"])
+            avatar_result = import_avatar.call(user_id: user.id, avatar_url: pending["avatar_url"])
             user_profile_repo.update_avatar(user.id, avatar_s3_key: avatar_result.value!) if avatar_result.success?
 
             request.session.delete(:pending_auth)

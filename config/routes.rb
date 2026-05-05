@@ -11,6 +11,7 @@ module PastaAtlas
     patch "/@:user_name/profile/avatar", to: "profile.avatar.update"
     delete "/@:user_name/profile/avatar", to: "profile.avatar.destroy"
 
+    get "/auth/discord/callback", to: "auth.discord.callback"
     get "/auth/github/callback", to: "auth.github.callback"
     get "/auth/failure", to: "auth.failure"
     get "/auth/register", to: "auth.registrations.new"

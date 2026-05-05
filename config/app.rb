@@ -2,6 +2,7 @@
 
 require "hanami"
 require "omniauth"
+require "omniauth-discord"
 require "omniauth-github"
 
 module PastaAtlas
@@ -13,13 +14,17 @@ module PastaAtlas
     }
 
     config.middleware.use OmniAuth::Builder do
+      provider :discord,
+        PastaAtlas::App.settings.discord_client_id,
+        PastaAtlas::App.settings.discord_client_secret,
+        scope: "identify"
       provider :github,
         PastaAtlas::App.settings.github_client_id,
         PastaAtlas::App.settings.github_client_secret,
         scope: "read:user"
     end
 
-    config.actions.content_security_policy[:form_action] += " https://github.com"
+    config.actions.content_security_policy[:form_action] += " https://discord.com https://github.com"
     config.actions.content_security_policy[:img_src] += " blob:"
     config.actions.content_security_policy[:script_src] += " 'nonce'"
 

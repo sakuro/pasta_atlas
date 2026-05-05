@@ -6,7 +6,7 @@ require "ulid"
 module PastaAtlas
   module Operations
     module Registrations
-      class ImportGithubAvatar < PastaAtlas::Operation
+      class ImportAvatar < PastaAtlas::Operation
         include Deps["settings", s3_client: "s3.client"]
 
         CONTENT_TYPE_TO_EXT = {

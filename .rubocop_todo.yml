@@ -15,6 +15,7 @@ Bundler/GemComment:
 Style/Documentation:
   Exclude:
     - 'app/action.rb'
+    - 'app/actions/auth/discord/callback.rb'
     - 'app/actions/auth/failure.rb'
     - 'app/actions/auth/github/callback.rb'
     - 'app/actions/auth/registrations/create.rb'
@@ -37,7 +38,7 @@ Style/Documentation:
     - 'app/operations/maps/find_or_create.rb'
     - 'app/operations/maps/list.rb'
     - 'app/operations/maps/show.rb'
-    - 'app/operations/registrations/import_github_avatar.rb'
+    - 'app/operations/registrations/import_avatar.rb'
     - 'app/operations/uploads/create.rb'
     - 'app/operations/uploads/issue_presigned_urls.rb'
     - 'app/operations/uploads/update_status.rb'
@@ -71,6 +72,7 @@ Style/Documentation:
 # Configuration parameters: AllowedMethods, RequireForNonPublicMethods.
 Style/DocumentationMethod:
   Exclude:
+    - 'app/actions/auth/discord/callback.rb'
     - 'app/actions/auth/failure.rb'
     - 'app/actions/auth/github/callback.rb'
     - 'app/actions/auth/registrations/create.rb'
@@ -92,7 +94,7 @@ Style/DocumentationMethod:
     - 'app/operations/maps/find_or_create.rb'
     - 'app/operations/maps/list.rb'
     - 'app/operations/maps/show.rb'
-    - 'app/operations/registrations/import_github_avatar.rb'
+    - 'app/operations/registrations/import_avatar.rb'
     - 'app/operations/uploads/create.rb'
     - 'app/operations/uploads/issue_presigned_urls.rb'
     - 'app/operations/uploads/update_status.rb'
