@@ -13,8 +13,8 @@ import boxzoomCss from "leaflet-control-boxzoom/dist/leaflet-control-boxzoom.css
 const pluginStyle = document.createElement("style");
 pluginStyle.textContent = zoomsliderCss + boxzoomCss +
   `.leaflet-control-zoomslider-body,.leaflet-control-zoomslider-knob{box-sizing:content-box!important}` +
-  `.leaflet-control-boxzoom{display:flex!important;align-items:center!important;justify-content:center!important;width:26px!important;height:26px!important;line-height:26px!important;box-sizing:content-box!important}` +
-  `.leaflet-touch .leaflet-control-boxzoom{width:30px!important;height:30px!important;line-height:30px!important}` +
+  `.leaflet-control-boxzoom{display:flex!important;align-items:center!important;justify-content:center!important;width:26px!important;height:26px!important;box-sizing:content-box!important}` +
+  `.leaflet-touch .leaflet-control-boxzoom{width:30px!important;height:30px!important}` +
   `.leaflet-control-boxzoom i{font-size:18px}`;
 document.head.appendChild(pluginStyle);
 import markerIcon from "leaflet/dist/images/marker-icon.png";
