@@ -1,4 +1,5 @@
 import { createSignal } from "solid-js";
+import "../../l10n";
 
 type Props = {
   mapPath: string;
@@ -27,16 +28,16 @@ export const ShareButtons = (props: Props) => {
 
   return (
     <div class="buttons has-addons">
-      <a class="button is-small" href={xUrl()} target="_blank" rel="noopener noreferrer" title="Share on X">
+      <a class="button is-small" href={xUrl()} target="_blank" rel="noopener noreferrer" data-l10n-id="share-x">
         <span class="icon is-small"><i class="fa-brands fa-x-twitter"></i></span>
       </a>
-      <a class="button is-small" href={bskyUrl()} target="_blank" rel="noopener noreferrer" title="Share on Bluesky">
+      <a class="button is-small" href={bskyUrl()} target="_blank" rel="noopener noreferrer" data-l10n-id="share-bluesky">
         <span class="icon is-small"><i class="fa-brands fa-bluesky"></i></span>
       </a>
-      <a class="button is-small" href={redditUrl()} target="_blank" rel="noopener noreferrer" title="Share on Reddit">
+      <a class="button is-small" href={redditUrl()} target="_blank" rel="noopener noreferrer" data-l10n-id="share-reddit">
         <span class="icon is-small"><i class="fa-brands fa-reddit-alien"></i></span>
       </a>
-      <a class="button is-small" role="button" onClick={handleCopy} title="Copy link">
+      <a class="button is-small" role="button" onClick={handleCopy} data-l10n-id="share-copy-link">
         <span class="icon is-small">
           <i class={copied() ? "fa-solid fa-check" : "fa-solid fa-link"}></i>
         </span>

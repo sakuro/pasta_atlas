@@ -10,6 +10,8 @@
     "test:frontend": "vitest"
   },
   "dependencies": {
+    "@fluent/bundle": "^0.19.1",
+    "@fluent/dom": "^0.10.2",
     "@fortawesome/fontawesome-free": "^7.2.0",
     "bulma": "^1.0.4",
     "hanami-assets": "^2.3.0",

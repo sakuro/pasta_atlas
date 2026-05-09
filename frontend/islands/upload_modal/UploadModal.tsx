@@ -1,5 +1,6 @@
 import { createSignal, Show } from "solid-js";
 import { Portal } from "solid-js/web";
+import "../../l10n";
 
 const csrfToken = (): string =>
   document.querySelector<HTMLMetaElement>('meta[name="csrf-token"]')?.content ?? "";
@@ -18,6 +19,8 @@ interface MapshotJson {
   [key: string]: unknown;
 }
 
+type I18nError = { msgId: string; msgArgs?: Record<string, string | number> };
+
 type State =
   | { type: "idle" }
   | { type: "instructions" }
@@ -32,7 +35,7 @@ type State =
     }
   | { type: "uploading"; progress: number; total: number }
   | { type: "done"; viewerUrl: string }
-  | { type: "error"; message: string };
+  | { type: "error"; error: I18nError };
 
 const resolveDisplayName = (m: MapshotJson): string => {
   if (m.name) return m.name;
@@ -90,7 +93,7 @@ export const UploadModal = (props: { isGuest: boolean }) => {
 
     const mapshotFile = allFiles.find((f) => relPath(f) === "mapshot.json");
     if (!mapshotFile) {
-      setState({ type: "error", message: "mapshot.json was not found in the selected directory." });
+      setState({ type: "error", error: { msgId: "upload-error-not-found" } });
       return;
     }
 
@@ -98,7 +101,7 @@ export const UploadModal = (props: { isGuest: boolean }) => {
     try {
       mapshotJson = JSON.parse(await mapshotFile.text()) as MapshotJson;
     } catch {
-      setState({ type: "error", message: "Failed to parse mapshot.json." });
+      setState({ type: "error", error: { msgId: "upload-error-parse" } });
       return;
     }
 
@@ -135,11 +138,11 @@ export const UploadModal = (props: { isGuest: boolean }) => {
         body: JSON.stringify({ metadata: mapshotJson, total_image_count: imageCount, name: displayName() || null }),
       });
       if (resp.status === 409) {
-        setState({ type: "error", message: "This generation has already been uploaded." });
+        setState({ type: "error", error: { msgId: "upload-error-conflict" } });
         return;
       }
       if (!resp.ok) {
-        setState({ type: "error", message: `Upload failed (HTTP ${resp.status}).` });
+        setState({ type: "error", error: { msgId: "upload-error-http", msgArgs: { status: resp.status } } });
         return;
       }
       const data = await resp.json() as { ulid: string; map_ulid: string; generation_ulid: string };
@@ -147,7 +150,7 @@ export const UploadModal = (props: { isGuest: boolean }) => {
       mapUlid = data.map_ulid;
       generationUlid = data.generation_ulid;
     } catch {
-      setState({ type: "error", message: "Network error. Please check your connection and try again." });
+      setState({ type: "error", error: { msgId: "upload-error-network" } });
       return;
     }
 
@@ -161,13 +164,13 @@ export const UploadModal = (props: { isGuest: boolean }) => {
         body: JSON.stringify({ filenames: allFilenames }),
       });
       if (!resp.ok) {
-        setState({ type: "error", message: `Failed to get upload URLs (HTTP ${resp.status}).` });
+        setState({ type: "error", error: { msgId: "upload-error-urls-http", msgArgs: { status: resp.status } } });
         return;
       }
       const data = await resp.json() as { presigned_urls: Record<string, string> };
       presignedUrls = data.presigned_urls;
     } catch {
-      setState({ type: "error", message: "Network error getting upload URLs." });
+      setState({ type: "error", error: { msgId: "upload-error-urls-network" } });
       return;
     }
 
@@ -186,7 +189,7 @@ export const UploadModal = (props: { isGuest: boolean }) => {
         setState({ type: "uploading", progress: alreadyUploaded + done, total: imageCount });
       });
     } catch (err) {
-      setState({ type: "error", message: `Failed to upload: ${(err as Error).message}` });
+      setState({ type: "error", error: { msgId: "upload-error-file", msgArgs: { details: (err as Error).message } } });
       return;
     }
 
@@ -198,11 +201,11 @@ export const UploadModal = (props: { isGuest: boolean }) => {
         body: JSON.stringify({ status: "complete" }),
       });
       if (!resp.ok) {
-        setState({ type: "error", message: "Images uploaded, but finalization failed." });
+        setState({ type: "error", error: { msgId: "upload-error-finalize" } });
         return;
       }
     } catch {
-      setState({ type: "error", message: "Images uploaded, but network error during finalization." });
+      setState({ type: "error", error: { msgId: "upload-error-finalize-network" } });
       return;
     }
 
@@ -259,7 +262,7 @@ export const UploadModal = (props: { isGuest: boolean }) => {
       />
       <button class="button" onClick={openModal}>
         <span class="icon"><i class="fa-solid fa-upload"></i></span>
-        <span>Upload</span>
+        <span data-l10n-id="upload-button" />
       </button>
       <Show when={state().type !== "idle"}>
         <Portal mount={document.body}>
@@ -267,7 +270,7 @@ export const UploadModal = (props: { isGuest: boolean }) => {
           <div class="modal-background" onClick={dismiss} />
           <div class="modal-card" style={{ width: "90vw", "max-width": "1000px" }}>
             <header class="modal-card-head">
-              <p class="modal-card-title">Upload Mapshot</p>
+              <p class="modal-card-title" data-l10n-id="upload-modal-title" />
               <Show when={state().type !== "uploading"}>
                 <button class="delete" aria-label="close" onClick={dismiss} />
               </Show>
@@ -278,11 +281,11 @@ export const UploadModal = (props: { isGuest: boolean }) => {
                   <p>
                     <span class="icon-text">
                       <span class="icon"><i class="fa-solid fa-folder-open"></i></span>
-                      <span>Select the folder containing <code>mapshot.json</code>.</span>
+                      <span data-l10n-id="upload-instructions-folder" />
                     </span>
                   </p>
                   <div class="notification is-info is-light">
-                    <p class="has-text-weight-semibold mb-2">Typical mapshot directory:</p>
+                    <p class="has-text-weight-semibold mb-2" data-l10n-id="upload-instructions-folder-path" />
                     <ul>
                       <li>
                         <span class="icon-text">
@@ -307,14 +310,14 @@ export const UploadModal = (props: { isGuest: boolean }) => {
                   <p>
                     <span class="icon-text">
                       <span class="icon"><i class="fa-solid fa-timeline"></i></span>
-                      <span>You can upload different generations of an existing map.</span>
+                      <span data-l10n-id="upload-instructions-generations" />
                     </span>
                   </p>
                   <Show when={props.isGuest}>
                     <p>
                       <span class="icon-text">
                         <span class="icon"><i class="fa-solid fa-triangle-exclamation"></i></span>
-                        <span>Uploads from guest accounts are deleted <strong>after approximately one week</strong>.</span>
+                        <span data-l10n-id="upload-instructions-guest" />
                       </span>
                     </p>
                   </Show>
@@ -325,7 +328,7 @@ export const UploadModal = (props: { isGuest: boolean }) => {
                   <table class="table is-fullwidth">
                     <tbody>
                       <tr>
-                        <th><span class="icon-text"><span class="icon"><i class="fa-solid fa-map"></i></span><span>Map title</span></span></th>
+                        <th><span class="icon-text"><span class="icon"><i class="fa-solid fa-map"></i></span><span data-l10n-id="upload-map-title" /></span></th>
                         <td>
                           <input
                             class="input"
@@ -337,15 +340,15 @@ export const UploadModal = (props: { isGuest: boolean }) => {
                         </td>
                       </tr>
                       <tr>
-                        <th><span class="icon-text"><span class="icon"><i class="fa-solid fa-layer-group"></i></span><span>Surfaces</span></span></th>
+                        <th><span class="icon-text"><span class="icon"><i class="fa-solid fa-layer-group"></i></span><span data-l10n-id="upload-surfaces" /></span></th>
                         <td>{s.surfaceCount}</td>
                       </tr>
                       <tr>
-                        <th><span class="icon-text"><span class="icon"><i class="fa-solid fa-images"></i></span><span>Images</span></span></th>
+                        <th><span class="icon-text"><span class="icon"><i class="fa-solid fa-images"></i></span><span data-l10n-id="upload-images" /></span></th>
                         <td>{s.imageCount}</td>
                       </tr>
                       <tr>
-                        <th><span class="icon-text"><span class="icon"><i class="fa-solid fa-chart-simple"></i></span><span>Total size</span></span></th>
+                        <th><span class="icon-text"><span class="icon"><i class="fa-solid fa-chart-simple"></i></span><span data-l10n-id="upload-total-size" /></span></th>
                         <td>{formatBytes(s.totalBytes)}</td>
                       </tr>
                     </tbody>
@@ -355,53 +358,59 @@ export const UploadModal = (props: { isGuest: boolean }) => {
               <Show when={uploadingState()} keyed>
                 {(s) => (
                   <>
-                    <p class="mb-2">
-                      Uploading {s.progress} / {s.total} files...
-                    </p>
+                    <p
+                      class="mb-2"
+                      data-l10n-id="upload-progress"
+                      data-l10n-args={JSON.stringify({ progress: s.progress, total: s.total })}
+                    />
                     <progress class="progress is-primary" value={s.progress} max={s.total} />
                   </>
                 )}
               </Show>
-              <Show when={doneState()} keyed>
+              <Show when={doneState()}>
                 {(s) => (
                   <div class="has-text-centered">
-                    <p class="mb-4">Upload complete!</p>
-                    <a href={s.viewerUrl} class="button is-primary">
-                      View Map
-                    </a>
+                    <p class="mb-4" data-l10n-id="upload-complete" />
+                    <a href={s().viewerUrl} class="button is-primary" data-l10n-id="upload-view-map" />
                   </div>
                 )}
               </Show>
               <Show when={errorState()} keyed>
-                {(s) => <p class="has-text-danger">{s.message}</p>}
+                {(s) => (
+                  <p
+                    class="has-text-danger"
+                    data-l10n-id={s.error.msgId}
+                    data-l10n-args={s.error.msgArgs ? JSON.stringify(s.error.msgArgs) : undefined}
+                  />
+                )}
               </Show>
             </section>
             <footer class="modal-card-foot">
               <Show when={state().type === "instructions"}>
                 <button class="button is-primary" onClick={openPicker}>
                   <span class="icon"><i class="fa-solid fa-folder-open"></i></span>
-                  <span>Select Folder</span>
+                  <span data-l10n-id="upload-select-folder" />
                 </button>
-                <button class="button" onClick={dismiss}>Cancel</button>
+                <button class="button" data-l10n-id="upload-cancel" onClick={dismiss} />
               </Show>
               <Show when={state().type === "confirming"}>
                 <button class="button is-primary" onClick={startUpload}>
                   <span class="icon"><i class="fa-solid fa-upload"></i></span>
-                  <span>Start Upload</span>
+                  <span data-l10n-id="upload-start" />
                 </button>
                 <button class="button" onClick={backToInstructions}>
                   <span class="icon"><i class="fa-solid fa-arrow-left"></i></span>
-                  <span>Back</span>
+                  <span data-l10n-id="upload-back" />
                 </button>
               </Show>
               <Show when={state().type === "done"}>
-                <button class="button" onClick={dismiss}>Close</button>
+                <button class="button" data-l10n-id="upload-close" onClick={dismiss} />
               </Show>
               <Show when={state().type === "error"}>
-                <button class="button" onClick={dismiss}>Dismiss</button>
+                <button class="button" data-l10n-id="upload-dismiss" onClick={dismiss} />
                 <button class="button" onClick={backToInstructions}>
                   <span class="icon"><i class="fa-solid fa-arrow-left"></i></span>
-                  <span>Back</span>
+                  <span data-l10n-id="upload-back" />
                 </button>
               </Show>
             </footer>

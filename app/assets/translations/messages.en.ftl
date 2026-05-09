@@ -46,3 +46,86 @@ pagination-next = Next
 
 ## Footer
 footer-built-with = Built with { $stack }
+
+## Upload modal
+upload-button = Upload
+upload-modal-title = Upload Mapshot
+upload-instructions-folder = Select the folder containing mapshot.json.
+upload-instructions-folder-path = Typical mapshot folder:
+upload-instructions-generations = You can upload different generations of an existing map.
+upload-instructions-guest = Uploads from guest accounts are deleted after approximately one week.
+upload-select-folder = Select Folder
+upload-cancel = Cancel
+upload-map-title = Map title
+upload-surfaces = Surfaces
+upload-images = Images
+upload-total-size = Total size
+upload-start = Start Upload
+upload-back = Back
+upload-progress = Uploading { $progress } / { $total } files...
+upload-complete = Upload complete!
+upload-view-map = View Map
+upload-close = Close
+upload-dismiss = Dismiss
+upload-error-not-found = mapshot.json was not found in the selected folder.
+upload-error-parse = Failed to parse mapshot.json.
+upload-error-conflict = This generation has already been uploaded.
+upload-error-http = Upload failed (HTTP { $status }).
+upload-error-network = Network error. Please check your connection and try again.
+upload-error-urls-http = Failed to get upload URLs (HTTP { $status }).
+upload-error-urls-network = Network error getting upload URLs.
+upload-error-file = Failed to upload: { $details }
+upload-error-finalize = Images uploaded, but finalization failed.
+upload-error-finalize-network = Images uploaded, but network error during finalization.
+
+## Avatar upload
+avatar-change = Change
+avatar-remove = Remove
+avatar-cancel = Cancel
+avatar-dismiss = Dismiss
+avatar-error-too-large-file-size = File must be 5 MiB or smaller.
+avatar-error-too-small-pixel-size = Image must be { $min }×{ $min } or larger.
+avatar-error-too-large-pixel-size = Image must be { $max }×{ $max } or smaller.
+avatar-error-read = Failed to read image.
+avatar-error-remove-http = Failed to remove avatar (HTTP { $status }).
+avatar-error-network = Network error. Please try again.
+avatar-error-url-http = Failed to get upload URL (HTTP { $status }).
+avatar-error-upload-http = Upload failed (HTTP { $status }).
+avatar-error-upload-network = Network error during upload.
+
+## Map viewer
+map-layer-train-stations = Train stations
+map-layer-tags = Tags
+map-info-button =
+    .title = Map info
+
+## Map info modal
+map-info-title = Map Info
+map-info-seed = Map seed
+map-info-exchange = Map exchange
+map-info-exchange-show =
+    .title = Show
+map-info-copy =
+    .title = Copy
+map-info-exchange-hide =
+    .title = Hide
+map-info-tick = Tick
+map-info-ticks-played = Ticks played
+map-info-game-version = Game version
+map-info-mods = MODs
+map-info-mods-count =
+    { $count ->
+        [one] { $count } MOD
+       *[other] { $count } MODs
+    }
+map-info-close = Close
+
+## Share buttons
+share-x =
+    .title = Share on X
+share-bluesky =
+    .title = Share on Bluesky
+share-reddit =
+    .title = Share on Reddit
+share-copy-link =
+    .title = Copy link

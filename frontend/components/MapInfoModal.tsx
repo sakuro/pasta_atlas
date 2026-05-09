@@ -12,7 +12,7 @@ export interface Mapshot {
   map_exchange?: string;
 }
 
-export const formatTicks = (tick: number): string => {
+export const formatTicks = (tick: number, style: "narrow" | "long" | "short" = "short"): string => {
   const totalSeconds = Math.floor(tick / 60);
   const seconds = totalSeconds % 60;
   const totalMinutes = Math.floor(totalSeconds / 60);
@@ -20,11 +20,8 @@ export const formatTicks = (tick: number): string => {
   const totalHours = Math.floor(totalMinutes / 60);
   const hours = totalHours % 24;
   const days = Math.floor(totalHours / 24);
-
-  if (days > 0) return `${days}d ${hours}h ${minutes}m ${seconds}s`;
-  if (hours > 0) return `${hours}h ${minutes}m ${seconds}s`;
-  if (minutes > 0) return `${minutes}m ${seconds}s`;
-  return `${seconds}s`;
+  const locale = document.documentElement.lang || "en";
+  return new Intl.DurationFormat(locale, { style }).format({ days, hours, minutes, seconds });
 };
 
 const PINNED_MODS = ["elevated-rails", "quality", "space-age"];
@@ -52,7 +49,7 @@ const CopyButton = (props: { text: string }) => {
   };
 
   return (
-    <button class="button is-small ml-2" onClick={copy} title="Copy">
+    <button class="button is-small ml-2" onClick={copy} data-l10n-id="map-info-copy">
       <span class="icon is-small">
         <i class={copied() ? "fa-solid fa-check" : "fa-solid fa-copy"} />
       </span>
@@ -72,7 +69,7 @@ export const MapInfoModal = (props: { mapshot: Mapshot; onClose: () => void }) =
             <p class="modal-card-title">
               <span class="icon-text">
                 <span class="icon"><i class="fa-solid fa-circle-info"></i></span>
-                <span>Map Info</span>
+                <span data-l10n-id="map-info-title" />
               </span>
             </p>
             <button class="delete" aria-label="close" onClick={props.onClose} />
@@ -82,15 +79,19 @@ export const MapInfoModal = (props: { mapshot: Mapshot; onClose: () => void }) =
               <tbody>
                 <Show when={props.mapshot.seed != null}>
                   <tr>
-                    <th class="map-info-label"><span class="icon-text"><span class="icon"><i class="fa-solid fa-seedling"></i></span><span>Map seed</span></span></th>
+                    <th class="map-info-label"><span class="icon-text"><span class="icon"><i class="fa-solid fa-seedling"></i></span><span data-l10n-id="map-info-seed" /></span></th>
                     <td>{props.mapshot.seed}<CopyButton text={String(props.mapshot.seed)} /></td>
                   </tr>
                 </Show>
                 <Show when={props.mapshot.map_exchange}>
                   <tr>
-                    <th class="map-info-label"><span class="icon-text"><span class="icon"><i class="fa-solid fa-code"></i></span><span>Map exchange</span></span></th>
+                    <th class="map-info-label"><span class="icon-text"><span class="icon"><i class="fa-solid fa-code"></i></span><span data-l10n-id="map-info-exchange" /></span></th>
                     <td>
-                      <button class="button is-small" onClick={() => setShowMapExchange((v) => !v)} title={showMapExchange() ? "Hide" : "Show"}>
+                      <button
+                        class="button is-small"
+                        onClick={() => setShowMapExchange((v) => !v)}
+                        data-l10n-id={showMapExchange() ? "map-info-exchange-hide" : "map-info-exchange-show"}
+                      >
                         <span class="icon is-small"><i class={showMapExchange() ? "fa-solid fa-eye-slash" : "fa-solid fa-eye"} /></span>
                       </button>
                       <CopyButton text={props.mapshot.map_exchange!} />
@@ -102,28 +103,31 @@ export const MapInfoModal = (props: { mapshot: Mapshot; onClose: () => void }) =
                 </Show>
                 <Show when={props.mapshot.tick != null}>
                   <tr>
-                    <th class="map-info-label"><span class="icon-text"><span class="icon"><i class="fa-solid fa-hourglass"></i></span><span>Tick</span></span></th>
-                    <td>{props.mapshot.tick!.toLocaleString()} ({formatTicks(props.mapshot.tick!)})</td>
+                    <th class="map-info-label"><span class="icon-text"><span class="icon"><i class="fa-solid fa-hourglass"></i></span><span data-l10n-id="map-info-tick" /></span></th>
+                    <td>{props.mapshot.tick!.toLocaleString()} ({formatTicks(props.mapshot.tick!, "long")})</td>
                   </tr>
                 </Show>
                 <Show when={props.mapshot.ticks_played != null}>
                   <tr>
-                    <th class="map-info-label"><span class="icon-text"><span class="icon"><i class="fa-solid fa-hourglass-half"></i></span><span>Ticks played</span></span></th>
-                    <td>{props.mapshot.ticks_played!.toLocaleString()} ({formatTicks(props.mapshot.ticks_played!)})</td>
+                    <th class="map-info-label"><span class="icon-text"><span class="icon"><i class="fa-solid fa-hourglass-half"></i></span><span data-l10n-id="map-info-ticks-played" /></span></th>
+                    <td>{props.mapshot.ticks_played!.toLocaleString()} ({formatTicks(props.mapshot.ticks_played!, "long")})</td>
                   </tr>
                 </Show>
                 <Show when={props.mapshot.game_version}>
                   <tr>
-                    <th class="map-info-label"><span class="icon-text"><span class="icon"><i class="fa-solid fa-gear"></i></span><span>Game version</span></span></th>
+                    <th class="map-info-label"><span class="icon-text"><span class="icon"><i class="fa-solid fa-gear"></i></span><span data-l10n-id="map-info-game-version" /></span></th>
                     <td>{props.mapshot.game_version}</td>
                   </tr>
                 </Show>
                 <Show when={props.mapshot.active_mods}>
                   <tr>
-                    <th class="map-info-label"><span class="icon-text"><span class="icon"><i class="fa-solid fa-puzzle-piece"></i></span><span>Mods</span></span></th>
+                    <th class="map-info-label"><span class="icon-text"><span class="icon"><i class="fa-solid fa-puzzle-piece"></i></span><span data-l10n-id="map-info-mods" /></span></th>
                     <td>
                       <details>
-                        <summary>{Object.keys(props.mapshot.active_mods!).length} mods</summary>
+                        <summary
+                          data-l10n-id="map-info-mods-count"
+                          data-l10n-args={JSON.stringify({ count: Object.keys(props.mapshot.active_mods!).length })}
+                        />
                         <ul>
                           <For each={sortedMods(props.mapshot.active_mods!)}>
                             {([name, version]) => <li><a href={`https://mods.factorio.com/mod/${name}`} target="_blank" rel="noopener">{name}</a> {version}</li>}
@@ -139,7 +143,7 @@ export const MapInfoModal = (props: { mapshot: Mapshot; onClose: () => void }) =
           <footer class="modal-card-foot">
             <button class="button" onClick={props.onClose}>
               <span class="icon"><i class="fa-solid fa-circle-xmark"></i></span>
-              <span>Close</span>
+              <span data-l10n-id="map-info-close" />
             </button>
           </footer>
         </div>

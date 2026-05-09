@@ -2,6 +2,7 @@ import { createResource, createSignal, createMemo, Show, Suspense, For, onMount,
 import L from "leaflet";
 import { MapInfoModal, formatTicks, type Mapshot as MapInfoMapshot } from "../../components/MapInfoModal";
 import { ShareButtons } from "../share_buttons/ShareButtons";
+import { l10n } from "../../l10n";
 import { renderRichText } from "./richtext";
 import "leaflet/dist/leaflet.css";
 import "./richtext.css";
@@ -141,7 +142,7 @@ export const MapViewer = (props: { ulid: string }) => {
               <span class="icon is-small is-left"><i class="fa-solid fa-timeline"></i></span>
             </div>
             <Show when={mapshot()}>
-              <button class="button is-small" onClick={() => setShowInfo(true)}>
+              <button class="button is-small" onClick={() => setShowInfo(true)} data-l10n-id="map-info-button">
                 <span class="icon is-small"><i class="fa-solid fa-circle-info"></i></span>
               </button>
             </Show>
@@ -182,9 +183,14 @@ const surfaceLabel = (surface: Surface): string =>
 const LeafletMap = (props: { mapshot: Mapshot; assetBase: string }) => {
   let mapEl!: HTMLDivElement;
 
-  onMount(() => {
+  onMount(async () => {
     const { surfaces } = props.mapshot;
     if (!surfaces.length) return;
+
+    const [trainStationsLabel, tagsLabel] = await l10n.formatValues([
+      { id: "map-layer-train-stations" },
+      { id: "map-layer-tags" },
+    ]);
 
     const planetIdx = surfaces.findIndex((s) => s.is_planet);
     const defaultSurfaceIdx = planetIdx >= 0 ? planetIdx : 0;
@@ -258,7 +264,7 @@ const LeafletMap = (props: { mapshot: Mapshot; assetBase: string }) => {
     if (showTags) tagLayerGroup.addTo(map);
 
     L.control
-      .layers(baseLayers, { "Train stations": trainLayerGroup, Tags: tagLayerGroup })
+      .layers(baseLayers, { [trainStationsLabel]: trainLayerGroup, [tagsLabel]: tagLayerGroup })
       .addTo(map);
 
     map.setMinZoom(initSurface.zoom_min);
@@ -300,13 +306,13 @@ const LeafletMap = (props: { mapshot: Mapshot; assetBase: string }) => {
     });
 
     map.on("overlayadd", (e: L.LayersControlEvent) => {
-      if (e.name === "Train stations") setParams({ lt: "1" });
-      if (e.name === "Tags") setParams({ lg: "1" });
+      if (e.name === trainStationsLabel) setParams({ lt: "1" });
+      if (e.name === tagsLabel) setParams({ lg: "1" });
     });
 
     map.on("overlayremove", (e: L.LayersControlEvent) => {
-      if (e.name === "Train stations") setParams({ lt: "0" });
-      if (e.name === "Tags") setParams({ lg: "0" });
+      if (e.name === trainStationsLabel) setParams({ lt: "0" });
+      if (e.name === tagsLabel) setParams({ lg: "0" });
     });
 
     onCleanup(() => map.remove());

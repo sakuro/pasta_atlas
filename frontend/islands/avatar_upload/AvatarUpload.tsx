@@ -1,4 +1,5 @@
 import { createSignal, onMount, onCleanup, Show } from "solid-js";
+import "../../l10n";
 
 const csrfToken = (): string =>
   document.querySelector<HTMLMetaElement>('meta[name="csrf-token"]')?.content ?? "";
@@ -8,21 +9,23 @@ const jsonHeaders = (): HeadersInit => ({
   "X-CSRF-Token": csrfToken(),
 });
 
+type I18nError = { msgId: string; msgArgs?: Record<string, string | number> };
+
 type State =
   | { type: "idle" }
   | { type: "selected"; file: File; previewUrl: string }
   | { type: "removing" }
   | { type: "uploading" }
-  | { type: "error"; message: string };
+  | { type: "error"; error: I18nError };
 
 const MAX_BYTES = 5 * 1024 * 1024;
 const MIN_PX = 64;
 const MAX_PX = 1024;
 
-const validateImage = (file: File): Promise<string | null> =>
+const validateImage = (file: File): Promise<I18nError | null> =>
   new Promise((resolve) => {
     if (file.size > MAX_BYTES) {
-      resolve("File must be 5 MB or smaller.");
+      resolve({ msgId: "avatar-error-too-large-file-size" });
       return;
     }
     const url = URL.createObjectURL(file);
@@ -30,16 +33,16 @@ const validateImage = (file: File): Promise<string | null> =>
     img.onload = () => {
       URL.revokeObjectURL(url);
       if (img.width < MIN_PX || img.height < MIN_PX) {
-        resolve(`Image must be at least ${MIN_PX}×${MIN_PX}.`);
+        resolve({ msgId: "avatar-error-too-small-pixel-size", msgArgs: { min: MIN_PX } });
       } else if (img.width > MAX_PX || img.height > MAX_PX) {
-        resolve(`Image must be ${MAX_PX}×${MAX_PX} or smaller.`);
+        resolve({ msgId: "avatar-error-too-large-pixel-size", msgArgs: { max: MAX_PX } });
       } else {
         resolve(null);
       }
     };
     img.onerror = () => {
       URL.revokeObjectURL(url);
-      resolve("Failed to read image.");
+      resolve({ msgId: "avatar-error-read" });
     };
     img.src = url;
   });
@@ -71,7 +74,7 @@ export const AvatarUpload = (props: Props) => {
   const onFileSelected = async (file: File) => {
     const error = await validateImage(file);
     if (error) {
-      setState({ type: "error", message: error });
+      setState({ type: "error", error });
       return;
     }
     setState({ type: "selected", file, previewUrl: URL.createObjectURL(file) });
@@ -96,11 +99,11 @@ export const AvatarUpload = (props: Props) => {
           headers: { "X-CSRF-Token": csrfToken() },
         });
         if (!resp.ok) {
-          setState({ type: "error", message: `Failed to remove avatar (HTTP ${resp.status}).` });
+          setState({ type: "error", error: { msgId: "avatar-error-remove-http", msgArgs: { status: resp.status } } });
           return;
         }
       } catch {
-        setState({ type: "error", message: "Network error. Please try again." });
+        setState({ type: "error", error: { msgId: "avatar-error-network" } });
         return;
       }
       props.form!.submit();
@@ -121,14 +124,14 @@ export const AvatarUpload = (props: Props) => {
         body: JSON.stringify({ content_type: file.type }),
       });
       if (!resp.ok) {
-        setState({ type: "error", message: `Failed to get upload URL (HTTP ${resp.status}).` });
+        setState({ type: "error", error: { msgId: "avatar-error-url-http", msgArgs: { status: resp.status } } });
         return;
       }
       const data = await resp.json() as { presigned_url: string; s3_key: string };
       presignedUrl = data.presigned_url;
       s3Key = data.s3_key;
     } catch {
-      setState({ type: "error", message: "Network error. Please try again." });
+      setState({ type: "error", error: { msgId: "avatar-error-network" } });
       return;
     }
 
@@ -139,11 +142,11 @@ export const AvatarUpload = (props: Props) => {
         body: file,
       });
       if (!resp.ok) {
-        setState({ type: "error", message: `Upload failed (HTTP ${resp.status}).` });
+        setState({ type: "error", error: { msgId: "avatar-error-upload-http", msgArgs: { status: resp.status } } });
         return;
       }
     } catch {
-      setState({ type: "error", message: "Network error during upload." });
+      setState({ type: "error", error: { msgId: "avatar-error-upload-network" } });
       return;
     }
 
@@ -189,19 +192,19 @@ export const AvatarUpload = (props: Props) => {
           <Show when={state().type === "idle" || state().type === "error"}>
             <button class="button is-small" type="button" onClick={openPicker}>
               <span class="icon"><i class="fa-solid fa-image"></i></span>
-              <span>Change</span>
+              <span data-l10n-id="avatar-change" />
             </button>
             <Show when={props.currentAvatarUrl}>
               <button class="button is-small ml-2" type="button" onClick={() => setState({ type: "removing" })}>
                 <span class="icon"><i class="fa-solid fa-trash"></i></span>
-                <span>Remove</span>
+                <span data-l10n-id="avatar-remove" />
               </button>
             </Show>
           </Show>
           <Show when={state().type === "selected" || state().type === "removing"}>
             <button class="button is-small" type="button" onClick={cancel}>
               <span class="icon"><i class="fa-solid fa-circle-xmark"></i></span>
-              <span>Cancel</span>
+              <span data-l10n-id="avatar-cancel" />
             </button>
           </Show>
           <Show when={state().type === "uploading"}>
@@ -210,8 +213,12 @@ export const AvatarUpload = (props: Props) => {
           <Show when={errorState()} keyed>
             {(s) => (
               <div>
-                <p class="has-text-danger is-size-7">{s.message}</p>
-                <button class="button is-small mt-1" type="button" onClick={cancel}>Dismiss</button>
+                <p
+                  class="has-text-danger is-size-7"
+                  data-l10n-id={s.error.msgId}
+                  data-l10n-args={s.error.msgArgs ? JSON.stringify(s.error.msgArgs) : undefined}
+                />
+                <button class="button is-small mt-1" type="button" data-l10n-id="avatar-dismiss" onClick={cancel} />
               </div>
             )}
           </Show>
