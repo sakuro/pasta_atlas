@@ -128,11 +128,18 @@ export const MapInfoModal = (props: { mapshot: Mapshot; onClose: () => void }) =
                           data-l10n-id="map-info-mods-count"
                           data-l10n-args={JSON.stringify({ count: Object.keys(props.mapshot.active_mods!).length })}
                         />
-                        <ul>
-                          <For each={sortedMods(props.mapshot.active_mods!)}>
-                            {([name, version]) => <li><a href={`https://mods.factorio.com/mod/${name}`} target="_blank" rel="noopener">{name}</a> {version}</li>}
-                          </For>
-                        </ul>
+                        <table class="table is-narrow is-fullwidth">
+                          <tbody>
+                            <For each={sortedMods(props.mapshot.active_mods!)}>
+                              {([name, version]) => (
+                                <tr>
+                                  <td><a href={`https://mods.factorio.com/mod/${name}`} target="_blank" rel="noopener">{name}</a></td>
+                                  <td>{version}</td>
+                                </tr>
+                              )}
+                            </For>
+                          </tbody>
+                        </table>
                       </details>
                     </td>
                   </tr>
