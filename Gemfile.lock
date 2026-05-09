@@ -153,6 +153,15 @@ GEM
     ffi (1.17.4-x86_64-linux-musl)
     formatador (1.2.3)
       reline
+    foxtail-runtime (0.5.0)
+      bigdecimal (>= 3.1)
+      dry-core (~> 1.1)
+      icu4x (~> 0.9)
+      zeitwerk (~> 2.7)
+    foxtail-tools (0.5.0)
+      dry-cli (~> 1.4)
+      dry-inflector (~> 1.0)
+      zeitwerk (~> 2.7)
     guard (2.20.1)
       formatador (>= 0.2.4)
       listen (>= 2.7, < 4.0)
@@ -240,6 +249,19 @@ GEM
     i18n (1.14.8)
       concurrent-ruby (~> 1.0)
     ice_nine (0.11.2)
+    icu4x (0.9.0)
+      dry-configurable (~> 1.3)
+      rb_sys (~> 0.9, >= 0.9.124)
+    icu4x (0.9.0-aarch64-linux)
+      dry-configurable (~> 1.3)
+    icu4x (0.9.0-arm64-darwin)
+      dry-configurable (~> 1.3)
+    icu4x (0.9.0-x86_64-darwin)
+      dry-configurable (~> 1.3)
+    icu4x (0.9.0-x86_64-linux)
+      dry-configurable (~> 1.3)
+    icu4x-data-recommended (0.9.0)
+      icu4x (~> 0.9.0)
     io-console (0.8.2)
     irb (1.18.0)
       pp (>= 0.6.0)
@@ -342,6 +364,10 @@ GEM
       nio4r (~> 2.0)
     racc (1.8.1)
     rack (3.2.6)
+    rack-icu4x-locale (0.6.0)
+      icu4x (~> 0.8)
+      rack (~> 3.0)
+      zeitwerk (~> 2.7)
     rack-protection (4.2.1)
       base64 (>= 0.1.0)
       logger (>= 1.6.0)
@@ -355,9 +381,12 @@ GEM
       rack (>= 3)
     rainbow (3.1.1)
     rake (13.4.2)
+    rake-compiler-dock (1.12.0)
     rb-fsevent (0.11.2)
     rb-inotify (0.11.1)
       ffi (~> 1.0)
+    rb_sys (0.9.128)
+      rake-compiler-dock (= 1.12.0)
     rbs (4.0.2)
       logger
       prism (>= 1.6.0)
@@ -512,6 +541,8 @@ DEPENDENCIES
   dotenv
   dry-operation (>= 1.0.1)
   dry-types (~> 1.7)
+  foxtail-runtime
+  foxtail-tools
   hanami (~> 2.3.0)
   hanami-assets (~> 2.3.0)
   hanami-controller (~> 2.3.0)
@@ -522,12 +553,15 @@ DEPENDENCIES
   hanami-validations (~> 2.3.0)
   hanami-view (~> 2.3.0)
   hanami-webconsole (~> 2.3.0)
+  icu4x
+  icu4x-data-recommended
   irb
   omniauth (~> 2.1)
   omniauth-discord (~> 1.2)
   omniauth-github (~> 2.0)
   pg
   puma
+  rack-icu4x-locale
   rack-test
   rake
   redcarpet (~> 3.6)
@@ -608,6 +642,8 @@ CHECKSUMS
   ffi (1.17.4-x86_64-linux-gnu) sha256=9d3db14c2eae074b382fa9c083fe95aec6e0a1451da249eab096c34002bc752d
   ffi (1.17.4-x86_64-linux-musl) sha256=3fdf9888483de005f8ef8d1cf2d3b20d86626af206cbf780f6a6a12439a9c49e
   formatador (1.2.3) sha256=19fa898133c2c26cdbb5d09f6998c1e137ad9427a046663e55adfe18b950d894
+  foxtail-runtime (0.5.0) sha256=25bd5494ee83e590c190b8d7d0a546d6f406a4f68f54f9484194e8d4d979a979
+  foxtail-tools (0.5.0) sha256=5e40d106349bde666a8158e030f314620f1715565174a69ac428b100478f7e38
   guard (2.20.1) sha256=ab9cd7873854e6b76080c0589f781ff3e390e441bdda20165804df54f977015a
   guard-compat (1.2.1) sha256=3ad21ab0070107f92edfd82610b5cdc2fb8e368851e72362ada9703443d646fe
   guard-puma (0.9.2) sha256=a8a9f7938b063737c6ed68cbc029cc05d8183426d65f877266fc0c243fe690d9
@@ -627,6 +663,12 @@ CHECKSUMS
   hashie (5.1.0) sha256=c266471896f323c446ea8207f8ffac985d2718df0a0ba98651a3057096ca3870
   i18n (1.14.8) sha256=285778639134865c5e0f6269e0b818256017e8cde89993fdfcbfb64d088824a5
   ice_nine (0.11.2) sha256=5d506a7d2723d5592dc121b9928e4931742730131f22a1a37649df1c1e2e63db
+  icu4x (0.9.0) sha256=59dd9e7b1eb003ded7015ef483d45341c65e04119051d6edff4fdf9d76086cb1
+  icu4x (0.9.0-aarch64-linux) sha256=c3a1bc26efed82f503c64c4d8109c155ca33aaa3c639ee80d63b48e33fc2f524
+  icu4x (0.9.0-arm64-darwin) sha256=fe7a0bdadadac47d8e8f1e09a44c62da5b2752a3586afe457a593bb79084c633
+  icu4x (0.9.0-x86_64-darwin) sha256=7a837af602d68f1e196803d3681da7b63a910595337b99687293d66e2a2b6d2c
+  icu4x (0.9.0-x86_64-linux) sha256=ed0d7f15c4fd8d290bab9a9e5eaf571c5a58cd0965f4409e5bf9d9b430644fd8
+  icu4x-data-recommended (0.9.0) sha256=7febee0b490352a711748cfbe518771e48e6a6316faab0de81cccc498e6f1fb8
   io-console (0.8.2) sha256=d6e3ae7a7cc7574f4b8893b4fca2162e57a825b223a177b7afa236c5ef9814cc
   irb (1.18.0) sha256=de9454a0703a54704b9811a5ef31a60c86949fbf4013fcf244fabc7c775248e3
   jmespath (1.6.2) sha256=238d774a58723d6c090494c8879b5e9918c19485f7e840f2c1c7532cf84ebcb1
@@ -680,14 +722,17 @@ CHECKSUMS
   puma (7.2.0) sha256=bf8ef4ab514a4e6d4554cb4326b2004eba5036ae05cf765cfe51aba9706a72a8
   racc (1.8.1) sha256=4a7f6929691dbec8b5209a0b373bc2614882b55fc5d2e447a21aaa691303d62f
   rack (3.2.6) sha256=5ed78e1f73b2e25679bec7d45ee2d4483cc4146eb1be0264fc4d94cb5ef212c2
+  rack-icu4x-locale (0.6.0) sha256=2225e62a9561ca76f38953c2e0174e07c4df0a190bc85c5b46be22d8bcd0d095
   rack-protection (4.2.1) sha256=cf6e2842df8c55f5e4d1a4be015e603e19e9bc3a7178bae58949ccbb58558bac
   rack-session (2.1.2) sha256=595434f8c0c3473ae7d7ac56ecda6cc6dfd9d37c0b2b5255330aa1576967ffe8
   rack-test (2.2.0) sha256=005a36692c306ac0b4a9350355ee080fd09ddef1148a5f8b2ac636c720f5c463
   rackup (2.3.1) sha256=6c79c26753778e90983761d677a48937ee3192b3ffef6bc963c0950f94688868
   rainbow (3.1.1) sha256=039491aa3a89f42efa1d6dec2fc4e62ede96eb6acd95e52f1ad581182b79bc6a
   rake (13.4.2) sha256=cb825b2bd5f1f8e91ca37bddb4b9aaf345551b4731da62949be002fa89283701
+  rake-compiler-dock (1.12.0) sha256=f13205c2738f3d2053afcd03491a9e4541b22a59a0bfc53fc8bc883bd8188023
   rb-fsevent (0.11.2) sha256=43900b972e7301d6570f64b850a5aa67833ee7d87b458ee92805d56b7318aefe
   rb-inotify (0.11.1) sha256=a0a700441239b0ff18eb65e3866236cd78613d6b9f78fea1f9ac47a85e47be6e
+  rb_sys (0.9.128) sha256=9ab81f4d6d4e1895de18762232362d1264475aa7035756b50441e442130538fd
   rbs (4.0.2) sha256=af75671e66cd03434cc546622741ebf83f6197ec4328375805306330bf78ef25
   rdoc (7.2.0) sha256=8650f76cd4009c3b54955eb5d7e3a075c60a57276766ebf36f9085e8c9f23192
   redcarpet (3.6.1) sha256=d444910e6aa55480c6bcdc0cdb057626e8a32c054c29e793fa642ba2f155f445
