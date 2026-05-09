@@ -43,6 +43,31 @@
     --bulma-scheme-main-ter-l: 32%;
   }
 }
+
+/* Leaflet control theme tokens — Nord palette */
+:root {
+  --leaflet-ctrl-bg: #eceff4;
+  --leaflet-ctrl-bg-hover: #e5e9f0;
+  --leaflet-ctrl-border: #d8dee9;
+  --leaflet-ctrl-text: #2e3440;
+  --leaflet-ctrl-text-muted: #d8dee9;
+  --leaflet-ctrl-slider-track: #2e3440;
+  --leaflet-ctrl-slider-knob: #e5e9f0;
+  --leaflet-ctrl-slider-knob-border: #4c566a;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --leaflet-ctrl-bg: #3b4252;
+    --leaflet-ctrl-bg-hover: #434c5e;
+    --leaflet-ctrl-border: #4c566a;
+    --leaflet-ctrl-text: #eceff4;
+    --leaflet-ctrl-text-muted: #4c566a;
+    --leaflet-ctrl-slider-track: #eceff4;
+    --leaflet-ctrl-slider-knob: #d8dee9;
+    --leaflet-ctrl-slider-knob-border: #4c566a;
+  }
+}
 /* Leaflet controls reach z-index 800; modal must exceed that */
 .modal {
   z-index: 1000;

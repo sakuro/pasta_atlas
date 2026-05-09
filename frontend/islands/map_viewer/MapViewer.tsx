@@ -16,7 +16,15 @@ pluginStyle.textContent = zoomsliderCss + boxzoomCss +
   `.leaflet-control-zoomslider-body,.leaflet-control-zoomslider-knob{box-sizing:content-box!important}` +
   `.leaflet-control-boxzoom{display:flex!important;align-items:center!important;justify-content:center!important;width:26px!important;height:26px!important;box-sizing:content-box!important}` +
   `.leaflet-touch .leaflet-control-boxzoom{width:30px!important;height:30px!important}` +
-  `.leaflet-control-boxzoom i{font-size:18px}`;
+  `.leaflet-control-boxzoom i{font-size:18px;color:var(--leaflet-ctrl-text)!important}` +
+  `.leaflet-bar a{background:var(--leaflet-ctrl-bg)!important;border-bottom-color:var(--leaflet-ctrl-border)!important;color:var(--leaflet-ctrl-text)!important}` +
+  `.leaflet-bar a:hover{background:var(--leaflet-ctrl-bg-hover)!important}` +
+  `.leaflet-control-layers{background:var(--leaflet-ctrl-bg)!important;color:var(--leaflet-ctrl-text)!important}` +
+  `.leaflet-control-zoomslider-wrap{background:var(--leaflet-ctrl-bg)!important}` +
+  `.leaflet-control-zoomslider-body{background:var(--leaflet-ctrl-slider-track)!important}` +
+  `.leaflet-control-zoomslider-knob{background:var(--leaflet-ctrl-slider-knob)!important;border-color:var(--leaflet-ctrl-slider-knob-border)!important}` +
+  `.leaflet-control-boxzoom{background:var(--leaflet-ctrl-bg)!important;color:var(--leaflet-ctrl-text)!important}` +
+  `.leaflet-control-boxzoom:hover{background:var(--leaflet-ctrl-bg-hover)!important}`;
 document.head.appendChild(pluginStyle);
 import markerIcon from "leaflet/dist/images/marker-icon.png";
 import markerIcon2x from "leaflet/dist/images/marker-icon-2x.png";
