@@ -14,11 +14,22 @@ function buildLocaleChain(): string[] {
   });
 }
 
+let ftlManifest: Record<string, { url: string }> | null = null;
+
+async function resolveAssetUrl(key: string): Promise<string> {
+  if (!ftlManifest) {
+    const res = await fetch("/assets/ftl-manifest.json");
+    ftlManifest = res.ok ? await res.json() as Record<string, { url: string }> : {};
+  }
+  return ftlManifest[key]?.url ?? `/assets/${key}`;
+}
+
 async function* generateBundles(resourceIds: ReadonlyArray<string>) {
   for (const locale of buildLocaleChain()) {
     const bundle = new FluentBundle(locale);
     for (const resourceId of resourceIds) {
-      const response = await fetch(`/assets/${resourceId}.${locale}.ftl`);
+      const url = await resolveAssetUrl(`${resourceId}.${locale}.ftl`);
+      const response = await fetch(url);
       bundle.addResource(new FluentResource(await response.text()));
     }
     yield bundle;

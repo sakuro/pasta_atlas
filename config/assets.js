@@ -1,17 +1,28 @@
 import * as assets from "hanami-assets";
-
-// Assets are managed by esbuild (https://esbuild.github.io), and can be
-// customized below.
-//
-// Learn more at https://guides.hanamirb.org/assets/customization/.
+import fs from "fs";
+import path from "path";
 
 await assets.run({
   esbuildOptionsFn: (args, esbuildOptions) => {
-    // Customize your `esbuildOptions` here.
-    //
-    // Use the `args.watch` boolean as a condition to apply diffierent options
-    // when running `hanami assets watch` vs `hanami assets compile`.
-
+    const ftlManifestPlugin = {
+      name: "ftl-manifest",
+      setup(build) {
+        build.onEnd(() => {
+          const destDir = path.join(process.cwd(), args.dest);
+          const manifestPath = path.join(destDir, "assets.json");
+          if (!fs.existsSync(manifestPath)) return;
+          const manifest = JSON.parse(fs.readFileSync(manifestPath, "utf-8"));
+          const ftlManifest = Object.fromEntries(
+            Object.entries(manifest).filter(([key]) => key.endsWith(".ftl"))
+          );
+          fs.writeFileSync(
+            path.join(destDir, "ftl-manifest.json"),
+            JSON.stringify(ftlManifest, null, 2)
+          );
+        });
+      },
+    };
+    esbuildOptions.plugins = [...esbuildOptions.plugins, ftlManifestPlugin];
     return esbuildOptions;
   },
 });
