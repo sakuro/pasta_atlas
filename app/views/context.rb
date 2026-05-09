@@ -27,18 +27,7 @@ module PastaAtlas
         return key.to_s unless i18n
 
         id, attr = key.to_s.split(".", 2)
-        unless attr
-          return i18n.format(id, **args)
-        end
-
-        bundle = i18n.find(id)
-        return key.to_s unless bundle
-
-        message = bundle.message(id)
-        attr_pattern = message&.attributes&.[](attr)
-        return key.to_s unless attr_pattern
-
-        bundle.format_pattern(attr_pattern, nil, **args)
+        attr ? i18n.format_attribute(id, attr, **args) : i18n.format(id, **args)
       end
 
       def current_user_name
