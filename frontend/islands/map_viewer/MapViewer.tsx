@@ -193,13 +193,16 @@ const LeafletMap = (props: { mapshot: Mapshot; assetBase: string }) => {
     const { surfaces } = props.mapshot;
     if (!surfaces.length) return;
 
-    const [trainStationsLabel, tagsLabel, ...ftlSurfaceNames] = await l10n.formatValues([
+    const planetSurfaces = surfaces.filter((s) => s.is_planet);
+    const [trainStationsLabel, tagsLabel, ...ftlPlanetNames] = await l10n.formatValues([
       { id: "map-layer-train-stations" },
       { id: "map-layer-tags" },
-      ...surfaces.map((s) => ({ id: `surface-${s.surface_name}` })),
+      ...planetSurfaces.map((s) => ({ id: `surface-${s.surface_name}` })),
     ]);
-    const labels = surfaces.map((s, i) => {
-      const name = ftlSurfaceNames[i] ?? (s.surface_localised_name || s.surface_name);
+    const ftlNameBySurfaceName: Record<string, string> = {};
+    planetSurfaces.forEach((s, i) => { ftlNameBySurfaceName[s.surface_name] = ftlPlanetNames[i]; });
+    const labels = surfaces.map((s) => {
+      const name = ftlNameBySurfaceName[s.surface_name] ?? (s.surface_localised_name || s.surface_name);
       const prefix = s.is_planet ? `[planet=${s.surface_name}] ` : "";
       return renderRichText(prefix + name);
     });
