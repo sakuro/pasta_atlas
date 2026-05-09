@@ -4,10 +4,12 @@
 require "dry/monads"
 require "hanami/action"
 require "json"
+require_relative "action/i18n_support"
 
 module PastaAtlas
   class Action < Hanami::Action
-    include Deps["repos.user_repo"]
+    include Deps["repos.user_repo", "i18n.bundles"]
+    prepend I18nSupport
     include Dry::Monads[:result]
 
     private def json_response(response, data, status: 200)
