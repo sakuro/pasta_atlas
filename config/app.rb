@@ -4,6 +4,7 @@ require "hanami"
 require "omniauth"
 require "omniauth-discord"
 require "omniauth-github"
+require "rack/icu4x/locale"
 
 module PastaAtlas
   class App < Hanami::App
@@ -12,6 +13,14 @@ module PastaAtlas
       secret: settings.session_secret,
       expire_after: 60 * 60 * 24 * 365
     }
+
+    config.middleware.use Rack::ICU4X::Locale,
+      locales: %w[en ja],
+      detectors: [
+        ->(env) { env["rack.session"]&.[]("locale") },
+        :header
+      ],
+      default: "en"
 
     config.middleware.use OmniAuth::Builder do
       provider :discord,
