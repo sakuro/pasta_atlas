@@ -7,6 +7,7 @@ module PastaAtlas
         class Callback < PastaAtlas::Action
           include Deps[
             "repos.credential_repo",
+            "repos.user_preference_repo",
             "repos.user_profile_repo"
           ]
 
@@ -22,6 +23,8 @@ module PastaAtlas
 
             if credential
               request.session[:user_id] = credential.user_id
+              # Rack::ICU4X::Locale middleware cannot access the database; mirror the user's locale preference in the session for locale detection.
+              request.session[:locale] = user_preference_repo.find_by_user_id(credential.user_id).locale
               response.redirect_to "/"
             else
               # New user: store auth info in session and redirect to registration

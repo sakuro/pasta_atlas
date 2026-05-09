@@ -28,6 +28,8 @@ module PastaAtlas
             timezone = valid_timezone(request.params[:timezone])
             locale = valid_locale(request.params[:locale])
             user_preference_repo.update_preferences(user_id, timezone:, locale:)
+            # Rack::ICU4X::Locale middleware cannot access the database; keep the session in sync so locale detection reflects the updated preference immediately.
+            request.session[:locale] = locale
             response.redirect_to "/@#{user_name}"
           end
 
