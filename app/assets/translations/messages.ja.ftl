@@ -43,3 +43,6 @@ edit-save-preferences = 設定を保存
 ## Pagination
 pagination-previous = 前へ
 pagination-next = 次へ
+
+## Footer
+footer-built-with = { $stack } で作られています

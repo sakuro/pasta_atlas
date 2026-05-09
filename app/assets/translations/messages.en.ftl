@@ -43,3 +43,6 @@ edit-save-preferences = Save Preferences
 ## Pagination
 pagination-previous = Previous
 pagination-next = Next
+
+## Footer
+footer-built-with = Built with { $stack }
