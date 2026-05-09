@@ -189,9 +189,11 @@ const LeafletMap = (props: { mapshot: Mapshot; assetBase: string }) => {
       { id: "map-layer-tags" },
       ...surfaces.map((s) => ({ id: `surface-${s.surface_name}` })),
     ]);
-    const labels = surfaces.map((s, i) =>
-      renderRichText(ftlSurfaceNames[i] ?? (s.surface_localised_name || s.surface_name))
-    );
+    const labels = surfaces.map((s, i) => {
+      const name = ftlSurfaceNames[i] ?? (s.surface_localised_name || s.surface_name);
+      const prefix = s.is_planet ? `[planet=${s.surface_name}] ` : "";
+      return renderRichText(prefix + name);
+    });
 
     const planetIdx = surfaces.findIndex((s) => s.is_planet);
     const defaultSurfaceIdx = planetIdx >= 0 ? planetIdx : 0;
