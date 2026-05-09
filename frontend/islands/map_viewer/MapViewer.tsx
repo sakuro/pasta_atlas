@@ -177,9 +177,6 @@ const latLngToWorld = (surface: Surface, latlng: L.LatLng): { x: number; y: numb
   return { x: latlng.lng / ratio, y: -latlng.lat / ratio };
 };
 
-const surfaceLabel = (surface: Surface): string =>
-  surface.surface_localised_name || surface.surface_name;
-
 const LeafletMap = (props: { mapshot: Mapshot; assetBase: string }) => {
   let mapEl!: HTMLDivElement;
 
@@ -187,10 +184,14 @@ const LeafletMap = (props: { mapshot: Mapshot; assetBase: string }) => {
     const { surfaces } = props.mapshot;
     if (!surfaces.length) return;
 
-    const [trainStationsLabel, tagsLabel] = await l10n.formatValues([
+    const [trainStationsLabel, tagsLabel, ...ftlSurfaceNames] = await l10n.formatValues([
       { id: "map-layer-train-stations" },
       { id: "map-layer-tags" },
+      ...surfaces.map((s) => ({ id: `surface-${s.surface_name}` })),
     ]);
+    const labels = surfaces.map((s, i) =>
+      renderRichText(ftlSurfaceNames[i] ?? (s.surface_localised_name || s.surface_name))
+    );
 
     const planetIdx = surfaces.findIndex((s) => s.is_planet);
     const defaultSurfaceIdx = planetIdx >= 0 ? planetIdx : 0;
@@ -217,8 +218,9 @@ const LeafletMap = (props: { mapshot: Mapshot; assetBase: string }) => {
     const stationMarkers: Record<string, L.Marker[]> = {};
     const tagMarkers: Record<string, L.Marker[]> = {};
 
-    for (const surface of surfaces) {
-      const label = renderRichText(surfaceLabel(surface));
+    for (let i = 0; i < surfaces.length; i++) {
+      const surface = surfaces[i];
+      const label = labels[i];
       const toLL = (x: number, y: number) => worldToLatLng(surface, x, y);
       const bounds = L.latLngBounds(
         toLL(surface.world_min.x, surface.world_min.y),
@@ -255,8 +257,9 @@ const LeafletMap = (props: { mapshot: Mapshot; assetBase: string }) => {
     };
 
     // Activate initial surface
-    const initSurface = surfaces[initSurfaceIdx] ?? surfaces[defaultSurfaceIdx];
-    const initLabel = renderRichText(surfaceLabel(initSurface));
+    const resolvedInitIdx = surfaces[initSurfaceIdx] !== undefined ? initSurfaceIdx : defaultSurfaceIdx;
+    const initSurface = surfaces[resolvedInitIdx];
+    const initLabel = labels[resolvedInitIdx];
 
     baseLayers[initLabel].addTo(map);
     populateOverlays(initLabel);
@@ -288,7 +291,7 @@ const LeafletMap = (props: { mapshot: Mapshot; assetBase: string }) => {
     let currentSurface = initSurface;
 
     map.on("baselayerchange", (e: L.LayersControlEvent) => {
-      const idx = surfaces.findIndex((s) => renderRichText(surfaceLabel(s)) === e.name);
+      const idx = labels.findIndex((l) => l === e.name);
       currentSurface = surfaces[idx] ?? initSurface;
       populateOverlays(e.name);
       map.setMinZoom(currentSurface.zoom_min);

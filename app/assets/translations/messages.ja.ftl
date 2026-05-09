@@ -1,3 +1,15 @@
+# -app-name = Pasta Atlas
+
+## App
+# app-name = { -app-name }
+
+## Surfaces
+surface-nauvis = ナウヴィス
+surface-vulcanus = ヴルカヌス
+surface-gleba = グレバ
+surface-fulgora = フルゴラ
+surface-aquilo = アクィロ
+
 ## Nav
 nav-log-out = ログアウト
 nav-log-in = ログイン

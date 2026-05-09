@@ -1,3 +1,15 @@
+-app-name = Pasta Atlas
+
+## App
+app-name = { -app-name }
+
+## Surfaces
+surface-nauvis = Nauvis
+surface-vulcanus = Vulcanus
+surface-gleba = Gleba
+surface-fulgora = Fulgora
+surface-aquilo = Aquilo
+
 ## Nav
 nav-log-out = Log out
 nav-log-in = Log in
