@@ -1,21 +1,30 @@
 import { DOMLocalization } from "@fluent/dom";
 import { FluentBundle, FluentResource } from "@fluent/bundle";
 
-const locale = document.documentElement.lang || "en";
+const SUPPORTED_LOCALES = ["en", "ja"];
 
-async function* generateBundles(resourceIds: ReadonlyArray<string>) {
-  const bundle = new FluentBundle(locale);
-  for (const resourceId of resourceIds) {
-    const response = await fetch(resourceId);
-    const text = await response.text();
-    bundle.addResource(new FluentResource(text));
-  }
-  yield bundle;
+function buildLocaleChain(): string[] {
+  const preferred = document.documentElement.lang;
+  const candidates = [preferred, ...navigator.languages];
+  const seen = new Set<string>();
+  return candidates.filter(loc => {
+    if (!SUPPORTED_LOCALES.includes(loc) || seen.has(loc)) return false;
+    seen.add(loc);
+    return true;
+  });
 }
 
-export const l10n = new DOMLocalization(
-  [`/assets/messages.${locale}.ftl`],
-  generateBundles
-);
+async function* generateBundles(resourceIds: ReadonlyArray<string>) {
+  for (const locale of buildLocaleChain()) {
+    const bundle = new FluentBundle(locale);
+    for (const resourceId of resourceIds) {
+      const response = await fetch(`/assets/${resourceId}.${locale}.ftl`);
+      bundle.addResource(new FluentResource(await response.text()));
+    }
+    yield bundle;
+  }
+}
+
+export const l10n = new DOMLocalization(["messages"], generateBundles);
 
 l10n.connectRoot(document.documentElement);
