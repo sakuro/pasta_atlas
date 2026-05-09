@@ -52,6 +52,9 @@ edit-locale =
     .not-set = (not set)
 edit-save-preferences = Save Preferences
 
+## Maps index
+maps-uploaded-maps = Uploaded maps
+
 ## Pagination
 pagination-previous = Previous
 pagination-next = Next

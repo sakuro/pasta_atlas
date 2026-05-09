@@ -52,6 +52,9 @@ edit-locale =
     .not-set = (未設定)
 edit-save-preferences = 設定を保存
 
+## Maps index
+maps-uploaded-maps = アップロードされているマップ
+
 ## Pagination
 pagination-previous = 前へ
 pagination-next = 次へ
