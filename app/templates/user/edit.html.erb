@@ -68,7 +68,7 @@
                 <% timezone_identifiers.group_by { |tz| tz.include?("/") ? tz.split("/").first : "Other" }.each do |region, tzs| %>
                   <optgroup label="<%= region %>">
                     <% tzs.each do |tz| %>
-                      <option value="<%= tz %>"<%= " selected" if tz.to_s == timezone.to_s %>><%= tz %></option>
+                      <option value="<%= tz %>"<%= " selected" if tz == timezone %>><%= tz %></option>
                     <% end %>
                   </optgroup>
                 <% end %>
