@@ -30,15 +30,15 @@ module PastaAtlas
 
             name = request.params[:name].to_s.downcase
 
-            error = validate_name(name)
-            if error
-              response.render(view, suggested_name: name, error:)
+            error_key = validate_name(name)
+            if error_key
+              response.render(view, suggested_name: name, error: i18n(request).format(error_key))
               return
             end
 
             user = user_repo.find_by_name(name)
             if user
-              response.render view, suggested_name: name, error: "That username is already taken."
+              response.render view, suggested_name: name, error: i18n(request).format("error-username-taken")
               return
             end
 
@@ -71,10 +71,10 @@ module PastaAtlas
           end
 
           private def validate_name(name)
-            return "Username must not be empty." if name.empty?
-            return "Username must be 39 characters or fewer." if name.length > 39
-            return "Username may only contain letters, numbers, hyphens, and underscores, and must start and end with a letter or number." unless name.match?(USERNAME_PATTERN)
-            return "That username is reserved." if RESERVED_NAMES.include?(name)
+            return "error-username-empty" if name.empty?
+            return "error-username-too-long" if name.length > 39
+            return "error-username-invalid-chars" unless name.match?(USERNAME_PATTERN)
+            return "error-username-reserved" if RESERVED_NAMES.include?(name)
 
             nil
           end

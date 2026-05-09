@@ -17,8 +17,10 @@ module PastaAtlas
       response.body = JSON.generate(data)
     end
 
+    private def i18n(request) = request.env["pasta_atlas.i18n"] ||= build_i18n_sequence(request)
+
     private def view_context_options(request, response)
-      super.merge(i18n: build_i18n_sequence(request))
+      super.merge(i18n: i18n(request))
     end
 
     private def build_i18n_sequence(request)
