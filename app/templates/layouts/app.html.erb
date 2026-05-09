@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="<%= locale_tag %>">
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -32,21 +32,21 @@
               <input type="hidden" name="_csrf_token" value="<%= csrf_token %>">
               <button class="navbar-item" type="submit">
                 <span class="icon"><i class="fa-solid fa-arrow-right-from-bracket"></i></span>
-                <span>Log out</span>
+                <span><%= t("nav-log-out") %></span>
               </button>
             </form>
           <% else %>
             <div class="navbar-item has-dropdown is-hoverable">
               <a class="navbar-link">
                 <span class="icon"><i class="fa-solid fa-arrow-right-to-bracket"></i></span>
-                <span>Log in</span>
+                <span><%= t("nav-log-in") %></span>
               </a>
               <div class="navbar-dropdown is-right">
                 <form action="/auth/discord" method="post">
                   <input type="hidden" name="authenticity_token" value="<%= omniauth_authenticity_token %>">
                   <button class="navbar-item" type="submit">
                     <span class="icon"><i class="fa-brands fa-discord"></i></span>
-                    <span>Log in with Discord</span>
+                    <span><%= t("nav-log-in.discord") %></span>
                   </button>
                 </form>
                 <hr class="navbar-divider">
@@ -54,7 +54,7 @@
                   <input type="hidden" name="authenticity_token" value="<%= omniauth_authenticity_token %>">
                   <button class="navbar-item" type="submit">
                     <span class="icon"><i class="fa-brands fa-github"></i></span>
-                    <span>Log in with GitHub</span>
+                    <span><%= t("nav-log-in.github") %></span>
                   </button>
                 </form>
               </div>
@@ -78,7 +78,7 @@
         <p>
           <a href="https://github.com/sakuro/pasta_atlas" target="_blank" rel="noopener">
             <span class="icon"><i class="fa-brands fa-github"></i></span>
-            <span>Source code</span>
+            <span><%= t("nav-source-code") %></span>
           </a>
         </p>
       </div>

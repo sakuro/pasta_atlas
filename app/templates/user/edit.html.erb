@@ -1,10 +1,10 @@
 <section class="section">
   <div class="container is-max-tablet">
-    <h1 class="title">Edit</h1>
+    <h1 class="title"><%= t("edit-title") %></h1>
     <div class="tabs" data-tabs="user-edit">
       <ul>
-        <li data-target="edit-profile" class="is-active"><a>Profile</a></li>
-        <li data-target="edit-preferences"><a>Preferences</a></li>
+        <li data-target="edit-profile" class="is-active"><a><%= t("user-tab-profile") %></a></li>
+        <li data-target="edit-preferences"><a><%= t("user-tab-preferences") %></a></li>
       </ul>
     </div>
 
@@ -19,7 +19,7 @@
           <p class="label">
             <span class="icon-text">
               <span class="icon"><i class="fa-solid fa-user"></i></span>
-              <span>Avatar</span>
+              <span><%= t("edit-avatar-label") %></span>
             </span>
           </p>
           <div class="control" id="avatar-upload"
@@ -30,7 +30,7 @@
           <label class="label" for="display_name">
             <span class="icon-text">
               <span class="icon"><i class="fa-solid fa-address-card"></i></span>
-              <span>Display name</span>
+              <span><%= t("edit-display-name.label") %></span>
             </span>
           </label>
           <div class="control">
@@ -38,13 +38,13 @@
                    value="<%= display_name %>"
                    maxlength="64">
           </div>
-          <p class="help">Up to 64 characters. Leave blank to use your username.</p>
+          <p class="help"><%= t("edit-display-name.help") %></p>
         </div>
         <div class="field">
           <div class="control">
             <button class="button is-primary" type="submit">
               <span class="icon"><i class="fa-solid fa-floppy-disk"></i></span>
-              <span>Save Profile</span>
+              <span><%= t("edit-save-profile") %></span>
             </button>
           </div>
         </div>
@@ -59,7 +59,7 @@
           <label class="label" for="timezone-select">
             <span class="icon-text">
               <span class="icon"><i class="fa-solid fa-clock"></i></span>
-              <span>Timezone</span>
+              <span><%= t("edit-timezone-label") %></span>
             </span>
           </label>
           <div class="control is-flex is-align-items-center">
@@ -81,15 +81,15 @@
           <label class="label" for="locale-select">
             <span class="icon-text">
               <span class="icon"><i class="fa-solid fa-language"></i></span>
-              <span>Locale</span>
+              <span><%= t("edit-locale.label") %></span>
             </span>
           </label>
           <div class="control">
             <div class="select">
               <select id="locale-select" name="locale">
-                <option value=""<%= " selected" if locale.nil? || locale.empty? %>>(not set)</option>
-                <option value="en"<%= " selected" if locale == "en" %>>English</option>
-                <option value="ja"<%= " selected" if locale == "ja" %>>Japanese</option>
+                <option value=""<%= " selected" if locale.nil? || locale.empty? %>><%= t("edit-locale.not-set") %></option>
+                <option value="en"<%= " selected" if locale == "en" %>><%= locale_name("en") %></option>
+                <option value="ja"<%= " selected" if locale == "ja" %>><%= locale_name("ja") %></option>
               </select>
             </div>
           </div>
@@ -98,7 +98,7 @@
           <div class="control">
             <button class="button is-primary" type="submit">
               <span class="icon"><i class="fa-solid fa-floppy-disk"></i></span>
-              <span>Save Preferences</span>
+              <span><%= t("edit-save-preferences") %></span>
             </button>
           </div>
         </div>

@@ -9,7 +9,7 @@
         <div class="level-right">
           <a class="button" href="/@<%= user_name %>/edit">
             <span class="icon"><i class="fa-solid fa-pencil"></i></span>
-            <span>Edit</span>
+            <span><%= t("user-edit-button") %></span>
           </a>
         </div>
       <% end %>
@@ -18,8 +18,8 @@
     <% if own_profile %>
       <div class="tabs mt-4" data-tabs="user-show">
         <ul>
-          <li data-target="show-profile" class="is-active"><a>Profile</a></li>
-          <li data-target="show-preferences"><a>Preferences</a></li>
+          <li data-target="show-profile" class="is-active"><a><%= t("user-tab-profile") %></a></li>
+          <li data-target="show-preferences"><a><%= t("user-tab-preferences") %></a></li>
         </ul>
       </div>
     <% end %>
@@ -31,7 +31,7 @@
         <h2 class="title is-4">
           <span class="icon-text">
             <span class="icon"><i class="fa-solid fa-map"></i></span>
-            <span>Recent Maps</span>
+            <span><%= t("user-recent-maps") %></span>
           </span>
         </h2>
         <div class="columns is-multiline">
@@ -61,7 +61,7 @@
         <label class="label">
           <span class="icon-text">
             <span class="icon"><i class="fa-solid fa-clock"></i></span>
-            <span>Timezone</span>
+            <span><%= t("user-timezone-label") %></span>
           </span>
         </label>
         <p><%= preference.timezone %></p>
@@ -71,7 +71,7 @@
           <label class="label">
             <span class="icon-text">
               <span class="icon"><i class="fa-solid fa-language"></i></span>
-              <span>Locale</span>
+              <span><%= t("user-locale-label") %></span>
             </span>
           </label>
           <p><%= preference.locale %></p>

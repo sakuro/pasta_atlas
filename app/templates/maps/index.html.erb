@@ -26,10 +26,10 @@
     <script src="<%= island_src("share_buttons") %>" type="module"></script>
     <nav class="pagination is-centered mt-5" role="navigation" aria-label="pagination">
       <% if page > 1 %>
-        <a class="pagination-previous" href="/?page=<%= page - 1 %>">Previous</a>
+        <a class="pagination-previous" href="/?page=<%= page - 1 %>"><%= t("pagination-previous") %></a>
       <% end %>
       <% if page * per_page < total %>
-        <a class="pagination-next" href="/?page=<%= page + 1 %>">Next</a>
+        <a class="pagination-next" href="/?page=<%= page + 1 %>"><%= t("pagination-next") %></a>
       <% end %>
     </nav>
   </div>
