@@ -50,6 +50,7 @@ interface Surface {
   surface_localised_name: string;
   surface_name: string;
   is_planet: boolean;
+  is_space_platform: boolean;
   file_prefix: string;
   tile_size: number;
   render_size: number;
@@ -215,12 +216,19 @@ const LeafletMap = (props: { mapshot: Mapshot; assetBase: string }) => {
     const trainLayerGroup = L.layerGroup();
     const tagLayerGroup = L.layerGroup();
 
-    // Build per-surface marker arrays and tile layers
+    // Sort indices: planets → space platforms → others
+    const cmp = (a: number, b: number): -1 | 0 | 1 => a < b ? -1 : a > b ? 1 : 0;
+    const groupOrder = (s: Surface): number => s.is_planet ? 0 : s.is_space_platform ? 1 : 2;
+    const sortedIndices = surfaces.map((_, i) => i).sort((a, b) =>
+      cmp(groupOrder(surfaces[a]), groupOrder(surfaces[b])) || cmp(surfaces[a].surface_idx, surfaces[b].surface_idx)
+    );
+
+    // Build per-surface marker arrays and tile layers (in sorted display order)
     const baseLayers: Record<string, L.TileLayer> = {};
     const stationMarkers: Record<string, L.Marker[]> = {};
     const tagMarkers: Record<string, L.Marker[]> = {};
 
-    for (let i = 0; i < surfaces.length; i++) {
+    for (const i of sortedIndices) {
       const surface = surfaces[i];
       const label = labels[i];
       const toLL = (x: number, y: number) => worldToLatLng(surface, x, y);
