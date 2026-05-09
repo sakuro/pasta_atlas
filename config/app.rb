@@ -5,6 +5,7 @@ require "omniauth"
 require "omniauth-discord"
 require "omniauth-github"
 require "rack/icu4x/locale"
+require_relative "../app/i18n"
 
 module PastaAtlas
   class App < Hanami::App
@@ -15,7 +16,7 @@ module PastaAtlas
     }
 
     config.middleware.use Rack::ICU4X::Locale,
-      locales: %w[en ja],
+      locales: PastaAtlas::I18n::SUPPORTED_LOCALES,
       detectors: [
         ->(env) { env["rack.session"]&.[]("locale") },
         :header
