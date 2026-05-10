@@ -41,15 +41,9 @@ inherit_gem:
 
 inherit_from: .rubocop_todo.yml
 
-Style/Documentation:
-  Enabled: false
-
-Style/DocumentationMethod:
-  Enabled: false
-
-Lint/EmptyBlock:
-  Exclude:
-    - spec/factories/user.rb
+RSpec/SpecFilePathFormat:
+  CustomTransform:
+    PastaAtlas: ""
 
 # ROM structs are anonymous subclasses sharing the same constant name as their base class.
 # RSpec resolves instance_double by constant name (NamedObjectReference), which picks up the
@@ -60,7 +54,9 @@ RSpec/VerifiedDoubles:
     - spec/operations/**/*.rb
     - spec/views/**/*.rb
 
-RSpec/SpecFilePathFormat:
-  CustomTransform:
-    PastaAtlas: ""
+Style/Documentation:
+  Enabled: false
+
+Style/DocumentationMethod:
+  Enabled: false
 
