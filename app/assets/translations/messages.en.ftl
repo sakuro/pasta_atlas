@@ -1,4 +1,5 @@
 -app-name = Pasta Atlas
+-mapshot = Mapshot
 -discord = Discord
 -github = GitHub
 
@@ -79,9 +80,9 @@ pagination-next = Next
 
 ## Upload modal
 upload-button = Upload
-upload-modal-title = Upload Mapshot
+upload-modal-title = Upload { -mapshot }
 upload-instructions-folder = Select the folder containing mapshot.json.
-upload-instructions-folder-path = Typical mapshot folder:
+upload-instructions-folder-path = Typical { -mapshot } folder:
 upload-instructions-generations = You can upload different generations of an existing map.
 upload-instructions-guest = Uploads from guest accounts are deleted after approximately one week.
 upload-select-folder = Select Folder

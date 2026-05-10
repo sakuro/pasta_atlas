@@ -1,4 +1,5 @@
 # -app-name = Pasta Atlas
+-mapshot = Mapshot
 -discord = Discord
 -github = GitHub
 
@@ -79,9 +80,9 @@ pagination-next = 次へ
 
 ## Upload modal
 upload-button = アップロード
-upload-modal-title = Mapshot をアップロード
+upload-modal-title = { -mapshot } をアップロード
 upload-instructions-folder = mapshot.json を含むフォルダーを選択してください。
-upload-instructions-folder-path = Mapshot の標準的なフォルダー:
+upload-instructions-folder-path = { -mapshot } の標準的なフォルダー:
 upload-instructions-generations = 既存マップの異なる世代もアップロードできます。
 upload-instructions-guest = ゲストアカウントからのアップロードは約 1 週間後に削除されます。
 upload-select-folder = フォルダーを選択
