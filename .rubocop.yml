@@ -41,6 +41,12 @@ inherit_gem:
 
 inherit_from: .rubocop_todo.yml
 
+Style/Documentation:
+  Enabled: false
+
+Style/DocumentationMethod:
+  Enabled: false
+
 Lint/EmptyBlock:
   Exclude:
     - spec/factories/user.rb
