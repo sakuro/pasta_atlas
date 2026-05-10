@@ -100,17 +100,15 @@
           </label>
           <p><%= preference.timezone %></p>
         </div>
-        <% if preference.locale %>
-          <div class="field">
-            <label class="label">
-              <span class="icon-text">
-                <span class="icon"><i class="fa-solid fa-language"></i></span>
-                <span><%= t("user-locale-label") %></span>
-              </span>
-            </label>
-            <p><%= locale_name(preference.locale) %></p>
-          </div>
-        <% end %>
+        <div class="field">
+          <label class="label">
+            <span class="icon-text">
+              <span class="icon"><i class="fa-solid fa-language"></i></span>
+              <span><%= t("user-locale-label") %></span>
+            </span>
+          </label>
+          <p><%= preference.locale ? locale_name(preference.locale) : t("edit-locale.not-set") %></p>
+        </div>
       </div>
     </div>
   <% else %>
