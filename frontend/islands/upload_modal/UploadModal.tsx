@@ -331,6 +331,7 @@ export const UploadModal = (props: { isGuest: boolean }) => {
                         <th><span class="icon-text"><span class="icon"><i class="fa-solid fa-map"></i></span><span data-l10n-id="upload-map-title" /></span></th>
                         <td>
                           <input
+                            ref={(el) => setTimeout(() => { el.focus(); el.select(); }, 0)}
                             class="input"
                             type="text"
                             value={displayName()}
@@ -402,6 +403,7 @@ export const UploadModal = (props: { isGuest: boolean }) => {
                   <span class="icon"><i class="fa-solid fa-arrow-left"></i></span>
                   <span data-l10n-id="upload-back" />
                 </button>
+                <button class="button" data-l10n-id="upload-cancel" onClick={dismiss} />
               </Show>
               <Show when={state().type === "done"}>
                 <button class="button" data-l10n-id="upload-close" onClick={dismiss} />
