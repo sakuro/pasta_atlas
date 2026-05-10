@@ -10,9 +10,13 @@ module PastaAtlas
           include Deps[
             "repos.user_profile_repo",
             "repos.user_preference_repo",
+            "repos.credential_repo",
             "settings",
             edit_view: "views.user.edit"
           ]
+
+          OAUTH_PROVIDERS = %w[discord github].freeze
+          private_constant :OAUTH_PROVIDERS
 
           DISPLAY_NAME_MAX_GRAPHEME_CLUSTERS = 64
           private_constant :DISPLAY_NAME_MAX_GRAPHEME_CLUSTERS
@@ -46,6 +50,7 @@ module PastaAtlas
               profile = user_profile_repo.find_by_user_id(user_id)
               timezone_identifiers = TZInfo::Timezone.all_identifiers
               avatar_url = profile.avatar_s3_key ? "#{settings.cloudfront_base_url}/#{profile.avatar_s3_key}" : nil
+              connected_providers = credential_repo.find_by_user_id(user_id).map(&:provider)
               response.render(
                 edit_view,
                 display_name:,
@@ -53,6 +58,9 @@ module PastaAtlas
                 timezone_identifiers:,
                 locale: preference.locale,
                 avatar_url:,
+                providers: OAUTH_PROVIDERS,
+                connected_providers:,
+                flash_error: nil,
                 error:
               )
               return

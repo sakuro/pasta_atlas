@@ -39,6 +39,10 @@ user-tab-profile-edit =
 user-tab-preferences-edit =
     .title = 設定を編集
 user-recent-maps = 最近のマップ
+user-connected-accounts-label = 連携済アカウント
+provider-name =
+    .discord = Discord
+    .github = GitHub
 user-timezone-label = タイムゾーン
 user-locale-label = 言語
 
@@ -55,6 +59,19 @@ edit-locale =
     .not-set = (未設定)
 edit-save-preferences = 設定を保存
 edit-cancel = キャンセル
+
+## Connected accounts
+credential-connect =
+    .discord = Discord と連携する
+    .github = GitHub と連携する
+credential-disconnect =
+    .discord = Discord の連携を解除
+    .github = GitHub の連携を解除
+credential-last-hint = 少なくとも1つの連携済アカウントが必要です。
+
+## Credential errors
+error-credential-conflict = そのアカウントはすでに別のユーザーに連携されています。
+error-credential-last = 少なくとも1つの連携済アカウントが必要です。
 
 ## Maps index
 maps-uploaded-maps = アップロードされているマップ

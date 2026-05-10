@@ -4,7 +4,7 @@ module PastaAtlas
   module Actions
     module User
       class Show < PastaAtlas::Action
-        include Deps["repos.user_profile_repo", "repos.user_preference_repo", "repos.map_repo", "repos.generation_repo", "settings"]
+        include Deps["repos.user_profile_repo", "repos.user_preference_repo", "repos.credential_repo", "repos.map_repo", "repos.generation_repo", "settings"]
 
         RECENT_MAPS_LIMIT = 3
         private_constant :RECENT_MAPS_LIMIT
@@ -16,6 +16,7 @@ module PastaAtlas
           profile = user_profile_repo.find_by_user_id(user.id)
           own_profile = current_user_id(request) == user.id
           preference = own_profile ? user_preference_repo.find_by_user_id(user.id) : nil
+          connected_providers = own_profile ? credential_repo.find_by_user_id(user.id).map(&:provider) : nil
 
           recent_maps = map_repo.list_with_complete_generation_by_user(user_id: user.id, limit: RECENT_MAPS_LIMIT)
           map_ids = recent_maps.map(&:id)
@@ -39,6 +40,7 @@ module PastaAtlas
             display_name: profile.display_name,
             own_profile:,
             preference:,
+            connected_providers:,
             avatar_url:,
             recent_maps:,
             thumbnail_urls_by_map_ulid:,

@@ -73,6 +73,27 @@
         <div class="field">
           <label class="label">
             <span class="icon-text">
+              <span class="icon"><i class="fa-solid fa-link"></i></span>
+              <span><%= t("user-connected-accounts-label") %></span>
+            </span>
+          </label>
+          <div class="level">
+            <div class="level-left">
+              <% connected_providers.each do |provider| %>
+                <div class="level-item">
+                  <span class="icon-text">
+                    <span class="icon"><i class="fa-brands fa-<%= provider %>"></i></span>
+                    <span><%= t("provider-name.#{provider}") %></span>
+                  </span>
+                </div>
+              <% end %>
+            </div>
+          </div>
+        </div>
+        <hr>
+        <div class="field">
+          <label class="label">
+            <span class="icon-text">
               <span class="icon"><i class="fa-solid fa-clock"></i></span>
               <span><%= t("user-timezone-label") %></span>
             </span>

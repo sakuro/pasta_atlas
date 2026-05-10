@@ -11,6 +11,7 @@ module PastaAtlas
     patch "/@:user_name/preferences", to: "user.preferences.update"
     patch "/@:user_name/avatar", to: "user.avatar.update"
     delete "/@:user_name/avatar", to: "user.avatar.destroy"
+    delete "/@:user_name/credentials/:provider", to: "user.credentials.destroy"
 
     get "/auth/discord/callback", to: "auth.discord.callback"
     get "/auth/github/callback", to: "auth.github.callback"

@@ -1,6 +1,9 @@
 <section class="section">
   <div class="container is-max-tablet">
     <h1 class="title"><%= t("edit-title") %></h1>
+    <% if flash_error %>
+      <div class="notification is-danger is-light"><%= t(flash_error) %></div>
+    <% end %>
     <div class="tabs" data-tabs="user-edit">
       <ul>
         <li data-target="edit-profile" class="is-active"><a><%= t("user-tab-profile") %></a></li>
@@ -55,6 +58,42 @@
     </div>
 
     <div id="edit-preferences" class="is-hidden" data-tab-panel="user-edit">
+      <div class="field">
+        <label class="label">
+          <span class="icon-text">
+            <span class="icon"><i class="fa-solid fa-link"></i></span>
+            <span><%= t("user-connected-accounts-label") %></span>
+          </span>
+        </label>
+        <% only_one = connected_providers.size <= 1 %>
+        <div class="level">
+          <div class="level-left">
+            <% providers.each do |provider| %>
+              <div class="level-item">
+                <% if connected_providers.include?(provider) %>
+                  <form action="/@<%= current_user_name %>/credentials/<%= provider %>" method="post">
+                    <input type="hidden" name="_method" value="delete">
+                    <input type="hidden" name="_csrf_token" value="<%= csrf_token %>">
+                    <button class="button is-danger is-light" type="submit"<% if only_one %> disabled title="<%= t("credential-last-hint") %>"<% end %>>
+                      <span class="icon"><i class="fa-brands fa-<%= provider %>"></i></span>
+                      <span><%= t("credential-disconnect.#{provider}") %></span>
+                    </button>
+                  </form>
+                <% else %>
+                  <form action="/auth/<%= provider %>" method="post">
+                    <input type="hidden" name="authenticity_token" value="<%= omniauth_authenticity_token %>">
+                    <button class="button" type="submit">
+                      <span class="icon"><i class="fa-brands fa-<%= provider %>"></i></span>
+                      <span><%= t("credential-connect.#{provider}") %></span>
+                    </button>
+                  </form>
+                <% end %>
+              </div>
+            <% end %>
+          </div>
+        </div>
+      </div>
+      <hr>
       <form action="/@<%= current_user_name %>/preferences" method="post">
         <input type="hidden" name="_method" value="patch">
         <input type="hidden" name="_csrf_token" value="<%= csrf_token %>">

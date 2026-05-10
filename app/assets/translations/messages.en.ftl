@@ -39,6 +39,10 @@ user-tab-profile-edit =
 user-tab-preferences-edit =
     .title = Edit preferences
 user-recent-maps = Recent Maps
+user-connected-accounts-label = Connected Accounts
+provider-name =
+    .discord = Discord
+    .github = GitHub
 user-timezone-label = Timezone
 user-locale-label = Locale
 
@@ -55,6 +59,19 @@ edit-locale =
     .not-set = (not set)
 edit-save-preferences = Save Preferences
 edit-cancel = Cancel
+
+## Connected accounts
+credential-connect =
+    .discord = Connect with Discord
+    .github = Connect with GitHub
+credential-disconnect =
+    .discord = Disconnect Discord
+    .github = Disconnect GitHub
+credential-last-hint = At least one connected account is required.
+
+## Credential errors
+error-credential-conflict = That account is already linked to another user.
+error-credential-last = At least one connected account is required.
 
 ## Maps index
 maps-uploaded-maps = Uploaded maps
