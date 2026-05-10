@@ -9,7 +9,7 @@ module PastaAtlas
         class Update < PastaAtlas::Action
           include Deps["repos.user_preference_repo"]
 
-          SUPPORTED_LOCALES = %w[en ja].freeze
+          SUPPORTED_LOCALES = PastaAtlas::I18n::SUPPORTED_LOCALES
           private_constant :SUPPORTED_LOCALES
 
           params do
