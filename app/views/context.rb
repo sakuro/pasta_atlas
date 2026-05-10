@@ -1,13 +1,14 @@
 # auto_register: false
 # frozen_string_literal: true
 
+require "foxtail-runtime"
 require "rack/icu4x/locale"
 require "rack/protection"
 
 module PastaAtlas
   module Views
     class Context < Hanami::View::Context
-      include Deps["repos.user_repo", "repos.user_profile_repo", "settings"]
+      include Deps["repos.user_repo", "repos.user_profile_repo", "repos.user_preference_repo", "settings"]
 
       def initialize(i18n: nil, **args)
         super(**args)
@@ -22,6 +23,10 @@ module PastaAtlas
       end
 
       def locale_name(locale_code) = ICU4X::DisplayNames.new(ICU4X::Locale.parse(locale_tag), type: :locale).of(locale_code.to_s)
+
+      def localize_date(time)
+        Foxtail::Function::DateTime[time.utc, {timeZone: viewer_timezone}]
+      end
 
       def t(key, **args)
         return key.to_s unless i18n
@@ -75,6 +80,15 @@ module PastaAtlas
             part.value
           end
         }.join
+      end
+
+      private def viewer_timezone
+        @viewer_timezone ||= begin
+          user_id = session&.[](:user_id) || user_repo.find_by_name("guest")&.id
+          user_preference_repo.find_by_user_id(user_id).timezone
+        rescue ROM::TupleCountMismatchError
+          "UTC"
+        end
       end
 
       TECH_STACK = [
