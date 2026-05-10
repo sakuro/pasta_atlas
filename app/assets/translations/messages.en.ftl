@@ -13,14 +13,13 @@ surface-aquilo = Aquilo
 ## Nav
 nav-log-out = Log out
 nav-log-in = Log in
-    .discord = Log in with Discord
-    .github = Log in with GitHub
+nav-log-in-discord = Log in with Discord
+nav-log-in-github = Log in with GitHub
 nav-source-code = Source code
 
 ## Registration
 registration-title = Create your account
-registration-username =
-    .label = Username
+registration-username = Username
     .help = 1–39 characters. Letters, numbers, hyphens, and underscores. Must start and end with a letter or number.
 registration-submit = Create account
 
@@ -40,33 +39,28 @@ user-tab-preferences-edit =
     .title = Edit preferences
 user-recent-maps = Recent Maps
 user-connected-accounts-label = Connected Accounts
-provider-name =
-    .discord = Discord
-    .github = GitHub
+provider-discord = Discord
+provider-github = GitHub
 user-timezone-label = Timezone
 user-locale-label = Locale
 
 ## Edit page
 edit-title = Edit
 edit-avatar-label = Avatar
-edit-display-name =
-    .label = Display name
+edit-display-name = Display name
     .help = Up to 64 characters. Leave blank to use your username.
 edit-save-profile = Save Profile
 edit-timezone-label = Timezone
-edit-locale =
-    .label = Locale
+edit-locale = Locale
     .not-set = (not set)
 edit-save-preferences = Save Preferences
 edit-cancel = Cancel
 
 ## Connected accounts
-credential-connect =
-    .discord = Connect with Discord
-    .github = Connect with GitHub
-credential-disconnect =
-    .discord = Disconnect Discord
-    .github = Disconnect GitHub
+credential-connect-discord = Connect with Discord
+credential-connect-github = Connect with GitHub
+credential-disconnect-discord = Disconnect Discord
+credential-disconnect-github = Disconnect GitHub
 credential-last-hint = At least one connected account is required.
 
 ## Credential errors

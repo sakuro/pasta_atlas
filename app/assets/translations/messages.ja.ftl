@@ -13,14 +13,13 @@ surface-aquilo = アクィロ
 ## Nav
 nav-log-out = ログアウト
 nav-log-in = ログイン
-    .discord = Discord でログイン
-    .github = GitHub でログイン
+nav-log-in-discord = Discord でログイン
+nav-log-in-github = GitHub でログイン
 nav-source-code = ソースコード
 
 ## Registration
 registration-title = アカウントを作成
-registration-username =
-    .label = ユーザー名
+registration-username = ユーザー名
     .help = 1〜39文字。英数字・ハイフン・アンダースコアが使用できます。先頭と末尾は英数字にしてください。
 registration-submit = アカウントを作成する
 
@@ -40,33 +39,28 @@ user-tab-preferences-edit =
     .title = 設定を編集
 user-recent-maps = 最近のマップ
 user-connected-accounts-label = 連携済アカウント
-provider-name =
-    .discord = Discord
-    .github = GitHub
+provider-discord = Discord
+provider-github = GitHub
 user-timezone-label = タイムゾーン
 user-locale-label = 言語
 
 ## Edit page
 edit-title = 編集
 edit-avatar-label = アバター
-edit-display-name =
-    .label = 表示名
+edit-display-name = 表示名
     .help = 64文字以内。空白にするとユーザー名が表示されます。
 edit-save-profile = プロフィールを保存
 edit-timezone-label = タイムゾーン
-edit-locale =
-    .label = 言語
+edit-locale = 言語
     .not-set = (未設定)
 edit-save-preferences = 設定を保存
 edit-cancel = キャンセル
 
 ## Connected accounts
-credential-connect =
-    .discord = Discord と連携する
-    .github = GitHub と連携する
-credential-disconnect =
-    .discord = Discord の連携を解除
-    .github = GitHub の連携を解除
+credential-connect-discord = Discord と連携する
+credential-connect-github = GitHub と連携する
+credential-disconnect-discord = Discord の連携を解除
+credential-disconnect-github = GitHub の連携を解除
 credential-last-hint = 少なくとも1つの連携済アカウントが必要です。
 
 ## Credential errors
