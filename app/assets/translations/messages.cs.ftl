@@ -1,4 +1,10 @@
 -app-name = Pasta Atlas
+-mapshot =
+    { $case ->
+        [accusative] Mapshot
+        [genitive] Mapshotu
+       *[other] Mapshot
+    }
 -discord =
     { $case ->
         [instrumental] Discordem
@@ -87,9 +93,9 @@ pagination-next = Další
 
 ## Upload modal
 upload-button = Nahrát
-upload-modal-title = Nahrát Mapshot
+upload-modal-title = Nahrát { -mapshot(case: "accusative") }
 upload-instructions-folder = Vyberte složku obsahující mapshot.json.
-upload-instructions-folder-path = Typická složka Mapshot:
+upload-instructions-folder-path = Typická složka { -mapshot(case: "genitive") }:
 upload-instructions-generations = Můžete nahrát různé generace existující mapy.
 upload-instructions-guest = Nahrávky z hostovských účtů jsou po přibližně jednom týdnu smazány.
 upload-select-folder = Vybrat složku
