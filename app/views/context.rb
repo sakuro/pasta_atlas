@@ -78,7 +78,6 @@ module PastaAtlas
           "UTC"
         end
       end
-
     end
   end
 end
