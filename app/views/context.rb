@@ -21,7 +21,7 @@ module PastaAtlas
         locales&.first&.to_s || "en"
       end
 
-      def locale_name(locale_code) = ICU4X::DisplayNames.new(ICU4X::Locale.parse(locale_tag), type: :language).of(locale_code.to_s)
+      def locale_name(locale_code) = ICU4X::DisplayNames.new(ICU4X::Locale.parse(locale_tag), type: :locale).of(locale_code.to_s)
 
       def t(key, **args)
         return key.to_s unless i18n
