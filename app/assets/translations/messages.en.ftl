@@ -1,4 +1,6 @@
 -app-name = Pasta Atlas
+-discord = Discord
+-github = GitHub
 
 ## App
 app-name = { -app-name }
@@ -13,8 +15,8 @@ surface-aquilo = Aquilo
 ## Nav
 nav-log-out = Log out
 nav-log-in = Log in
-nav-log-in-discord = Log in with Discord
-nav-log-in-github = Log in with GitHub
+nav-log-in-discord = Log in with { -discord }
+nav-log-in-github = Log in with { -github }
 nav-source-code = Source code
 
 ## Registration
@@ -39,8 +41,8 @@ user-tab-preferences-edit =
     .title = Edit preferences
 user-recent-maps = Recent Maps
 user-connected-accounts-label = Connected Accounts
-provider-discord = Discord
-provider-github = GitHub
+provider-discord = { -discord }
+provider-github = { -github }
 user-timezone-label = Timezone
 user-locale-label = Locale
 
@@ -57,10 +59,10 @@ edit-save-preferences = Save Preferences
 edit-cancel = Cancel
 
 ## Connected accounts
-credential-connect-discord = Connect with Discord
-credential-connect-github = Connect with GitHub
-credential-disconnect-discord = Disconnect Discord
-credential-disconnect-github = Disconnect GitHub
+credential-connect-discord = Connect with { -discord }
+credential-connect-github = Connect with { -github }
+credential-disconnect-discord = Disconnect { -discord }
+credential-disconnect-github = Disconnect { -github }
 credential-last-hint = At least one connected account is required.
 
 ## Credential errors

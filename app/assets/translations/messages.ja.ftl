@@ -1,4 +1,6 @@
 # -app-name = Pasta Atlas
+-discord = Discord
+-github = GitHub
 
 ## App
 # app-name = { -app-name }
@@ -13,8 +15,8 @@ surface-aquilo = アクィロ
 ## Nav
 nav-log-out = ログアウト
 nav-log-in = ログイン
-nav-log-in-discord = Discord でログイン
-nav-log-in-github = GitHub でログイン
+nav-log-in-discord = { -discord } でログイン
+nav-log-in-github = { -github } でログイン
 nav-source-code = ソースコード
 
 ## Registration
@@ -39,8 +41,8 @@ user-tab-preferences-edit =
     .title = 設定を編集
 user-recent-maps = 最近のマップ
 user-connected-accounts-label = 連携済アカウント
-provider-discord = Discord
-provider-github = GitHub
+provider-discord = { -discord }
+provider-github = { -github }
 user-timezone-label = タイムゾーン
 user-locale-label = 言語
 
@@ -57,10 +59,10 @@ edit-save-preferences = 設定を保存
 edit-cancel = キャンセル
 
 ## Connected accounts
-credential-connect-discord = Discord と連携する
-credential-connect-github = GitHub と連携する
-credential-disconnect-discord = Discord の連携を解除
-credential-disconnect-github = GitHub の連携を解除
+credential-connect-discord = { -discord } と連携する
+credential-connect-github = { -github } と連携する
+credential-disconnect-discord = { -discord } の連携を解除
+credential-disconnect-github = { -github } の連携を解除
 credential-last-hint = 少なくとも1つの連携済アカウントが必要です。
 
 ## Credential errors
