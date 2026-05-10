@@ -18,7 +18,6 @@ nav-log-out = Log out
 nav-log-in = Log in
 nav-log-in-discord = Log in with { -discord }
 nav-log-in-github = Log in with { -github }
-nav-source-code = Source code
 
 ## Registration
 registration-title = Create your account

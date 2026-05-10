@@ -31,7 +31,6 @@ nav-log-out = Odhlásit se
 nav-log-in = Přihlásit se
 nav-log-in-discord = Přihlásit se přes { -discord }
 nav-log-in-github = Přihlásit se přes { -github }
-nav-source-code = Zdrojový kód
 
 ## Registration
 registration-title = Vytvořit účet

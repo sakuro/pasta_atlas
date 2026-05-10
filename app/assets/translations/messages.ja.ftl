@@ -18,7 +18,6 @@ nav-log-out = ログアウト
 nav-log-in = ログイン
 nav-log-in-discord = { -discord } でログイン
 nav-log-in-github = { -github } でログイン
-nav-source-code = ソースコード
 
 ## Registration
 registration-title = アカウントを作成
