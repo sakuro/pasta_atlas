@@ -1,7 +1,7 @@
 import { DOMLocalization } from "@fluent/dom";
 import { FluentBundle, FluentResource } from "@fluent/bundle";
 
-const SUPPORTED_LOCALES = ["en", "ja", "cs"];
+const SUPPORTED_LOCALES = ["cs", "en", "ja"];
 
 function buildLocaleChain(): string[] {
   const preferred = document.documentElement.lang;

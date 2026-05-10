@@ -130,9 +130,9 @@
             <div class="select">
               <select id="locale-select" name="locale">
                 <option value=""<%= " selected" if locale.nil? || locale.empty? %>><%= t("edit-locale.not-set") %></option>
-                <option value="en"<%= " selected" if locale == "en" %>><%= locale_name("en") %></option>
-                <option value="ja"<%= " selected" if locale == "ja" %>><%= locale_name("ja") %></option>
-                <option value="cs"<%= " selected" if locale == "cs" %>><%= locale_name("cs") %></option>
+                <% supported_locales.each do |loc| %>
+                  <option value="<%= loc %>"<%= " selected" if locale == loc %>><%= locale_name(loc) %></option>
+                <% end %>
               </select>
             </div>
           </div>

@@ -29,6 +29,7 @@ module PastaAtlas
             timezone_identifiers:,
             locale: preference.locale,
             avatar_url:,
+            supported_locales: PastaAtlas::I18n::SUPPORTED_LOCALES,
             providers: OAUTH_PROVIDERS,
             connected_providers:,
             flash_error:

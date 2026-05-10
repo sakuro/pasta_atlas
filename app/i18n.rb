@@ -3,7 +3,7 @@
 
 module PastaAtlas
   module I18n
-    SUPPORTED_LOCALES = %w[en ja cs].freeze
+    SUPPORTED_LOCALES = %w[cs en ja].freeze
     public_constant :SUPPORTED_LOCALES
   end
 end
