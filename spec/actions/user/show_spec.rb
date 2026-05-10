@@ -19,6 +19,7 @@ RSpec.describe PastaAtlas::Actions::User::Show do
     allow(user_profile_repo).to receive(:find_by_user_id).with(1).and_return(profile)
     allow(map_repo).to receive(:list_with_complete_generation_by_user).with(user_id: 1, limit: 3).and_return([map])
     allow(generation_repo).to receive(:find_latest_complete_by_map_ids).with([1]).and_return({1 => generation})
+    allow(generation_repo).to receive(:find_max_created_at_by_map_ids).with([1]).and_return({})
   end
 
   context "when the user exists" do

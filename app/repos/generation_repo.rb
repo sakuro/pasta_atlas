@@ -18,6 +18,17 @@ module PastaAtlas
           .transform_values {|gens| gens.max_by(&:tick) }
       end
 
+      def find_max_created_at_by_map_ids(map_ids)
+        return {} if map_ids.empty?
+
+        generations.dataset
+          .where(map_id: map_ids)
+          .unordered
+          .group(:map_id)
+          .select(:map_id, Sequel.function(:max, :created_at).as(:max_created_at))
+          .to_h {|row| [row[:map_id], row[:max_created_at]] }
+      end
+
       def find_complete_by_map_id(map_id)
         generations.where(map_id:)
           .where(NOT_EXPIRED)

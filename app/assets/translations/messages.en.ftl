@@ -55,6 +55,9 @@ edit-save-preferences = Save Preferences
 ## Maps index
 maps-uploaded-maps = Uploaded maps
 
+## Map card
+map-card-updated-at = { $date }
+
 ## Pagination
 pagination-previous = Previous
 pagination-next = Next

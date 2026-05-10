@@ -10,8 +10,8 @@ RSpec.describe PastaAtlas::Views::Maps::Index do
   let(:alice_profile) { double("UserProfile", display_name: "Alice") }
   let(:bob_profile) { double("UserProfile", display_name: "Bob") }
 
-  def render(maps:, users_by_id:, profiles_by_user_id:, page:, per_page:, total:, thumbnail_urls_by_map_ulid: {}, avatar_urls_by_user_id: {}, metadata_urls_by_map_ulid: {})
-    view.call(layout: false, maps:, users_by_id:, profiles_by_user_id:, avatar_urls_by_user_id:, thumbnail_urls_by_map_ulid:, metadata_urls_by_map_ulid:, page:, per_page:, total:).to_s
+  def render(maps:, users_by_id:, profiles_by_user_id:, page:, per_page:, total:, thumbnail_urls_by_map_ulid: {}, avatar_urls_by_user_id: {}, metadata_urls_by_map_ulid: {}, updated_at_by_map_ulid: {})
+    view.call(layout: false, maps:, users_by_id:, profiles_by_user_id:, avatar_urls_by_user_id:, thumbnail_urls_by_map_ulid:, metadata_urls_by_map_ulid:, updated_at_by_map_ulid:, page:, per_page:, total:).to_s
   end
 
   it "renders a link for each map" do

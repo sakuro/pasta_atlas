@@ -44,7 +44,8 @@
                     author_display_name: display_name || user_name.to_s,
                     author_avatar_url: avatar_url,
                     thumbnail_url: thumbnail_urls_by_map_ulid[map.ulid],
-                    metadata_url: metadata_urls_by_map_ulid[map.ulid] %>
+                    metadata_url: metadata_urls_by_map_ulid[map.ulid],
+                    updated_at: updated_at_by_map_ulid[map.ulid] %>
             </div>
           <% end %>
         </div>

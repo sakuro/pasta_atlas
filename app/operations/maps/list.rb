@@ -34,7 +34,10 @@ module PastaAtlas
             p.avatar_s3_key ? "#{settings.cloudfront_base_url}/#{p.avatar_s3_key}" : nil
           }
 
-          {maps:, users_by_id:, profiles_by_user_id:, avatar_urls_by_user_id:, thumbnail_urls_by_map_ulid:, metadata_urls_by_map_ulid:, page:, per_page: PER_PAGE, total:}
+          max_created_at_by_map_id = generation_repo.find_max_created_at_by_map_ids(map_ids)
+          updated_at_by_map_ulid = max_created_at_by_map_id.to_h {|map_id, ts| [id_to_ulid[map_id], ts] }
+
+          {maps:, users_by_id:, profiles_by_user_id:, avatar_urls_by_user_id:, thumbnail_urls_by_map_ulid:, metadata_urls_by_map_ulid:, updated_at_by_map_ulid:, page:, per_page: PER_PAGE, total:}
         end
       end
     end

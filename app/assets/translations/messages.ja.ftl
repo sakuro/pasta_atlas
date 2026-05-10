@@ -55,6 +55,9 @@ edit-save-preferences = 設定を保存
 ## Maps index
 maps-uploaded-maps = アップロードされているマップ
 
+## Map card
+map-card-updated-at = { $date }
+
 ## Pagination
 pagination-previous = 前へ
 pagination-next = 次へ

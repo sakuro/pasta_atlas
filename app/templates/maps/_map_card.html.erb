@@ -22,6 +22,14 @@
         <p class="subtitle is-7">
           <a href="/@<%= user_name %>"><%= author_display_name %></a>
         </p>
+        <% if updated_at %>
+          <p class="is-size-7 has-text-grey">
+            <span class="icon-text">
+              <span class="icon is-small"><i class="fa-regular fa-calendar"></i></span>
+              <time datetime="<%= updated_at.iso8601 %>"><%= t("map-card-updated-at", date: updated_at) %></time>
+            </span>
+          </p>
+        <% end %>
       </div>
     </div>
   </div>
