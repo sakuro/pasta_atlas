@@ -16,7 +16,7 @@ module PastaAtlas
           profile = user_profile_repo.find_by_user_id(user.id)
           own_profile = current_user_id(request) == user.id
           preference = own_profile ? user_preference_repo.find_by_user_id(user.id) : nil
-          connected_providers = own_profile ? credential_repo.find_by_user_id(user.id).map(&:provider) : nil
+          connected_providers = own_profile ? credential_repo.find_by_user_id(user.id).map(&:provider).sort! : nil
 
           recent_maps = map_repo.list_with_complete_generation_by_user(user_id: user.id, limit: RECENT_MAPS_LIMIT)
           map_ids = recent_maps.map(&:id)
