@@ -34,7 +34,6 @@ error-username-taken = That username is already taken.
 ## User page
 user-tab-profile = Profile
 user-tab-preferences = Preferences
-user-edit-button = Edit
 user-recent-maps = Recent Maps
 user-timezone-label = Timezone
 user-locale-label = Locale
@@ -51,6 +50,7 @@ edit-locale =
     .label = Locale
     .not-set = (not set)
 edit-save-preferences = Save Preferences
+edit-cancel = Cancel
 
 ## Maps index
 maps-uploaded-maps = Uploaded maps

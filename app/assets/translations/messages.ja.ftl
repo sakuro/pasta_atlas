@@ -34,7 +34,6 @@ error-username-taken = そのユーザー名はすでに使われています。
 ## User page
 user-tab-profile = プロフィール
 user-tab-preferences = 設定
-user-edit-button = 編集
 user-recent-maps = 最近のマップ
 user-timezone-label = タイムゾーン
 user-locale-label = 言語
@@ -51,6 +50,7 @@ edit-locale =
     .label = 言語
     .not-set = (未設定)
 edit-save-preferences = 設定を保存
+edit-cancel = キャンセル
 
 ## Maps index
 maps-uploaded-maps = アップロードされているマップ

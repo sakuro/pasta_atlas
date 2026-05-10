@@ -5,21 +5,23 @@
         <%= render "shared/avatar", avatar_url:, avatar_size: 64 %>
         <h1 class="title ml-3"><%= display_name || user_name %></h1>
       </div>
-      <% if own_profile %>
-        <div class="level-right">
-          <a class="button" href="/@<%= user_name %>/edit">
-            <span class="icon"><i class="fa-solid fa-pencil"></i></span>
-            <span><%= t("user-edit-button") %></span>
-          </a>
-        </div>
-      <% end %>
     </div>
     <p class="subtitle">@<%= user_name %></p>
     <% if own_profile %>
       <div class="tabs mt-4" data-tabs="user-show">
         <ul>
-          <li data-target="show-profile" class="is-active"><a><%= t("user-tab-profile") %></a></li>
-          <li data-target="show-preferences"><a><%= t("user-tab-preferences") %></a></li>
+          <li data-target="show-profile" class="is-active">
+            <a><%= t("user-tab-profile") %></a>
+            <a href="/@<%= user_name %>/edit#edit-profile" class="tab-edit-link">
+              <span class="icon is-small"><i class="fa-solid fa-pencil"></i></span>
+            </a>
+          </li>
+          <li data-target="show-preferences">
+            <a><%= t("user-tab-preferences") %></a>
+            <a href="/@<%= user_name %>/edit#edit-preferences" class="tab-edit-link">
+              <span class="icon is-small"><i class="fa-solid fa-pencil"></i></span>
+            </a>
+          </li>
         </ul>
       </div>
     <% end %>

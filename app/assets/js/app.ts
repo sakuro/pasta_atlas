@@ -35,6 +35,15 @@ document.querySelectorAll<HTMLElement>("[data-tabs]").forEach((tabsEl) => {
   });
 });
 
+document.querySelectorAll<HTMLAnchorElement>(".tab-edit-link").forEach((link) => {
+  link.addEventListener("click", (e) => e.stopPropagation());
+});
+
+const initialHash = location.hash.slice(1);
+if (initialHash) {
+  document.querySelector<HTMLElement>(`[data-target="${initialHash}"]`)?.click();
+}
+
 const timezoneInput = document.getElementById("timezone") as HTMLInputElement | null;
 if (timezoneInput) {
   timezoneInput.value = Intl.DateTimeFormat().resolvedOptions().timeZone;
