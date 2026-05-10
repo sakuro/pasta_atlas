@@ -2,6 +2,18 @@
 
 A web application for browsing Factorio map screenshots captured by the [mapshot](https://github.com/Palats/mapshot) mod. Users upload tile sets to S3; the app stores metadata in PostgreSQL and serves an interactive map viewer built with SolidJS and Leaflet.
 
+## Tech Stack
+
+| Layer | Technology |
+|-------|-----------|
+| Backend | [Ruby](https://www.ruby-lang.org/) / [Hanami](https://hanamirb.org/) |
+| Frontend | [SolidJS](https://www.solidjs.com/) / [Vite](https://vitejs.dev/) |
+| Map rendering | [Leaflet](https://leafletjs.com/) |
+| CSS | [Bulma](https://bulma.io/) |
+| Icons | [Font Awesome](https://fontawesome.com/) |
+| Database | PostgreSQL |
+| Object storage | AWS S3 (local: [floci](https://github.com/gmr/floci)) |
+
 ## Prerequisites
 
 - [mise](https://mise.jdx.dev/) — task runner and tool version manager

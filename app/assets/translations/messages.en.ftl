@@ -66,8 +66,6 @@ map-card-updated-at = { $date }
 pagination-previous = Previous
 pagination-next = Next
 
-## Footer
-footer-built-with = Built with { $stack }
 
 ## Upload modal
 upload-button = Upload
