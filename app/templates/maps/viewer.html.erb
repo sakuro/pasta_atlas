@@ -2,25 +2,12 @@
   <% island_css_srcs("map_viewer").each do |href| %>
   <link rel="stylesheet" href="<%= href %>">
   <% end %>
-  <section class="section py-2">
-    <div class="container">
-      <h1 class="title is-5 mb-1"><%= display_name %></h1>
-      <div class="is-flex is-align-items-center">
-        <a href="/@<%= author_name %>" class="is-flex is-align-items-center">
-          <%= render "shared/avatar", avatar_url: author_avatar_url, avatar_size: 24 %>
-          <span class="ml-2 is-size-7"><%= author_display_name %></span>
-        </a>
-        <% if updated_at %>
-          <span class="ml-3 is-size-7 has-text-grey">
-            <span class="icon-text">
-              <span class="icon is-small"><i class="fa-regular fa-calendar"></i></span>
-              <time datetime="<%= updated_at.iso8601 %>"><%= t("map-card-updated-at", date: localize_date(updated_at)) %></time>
-            </span>
-          </span>
-        <% end %>
-      </div>
-    </div>
-  </section>
-  <div id="map-viewer" data-ulid="<%= ulid %>"></div>
+  <div id="map-viewer"
+       data-ulid="<%= ulid %>"
+       data-display-name="<%= display_name %>"
+       data-author-name="<%= author_name %>"
+       data-author-display-name="<%= author_display_name %>"
+       <% if author_avatar_url %>data-author-avatar-url="<%= author_avatar_url %>"<% end %>
+       <% if updated_at %>data-updated-at="<%= updated_at.iso8601 %>"<% end %>></div>
 </div>
 <script src="<%= island_src("map_viewer") %>" type="module"></script>

@@ -93,7 +93,21 @@ const setParams = (updates: Record<string, string | null>) => {
   history.replaceState(null, "", `?${params}`);
 };
 
-export const MapViewer = (props: { ulid: string }) => {
+interface MapViewerProps {
+  ulid: string;
+  displayName: string;
+  authorName: string;
+  authorDisplayName: string;
+  authorAvatarUrl: string | null;
+  updatedAt: string | null;
+}
+
+const formatDate = (iso: string): string => {
+  const locale = document.documentElement.lang || "en";
+  return new Intl.DateTimeFormat(locale, { dateStyle: "medium" }).format(new Date(iso));
+};
+
+export const MapViewer = (props: MapViewerProps) => {
   const [mapData] = createResource(() =>
     fetch(`/api/v1/maps/${props.ulid}`).then((r) => r.json() as Promise<MapData>)
   );
@@ -125,6 +139,10 @@ export const MapViewer = (props: { ulid: string }) => {
 
   const [showInfo, setShowInfo] = createSignal(false);
 
+  onMount(() => {
+    document.title = `${props.displayName} - ${document.title}`;
+  });
+
   const handleGenerationChange = (ulid: string) => {
     setGenerationUlid(ulid);
     setParams({ generation: ulid, s: null, x: null, y: null, z: null });
@@ -132,10 +150,30 @@ export const MapViewer = (props: { ulid: string }) => {
 
   return (
     <div style={{ display: "flex", "flex-direction": "column", height: "100%" }}>
-      <Show when={mapData()}>
-        {(data) => (
-          <div style={{ padding: "0.5rem", "flex-shrink": 0, display: "flex", gap: "0.5rem", "align-items": "center" }}>
-            <div class="control has-icons-left">
+      <div style={{ padding: "0.25rem 0.5rem", "flex-shrink": 0, display: "flex", gap: "0.5rem", "align-items": "center" }}>
+        <span class="is-size-7 has-text-weight-semibold" style={{ "min-width": 0, overflow: "hidden", "text-overflow": "ellipsis", "white-space": "nowrap", "flex-shrink": 1 }}>
+          {props.displayName}
+        </span>
+        <a href={`/@${props.authorName}`} class="is-flex is-align-items-center" style={{ "flex-shrink": 0, gap: "0.4rem" }}>
+          <Show when={props.authorAvatarUrl} fallback={<i class="fa-solid fa-circle-user" style={{ "font-size": "24px" }} />}>
+            {(url) => <img src={url()} width="24" height="24" style={{ "border-radius": "50%" }} />}
+          </Show>
+          <span class="is-size-7">{props.authorDisplayName}</span>
+        </a>
+        <Show when={props.updatedAt}>
+          {(iso) => (
+            <span class="is-size-7 has-text-grey" style={{ "flex-shrink": 0 }}>
+              <span class="icon-text">
+                <span class="icon is-small"><i class="fa-regular fa-calendar" /></span>
+                <time datetime={iso()}>{formatDate(iso())}</time>
+              </span>
+            </span>
+          )}
+        </Show>
+        <div style={{ flex: 1 }} />
+        <Show when={mapData()}>
+          {(data) => (
+            <div class="control has-icons-left" style={{ "flex-shrink": 0 }}>
               <div class="select is-small">
                 <select
                   value={activeGeneration()?.ulid ?? ""}
@@ -148,20 +186,24 @@ export const MapViewer = (props: { ulid: string }) => {
                   </For>
                 </select>
               </div>
-              <span class="icon is-small is-left"><i class="fa-solid fa-timeline"></i></span>
+              <span class="icon is-small is-left"><i class="fa-solid fa-timeline" /></span>
             </div>
-            <Show when={mapshot()}>
-              <button class="button is-small" onClick={() => setShowInfo(true)} data-l10n-id="map-info-button">
-                <span class="icon is-small"><i class="fa-solid fa-circle-info"></i></span>
-              </button>
-            </Show>
+          )}
+        </Show>
+        <Show when={mapshot()}>
+          <button class="button is-small" onClick={() => setShowInfo(true)} data-l10n-id="map-info-button">
+            <span class="icon is-small"><i class="fa-solid fa-circle-info" /></span>
+          </button>
+        </Show>
+        <Show when={mapData()}>
+          {(data) => (
             <ShareButtons
               mapPath={`/@${data().owner.name}/maps/${data().ulid}`}
               mapName={data().display_name}
             />
-          </div>
-        )}
-      </Show>
+          )}
+        </Show>
+      </div>
       <Show when={showInfo() && mapshot()}>
         <MapInfoModal mapshot={mapshot()!} onClose={() => setShowInfo(false)} />
       </Show>
