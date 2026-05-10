@@ -4,7 +4,21 @@
   <% end %>
   <section class="section py-2">
     <div class="container">
-      <h1 class="title is-5 mb-0"><%= display_name %></h1>
+      <h1 class="title is-5 mb-1"><%= display_name %></h1>
+      <div class="is-flex is-align-items-center">
+        <a href="/@<%= author_name %>" class="is-flex is-align-items-center">
+          <%= render "shared/avatar", avatar_url: author_avatar_url, avatar_size: 24 %>
+          <span class="ml-2 is-size-7"><%= author_display_name %></span>
+        </a>
+        <% if updated_at %>
+          <span class="ml-3 is-size-7 has-text-grey">
+            <span class="icon-text">
+              <span class="icon is-small"><i class="fa-regular fa-calendar"></i></span>
+              <time datetime="<%= updated_at.iso8601 %>"><%= t("map-card-updated-at", date: localize_date(updated_at)) %></time>
+            </span>
+          </span>
+        <% end %>
+      </div>
     </div>
   </section>
   <div id="map-viewer" data-ulid="<%= ulid %>"></div>

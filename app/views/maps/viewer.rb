@@ -4,7 +4,7 @@ module PastaAtlas
   module Views
     module Maps
       class Viewer < Hanami::View
-        expose :ulid, :display_name
+        expose :ulid, :display_name, :author_name, :author_display_name, :author_avatar_url, :updated_at
       end
     end
   end
