@@ -12,6 +12,9 @@ export interface Mapshot {
   map_exchange?: string;
 }
 
+export const formatNumber = (n: number): string =>
+  new Intl.NumberFormat(document.documentElement.lang || "en").format(n);
+
 export const formatTicks = (tick: number, style: "narrow" | "long" | "short" = "short"): string => {
   const totalSeconds = Math.floor(tick / 60);
   const seconds = totalSeconds % 60;
@@ -104,13 +107,13 @@ export const MapInfoModal = (props: { mapshot: Mapshot; onClose: () => void }) =
                 <Show when={props.mapshot.tick != null}>
                   <tr>
                     <th class="map-info-label"><span class="icon-text"><span class="icon"><i class="fa-solid fa-hourglass"></i></span><span data-l10n-id="map-info-tick" /></span></th>
-                    <td>{props.mapshot.tick!.toLocaleString()} ({formatTicks(props.mapshot.tick!, "long")})</td>
+                    <td>{formatNumber(props.mapshot.tick!)} ({formatTicks(props.mapshot.tick!, "long")})</td>
                   </tr>
                 </Show>
                 <Show when={props.mapshot.ticks_played != null}>
                   <tr>
                     <th class="map-info-label"><span class="icon-text"><span class="icon"><i class="fa-solid fa-hourglass-half"></i></span><span data-l10n-id="map-info-ticks-played" /></span></th>
-                    <td>{props.mapshot.ticks_played!.toLocaleString()} ({formatTicks(props.mapshot.ticks_played!, "long")})</td>
+                    <td>{formatNumber(props.mapshot.ticks_played!)} ({formatTicks(props.mapshot.ticks_played!, "long")})</td>
                   </tr>
                 </Show>
                 <Show when={props.mapshot.game_version}>
