@@ -1,14 +1,7 @@
 <section class="section">
   <div class="container is-max-tablet">
-    <div class="level">
-      <div class="level-left">
-        <%= render "shared/avatar", avatar_url:, avatar_size: 64 %>
-        <h1 class="title ml-3"><%= display_name || user_name %></h1>
-      </div>
-    </div>
-    <p class="subtitle">@<%= user_name %></p>
     <% if own_profile %>
-      <div class="tabs mt-4" data-tabs="user-show">
+      <div class="tabs" data-tabs="user-show">
         <ul>
           <li data-target="show-profile" class="is-active">
             <a><%= t("user-tab-profile") %></a>
@@ -24,10 +17,82 @@
           </li>
         </ul>
       </div>
+    <% else %>
+      <div class="level">
+        <div class="level-left">
+          <%= render "shared/avatar", avatar_url:, avatar_size: 64 %>
+          <h1 class="title ml-3"><%= display_name || user_name %></h1>
+        </div>
+      </div>
+      <p class="subtitle">@<%= user_name %></p>
     <% end %>
   </div>
 
-  <% if own_profile %><div id="show-profile" data-tab-panel="user-show"><% end %>
+  <% if own_profile %>
+    <div id="show-profile" data-tab-panel="user-show">
+      <div class="container is-max-tablet mt-5">
+        <div class="level">
+          <div class="level-left">
+            <%= render "shared/avatar", avatar_url:, avatar_size: 64 %>
+            <h1 class="title ml-3"><%= display_name || user_name %></h1>
+          </div>
+        </div>
+        <p class="subtitle">@<%= user_name %></p>
+      </div>
+      <% unless recent_maps.empty? %>
+        <div class="container mt-5">
+          <h2 class="title is-4">
+            <span class="icon-text">
+              <span class="icon"><i class="fa-solid fa-map"></i></span>
+              <span><%= t("user-recent-maps") %></span>
+            </span>
+          </h2>
+          <div class="columns is-multiline">
+            <% recent_maps.each do |map| %>
+              <div class="column is-half-tablet is-one-quarter-desktop">
+                <%= render "maps/map_card",
+                      map_ulid: map.ulid,
+                      map_display_name: map.display_name,
+                      user_name: user_name.to_s,
+                      author_display_name: display_name || user_name.to_s,
+                      author_avatar_url: avatar_url,
+                      thumbnail_url: thumbnail_urls_by_map_ulid[map.ulid],
+                      metadata_url: metadata_urls_by_map_ulid[map.ulid],
+                      updated_at: updated_at_by_map_ulid[map.ulid] %>
+              </div>
+            <% end %>
+          </div>
+          <script src="<%= island_src("map_info_button") %>" type="module"></script>
+          <script src="<%= island_src("share_buttons") %>" type="module"></script>
+        </div>
+      <% end %>
+    </div>
+
+    <div id="show-preferences" class="is-hidden" data-tab-panel="user-show">
+      <div class="container is-max-tablet mt-5">
+        <div class="field">
+          <label class="label">
+            <span class="icon-text">
+              <span class="icon"><i class="fa-solid fa-clock"></i></span>
+              <span><%= t("user-timezone-label") %></span>
+            </span>
+          </label>
+          <p><%= preference.timezone %></p>
+        </div>
+        <% if preference.locale %>
+          <div class="field">
+            <label class="label">
+              <span class="icon-text">
+                <span class="icon"><i class="fa-solid fa-language"></i></span>
+                <span><%= t("user-locale-label") %></span>
+              </span>
+            </label>
+            <p><%= locale_name(preference.locale) %></p>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  <% else %>
     <% unless recent_maps.empty? %>
       <div class="container mt-5">
         <h2 class="title is-4">
@@ -51,36 +116,9 @@
             </div>
           <% end %>
         </div>
-
         <script src="<%= island_src("map_info_button") %>" type="module"></script>
         <script src="<%= island_src("share_buttons") %>" type="module"></script>
       </div>
     <% end %>
-  <% if own_profile %></div>
-
-  <div id="show-preferences" class="is-hidden" data-tab-panel="user-show">
-    <div class="container is-max-tablet mt-5">
-      <div class="field">
-        <label class="label">
-          <span class="icon-text">
-            <span class="icon"><i class="fa-solid fa-clock"></i></span>
-            <span><%= t("user-timezone-label") %></span>
-          </span>
-        </label>
-        <p><%= preference.timezone %></p>
-      </div>
-      <% if preference.locale %>
-        <div class="field">
-          <label class="label">
-            <span class="icon-text">
-              <span class="icon"><i class="fa-solid fa-language"></i></span>
-              <span><%= t("user-locale-label") %></span>
-            </span>
-          </label>
-          <p><%= locale_name(preference.locale) %></p>
-        </div>
-      <% end %>
-    </div>
-  </div>
   <% end %>
 </section>
