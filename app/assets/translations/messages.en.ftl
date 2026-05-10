@@ -67,9 +67,6 @@ credential-last-hint = At least one connected account is required.
 error-credential-conflict = That account is already linked to another user.
 error-credential-last = At least one connected account is required.
 
-## Maps index
-maps-uploaded-maps = Uploaded maps
-
 ## Map card
 map-card-updated-at = { $date }
 

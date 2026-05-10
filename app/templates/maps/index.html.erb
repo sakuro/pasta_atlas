@@ -6,12 +6,6 @@
 
 <section class="section">
   <div class="container">
-    <h2 class="title is-4">
-      <span class="icon-text">
-        <span class="icon"><i class="fa-solid fa-map"></i></span>
-        <span><%= t("maps-uploaded-maps") %></span>
-      </span>
-    </h2>
     <div class="columns is-multiline">
       <% maps.each do |map| %>
         <% user = users_by_id[map.user_id] %>
