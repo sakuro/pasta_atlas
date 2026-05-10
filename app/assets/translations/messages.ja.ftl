@@ -34,6 +34,10 @@ error-username-taken = そのユーザー名はすでに使われています。
 ## User page
 user-tab-profile = プロフィール
 user-tab-preferences = 設定
+user-tab-profile-edit =
+    .title = プロフィールを編集
+user-tab-preferences-edit =
+    .title = 設定を編集
 user-recent-maps = 最近のマップ
 user-timezone-label = タイムゾーン
 user-locale-label = 言語

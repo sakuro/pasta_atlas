@@ -12,13 +12,13 @@
         <ul>
           <li data-target="show-profile" class="is-active">
             <a><%= t("user-tab-profile") %></a>
-            <a href="/@<%= user_name %>/edit#edit-profile" class="tab-edit-link">
+            <a href="/@<%= user_name %>/edit#edit-profile" class="tab-edit-link" title="<%= t("user-tab-profile-edit.title") %>">
               <span class="icon is-small"><i class="fa-solid fa-pencil"></i></span>
             </a>
           </li>
           <li data-target="show-preferences">
             <a><%= t("user-tab-preferences") %></a>
-            <a href="/@<%= user_name %>/edit#edit-preferences" class="tab-edit-link">
+            <a href="/@<%= user_name %>/edit#edit-preferences" class="tab-edit-link" title="<%= t("user-tab-preferences-edit.title") %>">
               <span class="icon is-small"><i class="fa-solid fa-pencil"></i></span>
             </a>
           </li>

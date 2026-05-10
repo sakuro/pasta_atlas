@@ -34,6 +34,10 @@ error-username-taken = That username is already taken.
 ## User page
 user-tab-profile = Profile
 user-tab-preferences = Preferences
+user-tab-profile-edit =
+    .title = Edit profile
+user-tab-preferences-edit =
+    .title = Edit preferences
 user-recent-maps = Recent Maps
 user-timezone-label = Timezone
 user-locale-label = Locale
