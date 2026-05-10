@@ -72,7 +72,9 @@ function renderIconTag(tagName: string, rawValue: string | undefined): string {
     if (qualityIdx !== -1) {
       const baseValue = rawValue.slice(0, qualityIdx);
       const tier = rawValue.slice(qualityIdx + ",quality=".length);
-      return renderIconElement(tagName, baseValue) + renderIconElement("quality", tier);
+      const qualityCls = `factorio-icon factorio-quality--${sanitizeCssValue(tier)} factorio-quality-overlay`;
+      const qualityEl = `<i class="${qualityCls}" aria-hidden="true">${escapeHtml(tier)}</i>`;
+      return `<span class="factorio-icon-with-quality">${renderIconElement(tagName, baseValue)}${qualityEl}</span>`;
     }
   }
 

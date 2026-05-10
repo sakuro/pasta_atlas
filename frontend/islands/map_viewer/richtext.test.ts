@@ -138,17 +138,21 @@ describe("renderRichText", () => {
   });
 
   describe("quality modifier", () => {
-    it("renders [item=iron-ore,quality=legendary] as two icons", () => {
+    it("renders [item=iron-ore,quality=legendary] as overlaid icons", () => {
       expect(renderRichText("[item=iron-ore,quality=legendary]")).toBe(
+        '<span class="factorio-icon-with-quality">' +
         '<i class="factorio-icon factorio-item--iron-ore" aria-hidden="true">iron-ore</i>' +
-        '<i class="factorio-icon factorio-quality--legendary" aria-hidden="true">legendary</i>'
+        '<i class="factorio-icon factorio-quality--legendary factorio-quality-overlay" aria-hidden="true">legendary</i>' +
+        '</span>'
       );
     });
 
-    it("renders [entity=tank,quality=rare] as two icons", () => {
+    it("renders [entity=tank,quality=rare] as overlaid icons", () => {
       expect(renderRichText("[entity=tank,quality=rare]")).toBe(
+        '<span class="factorio-icon-with-quality">' +
         '<i class="factorio-icon factorio-entity--tank" aria-hidden="true">tank</i>' +
-        '<i class="factorio-icon factorio-quality--rare" aria-hidden="true">rare</i>'
+        '<i class="factorio-icon factorio-quality--rare factorio-quality-overlay" aria-hidden="true">rare</i>' +
+        '</span>'
       );
     });
 
