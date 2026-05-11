@@ -8,7 +8,7 @@ pasta_atlas/
     actions/             # HTTP actions (JSON API + HTML pages)
       auth/              # OAuth callbacks, registration, session
       maps/
-      profile/           # Profile view/edit and avatar management
+      user/              # Profile view/edit, preferences, avatar, credential management
       uploads/
     views/               # Hanami views (HTML rendering)
     templates/           # ERB templates
@@ -17,9 +17,12 @@ pasta_atlas/
     structs/             # Immutable value objects (ROM structs)
     operations/          # Use cases (orchestrate repos, S3, etc.)
   frontend/              # Vite source (island bundles only)
+    components/          # Shared SolidJS components (not mounted as islands)
     islands/
       avatar_upload/     # AvatarUpload island
+      map_info_button/   # MapInfoButton island
       map_viewer/        # LeafletMapViewer island
+      share_buttons/     # ShareButtons island
       upload_modal/      # UploadModal island
   vite.config.ts
   tsconfig.json
@@ -38,6 +41,6 @@ Two build pipelines are used with distinct responsibilities:
 | Pipeline | Tool | Output | Handles |
 |---|---|---|---|
 | General assets | hanami-assets (esbuild) | `public/assets/` | Global CSS (Bulma), fonts, images |
-| Island bundles | Vite + vite-plugin-solid | `public/islands/` | Solid.js islands (LeafletMapViewer, UploadModal) |
+| Island bundles | Vite + vite-plugin-solid | `public/assets/islands/` | Solid.js islands (LeafletMapViewer, UploadModal, AvatarUpload, MapInfoButton, ShareButtons) |
 
 App templates load island bundles as `<script>` tags. Hanami serves both server-rendered pages and static assets from the same origin — no CORS configuration needed.
