@@ -2,7 +2,7 @@
 
 module PastaAtlas
   module Values
-    # Aggregates display-oriented map data assembled from Generation records for use in view layer.
-    MapInfo = Data.define(:thumbnail_url, :metadata_url, :updated_at)
+    # Aggregates all display-oriented data needed to render a map card, including embedded UserInfo.
+    MapInfo = Data.define(:ulid, :display_name, :user_info, :thumbnail_url, :metadata_url, :updated_at)
   end
 end

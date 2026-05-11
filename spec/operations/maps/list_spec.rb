@@ -10,7 +10,7 @@ RSpec.describe PastaAtlas::Operations::Maps::List do
 
   describe "#call" do
     let(:generation) { double("Generation", metadata_s3_key: "guest/map1/gen1/mapshot.json", tick: 100) }
-    let(:map) { double("Map", id: 1, ulid: "01MAP1", user_id: 1) }
+    let(:map) { double("Map", id: 1, ulid: "01MAP1", user_id: 1, display_name: "Map 1") }
     let(:user) { double("User", id: 1, name: "alice") }
     let(:profile) { double("UserProfile", user_id: 1, display_name: "Alice", avatar_s3_key: nil) }
     let(:updated_at) { Time.new(2025, 1, 15, 12, 0, 0, "+00:00") }
@@ -29,14 +29,14 @@ RSpec.describe PastaAtlas::Operations::Maps::List do
 
       expect(result).to be_success
       payload = result.value!
-      expect(payload[:maps]).to eq([map])
 
-      user_info = payload[:user_infos_by_user_id][1]
-      expect(user_info.name).to eq("alice")
-      expect(user_info.display_name).to eq("Alice")
-      expect(user_info.avatar_url).to be_nil
-
-      map_info = payload[:map_infos_by_ulid]["01MAP1"]
+      expect(payload[:map_infos].size).to eq(1)
+      map_info = payload[:map_infos].first
+      expect(map_info.ulid).to eq("01MAP1")
+      expect(map_info.display_name).to eq("Map 1")
+      expect(map_info.user_info.name).to eq("alice")
+      expect(map_info.user_info.display_name).to eq("Alice")
+      expect(map_info.user_info.avatar_url).to be_nil
       expect(map_info.thumbnail_url).to eq("http://cdn.example.com/guest/map1/gen1/s1zoom_4/tile_0_0.jpg")
       expect(map_info.metadata_url).to eq("http://cdn.example.com/guest/map1/gen1/mapshot.json")
       expect(map_info.updated_at).to eq(updated_at)

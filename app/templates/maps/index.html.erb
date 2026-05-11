@@ -7,16 +7,14 @@
 <section class="section">
   <div class="container">
     <div class="columns is-multiline">
-      <% maps.each do |map| %>
-        <% user_info = user_infos_by_user_id[map.user_id] %>
-        <% map_info = map_infos_by_ulid[map.ulid] %>
+      <% map_infos.each do |map_info| %>
         <div class="column is-half-tablet is-one-quarter-desktop">
           <%= render "map_card",
-                map_ulid: map.ulid,
-                map_display_name: map.display_name,
-                user_name: user_info.name,
-                author_display_name: user_info.display_name,
-                author_avatar_url: user_info.avatar_url,
+                map_ulid: map_info.ulid,
+                map_display_name: map_info.display_name,
+                user_name: map_info.user_info.name,
+                author_display_name: map_info.user_info.display_name,
+                author_avatar_url: map_info.user_info.avatar_url,
                 thumbnail_url: map_info.thumbnail_url,
                 metadata_url: map_info.metadata_url,
                 updated_at: map_info.updated_at %>
