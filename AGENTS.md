@@ -85,3 +85,4 @@ Detailed design documents are in `doc/design/`:
 | 10 | [Infrastructure](doc/design/10-infrastructure.md) |
 | 11 | [Local Development](doc/design/11-local-development.md) |
 | 12 | [Factorio Rich Text](doc/design/12-rich-text.md) |
+| 13 | [Comments](doc/design/13-comments.md) |
