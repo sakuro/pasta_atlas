@@ -5,10 +5,10 @@ RSpec.describe PastaAtlas::Actions::Maps::Index do
   let(:action) { PastaAtlas::Actions::Maps::Index.new(list_maps:) }
 
   let(:map) { double("Map", user_id: 1, ulid: "01MAP", display_name: "My Map") }
-  let(:user) { double("User", id: 1, name: "sakuro") }
-  let(:profile) { double("UserProfile", display_name: "Sakuro") }
   let(:payload) do
-    {maps: [map], users_by_id: {1 => user}, profiles_by_user_id: {1 => profile}, avatar_urls_by_user_id: {}, thumbnail_urls_by_map_ulid: {}, metadata_urls_by_map_ulid: {}, updated_at_by_map_ulid: {}, page: 1, per_page: 20, total: 1}
+    user_info = PastaAtlas::Values::UserInfo[name: "sakuro", display_name: "Sakuro", avatar_url: nil]
+    map_info = PastaAtlas::Values::MapInfo[thumbnail_url: nil, metadata_url: nil, updated_at: nil]
+    {maps: [map], user_infos_by_user_id: {1 => user_info}, map_infos_by_ulid: {"01MAP" => map_info}, page: 1, per_page: 20, total: 1}
   end
 
   before do

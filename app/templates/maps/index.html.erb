@@ -8,17 +8,18 @@
   <div class="container">
     <div class="columns is-multiline">
       <% maps.each do |map| %>
-        <% user = users_by_id[map.user_id] %>
+        <% user_info = user_infos_by_user_id[map.user_id] %>
+        <% map_info = map_infos_by_ulid[map.ulid] %>
         <div class="column is-half-tablet is-one-quarter-desktop">
           <%= render "map_card",
                 map_ulid: map.ulid,
                 map_display_name: map.display_name,
-                user_name: user.name,
-                author_display_name: profiles_by_user_id[user.id].display_name || user.name,
-                author_avatar_url: avatar_urls_by_user_id[user.id],
-                thumbnail_url: thumbnail_urls_by_map_ulid[map.ulid],
-                metadata_url: metadata_urls_by_map_ulid[map.ulid],
-                updated_at: updated_at_by_map_ulid[map.ulid] %>
+                user_name: user_info.name,
+                author_display_name: user_info.display_name,
+                author_avatar_url: user_info.avatar_url,
+                thumbnail_url: map_info.thumbnail_url,
+                metadata_url: map_info.metadata_url,
+                updated_at: map_info.updated_at %>
         </div>
       <% end %>
     </div>
