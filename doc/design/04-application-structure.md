@@ -14,7 +14,7 @@ app/
       index.rb                    # GET   /
       viewer.rb                   # GET   /@:user_name/maps/:ulid
       show.rb                     # GET   /api/v1/maps/:ulid
-    profile/         # Profile view/edit and avatar management
+    user/            # Profile view/edit, preferences, avatar management, credential management
     uploads/
       create.rb                   # POST  /api/v1/uploads
       update.rb                   # PATCH /api/v1/uploads/:ulid
