@@ -137,15 +137,15 @@ avatar-error-upload-http = Nahrávání selhalo (HTTP { $status }).
 avatar-error-upload-network = Při nahrávání došlo k chybě sítě.
 
 ## Map viewer
-map-layer-train-stations = Vlakové stanice
-map-layer-tags = Značky
+map-layer-train-stations = Železniční zastávky
+map-layer-tags = Štítky
 map-info-button =
     .title = Informace o mapě
 
 ## Map info modal
 map-info-title = Informace o mapě
-map-info-seed = Seed mapy
-map-info-exchange = Výměnný řetězec mapy
+map-info-seed = Kód mapy
+map-info-exchange = Řetězec pro výměnu map
 map-info-exchange-show =
     .title = Zobrazit
 map-info-copy =
