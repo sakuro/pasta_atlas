@@ -16,7 +16,7 @@ PostgreSQL native ENUM types are not used due to ROM.rb limitations (no schema D
 | Field | Type | Notes |
 |---|---|---|
 | id | bigserial PK | |
-| name | string | unique; used as URL slug (e.g. `/@sakuro/profile`) |
+| name | string | unique; used as URL slug (e.g. `/@sakuro`) |
 
 A single guest User record (`name: "guest"`) exists and is shared by all unauthenticated operations.
 
@@ -106,6 +106,7 @@ A snapshot of a map at a specific point in game time.
 | tick | bigint | `tick` from mapshot.json |
 | metadata_s3_key | string | S3 path to mapshot.json |
 | created_at | timestamp | |
+| expires_at | timestamp | nullable; set when the generation is scheduled for deletion |
 
 Unique constraint: `(map_id, mapshot_unique_id)`
 
