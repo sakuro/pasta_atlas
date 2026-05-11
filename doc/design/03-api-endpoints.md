@@ -8,11 +8,15 @@ Presigned PUT URLs are generated locally by the AWS SDK (no S3 API call). The pr
 
 ## Auth
 
-Authentication uses OmniAuth. Currently GitHub OAuth is the only supported provider; the design allows adding providers in the future without changing the session or credential schema.
+Authentication uses OmniAuth. GitHub and Discord OAuth are supported.
 
 ### GET /auth/github/callback
 
 OmniAuth GitHub OAuth callback. On success, either sets `session[:user_id]` and redirects to `/` (existing user), or stores OAuth data in `session[:pending_auth]` and redirects to `/auth/register` (new user).
+
+### GET /auth/discord/callback
+
+OmniAuth Discord OAuth callback. Same behavior as the GitHub callback.
 
 ### GET /auth/failure
 
@@ -32,42 +36,80 @@ Clears `session[:user_id]`. Redirects to `/`.
 
 ---
 
-## Profile
+## User
 
 Profile pages are server-rendered HTML. The avatar upload uses a JSON API endpoint for the presigned URL.
 
-### GET /@:user_name/profile
+### GET /@:user_name
 
 Displays a user's public profile page: display name, avatar, and recent maps.
 
-### GET /@:user_name/profile/edit
+### GET /@:user_name/edit
 
-Displays the profile edit form (authenticated, own profile only).
+Displays the profile and preferences edit form (authenticated, own profile only).
 
 ### PATCH /@:user_name/profile
 
-Updates `display_name` and `timezone`. Authenticated, own profile only.
+Updates `display_name`. Authenticated, own profile only.
 
 **Form params:**
 
 | Field | Notes |
 |---|---|
 | `display_name` | Max 64 grapheme clusters; no whitespace or control characters |
-| `timezone` | IANA timezone identifier (e.g. `"Asia/Tokyo"`); defaults to `"UTC"` if invalid; stored in `user_preferences` |
 
-**Error:** Re-renders edit form with validation error message. Redirects to profile page on success.
+**Error:** Re-renders edit form with validation error message. Redirects to `/@:user_name` on success.
 
-### PATCH /@:user_name/profile/avatar
+### PATCH /@:user_name/preferences
+
+Updates timezone and locale. Authenticated, own profile only.
+
+**Form params:**
+
+| Field | Notes |
+|---|---|
+| `timezone` | IANA timezone identifier (e.g. `"Asia/Tokyo"`); defaults to `"UTC"` if invalid |
+| `locale` | BCP 47 language tag (e.g. `"ja"`); empty = use browser locale |
+
+**Response:** Redirects to `/@:user_name`.
+
+### PATCH /@:user_name/avatar
 
 Sets `avatar_s3_key` on the UserProfile. The S3 key must be under `avatars/{user_id}/`. Authenticated, own profile only.
 
+**Request body:**
+
+```json
+{ "s3_key": "avatars/42/01HXY....jpg" }
+```
+
 **Response:** `204 No Content`
 
-### DELETE /@:user_name/profile/avatar
+**Error responses:**
+
+| Status | Condition |
+|---|---|
+| `403 Forbidden` | Not authenticated or not own profile |
+| `422 Unprocessable Entity` | S3 key not under `avatars/{user_id}/` |
+
+### DELETE /@:user_name/avatar
 
 Clears `avatar_s3_key`. Authenticated, own profile only.
 
 **Response:** `204 No Content`
+
+### DELETE /@:user_name/credentials/:provider
+
+Unlinks the OAuth credential for the given provider. Supported providers: `github`, `discord`. Authenticated, own profile only.
+
+**Response:** Redirects to `/@:user_name/edit`. Sets a flash error if the credential being removed is the user's last one.
+
+**Error responses:**
+
+| Status | Condition |
+|---|---|
+| `403 Forbidden` | Not authenticated or not own profile |
+| `404 Not Found` | Provider not in the allowed list |
 
 ### POST /api/v1/profile/avatar_presigned_url
 
@@ -143,9 +185,12 @@ Start an upload session. Creates Map (if new for this user), Generation, and Upl
 ```json
 {
   "metadata": { "...mapshot.json content..." },
-  "total_image_count": 42
+  "total_image_count": 42,
+  "name": "My Map"
 }
 ```
+
+`name` is optional. When provided, it overrides the display name derived from `mapshot.json` (`name` → `savename` → `mapshot_map_id`).
 
 **Response `201 Created`:**
 
