@@ -88,11 +88,13 @@ Indexes:
 | tick | bigint | NOT NULL |
 | metadata_s3_key | varchar | NOT NULL |
 | created_at | timestamptz | NOT NULL DEFAULT now() |
+| expires_at | timestamptz | |
 
 Indexes:
 - UNIQUE on `ulid`
 - UNIQUE on `(map_id, mapshot_unique_id)`
 - INDEX on `map_id`
+- INDEX on `expires_at`
 
 ### uploads
 
