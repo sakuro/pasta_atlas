@@ -44,20 +44,20 @@ Actions handle HTTP concerns (params, session, response codes). Operations conta
 
 ### Key base classes
 
-- `app/action.rb` — base action; provides `json_response`, `current_user_id`, shared Deps
+- `app/action.rb` — base action; provides `json_response`, `current_user_id`, `current_user_or_guest_id`, i18n helpers, shared Deps
 - `app/operation.rb` — base operation; includes `Dry::Monads[:result]`
 - `app/db/repo.rb`, `app/db/relation.rb`, `app/db/struct.rb` — ROM wrappers
 
 ### Domain model
 
-- **Map** — a Factorio world tracked by `mapshot_map_id` (unique per user); ULID primary key
+- **Map** — a Factorio world tracked by `mapshot_map_id` (unique per user); `id` is bigserial primary key, `ulid` is a separate public identifier column
 - **Generation** — a snapshot of a Map at a given game tick; references S3 `metadata_s3_key` (mapshot.json)
 - **Upload** — tracks a tile-image upload session for a Generation (status: pending/complete/failed)
-- **User / UserProfile / Credential** — account, display info, OAuth credential
+- **User / UserProfile / UserPreference / Credential** — account, display info, locale+timezone preferences, OAuth credential
 
 ### Authentication
 
-Currently only GitHub OAuth is supported, though other providers may be added. On first login, `session[:pending_auth]` holds OAuth data until the user chooses a username. After login, `session[:user_id]` is set. No session cookie exists for unauthenticated visitors. A special "guest" User is used when no session is present.
+GitHub and Discord OAuth are supported. On first login, `session[:pending_auth]` holds OAuth data until the user chooses a username. After login, `session[:user_id]` is set. No session cookie exists for unauthenticated visitors. A special "guest" User is used when no session is present.
 
 ### S3 integration
 
@@ -73,6 +73,7 @@ Detailed design documents are in `doc/design/`:
 
 | # | Document |
 |---|---|
+| 00 | [Overview](doc/design/00-overview.md) |
 | 01 | [Domain Model](doc/design/01-domain-model.md) |
 | 02 | [DB Schema](doc/design/02-db-schema.md) |
 | 03 | [API Endpoints](doc/design/03-api-endpoints.md) |
