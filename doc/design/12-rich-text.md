@@ -39,18 +39,20 @@ Supported tag names:
 | `space-location` | `space-location/` | |
 | `planet` | `space-location/` | No `planet/` directory; reuses `space-location/` sprites |
 | `shortcut` | `shortcut/` | |
-| `img` | varies | `[img=item/iron-ore]` → `space-location/` maps as-is |
+| `img` | varies | Value is `type/name`; slash becomes hyphen in class name (e.g. `[img=item/iron-ore]` → `factorio-img--item-iron-ore`). No alias needed; write the sprite directory name as-is (e.g. `[img=space-location/nauvis]`, not `[img=planet/nauvis]`) |
 | `gps`, `train-stop`, `train`, `space-platform`, `special-item`, `armor`, `tip` | — | No sprites; `<i>` renders without background |
 | `space-age` | — | No value; no sprite |
 
 #### Quality modifier
 
-`[item=iron-ore,quality=legendary]` emits two consecutive icons: one for the item and one for the quality tier.
+`[item=iron-ore,quality=legendary]` wraps the item icon and a quality overlay icon in a single `<span>`. The quality icon is rendered at 50% size, anchored to the bottom-left corner of the item icon via `position: absolute`.
 
 ```
 [item=iron-ore,quality=legendary]
-  →  <i class="factorio-icon factorio-item--iron-ore" ...>iron-ore</i>
-     <i class="factorio-icon factorio-quality--legendary" ...>legendary</i>
+  →  <span class="factorio-icon-with-quality">
+       <i class="factorio-icon factorio-item--iron-ore" ...>iron-ore</i>
+       <i class="factorio-icon factorio-quality--legendary factorio-quality-overlay" ...>legendary</i>
+     </span>
 ```
 
 ### Wrapping tags
