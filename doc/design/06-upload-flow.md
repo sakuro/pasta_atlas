@@ -25,18 +25,19 @@ Avatar images use a separate prefix: `avatars/{user_id}/{ulid}.{ext}`
 ## Client-Side Flow
 
 ```
-[picking]
-  User clicks upload button
-  → window.showDirectoryPicker()
-  → Read selected directory root for mapshot.json
-  → If not found: show error, return to idle
+[instructions]
+  User clicks upload button → modal shows upload instructions
+  → User clicks "Select folder" → hidden <input webkitdirectory> triggered
+  → User selects a directory; browser delivers all files as a FileList
+  → If user cancels: stay in instructions state (modal remains open)
+  → If mapshot.json not found in FileList: show error state
+  → If mapshot.json found: parse and proceed to confirming
 
 [confirming]
   → Parse mapshot.json (validate structure)
-  → Enumerate all files in directory recursively
   → Separate: mapshot.json | image files
   → Show summary to user:
-      - Map name (display_name resolution: name → savename → mapshot_map_id)
+      - Map name (editable; default resolution: name → savename → mapshot_map_id)
       - Surface count
       - Image file count
       - Total file size (sum of all image files)
@@ -44,17 +45,16 @@ Avatar images use a separate prefix: `avatars/{user_id}/{ulid}.{ext}`
 
 [uploading]
   Step 1: POST /api/v1/uploads
-    Body: { metadata: <mapshot.json content>, total_image_count: N }
+    Body: { metadata: <mapshot.json content>, total_image_count: N, name: <display name or null> }
     → Receive: { ulid, map_ulid, generation_ulid }
 
   Step 2: POST /api/v1/uploads/:ulid/presigned_urls
     Body: { filenames: ["s1zoom_4/tile_0_0.jpg", ...] }  ← all filenames (server filters existing ones)
     → Receive: { presigned_urls: { filename: url, ... } }  ← only files that need uploading
 
-  Step 3: Upload each image file returned in presigned_urls (parallel, with concurrency limit)
+  Step 3: Upload each image file returned in presigned_urls (parallel, concurrency limit 5)
     → S3 PUT is atomic so success/failure per file is definitive
-    → On individual file failure: retry the PUT for that file
-    → On presigned URL expiry: re-call Step 2 with all filenames; server re-filters and reissues only what's needed
+    → On failure: enter error state
 
   Step 4: PATCH /api/v1/uploads/:ulid
     Body: { status: "complete" }
@@ -69,9 +69,7 @@ Avatar images use a separate prefix: `avatars/{user_id}/{ulid}.{ext}`
 - File paths sent in Step 2 are relative paths within the selected directory (e.g. `s1zoom_4/tile_0_0.jpg`).
 - Step 2 always receives the full filename list; the server filters out already-existing S3 keys via ListObjectsV2 (1 API call per request) and returns presigned URLs only for missing files.
 - This makes both within-session retry and cross-session resume efficient — the client never needs to track which files were uploaded.
-- If presigned URLs expire, re-call Step 2 with all filenames; the server re-filters and reissues only what is still needed.
 - S3 PUT is atomic: each file either fully succeeds or fully fails. Partial writes do not occur.
-- File System Access API (`showDirectoryPicker`) is supported in Chromium-based browsers only.
 
 ---
 
@@ -224,7 +222,7 @@ sequenceDiagram
 | Generation already fully uploaded | Server returns `409 Conflict` |
 | Generation upload previously failed | Upload remains `pending`; client re-calls Step 2 with remaining filenames and resumes |
 | User re-opens browser after closing mid-upload | POST /uploads returns existing `pending` Upload; client re-requests presigned URLs for all files and re-uploads (S3 PUT is idempotent) |
-| Presigned URLs expire mid-upload | Client re-calls Step 2 with remaining filenames only to reissue |
+| Presigned URLs expire mid-upload | S3 PUT returns an error; upload enters error state |
 | Client closes browser during upload | Upload stays `pending`; resumable on next attempt (see above) |
 | S3 write fails for `mapshot.json` | Server returns `502`; Generation and Upload records are rolled back |
 
