@@ -143,48 +143,31 @@ Mounted on a fixed element in the application layout. Triggered by the upload bu
 #### States
 
 ```
-idle → picking → confirming → uploading → done | error
+idle → instructions → confirming → uploading → done | error
 ```
 
 | State | Description |
 |---|---|
 | `idle` | Modal closed |
-| `picking` | `window.showDirectoryPicker()` open |
+| `instructions` | Upload instructions shown; user selects a directory |
 | `confirming` | `mapshot.json` found; user confirms before starting |
 | `uploading` | Uploading in progress |
 | `done` | Complete; link to the newly uploaded generation |
 | `error` | Upload failed |
 
+Directory selection uses `<input type="file" webkitdirectory>`. The hidden input is triggered programmatically when the user clicks the select button in the `instructions` state.
+
 #### Error patterns
 
 | Trigger | State transition | User-visible outcome |
 |---|---|---|
-| Directory has no `mapshot.json` | `picking → idle` | Inline error; modal stays open for retry |
-| `mapshot.json` parse failure (invalid JSON / unexpected structure) | `confirming → error` | Error message shown |
-| User cancels directory picker | `picking → idle` | Modal closes silently |
+| Directory has no `mapshot.json` | `instructions → error` | Error message shown |
+| `mapshot.json` parse failure (invalid JSON / unexpected structure) | `instructions → error` | Error message shown |
+| User cancels directory picker | stays in `instructions` | Modal remains open |
 | POST /api/v1/uploads → 409 Conflict | `uploading → error` | Message: already uploaded; link to existing generation |
 | POST /api/v1/uploads → network / 5xx error | `uploading → error` | Generic error message |
 | POST presigned_urls → network / 4xx / 5xx | `uploading → error` | Generic error message |
-| S3 PUT fails (individual file, after retries) | `uploading → error` | Generic error message |
+| S3 PUT fails (individual file) | `uploading → error` | Generic error message |
 | PATCH /api/v1/uploads/:ulid → network error | `uploading → error` | Generic error message (images are uploaded; user can retry PATCH manually if needed) |
 
-From the `error` state, the user can dismiss the modal (returning to `idle`) and restart the upload from the beginning.
-
-Presigned URL expiry mid-upload is handled transparently: the client re-calls the presigned_urls endpoint and continues without entering `error`.
-
-#### Sub-components
-
-**DirectoryPicker**
-
-Uses the File System Access API (`window.showDirectoryPicker()`).
-Validates that the selected directory contains `mapshot.json`.
-
-Note: File System Access API is supported in Chromium-based browsers only. Firefox is not supported.
-
-**UploadProgress**
-
-Displays progress tracked client-side (files uploaded / total). No server polling.
-
-**UploadComplete**
-
-Shows a link to the newly uploaded generation's viewer URL.
+From the `error` state, the user can dismiss the modal (returning to `idle`) or go back to `instructions` to retry.
