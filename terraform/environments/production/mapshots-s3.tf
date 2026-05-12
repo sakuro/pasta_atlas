@@ -36,7 +36,6 @@ resource "aws_s3_bucket_lifecycle_configuration" "mapshots" {
   }
 }
 
-# Required for presigned URL uploads from browsers
 resource "aws_s3_bucket_cors_configuration" "mapshots" {
   bucket = aws_s3_bucket.mapshots.id
 

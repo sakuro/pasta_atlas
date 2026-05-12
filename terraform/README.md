@@ -4,39 +4,19 @@
 
 ```
 pasta-atlas/
-  module/
-    mapshots/     # S3 + CloudFront for map image storage and delivery
-    backend/      # ECS Fargate, ALB, RDS, ECR, IAM, SSM (production only)
   environments/
-    production/   # pasta-atlas.layer8.works
+    production/   # production infrastructure root
     local/        # mapshots only — web app runs locally
 ```
 
-### module/mapshots
+### environments/production
 
 | File | Description |
 |---|---|
-| `versions.tf` | Provider requirements (`aws.us_east_1` alias for CloudFront ACM) |
-| `variables.tf` | `app_name`, `environment`, `maps_domain_name`, `allowed_origins`, etc. |
-| `s3.tf` | S3 bucket with CORS for presigned URL uploads |
-| `cloudfront.tf` | CloudFront distribution serving S3 via OAC |
-| `acm.tf` | ACM certificate in us-east-1 with DNS validation |
-| `dns.tf` | CNAME on layer8.works → CloudFront |
-| `outputs.tf` | `s3_bucket_name`, `s3_bucket_arn`, `cloudfront_domain_name`, `cloudfront_distribution_id` |
-
-### module/backend
-
-| File | Description |
-|---|---|
-| `versions.tf` | Provider requirements |
-| `variables.tf` | App domain, S3/CloudFront refs (from mapshots), DB and ECS settings |
-| `ecs.tf` | ECR repository, ECS cluster, Fargate task and service |
-| `alb.tf` | ALB, HTTP/HTTPS listeners, target group, and security groups |
-| `acm.tf` | ACM certificate in ap-northeast-1 for ALB |
-| `dns.tf` | CNAME on layer8.works → CloudFront |
-| `rds.tf` | RDS PostgreSQL (default VPC, `deletion_protection = true`) |
-| `iam.tf` | Fargate task role with S3 and SSM access |
-| `ssm.tf` | SSM Parameter Store entry for `SESSION_SECRET` |
+| `main.tf` | Terraform backend and providers |
+| `variables.tf` | Production configuration inputs |
+| `mapshots-*.tf` | S3, CloudFront, ACM, and DNS for uploaded map assets |
+| `app-*.tf` | ECS, ALB, CloudFront, RDS, IAM, scheduler, DNS, and SSM |
 | `outputs.tf` | `ecr_repository_url`, `rds_endpoint`, `session_secret_ssm_path` |
 
 ## Before First Use

@@ -23,8 +23,7 @@ resource "aws_cloudfront_distribution" "mapshots" {
     target_origin_id       = aws_s3_bucket.mapshots.id
     viewer_protocol_policy = "redirect-to-https"
     compress               = true
-
-    cache_policy_id = data.aws_cloudfront_cache_policy.caching_optimized.id
+    cache_policy_id        = data.aws_cloudfront_cache_policy.mapshots_caching_optimized.id
   }
 
   restrictions {
@@ -40,7 +39,7 @@ resource "aws_cloudfront_distribution" "mapshots" {
   }
 }
 
-data "aws_cloudfront_cache_policy" "caching_optimized" {
+data "aws_cloudfront_cache_policy" "mapshots_caching_optimized" {
   name = "Managed-CachingOptimized"
 }
 

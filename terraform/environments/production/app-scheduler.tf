@@ -46,7 +46,7 @@ resource "aws_scheduler_schedule" "cleanup_guest_maps" {
     mode = "OFF"
   }
 
-  # UTC 02:00 daily — after S3 lifecycle processing (UTC midnight)
+  # UTC 02:00 daily - after S3 lifecycle processing (UTC midnight)
   schedule_expression          = "cron(0 2 * * ? *)"
   schedule_expression_timezone = "UTC"
 

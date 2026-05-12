@@ -29,7 +29,6 @@ resource "aws_cloudfront_distribution" "app" {
   price_class     = var.cloudfront_price_class
   aliases         = [var.app_domain_name]
 
-  # Static assets: cache aggressively (filenames are fingerprinted)
   ordered_cache_behavior {
     path_pattern           = "/assets/*"
     allowed_methods        = ["GET", "HEAD"]
@@ -40,7 +39,6 @@ resource "aws_cloudfront_distribution" "app" {
     cache_policy_id        = data.aws_cloudfront_cache_policy.caching_optimized.id
   }
 
-  # Default: transparent pass-through for dynamic app traffic
   default_cache_behavior {
     allowed_methods          = ["DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT"]
     cached_methods           = ["GET", "HEAD"]

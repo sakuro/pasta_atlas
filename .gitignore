@@ -1,5 +1,5 @@
 /.env*.local
-/terraform/environments/local/.terraform/
+/terraform/environments/*/.terraform/
 /terraform/environments/local/terraform.tfstate
 /terraform/environments/local/terraform.tfstate.backup
 /coverage/

@@ -61,11 +61,12 @@ Database migrations run as a one-off ECS task using the same image, executed bef
 
 ## Terraform
 
-Infrastructure is managed in a separate repository under the `pasta_atlas/` subdirectory with its own Terraform root and state file (`pasta_atlas/terraform.tfstate`), isolated from the static site configurations in the parent directory.
+Infrastructure is managed under `terraform/environments/`.
+
+- `production/` is the production root and directly declares the AWS resources used by the application.
+- `local/` contains the local mapshots S3 support used during development.
 
 Terraform manages all infrastructure except ECS Task Definition revisions, which are updated by CI/CD on each deployment.
-
-Existing modules (`acm-validated-certificate`, `cloudfront-site`) are reused via relative paths.
 
 ## Environments
 

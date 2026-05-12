@@ -29,12 +29,12 @@ data "aws_iam_policy_document" "app_s3" {
       "s3:PutObject",
       "s3:DeleteObject",
     ]
-    resources = ["${var.s3_bucket_arn}/*"]
+    resources = ["${aws_s3_bucket.mapshots.arn}/*"]
   }
 
   statement {
     actions   = ["s3:ListBucket"]
-    resources = [var.s3_bucket_arn]
+    resources = [aws_s3_bucket.mapshots.arn]
   }
 }
 
