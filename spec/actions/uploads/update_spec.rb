@@ -8,13 +8,20 @@ RSpec.describe PastaAtlas::Actions::Uploads::Update, :db do
   let(:session) { {"rack.session" => {"user_id" => 1}} }
   let(:action_params) { {ulid: "01UPLOAD", status: "complete"} }
 
-  context "when no session and no guest user" do
-    before { allow(user_repo).to receive(:find_by_name).with("guest").and_return(nil) }
+  context "when no session" do
+    let(:guest_user) { double("User", id: 99) }
+    let(:upload) { double("Upload", ulid: "01UPLOAD", status: "complete", completed_at: Time.now) }
 
-    it "returns 401" do
+    before do
+      allow(user_repo).to receive(:find_by_name).with("guest").and_return(guest_user)
+      allow(update_status).to receive(:call).and_return(Success(upload))
+    end
+
+    it "allows guest requests" do
       response = action.call({"rack.session" => {}}.merge(action_params))
 
-      expect(response.status).to eq(401)
+      expect(response.status).to eq(200)
+      expect(update_status).to have_received(:call).with(upload_ulid: "01UPLOAD", status: "complete")
     end
   end
 

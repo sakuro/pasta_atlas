@@ -17,10 +17,7 @@ module PastaAtlas
 
       attr_reader :i18n
 
-      def locale_tag
-        locales = request&.env&.[](Rack::ICU4X::Locale::ENV_KEY)
-        locales&.first&.to_s || "en"
-      end
+      def locale_tag = request.env[Rack::ICU4X::Locale::ENV_KEY].first.to_s
 
       def locale_name(locale_code) = ICU4X::DisplayNames.new(ICU4X::Locale.parse(locale_tag), type: :locale).of(locale_code.to_s)
 
@@ -72,7 +69,7 @@ module PastaAtlas
 
       private def viewer_timezone
         @viewer_timezone ||= begin
-          user_id = session&.[](:user_id) || user_repo.find_by_name("guest")&.id
+          user_id = session[:user_id] || user_repo.find_by_name("guest").id
           user_preference_repo.find_by_user_id(user_id).timezone
         rescue ROM::TupleCountMismatchError
           "UTC"

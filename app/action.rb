@@ -35,6 +35,6 @@ module PastaAtlas
       request.session[:user_id] || guest_user_id
     end
 
-    private def guest_user_id = user_repo.find_by_name("guest")&.id
+    private def guest_user_id = user_repo.find_by_name("guest").id
   end
 end

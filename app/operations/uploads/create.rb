@@ -87,7 +87,7 @@ module PastaAtlas
 
         private def result_for_existing_generation(generation)
           upload = generation.upload
-          upload&.status == "complete" ? Failure(:conflict) : Success(upload)
+          upload.status == "complete" ? Failure(:conflict) : Success(upload)
         end
 
         private def write_metadata_to_s3(key:, body:)

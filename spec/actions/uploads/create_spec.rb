@@ -20,13 +20,24 @@ RSpec.describe PastaAtlas::Actions::Uploads::Create, :db do
   end
   let(:action_params_with_name) { action_params.merge(name: "My Map") }
 
-  context "when no session and no guest user" do
-    before { allow(user_repo).to receive(:find_by_name).with("guest").and_return(nil) }
+  context "when no session" do
+    let(:guest_user) { double("User", id: 99) }
+    let(:upload) { double("Upload", ulid: "01UPLOAD", generation_id: 42) }
+    let(:generation) { double("Generation", ulid: "01GEN", map_id: 7) }
+    let(:map) { double("Map", ulid: "01MAP") }
 
-    it "returns 401" do
+    before do
+      allow(user_repo).to receive(:find_by_name).with("guest").and_return(guest_user)
+      allow(create_upload).to receive(:call).and_return(Success(upload))
+      allow(generation_repo).to receive(:find_by_id).with(42).and_return(generation)
+      allow(map_repo).to receive(:find_by_id).with(7).and_return(map)
+    end
+
+    it "uses the guest user" do
       response = action.call({"rack.session" => {}}.merge(action_params))
 
-      expect(response.status).to eq(401)
+      expect(response.status).to eq(201)
+      expect(create_upload).to have_received(:call).with(hash_including(user_id: 99))
     end
   end
 
