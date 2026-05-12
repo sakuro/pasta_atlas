@@ -9,7 +9,7 @@ pasta-atlas/
     backend/      # ECS Fargate, ALB, RDS, ECR, IAM, SSM (production only)
   environments/
     production/   # pasta-atlas.layer8.works
-    development/  # mapshots only — web app runs locally
+    local/        # mapshots only — web app runs locally
 ```
 
 ### module/mapshots
@@ -30,10 +30,10 @@ pasta-atlas/
 |---|---|
 | `versions.tf` | Provider requirements |
 | `variables.tf` | App domain, S3/CloudFront refs (from mapshots), DB and ECS settings |
-| `ecr.tf` / `ecs.tf` | ECR repository, ECS cluster, Fargate task and service |
-| `alb.tf` | ALB, HTTPS listener, HTTP→HTTPS redirect |
+| `ecs.tf` | ECR repository, ECS cluster, Fargate task and service |
+| `alb.tf` | ALB, HTTP/HTTPS listeners, target group, and security groups |
 | `acm.tf` | ACM certificate in ap-northeast-1 for ALB |
-| `dns.tf` | A record (alias) on layer8.works → ALB |
+| `dns.tf` | CNAME on layer8.works → CloudFront |
 | `rds.tf` | RDS PostgreSQL (default VPC, `deletion_protection = true`) |
 | `iam.tf` | Fargate task role with S3 and SSM access |
 | `ssm.tf` | SSM Parameter Store entry for `SESSION_SECRET` |
@@ -43,7 +43,7 @@ pasta-atlas/
 
 ### 1. Create `terraform.tfvars` (production only)
 
-Development has no required variables. Production requires the database password:
+Local has no required variables. Production requires the database password:
 
 ```
 db_password = "your-secure-password"
@@ -52,7 +52,7 @@ db_password = "your-secure-password"
 ### 2. Initialize and apply
 
 ```bash
-cd environments/production   # or development
+cd environments/production   # or local
 terraform init
 scripts/tf plan
 scripts/tf apply
@@ -97,11 +97,10 @@ aws ecs update-service \
 | `rds_endpoint` | `DATABASE_URL` (format: `postgres://pasta_atlas:<pass>@<endpoint>/pasta_atlas`) |
 | `session_secret_ssm_path` | — fetch at startup via SSM |
 
-### Development (from `terraform output`)
+### Local (from `terraform output`)
 
 | Output | App env var |
 |---|---|
 | `s3_bucket_name` | `S3_BUCKET` |
-| `cloudfront_domain_name` | `CLOUDFRONT_BASE_URL` |
 
-Database and session secret are managed locally in development.
+Database and session secret are managed locally in the local environment.
