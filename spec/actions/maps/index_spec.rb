@@ -15,13 +15,13 @@ RSpec.describe PastaAtlas::Actions::Maps::Index do
   end
 
   it "returns 200" do
-    response = action.call({})
+    response = action.call(locale_env)
 
     expect(response.status).to eq(200)
   end
 
   it "calls the operation with the requested page" do
-    action.call({page: "2"})
+    action.call(locale_env.merge(page: "2"))
 
     expect(list_maps).to have_received(:call).with(page: 2)
   end

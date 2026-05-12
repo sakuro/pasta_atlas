@@ -18,7 +18,7 @@ RSpec.describe PastaAtlas::Actions::User::Edit do
   end
 
   context "when logged in as the profile owner" do
-    let(:env) { {"rack.session" => {"user_id" => 1}, :user_name => "sakuro"} }
+    let(:env) { locale_env.merge("rack.session" => {"user_id" => 1}, :user_name => "sakuro") }
 
     it "returns 200" do
       response = action.call(env)

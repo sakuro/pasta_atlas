@@ -61,7 +61,7 @@ RSpec.describe PastaAtlas::Actions::User::Profile::Update do
     end
 
     context "when display_name exceeds 64 grapheme clusters" do
-      let(:env) { {"rack.session" => {"user_id" => 1}, :user_name => "sakuro", :display_name => "あ" * 65} }
+      let(:env) { locale_env.merge("rack.session" => {"user_id" => 1}, :user_name => "sakuro", :display_name => "あ" * 65) }
       let(:profile) { double("UserProfile", avatar_s3_key: nil) }
       let(:preference) { double("UserPreference", timezone: "UTC", locale: nil) }
 

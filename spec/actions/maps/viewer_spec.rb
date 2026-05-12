@@ -6,7 +6,7 @@ RSpec.describe PastaAtlas::Actions::Maps::Viewer do
   let(:settings) { double("Settings", cloudfront_base_url: "https://cdn.example.com") }
   let(:action) { PastaAtlas::Actions::Maps::Viewer.new(show_map:, user_profile_repo:, settings:) }
 
-  let(:action_params) { {ulid: "01MAP"} }
+  let(:action_params) { locale_env.merge(ulid: "01MAP") }
 
   context "when the map is found" do
     let(:map) { double("Map", ulid: "01MAP", display_name: "My Map", user_id: 1) }
