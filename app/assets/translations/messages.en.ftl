@@ -54,7 +54,7 @@ edit-display-name = Display name
 edit-save-profile = Save Profile
 edit-timezone-label = Timezone
 edit-locale = Locale
-    .not-set = (not set)
+    .use-browser = (Use browser)
 edit-save-preferences = Save Preferences
 edit-cancel = Cancel
 

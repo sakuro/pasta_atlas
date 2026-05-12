@@ -67,7 +67,7 @@ edit-display-name = Zobrazované jméno
 edit-save-profile = Uložit profil
 edit-timezone-label = Časové pásmo
 edit-locale = Jazyk
-    .not-set = (nenastaveno)
+    .use-browser = (Podle prohlížeče)
 edit-save-preferences = Uložit nastavení
 edit-cancel = Zrušit
 

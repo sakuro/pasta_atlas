@@ -54,7 +54,7 @@ edit-display-name = 表示名
 edit-save-profile = プロフィールを保存
 edit-timezone-label = タイムゾーン
 edit-locale = 言語
-    .not-set = (未設定)
+    .use-browser = (ブラウザに従う)
 edit-save-preferences = 設定を保存
 edit-cancel = キャンセル
 
