@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe PastaAtlas::Actions::User::Edit do
+RSpec.describe PastaAtlas::Actions::User::Edit, :action_env do
   let(:user_repo) { instance_double(PastaAtlas::Repos::UserRepo) }
   let(:user_profile_repo) { instance_double(PastaAtlas::Repos::UserProfileRepo) }
   let(:user_preference_repo) { instance_double(PastaAtlas::Repos::UserPreferenceRepo) }

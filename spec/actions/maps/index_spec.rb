@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe PastaAtlas::Actions::Maps::Index do
+RSpec.describe PastaAtlas::Actions::Maps::Index, :action_env do
   let(:list_maps) { instance_double(PastaAtlas::Operations::Maps::List) }
   let(:action) { PastaAtlas::Actions::Maps::Index.new(list_maps:) }
 

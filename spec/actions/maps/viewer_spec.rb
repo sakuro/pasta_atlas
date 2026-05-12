@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe PastaAtlas::Actions::Maps::Viewer do
+RSpec.describe PastaAtlas::Actions::Maps::Viewer, :action_env do
   let(:show_map) { instance_double(PastaAtlas::Operations::Maps::Show) }
   let(:user_profile_repo) { instance_double(PastaAtlas::Repos::UserProfileRepo) }
   let(:settings) { double("Settings", cloudfront_base_url: "https://cdn.example.com") }
