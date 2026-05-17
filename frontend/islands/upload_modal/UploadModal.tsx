@@ -71,6 +71,23 @@ const runConcurrent = async (
 const relPath = (file: File): string =>
   file.webkitRelativePath.split("/").slice(1).join("/");
 
+const CopyButton = (props: { text: string }) => {
+  const [copied, setCopied] = createSignal(false);
+  const handleCopy = () => {
+    navigator.clipboard.writeText(props.text).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    }).catch(() => {});
+  };
+  return (
+    <button class="button is-small is-ghost px-1" style={{ "vertical-align": "middle" }} onClick={handleCopy} data-l10n-id="upload-copy-path">
+      <span class="icon is-small">
+        <i class={copied() ? "fa-solid fa-check has-text-success" : "fa-regular fa-copy"} />
+      </span>
+    </button>
+  );
+};
+
 export const UploadModal = (props: { isGuest: boolean }) => {
   const [state, setState] = createSignal<State>({ type: "idle" });
   const [displayName, setDisplayName] = createSignal("");
@@ -298,19 +315,31 @@ export const UploadModal = (props: { isGuest: boolean }) => {
                       <li>
                         <span class="icon-text">
                           <span class="icon"><i class="fa-brands fa-windows" /></span>
-                          <span><code>C:\Users\<var>username</var>\AppData\Roaming\Factorio\script-output\mapshot\<var>map-abcd1234</var>\<var>d-abcd1234</var>\</code></span>
+                          <span>
+                            <code>%APPDATA%\Factorio\script-output\mapshot</code>
+                            <CopyButton text="%APPDATA%\Factorio\script-output\mapshot" />
+                            <code>\<var>map-abcd1234</var>\<var>d-abcd1234</var>\</code>
+                          </span>
                         </span>
                       </li>
                       <li>
                         <span class="icon-text">
                           <span class="icon"><i class="fa-brands fa-apple" /></span>
-                          <span><code>~/Library/Application Support/factorio/script-output/mapshot/<var>map-abcd1234</var>/<var>d-abcd1234</var>/</code></span>
+                          <span>
+                            <code>~/Library/Application Support/factorio/script-output/mapshot</code>
+                            <CopyButton text="~/Library/Application Support/factorio/script-output/mapshot" />
+                            <code>/<var>map-abcd1234</var>/<var>d-abcd1234</var>/</code>
+                          </span>
                         </span>
                       </li>
                       <li>
                         <span class="icon-text">
                           <span class="icon"><i class="fa-brands fa-linux" /></span>
-                          <span><code>~/.factorio/script-output/mapshot/<var>map-abcd1234</var>/<var>d-abcd1234</var>/</code></span>
+                          <span>
+                            <code>~/.factorio/script-output/mapshot</code>
+                            <CopyButton text="~/.factorio/script-output/mapshot" />
+                            <code>/<var>map-abcd1234</var>/<var>d-abcd1234</var>/</code>
+                          </span>
                         </span>
                       </li>
                     </ul>
