@@ -261,7 +261,7 @@ export const UploadModal = (props: { isGuest: boolean }) => {
         }}
       />
       <button class="button" onClick={openModal}>
-        <span class="icon"><i class="fa-solid fa-upload"></i></span>
+        <span class="icon"><i class="fa-solid fa-upload" /></span>
         <span data-l10n-id="upload-button" />
       </button>
       <Show when={state().type !== "idle"}>
@@ -280,7 +280,7 @@ export const UploadModal = (props: { isGuest: boolean }) => {
                 <div class="content">
                   <p>
                     <span class="icon-text">
-                      <span class="icon"><i class="fa-solid fa-folder-open"></i></span>
+                      <span class="icon"><i class="fa-solid fa-folder-open" /></span>
                       <span data-l10n-id="upload-instructions-folder" />
                     </span>
                   </p>
@@ -289,19 +289,19 @@ export const UploadModal = (props: { isGuest: boolean }) => {
                     <ul>
                       <li>
                         <span class="icon-text">
-                          <span class="icon"><i class="fa-brands fa-windows"></i></span>
+                          <span class="icon"><i class="fa-brands fa-windows" /></span>
                           <span><code>C:\Users\<var>username</var>\AppData\Roaming\Factorio\script-output\mapshot\<var>map-abcd1234</var>\<var>d-abcd1234</var>\</code></span>
                         </span>
                       </li>
                       <li>
                         <span class="icon-text">
-                          <span class="icon"><i class="fa-brands fa-apple"></i></span>
+                          <span class="icon"><i class="fa-brands fa-apple" /></span>
                           <span><code>~/Library/Application Support/factorio/script-output/mapshot/<var>map-abcd1234</var>/<var>d-abcd1234</var>/</code></span>
                         </span>
                       </li>
                       <li>
                         <span class="icon-text">
-                          <span class="icon"><i class="fa-brands fa-linux"></i></span>
+                          <span class="icon"><i class="fa-brands fa-linux" /></span>
                           <span><code>~/.factorio/script-output/mapshot/<var>map-abcd1234</var>/<var>d-abcd1234</var>/</code></span>
                         </span>
                       </li>
@@ -309,14 +309,14 @@ export const UploadModal = (props: { isGuest: boolean }) => {
                   </div>
                   <p>
                     <span class="icon-text">
-                      <span class="icon"><i class="fa-solid fa-timeline"></i></span>
+                      <span class="icon"><i class="fa-solid fa-timeline" /></span>
                       <span data-l10n-id="upload-instructions-generations" />
                     </span>
                   </p>
                   <Show when={props.isGuest}>
                     <p>
                       <span class="icon-text">
-                        <span class="icon"><i class="fa-solid fa-triangle-exclamation"></i></span>
+                        <span class="icon"><i class="fa-solid fa-triangle-exclamation" /></span>
                         <span data-l10n-id="upload-instructions-guest" />
                       </span>
                     </p>
@@ -328,7 +328,7 @@ export const UploadModal = (props: { isGuest: boolean }) => {
                   <table class="table is-fullwidth">
                     <tbody>
                       <tr>
-                        <th><span class="icon-text"><span class="icon"><i class="fa-solid fa-map"></i></span><span data-l10n-id="upload-map-title" /></span></th>
+                        <th><span class="icon-text"><span class="icon"><i class="fa-solid fa-map" /></span><span data-l10n-id="upload-map-title" /></span></th>
                         <td>
                           <input
                             ref={(el) => setTimeout(() => { el.focus(); el.select(); }, 0)}
@@ -341,15 +341,15 @@ export const UploadModal = (props: { isGuest: boolean }) => {
                         </td>
                       </tr>
                       <tr>
-                        <th><span class="icon-text"><span class="icon"><i class="fa-solid fa-layer-group"></i></span><span data-l10n-id="upload-surfaces" /></span></th>
+                        <th><span class="icon-text"><span class="icon"><i class="fa-solid fa-layer-group" /></span><span data-l10n-id="upload-surfaces" /></span></th>
                         <td>{s.surfaceCount}</td>
                       </tr>
                       <tr>
-                        <th><span class="icon-text"><span class="icon"><i class="fa-solid fa-images"></i></span><span data-l10n-id="upload-images" /></span></th>
+                        <th><span class="icon-text"><span class="icon"><i class="fa-solid fa-images" /></span><span data-l10n-id="upload-images" /></span></th>
                         <td>{s.imageCount}</td>
                       </tr>
                       <tr>
-                        <th><span class="icon-text"><span class="icon"><i class="fa-solid fa-chart-simple"></i></span><span data-l10n-id="upload-total-size" /></span></th>
+                        <th><span class="icon-text"><span class="icon"><i class="fa-solid fa-chart-simple" /></span><span data-l10n-id="upload-total-size" /></span></th>
                         <td>{formatBytes(s.totalBytes)}</td>
                       </tr>
                     </tbody>
@@ -389,18 +389,18 @@ export const UploadModal = (props: { isGuest: boolean }) => {
             <footer class="modal-card-foot">
               <Show when={state().type === "instructions"}>
                 <button class="button is-primary" onClick={openPicker}>
-                  <span class="icon"><i class="fa-solid fa-folder-open"></i></span>
+                  <span class="icon"><i class="fa-solid fa-folder-open" /></span>
                   <span data-l10n-id="upload-select-folder" />
                 </button>
                 <button class="button" data-l10n-id="upload-cancel" onClick={dismiss} />
               </Show>
               <Show when={state().type === "confirming"}>
                 <button class="button is-primary" onClick={startUpload}>
-                  <span class="icon"><i class="fa-solid fa-upload"></i></span>
+                  <span class="icon"><i class="fa-solid fa-upload" /></span>
                   <span data-l10n-id="upload-start" />
                 </button>
                 <button class="button" onClick={backToInstructions}>
-                  <span class="icon"><i class="fa-solid fa-arrow-left"></i></span>
+                  <span class="icon"><i class="fa-solid fa-arrow-left" /></span>
                   <span data-l10n-id="upload-back" />
                 </button>
                 <button class="button" data-l10n-id="upload-cancel" onClick={dismiss} />
@@ -411,7 +411,7 @@ export const UploadModal = (props: { isGuest: boolean }) => {
               <Show when={state().type === "error"}>
                 <button class="button" data-l10n-id="upload-dismiss" onClick={dismiss} />
                 <button class="button" onClick={backToInstructions}>
-                  <span class="icon"><i class="fa-solid fa-arrow-left"></i></span>
+                  <span class="icon"><i class="fa-solid fa-arrow-left" /></span>
                   <span data-l10n-id="upload-back" />
                 </button>
               </Show>

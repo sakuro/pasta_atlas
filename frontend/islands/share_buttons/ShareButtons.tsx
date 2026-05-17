@@ -29,17 +29,17 @@ export const ShareButtons = (props: Props) => {
   return (
     <div class="buttons has-addons">
       <a class="button is-small" href={xUrl()} target="_blank" rel="noopener noreferrer" data-l10n-id="share-x">
-        <span class="icon is-small"><i class="fa-brands fa-x-twitter"></i></span>
+        <span class="icon is-small"><i class="fa-brands fa-x-twitter" /></span>
       </a>
       <a class="button is-small" href={bskyUrl()} target="_blank" rel="noopener noreferrer" data-l10n-id="share-bluesky">
-        <span class="icon is-small"><i class="fa-brands fa-bluesky"></i></span>
+        <span class="icon is-small"><i class="fa-brands fa-bluesky" /></span>
       </a>
       <a class="button is-small" href={redditUrl()} target="_blank" rel="noopener noreferrer" data-l10n-id="share-reddit">
-        <span class="icon is-small"><i class="fa-brands fa-reddit-alien"></i></span>
+        <span class="icon is-small"><i class="fa-brands fa-reddit-alien" /></span>
       </a>
       <a class="button is-small" role="button" onClick={handleCopy} data-l10n-id="share-copy-link">
         <span class="icon is-small">
-          <i class={copied() ? "fa-solid fa-check" : "fa-solid fa-link"}></i>
+          <i class={copied() ? "fa-solid fa-check" : "fa-solid fa-link"} />
         </span>
       </a>
     </div>

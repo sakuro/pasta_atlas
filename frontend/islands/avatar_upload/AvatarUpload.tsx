@@ -164,7 +164,7 @@ export const AvatarUpload = (props: Props) => {
   };
 
   const avatarStyle = "border-radius:50%;object-fit:cover";
-  const defaultIcon = <i class="fa-solid fa-circle-user" style="font-size:64px;line-height:1;display:block"></i>;
+  const defaultIcon = <i class="fa-solid fa-circle-user" style={{"font-size":"64px","line-height":"1","display":"block"}} />;
 
   return (
     <div>
@@ -191,24 +191,24 @@ export const AvatarUpload = (props: Props) => {
         <div>
           <Show when={state().type === "idle" || state().type === "error"}>
             <button class="button is-small" type="button" onClick={openPicker}>
-              <span class="icon"><i class="fa-solid fa-image"></i></span>
+              <span class="icon"><i class="fa-solid fa-image" /></span>
               <span data-l10n-id="avatar-change" />
             </button>
             <Show when={props.currentAvatarUrl}>
               <button class="button is-small ml-2" type="button" onClick={() => setState({ type: "removing" })}>
-                <span class="icon"><i class="fa-solid fa-trash"></i></span>
+                <span class="icon"><i class="fa-solid fa-trash" /></span>
                 <span data-l10n-id="avatar-remove" />
               </button>
             </Show>
           </Show>
           <Show when={state().type === "selected" || state().type === "removing"}>
             <button class="button is-small" type="button" onClick={cancel}>
-              <span class="icon"><i class="fa-solid fa-circle-xmark"></i></span>
+              <span class="icon"><i class="fa-solid fa-circle-xmark" /></span>
               <span data-l10n-id="avatar-cancel" />
             </button>
           </Show>
           <Show when={state().type === "uploading"}>
-            <span class="icon"><i class="fa-solid fa-spinner fa-spin"></i></span>
+            <span class="icon"><i class="fa-solid fa-spinner fa-spin" /></span>
           </Show>
           <Show when={errorState()} keyed>
             {(s) => (
