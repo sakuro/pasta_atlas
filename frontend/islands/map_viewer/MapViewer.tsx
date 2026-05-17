@@ -313,7 +313,11 @@ const LeafletMap = (props: { mapshot: Mapshot; assetBase: string }) => {
     planetSurfaces.forEach((s, i) => { ftlNameBySurfaceName[s.surface_name] = ftlPlanetNames[i]; });
     const labels = surfaces.map((s) => {
       const name = ftlNameBySurfaceName[s.surface_name] ?? (s.surface_localised_name || s.surface_name);
-      const prefix = s.is_planet ? `[planet=${s.surface_name}] ` : "";
+      const prefix = s.is_planet
+        ? `[planet=${s.surface_name}] `
+        : s.is_space_platform
+        ? "[img=surface/space-platform] "
+        : "";
       return renderRichText(prefix + name);
     });
 
