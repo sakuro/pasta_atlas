@@ -106,13 +106,13 @@ export const MapInfoModal = (props: { mapshot: Mapshot; onClose: () => void }) =
                 </Show>
                 <Show when={props.mapshot.tick != null}>
                   <tr>
-                    <th class="map-info-label"><span class="icon-text"><span class="icon"><i class="fa-solid fa-hourglass" /></span><span data-l10n-id="map-info-tick" /></span></th>
+                    <th class="map-info-label"><span class="icon-text"><span class="icon"><i class="fa-solid fa-hourglass" /></span><span data-l10n-id="map-info-tick" /><span class="icon is-small has-text-grey-light" data-l10n-id="map-info-tick-help"><i class="fa-regular fa-circle-question" /></span></span></th>
                     <td>{formatNumber(props.mapshot.tick!)} ({formatTicks(props.mapshot.tick!, "long")})</td>
                   </tr>
                 </Show>
                 <Show when={props.mapshot.ticks_played != null}>
                   <tr>
-                    <th class="map-info-label"><span class="icon-text"><span class="icon"><i class="fa-solid fa-hourglass-half" /></span><span data-l10n-id="map-info-ticks-played" /></span></th>
+                    <th class="map-info-label"><span class="icon-text"><span class="icon"><i class="fa-solid fa-hourglass-half" /></span><span data-l10n-id="map-info-ticks-played" /><span class="icon is-small has-text-grey-light" data-l10n-id="map-info-ticks-played-help"><i class="fa-regular fa-circle-question" /></span></span></th>
                     <td>{formatNumber(props.mapshot.ticks_played!)} ({formatTicks(props.mapshot.ticks_played!, "long")})</td>
                   </tr>
                 </Show>
