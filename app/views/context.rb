@@ -19,7 +19,11 @@ module PastaAtlas
 
       def locale_tag = request.env[Rack::ICU4X::Locale::ENV_KEY].first.to_s
 
-      def locale_name(locale_code) = ICU4X::DisplayNames.new(ICU4X::Locale.parse(locale_tag), type: :locale).of(locale_code.to_s)
+      def locale_name(locale_code)
+        target = ICU4X::DisplayNames.new(ICU4X::Locale.parse(locale_code.to_s), type: :locale).of(locale_code.to_s)
+        current = ICU4X::DisplayNames.new(ICU4X::Locale.parse(locale_tag), type: :locale).of(locale_code.to_s)
+        target == current ? target : "#{target} (#{current})"
+      end
 
       def localize_date(time)
         Foxtail::Function::DateTime[time.utc, {timeZone: viewer_timezone}]
