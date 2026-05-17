@@ -1,6 +1,7 @@
 import { createSignal, Show } from "solid-js";
 import { Portal } from "solid-js/web";
 import "../../l10n";
+import { HowToUploadModal } from "./HowToUploadModal";
 
 const csrfToken = (): string =>
   document.querySelector<HTMLMetaElement>('meta[name="csrf-token"]')?.content ?? "";
@@ -73,6 +74,7 @@ const relPath = (file: File): string =>
 export const UploadModal = (props: { isGuest: boolean }) => {
   const [state, setState] = createSignal<State>({ type: "idle" });
   const [displayName, setDisplayName] = createSignal("");
+  const [showHowTo, setShowHowTo] = createSignal(false);
   let inputRef!: HTMLInputElement;
 
   const openModal = () => {
@@ -264,6 +266,12 @@ export const UploadModal = (props: { isGuest: boolean }) => {
         <span class="icon"><i class="fa-solid fa-upload" /></span>
         <span data-l10n-id="upload-button" />
       </button>
+      <button class="button" data-l10n-id="how-to-upload-button" onClick={() => setShowHowTo(true)}>
+        <span class="icon"><i class="fa-solid fa-circle-question" /></span>
+      </button>
+      <Show when={showHowTo()}>
+        <HowToUploadModal onClose={() => setShowHowTo(false)} />
+      </Show>
       <Show when={state().type !== "idle"}>
         <Portal mount={document.body}>
         <div class="modal is-active">

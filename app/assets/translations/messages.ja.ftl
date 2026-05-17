@@ -108,6 +108,23 @@ upload-error-file = アップロードに失敗しました: { $details }
 upload-error-finalize = 画像のアップロードは完了しましたが、完了処理に失敗しました。
 upload-error-finalize-network = 画像のアップロードは完了しましたが、完了処理中にネットワークエラーが発生しました。
 
+## How to upload モーダル
+how-to-upload-button =
+    .title = アップロード方法
+how-to-upload-title = アップロード方法
+how-to-upload-close = 閉じる
+how-to-upload-step1-heading = 1. { -mapshot } MOD を導入する
+how-to-upload-step1-body = Factorio のゲーム内 MOD メニューから { -mapshot } をインストールし、ゲームを再起動してください。
+how-to-upload-step2-heading = 2. マップを撮影する
+how-to-upload-step2-open-console = ゲーム内コンソールを開き、次のコマンドを実行してください:
+how-to-upload-step2-wait = 撮影中はゲームが一時的に応答しなくなります — 完了するまでお待ちください。
+how-to-upload-step3-heading = 3. アップロードする
+how-to-upload-step3-click-upload = ナビゲーションバーの「アップロード」をクリックします。
+how-to-upload-step3-select-folder = 「フォルダーを選択」をクリックし、<code data-l10n-name="filename">mapshot.json</code> を含むサブフォルダーを選択します（ファイル自体ではなくフォルダーを選択してください）。
+how-to-upload-step3-confirm = マップタイトルと内容を確認し、「アップロード開始」をクリックします。
+how-to-upload-step3-view = アップロードが完了したら「マップを表示」をクリックします。
+how-to-upload-tip = 同じマップを異なるゲームティックでアップロードできます。各アップロードは個別の「世代」となり、マップビューアーで切り替えられます。
+
 ## Avatar upload
 avatar-change = 変更
 avatar-remove = 削除

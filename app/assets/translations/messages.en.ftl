@@ -108,6 +108,23 @@ upload-error-file = Failed to upload: { $details }
 upload-error-finalize = Images uploaded, but finalization failed.
 upload-error-finalize-network = Images uploaded, but network error during finalization.
 
+## How to upload modal
+how-to-upload-button =
+    .title = How to upload
+how-to-upload-title = How to upload
+how-to-upload-close = Close
+how-to-upload-step1-heading = 1. Install the { -mapshot } MOD
+how-to-upload-step1-body = Install { -mapshot } from Factorio's in-game Mod menu and restart the game.
+how-to-upload-step2-heading = 2. Capture your map
+how-to-upload-step2-open-console = Open the in-game console and run:
+how-to-upload-step2-wait = The game may appear unresponsive while { -mapshot } is working — wait until it returns to normal.
+how-to-upload-step3-heading = 3. Upload
+how-to-upload-step3-click-upload = Click "Upload" in the navigation bar.
+how-to-upload-step3-select-folder = Click "Select Folder" and select the subfolder containing <code data-l10n-name="filename">mapshot.json</code> (not the file itself).
+how-to-upload-step3-confirm = Confirm the map title and details, then click "Start Upload".
+how-to-upload-step3-view = When the upload completes, click "View Map".
+how-to-upload-tip = You can upload the same map at different game ticks — each upload becomes a separate generation you can switch between in the map viewer.
+
 ## Avatar upload
 avatar-change = Change
 avatar-remove = Remove

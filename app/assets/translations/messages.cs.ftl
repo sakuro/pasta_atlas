@@ -121,6 +121,23 @@ upload-error-file = Nahrávání selhalo: { $details }
 upload-error-finalize = Obrázky byly nahrány, ale dokončení selhalo.
 upload-error-finalize-network = Obrázky byly nahrány, ale při dokončení došlo k chybě sítě.
 
+## Modální okno – jak nahrát
+how-to-upload-button =
+    .title = Jak nahrát
+how-to-upload-title = Jak nahrát
+how-to-upload-close = Zavřít
+how-to-upload-step1-heading = 1. Nainstalujte mod { -mapshot }
+how-to-upload-step1-body = Nainstalujte { -mapshot(case: "accusative") } z herního menu Modů a restartujte hru.
+how-to-upload-step2-heading = 2. Zachyťte svou mapu
+how-to-upload-step2-open-console = Otevřete herní konzoli a spusťte:
+how-to-upload-step2-wait = Během snímání hra dočasně přestane reagovat — počkejte, dokud se nevrátí do normálního stavu.
+how-to-upload-step3-heading = 3. Nahrajte
+how-to-upload-step3-click-upload = Klikněte na „Nahrát" v navigační liště.
+how-to-upload-step3-select-folder = Klikněte na „Vybrat složku" a vyberte podsložku obsahující <code data-l10n-name="filename">mapshot.json</code> (ne samotný soubor).
+how-to-upload-step3-confirm = Potvrďte název mapy a detaily, poté klikněte na „Zahájit nahrávání".
+how-to-upload-step3-view = Po dokončení nahrávání klikněte na „Zobrazit mapu".
+how-to-upload-tip = Stejnou mapu můžete nahrát při různých herních ticích — každé nahrání vytvoří samostatnou generaci, mezi nimiž lze přepínat v prohlížeči map.
+
 ## Avatar upload
 avatar-change = Změnit
 avatar-remove = Odebrat
