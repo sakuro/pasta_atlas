@@ -71,7 +71,7 @@ const runConcurrent = async (
 const relPath = (file: File): string =>
   file.webkitRelativePath.split("/").slice(1).join("/");
 
-const CopyButton = (props: { text: string }) => {
+const CopyButton = (props: { text: string; l10nId: string }) => {
   const [copied, setCopied] = createSignal(false);
   const handleCopy = () => {
     navigator.clipboard.writeText(props.text).then(() => {
@@ -80,7 +80,7 @@ const CopyButton = (props: { text: string }) => {
     }).catch(() => {});
   };
   return (
-    <button class="button is-small is-ghost px-1" style={{ "vertical-align": "middle" }} onClick={handleCopy} data-l10n-id="upload-copy-path">
+    <button class="button is-small is-ghost px-1" style={{ "vertical-align": "middle" }} onClick={handleCopy} data-l10n-id={props.l10nId}>
       <span class="icon is-small">
         <i class={copied() ? "fa-solid fa-check has-text-success" : "fa-regular fa-copy"} />
       </span>
@@ -317,7 +317,7 @@ export const UploadModal = (props: { isGuest: boolean }) => {
                           <span class="icon"><i class="fa-brands fa-windows" /></span>
                           <span>
                             <code>%APPDATA%\Factorio\script-output\mapshot</code>
-                            <CopyButton text="%APPDATA%\Factorio\script-output\mapshot" />
+                            <CopyButton text="%APPDATA%\Factorio\script-output\mapshot" l10nId="upload-copy-path-windows" />
                             <code>\<var>map-abcd1234</var>\<var>d-abcd1234</var>\</code>
                           </span>
                         </span>
@@ -327,7 +327,7 @@ export const UploadModal = (props: { isGuest: boolean }) => {
                           <span class="icon"><i class="fa-brands fa-apple" /></span>
                           <span>
                             <code>~/Library/Application Support/factorio/script-output/mapshot</code>
-                            <CopyButton text="~/Library/Application Support/factorio/script-output/mapshot" />
+                            <CopyButton text="~/Library/Application Support/factorio/script-output/mapshot" l10nId="upload-copy-path-macos" />
                             <code>/<var>map-abcd1234</var>/<var>d-abcd1234</var>/</code>
                           </span>
                         </span>
@@ -337,7 +337,7 @@ export const UploadModal = (props: { isGuest: boolean }) => {
                           <span class="icon"><i class="fa-brands fa-linux" /></span>
                           <span>
                             <code>~/.factorio/script-output/mapshot</code>
-                            <CopyButton text="~/.factorio/script-output/mapshot" />
+                            <CopyButton text="~/.factorio/script-output/mapshot" l10nId="upload-copy-path-linux" />
                             <code>/<var>map-abcd1234</var>/<var>d-abcd1234</var>/</code>
                           </span>
                         </span>
