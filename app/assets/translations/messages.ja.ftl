@@ -121,6 +121,7 @@ how-to-upload-step1-body = { -factorio } のゲーム内 MOD メニューから 
 how-to-upload-step2-heading = 2. マップを撮影する
 how-to-upload-step2-open-console = ゲーム内コンソールを開き、次のコマンドを実行してください:
 how-to-upload-step2-wait = 撮影中はゲームが一時的に応答しなくなります — 完了するまでお待ちください。
+how-to-upload-achievement-warning = 実績への影響を避けたい場合は、{ -mapshot } を導入した状態でゲームデータを保存せず、撮影後にアンインストールしてください。
 how-to-upload-step3-heading = 3. アップロードする
 how-to-upload-step3-click-upload = ナビゲーションバーの「アップロード」をクリックします。
 how-to-upload-step3-select-folder = 「フォルダーを選択」をクリックし、<code data-l10n-name="filename">mapshot.json</code> を含むサブフォルダーを選択します（ファイル自体ではなくフォルダーを選択してください）。

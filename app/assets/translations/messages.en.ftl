@@ -121,6 +121,7 @@ how-to-upload-step1-body = Install { -mapshot } from { -factorio }'s in-game Mod
 how-to-upload-step2-heading = 2. Capture your map
 how-to-upload-step2-open-console = Open the in-game console and run:
 how-to-upload-step2-wait = The game may appear unresponsive while { -mapshot } is working — wait until it returns to normal.
+how-to-upload-achievement-warning = To avoid affecting achievements, do not save your game while { -mapshot } is installed. Uninstall { -mapshot } after capturing.
 how-to-upload-step3-heading = 3. Upload
 how-to-upload-step3-click-upload = Click "Upload" in the navigation bar.
 how-to-upload-step3-select-folder = Click "Select Folder" and select the subfolder containing <code data-l10n-name="filename">mapshot.json</code> (not the file itself).

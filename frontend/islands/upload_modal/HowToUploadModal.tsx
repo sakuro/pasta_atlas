@@ -18,6 +18,9 @@ export const HowToUploadModal = (props: { onClose: () => void }) => (
             <p data-l10n-id="how-to-upload-step2-open-console" />
             <pre><code>/mapshot</code></pre>
             <p data-l10n-id="how-to-upload-step2-wait" />
+            <div class="notification is-warning is-light">
+              <p data-l10n-id="how-to-upload-achievement-warning" />
+            </div>
 
             <h4 data-l10n-id="how-to-upload-step3-heading" />
             <ol>
