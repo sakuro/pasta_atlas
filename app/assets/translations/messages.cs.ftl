@@ -15,6 +15,7 @@
         [instrumental] GitHubem
        *[other] GitHub
     }
+-factorio = Factorio
 
 ## App
 app-name = { -app-name }
