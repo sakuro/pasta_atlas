@@ -3,9 +3,11 @@ _.file = [".env", ".env.development", ".env.development.local", ".env.local"]
 _.path = ["bin", "node_modules/.bin"]
 
 [tools]
-terraform = "1.15.1"
-"aqua:terraform-linters/tflint" = "0.62.0"
+aws-cli = "latest"
 gitleaks = "latest"
+sops = "latest"
+terraform = "1.15"
+tflint = "0.62"
 
 [tasks.default]
 depends = ["dev"]
