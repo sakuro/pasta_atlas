@@ -8,6 +8,7 @@
        data-author-name="<%= author_name %>"
        data-author-display-name="<%= author_display_name %>"
        <% if author_avatar_url %>data-author-avatar-url="<%= author_avatar_url %>"<% end %>
-       <% if updated_at %>data-updated-at="<%= updated_at.iso8601 %>"<% end %>></div>
+       <% if updated_at %>data-updated-at="<%= updated_at.iso8601 %>"<% end %>
+       <% if viewer_name %>data-viewer-name="<%= viewer_name %>"<% end %>></div>
 </div>
 <script src="<%= island_src("map_viewer") %>" type="module"></script>

@@ -3,7 +3,7 @@ import { MapViewer } from "./MapViewer";
 
 const mountEl = document.getElementById("map-viewer");
 if (mountEl) {
-  const { ulid, displayName, authorName, authorDisplayName, authorAvatarUrl, updatedAt } = mountEl.dataset;
+  const { ulid, displayName, authorName, authorDisplayName, authorAvatarUrl, updatedAt, viewerName } = mountEl.dataset;
   render(() => <MapViewer
     ulid={ulid!}
     displayName={displayName!}
@@ -11,5 +11,6 @@ if (mountEl) {
     authorDisplayName={authorDisplayName!}
     authorAvatarUrl={authorAvatarUrl ?? null}
     updatedAt={updatedAt ?? null}
+    viewerName={viewerName ?? null}
   />, mountEl);
 }

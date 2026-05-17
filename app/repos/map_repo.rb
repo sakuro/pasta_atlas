@@ -70,6 +70,10 @@ module PastaAtlas
           .delete
       end
 
+      def update_name(id:, name:)
+        maps.dataset.where(id:).update(name: name.empty? ? nil : name)
+      end
+
       def find_or_create_by_user_and_mapshot_id(user_id:, mapshot_map_id:, savename: "", name: nil)
         conflict_opts = if name
                           {target: %i[user_id mapshot_map_id], update: {name:}}

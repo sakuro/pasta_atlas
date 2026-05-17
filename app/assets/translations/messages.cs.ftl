@@ -159,6 +159,12 @@ map-layer-train-stations = Železniční zastávky
 map-layer-tags = Štítky
 map-info-button =
     .title = Informace o mapě
+map-name-edit-button =
+    .title = Upravit název mapy
+map-name-save-button =
+    .title = Uložit
+map-name-cancel-button =
+    .title = Zrušit
 
 ## Map info modal
 map-info-title = Informace o mapě

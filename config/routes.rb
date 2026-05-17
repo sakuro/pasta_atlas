@@ -21,6 +21,7 @@ module PastaAtlas
     delete "/auth/session", to: "auth.session.destroy"
 
     get "/api/v1/maps/:ulid", to: "maps.show"
+    patch "/api/v1/maps/:ulid/name", to: "maps.update_name"
     post "/api/v1/profile/avatar_presigned_url", to: "user.avatar_presigned_url.create"
     post "/api/v1/uploads", to: "uploads.create"
     post "/api/v1/uploads/:ulid/presigned_urls", to: "uploads.presigned_urls.create"

@@ -146,6 +146,12 @@ map-layer-train-stations = 列車の駅
 map-layer-tags = タグ
 map-info-button =
     .title = マップ情報
+map-name-edit-button =
+    .title = マップ名を編集
+map-name-save-button =
+    .title = 保存
+map-name-cancel-button =
+    .title = キャンセル
 
 ## Map info modal
 map-info-title = マップ情報

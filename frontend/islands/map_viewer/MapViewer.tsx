@@ -1,4 +1,7 @@
 import { createResource, createSignal, createMemo, Show, Suspense, For, onMount, onCleanup } from "solid-js";
+
+const csrfToken = (): string =>
+  document.querySelector<HTMLMetaElement>('meta[name="csrf-token"]')?.content ?? "";
 import L from "leaflet";
 import { MapInfoModal, formatTicks, type Mapshot as MapInfoMapshot } from "../../components/MapInfoModal";
 import { ShareButtons } from "../share_buttons/ShareButtons";
@@ -100,6 +103,7 @@ interface MapViewerProps {
   authorDisplayName: string;
   authorAvatarUrl: string | null;
   updatedAt: string | null;
+  viewerName: string | null;
 }
 
 const formatDate = (iso: string): string => {
@@ -139,6 +143,34 @@ export const MapViewer = (props: MapViewerProps) => {
 
   const [showInfo, setShowInfo] = createSignal(false);
 
+  const [displayName, setDisplayName] = createSignal(props.displayName);
+  const [isEditing, setIsEditing] = createSignal(false);
+  const [editValue, setEditValue] = createSignal("");
+  const isOwner = () => props.viewerName !== null && props.viewerName === props.authorName;
+
+  const startEdit = () => {
+    setEditValue(displayName());
+    setIsEditing(true);
+  };
+
+  const cancelEdit = () => setIsEditing(false);
+
+  const saveEdit = async () => {
+    const name = editValue().trim();
+    const res = await fetch(`/api/v1/maps/${props.ulid}/name`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json", "X-CSRF-Token": csrfToken() },
+      body: JSON.stringify({ name }),
+    });
+    if (res.ok) {
+      const data = await res.json() as { display_name: string };
+      const prev = displayName();
+      setDisplayName(data.display_name);
+      document.title = document.title.replace(prev, data.display_name);
+      setIsEditing(false);
+    }
+  };
+
   onMount(() => {
     document.title = `${props.displayName} - ${document.title}`;
   });
@@ -151,9 +183,45 @@ export const MapViewer = (props: MapViewerProps) => {
   return (
     <div style={{ display: "flex", "flex-direction": "column", height: "100%" }}>
       <div style={{ padding: "0.25rem 0.5rem", "flex-shrink": 0, display: "flex", gap: "0.5rem", "align-items": "center" }}>
-        <span class="is-size-7 has-text-weight-semibold" style={{ "min-width": 0, overflow: "hidden", "text-overflow": "ellipsis", "white-space": "nowrap", "flex-shrink": 1 }}>
-          {props.displayName}
-        </span>
+        <Show
+          when={isEditing()}
+          fallback={
+            <span style={{ display: "flex", "align-items": "center", gap: "0.25rem", "min-width": 0, "flex-shrink": 1, "margin-right": "0.25rem" }}>
+              <span class="is-size-7 has-text-weight-semibold" style={{ overflow: "hidden", "text-overflow": "ellipsis", "white-space": "nowrap", "min-width": 0 }}>
+                {displayName()}
+              </span>
+              <Show when={isOwner()}>
+                <button
+                  class="button is-ghost is-small"
+                  style={{ padding: 0, height: "auto", "min-width": 0, "flex-shrink": 0 }}
+                  onClick={startEdit}
+                  data-l10n-id="map-name-edit-button"
+                >
+                  <span class="icon is-small"><i class="fa-solid fa-pencil" /></span>
+                </button>
+              </Show>
+            </span>
+          }
+        >
+          <span style={{ display: "flex", "align-items": "center", gap: "0.25rem", "flex-shrink": 1, "min-width": 0, "margin-right": "0.25rem" }}>
+            <input
+              class="input is-small"
+              type="text"
+              maxLength={255}
+              value={editValue()}
+              onInput={(e) => setEditValue(e.currentTarget.value)}
+              onKeyDown={(e) => { if (e.key === "Enter") void saveEdit(); if (e.key === "Escape") cancelEdit(); }}
+              ref={(el) => { el.focus(); el.select(); }}
+              style={{ "min-width": "8rem", "max-width": "20rem" }}
+            />
+            <button class="button is-small is-success" onClick={() => void saveEdit()} data-l10n-id="map-name-save-button">
+              <span class="icon is-small"><i class="fa-solid fa-check" /></span>
+            </button>
+            <button class="button is-small" onClick={cancelEdit} data-l10n-id="map-name-cancel-button">
+              <span class="icon is-small"><i class="fa-solid fa-xmark" /></span>
+            </button>
+          </span>
+        </Show>
         <a href={`/@${props.authorName}`} class="is-flex is-align-items-center" style={{ "flex-shrink": 0, gap: "0.4rem" }}>
           <Show when={props.authorAvatarUrl} fallback={<i class="fa-solid fa-circle-user" style={{ "font-size": "24px" }} />}>
             {(url) => <img src={url()} width="24" height="24" style={{ "border-radius": "50%" }} />}

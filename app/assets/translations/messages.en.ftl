@@ -146,6 +146,12 @@ map-layer-train-stations = Train stations
 map-layer-tags = Tags
 map-info-button =
     .title = Map info
+map-name-edit-button =
+    .title = Edit map name
+map-name-save-button =
+    .title = Save
+map-name-cancel-button =
+    .title = Cancel
 
 ## Map info modal
 map-info-title = Map Info
