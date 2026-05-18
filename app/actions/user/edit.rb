@@ -24,6 +24,7 @@ module PastaAtlas
           connected_providers = credentials.map(&:provider)
           flash_error = request.flash[:error]
           response.render view,
+            user_name: request.params[:user_name],
             display_name: profile.display_name.to_s,
             timezone: preference.timezone,
             timezone_identifiers:,

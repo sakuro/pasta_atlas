@@ -8,7 +8,7 @@ require "rack/protection"
 module PastaAtlas
   module Views
     class Context < Hanami::View::Context
-      include Deps["repos.user_repo", "repos.user_profile_repo", "repos.user_preference_repo", "settings"]
+      include Deps["repos.user_repo", "repos.user_profile_repo", "repos.user_preference_repo", "settings", "routes"]
 
       def initialize(i18n: nil, **args)
         super(**args)
@@ -16,6 +16,8 @@ module PastaAtlas
       end
 
       attr_reader :i18n
+
+      def path(...) = routes.path(...)
 
       def locale_tag = request.env[Rack::ICU4X::Locale::ENV_KEY].first.to_s
 

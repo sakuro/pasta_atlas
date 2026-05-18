@@ -53,6 +53,7 @@ module PastaAtlas
               connected_providers = credential_repo.find_by_user_id(user_id).map(&:provider)
               response.render(
                 edit_view,
+                user_name:,
                 display_name:,
                 timezone: preference.timezone,
                 timezone_identifiers:,

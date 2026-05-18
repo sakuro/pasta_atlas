@@ -15,7 +15,7 @@
       <% if error %>
         <div class="notification is-danger is-light"><%= error %></div>
       <% end %>
-      <form action="/@<%= current_user_name %>/profile" method="post">
+      <form action="<%= path(:user_profile, user_name:) %>" method="post">
         <input type="hidden" name="_method" value="patch">
         <input type="hidden" name="_csrf_token" value="<%= csrf_token %>">
         <div class="field">
@@ -27,7 +27,7 @@
           </p>
           <div class="control" id="avatar-upload"
                data-current-avatar-url="<%= avatar_url %>"
-               data-user-name="<%= current_user_name %>"></div>
+               data-user-name="<%= user_name %>"></div>
         </div>
         <div class="field">
           <label class="label" for="display_name">
@@ -49,7 +49,7 @@
               <span class="icon"><i class="fa-solid fa-floppy-disk"></i></span>
               <span><%= t("edit-save-profile") %></span>
             </button>
-            <a class="button ml-2" href="/@<%= current_user_name %>">
+            <a class="button ml-2" href="<%= path(:user, user_name:) %>">
               <span><%= t("edit-cancel") %></span>
             </a>
           </div>
@@ -71,7 +71,7 @@
             <% providers.each do |provider| %>
               <div class="level-item">
                 <% if connected_providers.include?(provider) %>
-                  <form action="/@<%= current_user_name %>/credentials/<%= provider %>" method="post">
+                  <form action="<%= path(:user_credential, user_name:, provider:) %>" method="post">
                     <input type="hidden" name="_method" value="delete">
                     <input type="hidden" name="_csrf_token" value="<%= csrf_token %>">
                     <button class="button is-danger is-light" type="submit"<% if only_one %> disabled title="<%= t("credential-last-hint") %>"<% end %>>
@@ -94,7 +94,7 @@
         </div>
       </div>
       <hr>
-      <form action="/@<%= current_user_name %>/preferences" method="post">
+      <form action="<%= path(:user_preferences, user_name:) %>" method="post">
         <input type="hidden" name="_method" value="patch">
         <input type="hidden" name="_csrf_token" value="<%= csrf_token %>">
         <div class="field">
@@ -143,7 +143,7 @@
               <span class="icon"><i class="fa-solid fa-floppy-disk"></i></span>
               <span><%= t("edit-save-preferences") %></span>
             </button>
-            <a class="button ml-2" href="/@<%= current_user_name %>">
+            <a class="button ml-2" href="<%= path(:user, user_name:) %>">
               <span><%= t("edit-cancel") %></span>
             </a>
           </div>

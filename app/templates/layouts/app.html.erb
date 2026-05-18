@@ -11,7 +11,7 @@
   <body>
     <nav class="navbar" role="navigation" aria-label="main navigation">
       <div class="navbar-brand">
-        <a class="navbar-item" href="/"><strong><%= t("app-name") %></strong></a>
+        <a class="navbar-item" href="<%= path(:root) %>"><strong><%= t("app-name") %></strong></a>
         <div class="navbar-item" id="upload-modal" data-guest="<%= current_user_name ? 'false' : 'true' %>"></div>
         <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navbar-main">
           <span aria-hidden="true"></span>
@@ -23,11 +23,11 @@
       <div id="navbar-main" class="navbar-menu">
         <div class="navbar-end">
           <% if current_user_name %>
-            <a class="navbar-item" href="/@<%= current_user_name %>">
+            <a class="navbar-item" href="<%= path(:user, user_name: current_user_name) %>">
               <%= render "shared/avatar", avatar_url: current_avatar_url, avatar_size: 24 %>
               <span class="ml-2"><%= current_user_display_name %></span>
             </a>
-            <form action="/auth/session" method="post" style="display: contents">
+            <form action="<%= path(:auth_session) %>" method="post" style="display: contents">
               <input type="hidden" name="_method" value="delete">
               <input type="hidden" name="_csrf_token" value="<%= csrf_token %>">
               <button class="navbar-item" type="submit">
