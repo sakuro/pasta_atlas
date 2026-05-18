@@ -18,17 +18,11 @@ module PastaAtlas
 
           def handle(request, response)
             user_id = current_user_id(request)
-            unless user_id
-              response.status = 403
-              return
-            end
+            halt 403 unless user_id
 
             content_type = request.params[:content_type].to_s
             ext = ALLOWED_CONTENT_TYPES[content_type]
-            unless ext
-              response.status = 422
-              return
-            end
+            halt 422 unless ext
 
             key = "avatars/#{user_id}/#{ULID.generate}.#{ext}"
             presigner = Aws::S3::Presigner.new(client: s3_client)

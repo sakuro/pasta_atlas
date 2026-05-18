@@ -8,10 +8,7 @@ module PastaAtlas
 
         def handle(request, response)
           user_id = current_user_or_guest_id(request)
-          unless user_id
-            response.status = 401
-            return
-          end
+          halt 401 unless user_id
 
           result = update_status.call(
             upload_ulid: request.params[:ulid],
