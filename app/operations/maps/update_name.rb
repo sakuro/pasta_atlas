@@ -7,8 +7,6 @@ module PastaAtlas
         include Deps["repos.map_repo", "repos.user_repo"]
 
         def call(ulid:, name:, current_user_id:)
-          return Failure(:unauthorized) unless current_user_id
-
           user = step find_user(current_user_id)
           map = step find_map(ulid)
           step check_owner(map, user)
