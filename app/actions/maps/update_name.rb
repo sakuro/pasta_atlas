@@ -16,11 +16,11 @@ module PastaAtlas
           in Success(map)
             json_response(response, {display_name: map.display_name})
           in Failure(:unauthorized)
-            response.status = 401
+            halt 401
           in Failure(:not_found)
-            response.status = 404
+            halt 404
           in Failure(:forbidden)
-            response.status = 403
+            halt 403
           end
         end
       end

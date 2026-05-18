@@ -35,9 +35,9 @@ module PastaAtlas
               status: 201
             )
           in Failure(:conflict)
-            response.status = 409
+            halt 409
           in Failure(:s3_error)
-            response.status = 502
+            halt 502
           end
         end
       end

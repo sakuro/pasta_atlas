@@ -20,9 +20,9 @@ module PastaAtlas
             in Success(urls)
               json_response(response, {presigned_urls: urls})
             in Failure(:not_found)
-              response.status = 404
+              halt 404
             in Failure(:unprocessable)
-              response.status = 422
+              halt 422
             end
           end
         end

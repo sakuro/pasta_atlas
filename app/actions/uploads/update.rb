@@ -23,7 +23,7 @@ module PastaAtlas
               completed_at: upload.completed_at&.iso8601
             })
           in Failure(:not_found)
-            response.status = 404
+            halt 404
           end
         end
       end
