@@ -23,7 +23,7 @@ module PastaAtlas
           mapshot_map_id = metadata["map_id"]
           mapshot_unique_id = metadata["unique_id"]
           tick = Integer(metadata["tick"])
-          user_name = user_repo.find_by_id(user_id).name
+          user = user_repo.find_by_id(user_id)
 
           map = step find_or_create_map.call(
             user_id:,
@@ -34,7 +34,7 @@ module PastaAtlas
 
           step within_transaction(
             map:,
-            user_name:,
+            user:,
             mapshot_map_id:,
             mapshot_unique_id:,
             tick:,
@@ -43,7 +43,7 @@ module PastaAtlas
           )
         end
 
-        private def within_transaction(map:, user_name:, mapshot_map_id:, mapshot_unique_id:, tick:, metadata:, total_image_count:)
+        private def within_transaction(map:, user:, mapshot_map_id:, mapshot_unique_id:, tick:, metadata:, total_image_count:)
           result = nil
           generation_repo.db.transaction do
             generation = generation_repo.find_with_upload(
@@ -56,22 +56,22 @@ module PastaAtlas
               next
             end
             result = create_generation_and_upload(
-              map:, user_name:, mapshot_map_id:, mapshot_unique_id:, tick:, metadata:, total_image_count:
+              map:, user:, mapshot_map_id:, mapshot_unique_id:, tick:, metadata:, total_image_count:
             )
             raise Sequel::Rollback if result.failure?
           end
           result
         end
 
-        private def create_generation_and_upload(map:, user_name:, mapshot_map_id:, mapshot_unique_id:, tick:, metadata:, total_image_count:)
-          metadata_s3_key = "#{user_name}/#{mapshot_map_id}/#{mapshot_unique_id}/mapshot.json"
+        private def create_generation_and_upload(map:, user:, mapshot_map_id:, mapshot_unique_id:, tick:, metadata:, total_image_count:)
+          metadata_s3_key = "#{user.name}/#{mapshot_map_id}/#{mapshot_unique_id}/mapshot.json"
           generation = generation_repo.create(
             ulid: ULID.generate,
             map_id: map.id,
             mapshot_unique_id:,
             tick:,
             metadata_s3_key:,
-            expires_at: user_name == "guest" ? Time.now + (GUEST_TTL_DAYS * 86400) : nil
+            expires_at: user.guest? ? Time.now + (GUEST_TTL_DAYS * 86400) : nil
           )
           write_result = write_metadata_to_s3(key: metadata_s3_key, body: metadata.to_json)
           return write_result unless write_result.success?
@@ -87,7 +87,7 @@ module PastaAtlas
 
         private def result_for_existing_generation(generation)
           upload = generation.upload
-          upload.status == "complete" ? Failure(:conflict) : Success(upload)
+          upload.complete? ? Failure(:conflict) : Success(upload)
         end
 
         private def write_metadata_to_s3(key:, body:)

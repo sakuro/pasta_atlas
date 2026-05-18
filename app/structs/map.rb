@@ -6,6 +6,8 @@ module PastaAtlas
     end
 
     class Map
+      def owned_by?(user) = user_id == user.id
+
       # Resolves: name → savename (if present) → mapshot_map_id
       def display_name
         return name if name && !name.empty?

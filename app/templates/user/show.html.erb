@@ -39,7 +39,7 @@
         </div>
         <p class="subtitle">@<%= user_name %></p>
       </div>
-      <% unless recent_maps.empty? %>
+      <% unless recent_map_infos.empty? %>
         <div class="container mt-5">
           <h2 class="title is-4">
             <span class="icon-text">
@@ -48,17 +48,17 @@
             </span>
           </h2>
           <div class="columns is-multiline">
-            <% recent_maps.each do |map| %>
+            <% recent_map_infos.each do |map_info| %>
               <div class="column is-half-tablet is-one-quarter-desktop">
                 <%= render "maps/map_card",
-                      map_ulid: map.ulid,
-                      map_display_name: map.display_name,
-                      user_name: user_name.to_s,
-                      author_display_name: display_name || user_name.to_s,
-                      author_avatar_url: avatar_url,
-                      thumbnail_url: thumbnail_urls_by_map_ulid[map.ulid],
-                      metadata_url: metadata_urls_by_map_ulid[map.ulid],
-                      updated_at: updated_at_by_map_ulid[map.ulid] %>
+                      map_ulid: map_info.ulid,
+                      map_display_name: map_info.display_name,
+                      user_name: map_info.user_info.name,
+                      author_display_name: map_info.user_info.display_name,
+                      author_avatar_url: map_info.user_info.avatar_url,
+                      thumbnail_url: map_info.thumbnail_url,
+                      metadata_url: map_info.metadata_url,
+                      updated_at: map_info.updated_at %>
               </div>
             <% end %>
           </div>
@@ -112,7 +112,7 @@
       </div>
     </div>
   <% else %>
-    <% unless recent_maps.empty? %>
+    <% unless recent_map_infos.empty? %>
       <div class="container mt-5">
         <h2 class="title is-4">
           <span class="icon-text">
@@ -121,17 +121,17 @@
           </span>
         </h2>
         <div class="columns is-multiline">
-          <% recent_maps.each do |map| %>
+          <% recent_map_infos.each do |map_info| %>
             <div class="column is-half-tablet is-one-quarter-desktop">
               <%= render "maps/map_card",
-                    map_ulid: map.ulid,
-                    map_display_name: map.display_name,
-                    user_name: user_name.to_s,
-                    author_display_name: display_name || user_name.to_s,
-                    author_avatar_url: avatar_url,
-                    thumbnail_url: thumbnail_urls_by_map_ulid[map.ulid],
-                    metadata_url: metadata_urls_by_map_ulid[map.ulid],
-                    updated_at: updated_at_by_map_ulid[map.ulid] %>
+                    map_ulid: map_info.ulid,
+                    map_display_name: map_info.display_name,
+                    user_name: map_info.user_info.name,
+                    author_display_name: map_info.user_info.display_name,
+                    author_avatar_url: map_info.user_info.avatar_url,
+                    thumbnail_url: map_info.thumbnail_url,
+                    metadata_url: map_info.metadata_url,
+                    updated_at: map_info.updated_at %>
             </div>
           <% end %>
         </div>

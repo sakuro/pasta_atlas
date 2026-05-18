@@ -15,7 +15,7 @@ module PastaAtlas
 
         private def find_user(user_id)
           user = user_repo.find_by_id(user_id)
-          user.name == "guest" ? Failure(:forbidden) : Success(user)
+          user.guest? ? Failure(:forbidden) : Success(user)
         end
 
         private def find_map(ulid)
@@ -24,7 +24,7 @@ module PastaAtlas
         end
 
         private def check_owner(map, user)
-          map.user_id == user.id ? Success(map) : Failure(:forbidden)
+          map.owned_by?(user) ? Success(map) : Failure(:forbidden)
         end
 
         private def rename(id, name)

@@ -4,7 +4,7 @@ module PastaAtlas
   module Views
     module User
       class Show < Hanami::View
-        expose :user_name, :display_name, :own_profile, :preference, :connected_providers, :avatar_url, :recent_maps, :thumbnail_urls_by_map_ulid, :metadata_urls_by_map_ulid, :updated_at_by_map_ulid
+        expose :user_name, :display_name, :own_profile, :preference, :connected_providers, :avatar_url, :recent_map_infos
       end
     end
   end

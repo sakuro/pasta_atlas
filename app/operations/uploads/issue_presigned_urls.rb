@@ -33,7 +33,7 @@ module PastaAtlas
         end
 
         private def validate_pending(upload)
-          upload.status == "pending" ? Success(upload) : Failure(:unprocessable)
+          upload.pending? ? Success(upload) : Failure(:unprocessable)
         end
 
         private def list_existing_keys(prefix)

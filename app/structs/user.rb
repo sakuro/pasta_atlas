@@ -3,6 +3,7 @@
 module PastaAtlas
   module Structs
     class User < PastaAtlas::DB::Struct
+      def guest? = name == "guest"
     end
   end
 end
