@@ -18,7 +18,7 @@ module PastaAtlas
     config.middleware.use Rack::ICU4X::Locale,
       locales: PastaAtlas::I18n::SUPPORTED_LOCALES,
       detectors: [
-        ->(env) { env["rack.session"]&.[]("locale") },
+        ->(env) { env.dig("rack.session", "locale") },
         :header
       ],
       default: "en"
