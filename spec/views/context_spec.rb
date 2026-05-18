@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require "icu4x-data-recommended"
+
 RSpec.describe PastaAtlas::Views::Context do
   let(:user_repo) { instance_double(PastaAtlas::Repos::UserRepo) }
   let(:user_profile_repo) { instance_double(PastaAtlas::Repos::UserProfileRepo) }
@@ -21,17 +23,17 @@ RSpec.describe PastaAtlas::Views::Context do
       expect(view_context.current_user_display_name).to be_nil
     end
 
-    describe "#localize_date" do
+    describe "#localize_datetime" do
       before do
         allow(user_repo).to receive(:find_by_name).with("guest").and_return(guest_user)
         allow(user_preference_repo).to receive(:find_by_user_id).with(99).and_return(guest_preference)
       end
 
-      it "returns a Foxtail::Function::DateTime with the guest timezone" do
+      it "returns a Foxtail::Function::DateTime with date+time styles and the guest timezone" do
         time = Time.utc(2025, 1, 16, 5, 0, 0)
-        result = view_context.localize_date(time)
+        result = view_context.localize_datetime(time)
         expect(result).to be_a(Foxtail::Function::DateTime)
-        expect(result.options).to eq({timeZone: "UTC"})
+        expect(result.options).to eq({timeZone: "UTC", dateStyle: :medium, timeStyle: :short})
       end
     end
   end
@@ -52,22 +54,30 @@ RSpec.describe PastaAtlas::Views::Context do
       expect(view_context.current_user_name).to be_nil
     end
 
-    describe "#localize_date" do
+    describe "#localize_datetime" do
       let(:preference) { double("UserPreference", timezone: "Asia/Tokyo") }
 
       before { allow(user_preference_repo).to receive(:find_by_user_id).with(1).and_return(preference) }
 
-      it "returns a Foxtail::Function::DateTime with the user's timezone" do
+      it "returns a Foxtail::Function::DateTime with date+time styles and the user's timezone" do
         time = Time.utc(2025, 1, 15, 23, 0, 0)
-        result = view_context.localize_date(time)
+        result = view_context.localize_datetime(time)
         expect(result).to be_a(Foxtail::Function::DateTime)
-        expect(result.options).to eq({timeZone: "Asia/Tokyo"})
+        expect(result.options).to eq({timeZone: "Asia/Tokyo", dateStyle: :medium, timeStyle: :short})
       end
 
       it "preserves the UTC time as the value" do
         time = Time.utc(2025, 1, 15, 23, 0, 0)
-        result = view_context.localize_date(time)
+        result = view_context.localize_datetime(time)
         expect(result.value).to eq(time)
+      end
+
+      it "formats time up to minutes without seconds" do
+        time = Time.utc(2025, 1, 15, 23, 30, 45)
+        result = view_context.localize_datetime(time)
+        icu_options = Foxtail::Function::DateTime.convert_options(result.options)
+        formatted = ICU4X::DateTimeFormat.new(ICU4X::Locale.parse("en"), **icu_options).format(time)
+        expect(formatted).not_to include("30:45")
       end
     end
 

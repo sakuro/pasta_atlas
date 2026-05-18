@@ -106,9 +106,10 @@ interface MapViewerProps {
   viewerName: string | null;
 }
 
+
 const formatDate = (iso: string): string => {
   const locale = document.documentElement.lang || "en";
-  return new Intl.DateTimeFormat(locale, { dateStyle: "medium" }).format(new Date(iso));
+  return new Intl.DateTimeFormat(locale, { dateStyle: "medium", timeStyle: "short" }).format(new Date(iso));
 };
 
 export const MapViewer = (props: MapViewerProps) => {

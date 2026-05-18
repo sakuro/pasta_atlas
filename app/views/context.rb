@@ -25,8 +25,8 @@ module PastaAtlas
         target == current ? target : "#{target} (#{current})"
       end
 
-      def localize_date(time)
-        Foxtail::Function::DateTime[time.utc, {timeZone: viewer_timezone}]
+      def localize_datetime(time)
+        Foxtail::Function::DateTime[time.utc, {timeZone: viewer_timezone, dateStyle: :medium, timeStyle: :short}]
       end
 
       def t(key, **args)

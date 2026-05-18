@@ -251,24 +251,24 @@ GEM
     i18n (1.14.8)
       concurrent-ruby (~> 1.0)
     ice_nine (0.11.2)
-    icu4x (0.11.1)
+    icu4x (0.11.2)
       bigdecimal (>= 3.1, < 5)
       dry-configurable (~> 1.3)
       rb_sys (~> 0.9, >= 0.9.124)
-    icu4x (0.11.1-aarch64-linux)
+    icu4x (0.11.2-aarch64-linux)
       bigdecimal (>= 3.1, < 5)
       dry-configurable (~> 1.3)
-    icu4x (0.11.1-arm64-darwin)
+    icu4x (0.11.2-arm64-darwin)
       bigdecimal (>= 3.1, < 5)
       dry-configurable (~> 1.3)
-    icu4x (0.11.1-x86_64-darwin)
+    icu4x (0.11.2-x86_64-darwin)
       bigdecimal (>= 3.1, < 5)
       dry-configurable (~> 1.3)
-    icu4x (0.11.1-x86_64-linux)
+    icu4x (0.11.2-x86_64-linux)
       bigdecimal (>= 3.1, < 5)
       dry-configurable (~> 1.3)
-    icu4x-data-recommended (0.11.1)
-      icu4x (~> 0.11.1)
+    icu4x-data-recommended (0.11.2)
+      icu4x (~> 0.11.2)
     io-console (0.8.2)
     irb (1.18.0)
       pp (>= 0.6.0)
@@ -672,12 +672,12 @@ CHECKSUMS
   hashie (5.1.0) sha256=c266471896f323c446ea8207f8ffac985d2718df0a0ba98651a3057096ca3870
   i18n (1.14.8) sha256=285778639134865c5e0f6269e0b818256017e8cde89993fdfcbfb64d088824a5
   ice_nine (0.11.2) sha256=5d506a7d2723d5592dc121b9928e4931742730131f22a1a37649df1c1e2e63db
-  icu4x (0.11.1) sha256=51840bfc3b54ddd715cb99ee132bb69766b29045f71afa3981145f6765b0e9a8
-  icu4x (0.11.1-aarch64-linux) sha256=7bfec60113202a0f6d0a4094bfd6319c7c40f6d97cc400512bd124dde4116471
-  icu4x (0.11.1-arm64-darwin) sha256=6c354d23d7d5dfbf4074e00c7e08f39d1fb06783021db61bb5348cac8920c7f9
-  icu4x (0.11.1-x86_64-darwin) sha256=4e982a14af8056f12522932d4ce834b171efa80e6927ec8deab7efd81bfd107c
-  icu4x (0.11.1-x86_64-linux) sha256=600bd88cdabab807aa0c2428471ceeaba3402a86c8dcbd33dc2654911a28c9c4
-  icu4x-data-recommended (0.11.1) sha256=4fa6430e440ad15965c083cda198b96cd82a6bd794d1286d9e61570fcdc7dfb6
+  icu4x (0.11.2) sha256=1be5aed80870a2107a776f57bb4404b032d2ca2f8e05053ed22deacd5e64afc9
+  icu4x (0.11.2-aarch64-linux) sha256=6bb505a8234b159a47c488ac7f1a2627a958c287629b925e303b3f3033059792
+  icu4x (0.11.2-arm64-darwin) sha256=198b7fa8817d61f7b959690c6b99c25534c2eb4e8cb3a7e47b49930f24864513
+  icu4x (0.11.2-x86_64-darwin) sha256=8369d302ecb90d5003e745c1610d45a8a8b8d755fe14665786358c053a0fe476
+  icu4x (0.11.2-x86_64-linux) sha256=0ec04bb5ea3508914857fe9358d7cab8a84560c99e1cf19d4618b1dd97166560
+  icu4x-data-recommended (0.11.2) sha256=2509467707501bd1cd37258340249b1e8d557789d30093294915db2cc536d57e
   io-console (0.8.2) sha256=d6e3ae7a7cc7574f4b8893b4fca2162e57a825b223a177b7afa236c5ef9814cc
   irb (1.18.0) sha256=de9454a0703a54704b9811a5ef31a60c86949fbf4013fcf244fabc7c775248e3
   jmespath (1.6.2) sha256=238d774a58723d6c090494c8879b5e9918c19485f7e840f2c1c7532cf84ebcb1
