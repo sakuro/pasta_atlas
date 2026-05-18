@@ -3,9 +3,6 @@
 module PastaAtlas
   module Structs
     class Map < PastaAtlas::DB::Struct
-    end
-
-    class Map
       def owned_by?(user) = user_id == user.id
 
       # Resolves: name → savename (if present) → mapshot_map_id
