@@ -21,7 +21,7 @@ export const ShareButtons = (props: Props) => {
 
   return (
     <div class="buttons has-addons">
-      <button class="button is-small" onClick={() => openShare(`https://x.com/intent/post?url=${encodeURIComponent(shareUrl())}&text=${encodeURIComponent(props.mapName)}`)} data-l10n-id="share-x">
+      <button class="button is-small" onClick={() => openShare(`https://x.com/intent/post?url=${encodeURIComponent(shareUrl())}&text=${encodeURIComponent(props.mapName)}&hashtags=Factorio,PastaAtlas`)} data-l10n-id="share-x">
         <span class="icon is-small"><i class="fa-brands fa-x-twitter" /></span>
       </button>
       <button class="button is-small" onClick={() => openShare(`https://bsky.app/intent/compose?text=${encodeURIComponent(`${props.mapName} ${shareUrl()}`)}`)} data-l10n-id="share-bluesky">
