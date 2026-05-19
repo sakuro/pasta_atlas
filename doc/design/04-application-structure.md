@@ -38,6 +38,43 @@ app/
 | Data access | `app/repos/` | Find/persist domain entities |
 | DB mapping | `app/relations/` | ROM relation definitions |
 
+## Action–Operation contract
+
+### Operation
+
+Operations use `Dry::Operation`. The `call` method runs inside `steps`, which wraps the return value in `Success` automatically via `catching_failure { Success(block.call) }`.
+
+- The last expression in `call` must be a **raw value** — never wrap it in `Success`
+- Intermediate results are obtained via `step`; a `Failure` from `step` short-circuits `call`
+- Private helpers return `Success`/`Failure`; `call` itself never calls `return Failure(...)`
+- Auth/authz failures use Rack-standard symbols: `:forbidden`, `:unauthorized`, `:not_found`
+
+```ruby
+def call(user_id:, user_name:)
+  user = step verify_ownership.call(user_id:, user_name:)
+  repo.update(user.id, ...)   # raw return — steps wraps this in Success
+end
+
+private def validate(x)
+  x.valid? ? Success(x) : Failure(:unprocessable_entity)
+end
+```
+
+### Action
+
+Actions handle HTTP concerns only. Auth/authz is delegated to Operations.
+
+- Pass `current_user_id(request)` directly to the Operation; do not check login state in Actions
+- Hanami's `halt` accepts Rack-standard symbols, so Operation failures map directly: `:forbidden` → 403, `:unauthorized` → 401, `:not_found` → 404
+
+```ruby
+result = some_operation.call(user_id: current_user_id(request), ...)
+case result
+in Failure(status); halt status
+in Success(value);  ...
+end
+```
+
 ## Why not slices
 
 Introducing a `web` slice would place repos and operations in the app container while actions live in the slice container. Hanami does not share app container components with slices by default, requiring explicit enumeration of shared keys — a maintenance burden that outweighs the encapsulation benefit at the current scale.
