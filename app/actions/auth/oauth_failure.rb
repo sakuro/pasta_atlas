@@ -3,7 +3,7 @@
 module PastaAtlas
   module Actions
     module Auth
-      class Failure < PastaAtlas::Action
+      class OauthFailure < PastaAtlas::Action
         def handle(request, response)
           message = request.params[:message] || "unknown"
           response.redirect_to "/?auth_error=#{message}"

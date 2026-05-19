@@ -16,7 +16,7 @@ module PastaAtlas
     get "/auth/discord/callback", to: "auth.discord.callback"
     get "/auth/github/callback", to: "auth.github.callback"
     post "/auth/steam/callback", to: "auth.steam.callback"
-    get "/auth/failure", to: "auth.failure"
+    get "/auth/failure", to: "auth.oauth_failure"
     get "/auth/register", to: "auth.registrations.new", as: :auth_registrations
     post "/auth/register", to: "auth.registrations.create"
     delete "/auth/session", to: "auth.session.destroy", as: :auth_session
