@@ -9,6 +9,7 @@ module PastaAtlas
     setting :discord_client_secret, constructor: Types::String
     setting :github_client_id, constructor: Types::String
     setting :github_client_secret, constructor: Types::String
+    setting :steam_web_api_key, constructor: Types::String
     setting :s3_bucket, constructor: Types::String
     setting :cloudfront_base_url, constructor: ->(v) {
       uri = URI(v.to_s)

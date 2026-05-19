@@ -2,6 +2,7 @@
 -mapshot = Mapshot
 -discord = Discord
 -github = GitHub
+-steam = Steam
 -factorio = Factorio
 
 ## App
@@ -19,6 +20,7 @@ nav-log-out = Log out
 nav-log-in = Log in
 nav-log-in-discord = Log in with { -discord }
 nav-log-in-github = Log in with { -github }
+nav-log-in-steam = Log in with { -steam }
 
 ## Registration
 registration-title = Create your account
@@ -44,6 +46,7 @@ user-recent-maps = Recent Maps
 user-connected-accounts-label = Connected Accounts
 provider-discord = { -discord }
 provider-github = { -github }
+provider-steam = { -steam }
 user-timezone-label = Timezone
 user-locale-label = Locale
 
@@ -62,8 +65,10 @@ edit-cancel = Cancel
 ## Connected accounts
 credential-connect-discord = Connect with { -discord }
 credential-connect-github = Connect with { -github }
+credential-connect-steam = Connect with { -steam }
 credential-disconnect-discord = Disconnect { -discord }
 credential-disconnect-github = Disconnect { -github }
+credential-disconnect-steam = Disconnect { -steam }
 credential-last-hint = At least one connected account is required.
 
 ## Credential errors

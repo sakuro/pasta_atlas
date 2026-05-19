@@ -2,6 +2,7 @@
 -mapshot = Mapshot
 -discord = Discord
 -github = GitHub
+-steam = Steam
 -factorio = Factorio
 
 ## App
@@ -19,6 +20,7 @@ nav-log-out = 登出
 nav-log-in = 登入
 nav-log-in-discord = 以 { -discord } 登入
 nav-log-in-github = 以 { -github } 登入
+nav-log-in-steam = 以 { -steam } 登入
 
 ## Registration
 registration-title = 建立帳號
@@ -44,6 +46,7 @@ user-recent-maps = 最近的地圖
 user-connected-accounts-label = 已連結帳號
 provider-discord = { -discord }
 provider-github = { -github }
+provider-steam = { -steam }
 user-timezone-label = 時區
 user-locale-label = 語言
 
@@ -62,8 +65,10 @@ edit-cancel = 取消
 ## Connected accounts
 credential-connect-discord = 連結 { -discord }
 credential-connect-github = 連結 { -github }
+credential-connect-steam = 連結 { -steam }
 credential-disconnect-discord = 解除連結 { -discord }
 credential-disconnect-github = 解除連結 { -github }
+credential-disconnect-steam = 解除連結 { -steam }
 credential-last-hint = 至少需要一個已連結帳號。
 
 ## Credential errors

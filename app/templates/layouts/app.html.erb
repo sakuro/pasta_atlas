@@ -57,6 +57,14 @@
                     <span><%= t("nav-log-in-github") %></span>
                   </button>
                 </form>
+                <hr class="navbar-divider">
+                <form action="/auth/steam" method="post">
+                  <input type="hidden" name="authenticity_token" value="<%= omniauth_authenticity_token %>">
+                  <button class="navbar-item" type="submit">
+                    <span class="icon"><i class="fa-brands fa-steam"></i></span>
+                    <span><%= t("nav-log-in-steam") %></span>
+                  </button>
+                </form>
               </div>
             </div>
           <% end %>

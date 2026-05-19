@@ -7,7 +7,7 @@ module PastaAtlas
         class Destroy < PastaAtlas::Action
           include Deps["operations.user.credentials.unlink"]
 
-          ALLOWED_PROVIDERS = %w[discord github].freeze
+          ALLOWED_PROVIDERS = %w[discord github steam].freeze
           private_constant :ALLOWED_PROVIDERS
 
           def handle(request, response)

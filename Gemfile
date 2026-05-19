@@ -19,10 +19,15 @@ gem "icu4x-data-recommended"
 gem "omniauth", "~> 2.1"
 gem "omniauth-discord", "~> 1.2"
 gem "omniauth-github", "~> 2.0"
+gem "omniauth-steam", "~> 1.0"
+# omniauth-steam -> omniauth-openid -> ruby-openid depends on these.
+# Ruby 4.0 extracted them from stdlib into bundled gems that require explicit listing.
+gem "cgi"
 gem "pg"
 gem "puma"
 gem "rack-icu4x-locale"
 gem "rake"
+gem "rexml"
 gem "tzinfo"
 gem "ulid"
 

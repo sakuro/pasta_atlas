@@ -2,6 +2,7 @@
 -mapshot = Mapshot
 -discord = Discord
 -github = GitHub
+-steam = Steam
 -factorio = Factorio
 
 ## App
@@ -19,6 +20,7 @@ nav-log-out = ログアウト
 nav-log-in = ログイン
 nav-log-in-discord = { -discord } でログイン
 nav-log-in-github = { -github } でログイン
+nav-log-in-steam = { -steam } でログイン
 
 ## Registration
 registration-title = アカウントを作成
@@ -44,6 +46,7 @@ user-recent-maps = 最近のマップ
 user-connected-accounts-label = 連携済アカウント
 provider-discord = { -discord }
 provider-github = { -github }
+provider-steam = { -steam }
 user-timezone-label = タイムゾーン
 user-locale-label = 言語
 
@@ -62,8 +65,10 @@ edit-cancel = キャンセル
 ## Connected accounts
 credential-connect-discord = { -discord } と連携する
 credential-connect-github = { -github } と連携する
+credential-connect-steam = { -steam } と連携する
 credential-disconnect-discord = { -discord } の連携を解除
 credential-disconnect-github = { -github } の連携を解除
+credential-disconnect-steam = { -steam } の連携を解除
 credential-last-hint = 少なくとも1つの連携済アカウントが必要です。
 
 ## Credential errors

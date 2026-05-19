@@ -15,6 +15,11 @@
         [instrumental] GitHubem
        *[other] GitHub
     }
+-steam =
+    { $case ->
+        [instrumental] Steamem
+       *[other] Steam
+    }
 -factorio = Factorio
 
 ## App
@@ -32,6 +37,7 @@ nav-log-out = Odhlásit se
 nav-log-in = Přihlásit se
 nav-log-in-discord = Přihlásit se přes { -discord }
 nav-log-in-github = Přihlásit se přes { -github }
+nav-log-in-steam = Přihlásit se přes { -steam }
 
 ## Registration
 registration-title = Vytvořit účet
@@ -57,6 +63,7 @@ user-recent-maps = Nedávné mapy
 user-connected-accounts-label = Propojené účty
 provider-discord = { -discord }
 provider-github = { -github }
+provider-steam = { -steam }
 user-timezone-label = Časové pásmo
 user-locale-label = Jazyk
 
@@ -75,8 +82,10 @@ edit-cancel = Zrušit
 ## Connected accounts
 credential-connect-discord = Propojit s { -discord(case: "instrumental") }
 credential-connect-github = Propojit s { -github(case: "instrumental") }
+credential-connect-steam = Propojit se { -steam(case: "instrumental") }
 credential-disconnect-discord = Odpojit { -discord }
 credential-disconnect-github = Odpojit { -github }
+credential-disconnect-steam = Odpojit { -steam }
 credential-last-hint = Je vyžadován alespoň jeden propojený účet.
 
 ## Credential errors

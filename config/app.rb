@@ -4,6 +4,7 @@ require "hanami"
 require "omniauth"
 require "omniauth-discord"
 require "omniauth-github"
+require "omniauth-steam"
 require "rack/icu4x/locale"
 require_relative "../app/i18n"
 
@@ -32,10 +33,12 @@ module PastaAtlas
         PastaAtlas::App.settings.github_client_id,
         PastaAtlas::App.settings.github_client_secret,
         scope: "read:user"
+      provider :steam,
+        PastaAtlas::App.settings.steam_web_api_key
     end
 
-    config.actions.content_security_policy[:form_action] += " https://discord.com https://github.com"
-    config.actions.content_security_policy[:img_src] += " blob:"
+    config.actions.content_security_policy[:form_action] += " https://discord.com https://github.com https://steamcommunity.com"
+    config.actions.content_security_policy[:img_src] += " blob: https://avatars.steamstatic.com"
     config.actions.content_security_policy[:script_src] += " 'nonce'"
 
     if Hanami.env?(:development)

@@ -2,6 +2,7 @@
 -mapshot = Mapshot
 -discord = Discord
 -github = GitHub
+-steam = Steam
 -factorio = Factorio
 
 ## App
@@ -19,6 +20,7 @@ nav-log-out = 로그아웃
 nav-log-in = 로그인
 nav-log-in-discord = { -discord }로 로그인
 nav-log-in-github = { -github }로 로그인
+nav-log-in-steam = { -steam }으로 로그인
 
 ## Registration
 registration-title = 계정 만들기
@@ -44,6 +46,7 @@ user-recent-maps = 최근 맵
 user-connected-accounts-label = 연결된 계정
 provider-discord = { -discord }
 provider-github = { -github }
+provider-steam = { -steam }
 user-timezone-label = 시간대
 user-locale-label = 언어
 
@@ -62,8 +65,10 @@ edit-cancel = 취소
 ## Connected accounts
 credential-connect-discord = { -discord }로 연결
 credential-connect-github = { -github }로 연결
+credential-connect-steam = { -steam }으로 연결
 credential-disconnect-discord = { -discord } 연결 해제
 credential-disconnect-github = { -github } 연결 해제
+credential-disconnect-steam = { -steam } 연결 해제
 credential-last-hint = 최소 하나의 연결된 계정이 필요합니다.
 
 ## Credential errors

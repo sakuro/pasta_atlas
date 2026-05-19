@@ -8,7 +8,7 @@ module PastaAtlas
       class Edit < PastaAtlas::Action
         include Deps["repos.user_profile_repo", "repos.user_preference_repo", "repos.credential_repo", "settings"]
 
-        OAUTH_PROVIDERS = %w[discord github].freeze
+        OAUTH_PROVIDERS = %w[discord github steam].freeze
         private_constant :OAUTH_PROVIDERS
 
         def handle(request, response)

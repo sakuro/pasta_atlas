@@ -2,6 +2,7 @@
 -mapshot = Mapshot
 -discord = Discord
 -github = GitHub
+-steam = Steam
 -factorio = Factorio
 
 ## App
@@ -19,6 +20,7 @@ nav-log-out = 退出登录
 nav-log-in = 登录
 nav-log-in-discord = 通过 { -discord } 登录
 nav-log-in-github = 通过 { -github } 登录
+nav-log-in-steam = 通过 { -steam } 登录
 
 ## Registration
 registration-title = 创建账号
@@ -44,6 +46,7 @@ user-recent-maps = 最近的地图
 user-connected-accounts-label = 已关联账号
 provider-discord = { -discord }
 provider-github = { -github }
+provider-steam = { -steam }
 user-timezone-label = 时区
 user-locale-label = 语言
 
@@ -62,8 +65,10 @@ edit-cancel = 取消
 ## Connected accounts
 credential-connect-discord = 关联 { -discord }
 credential-connect-github = 关联 { -github }
+credential-connect-steam = 关联 { -steam }
 credential-disconnect-discord = 取消关联 { -discord }
 credential-disconnect-github = 取消关联 { -github }
+credential-disconnect-steam = 取消关联 { -steam }
 credential-last-hint = 至少需要一个已关联账号。
 
 ## Credential errors
