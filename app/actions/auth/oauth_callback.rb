@@ -6,9 +6,10 @@ module PastaAtlas
     module Auth
       class OauthCallback < PastaAtlas::Action
         include Deps[
-          "repos.credential_repo",
-          "repos.user_preference_repo",
-          "operations.user.credentials.link"
+          "operations.user.credentials.link",
+          find_by_id: "operations.user.find_by_id",
+          find_credential: "operations.user.credentials.find_by_provider_and_uid",
+          load_preferences: "operations.user.preferences.load"
         ]
 
         def handle(request, response)
@@ -19,7 +20,7 @@ module PastaAtlas
           uid = auth["uid"].to_s
           info = auth["info"] || {}
 
-          credential = credential_repo.find_by_provider_and_uid(provider, uid)
+          credential = find_credential.call(provider:, uid:).value_or(nil)
           logged_in_user_id = request.session[:user_id]
 
           if logged_in_user_id
@@ -38,7 +39,7 @@ module PastaAtlas
         end
 
         private def handle_connect(response, user_id, credential, provider, uid)
-          user_name = user_repo.find_by_id(user_id).name
+          user_name = find_by_id.call(user_id:).value!.name
 
           if credential && credential.user_id != user_id
             response.flash[:error] = "error-credential-conflict"
@@ -52,7 +53,7 @@ module PastaAtlas
 
         private def login(request, response, user_id)
           request.session[:user_id] = user_id
-          request.session[:locale] = user_preference_repo.find_by_user_id(user_id).locale
+          request.session[:locale] = load_preferences.call(user_id:, viewer_id: user_id).value!.locale
           response.redirect_to "/"
         end
       end

@@ -30,7 +30,7 @@ RSpec.describe PastaAtlas::Actions::Maps::Viewer, :action_env do
 
     context "when the viewer is logged in" do
       let(:viewer) { double("User", name: "alice") }
-      let(:env) { action_params.merge("rack.session" => {user_id: 2}) }
+      let(:env) { action_params.merge("rack.session" => {"user_id" => 2}) }
 
       before { allow(find_by_id).to receive(:call).with(user_id: 2).and_return(Success(viewer)) }
 
