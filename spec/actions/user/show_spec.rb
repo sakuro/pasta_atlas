@@ -5,21 +5,17 @@ RSpec.describe PastaAtlas::Actions::User::Show, :action_env do
   let(:load_profile) { instance_double(PastaAtlas::Operations::User::Profile::Load) }
   let(:load_preferences) { instance_double(PastaAtlas::Operations::User::Preferences::Load) }
   let(:load_credentials) { instance_double(PastaAtlas::Operations::User::Credentials::Load) }
-  let(:map_repo) { instance_double(PastaAtlas::Repos::MapRepo) }
-  let(:generation_repo) { instance_double(PastaAtlas::Repos::GenerationRepo) }
-  let(:settings) { double("Settings", cloudfront_base_url: "http://cdn.example.com") }
-  let(:action) { PastaAtlas::Actions::User::Show.new(user_repo:, load_profile:, load_preferences:, load_credentials:, map_repo:, generation_repo:, settings:) }
+  let(:list_recent_maps) { instance_double(PastaAtlas::Operations::Maps::ListRecentByUser) }
+  let(:action) { PastaAtlas::Actions::User::Show.new(user_repo:, load_profile:, load_preferences:, load_credentials:, list_recent_maps:) }
 
   let(:user) { double("User", id: 1, name: "sakuro") }
-  let(:map) { double("Map", id: 1, ulid: "01MAP1", display_name: "My Map") }
-  let(:generation) { double("Generation", metadata_s3_key: "sakuro/map1/gen1/mapshot.json") }
+  let(:user_info) { PastaAtlas::Values::UserInfo[name: "sakuro", display_name: "Sakuro", avatar_url: nil] }
+  let(:map_info) { double("MapInfo", ulid: "01MAP1", display_name: "Map 1", user_info:, thumbnail_url: nil, metadata_url: nil, updated_at: nil) }
 
   before do
     allow(user_repo).to receive(:find_by_name).with("sakuro").and_return(user)
     allow(load_profile).to receive(:call).with(user_id: 1).and_return(Success({display_name: "Sakuro", avatar_url: nil}))
-    allow(map_repo).to receive(:list_with_complete_generation_by_user).with(user_id: 1, limit: 3).and_return([map])
-    allow(generation_repo).to receive(:find_latest_complete_by_map_ids).with([1]).and_return({1 => generation})
-    allow(generation_repo).to receive(:find_max_created_at_by_map_ids).with([1]).and_return({})
+    allow(list_recent_maps).to receive(:call).with(user_id: 1, user_info: anything).and_return(Success([map_info]))
   end
 
   context "when the user exists" do
@@ -39,7 +35,7 @@ RSpec.describe PastaAtlas::Actions::User::Show, :action_env do
     it "fetches recent maps for the user" do
       action.call(env)
 
-      expect(map_repo).to have_received(:list_with_complete_generation_by_user).with(user_id: 1, limit: 3)
+      expect(list_recent_maps).to have_received(:call).with(user_id: 1, user_info: anything)
     end
   end
 
