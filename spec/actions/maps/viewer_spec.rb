@@ -1,9 +1,10 @@
 # frozen_string_literal: true
 
 RSpec.describe PastaAtlas::Actions::Maps::Viewer, :action_env do
+  let(:find_by_id) { instance_double(PastaAtlas::Operations::User::FindById) }
   let(:show_map) { instance_double(PastaAtlas::Operations::Maps::Show) }
   let(:settings) { double("Settings", cloudfront_base_url: "https://cdn.example.com") }
-  let(:action) { PastaAtlas::Actions::Maps::Viewer.new(show_map:, settings:) }
+  let(:action) { PastaAtlas::Actions::Maps::Viewer.new(find_by_id:, show_map:, settings:) }
 
   let(:action_params) { locale_env.merge(ulid: "01MAP") }
 
@@ -19,10 +20,25 @@ RSpec.describe PastaAtlas::Actions::Maps::Viewer, :action_env do
       )
     end
 
-    it "returns 200" do
-      response = action.call(action_params)
+    context "when the viewer is not logged in" do
+      it "returns 200" do
+        response = action.call(action_params)
 
-      expect(response.status).to eq(200)
+        expect(response.status).to eq(200)
+      end
+    end
+
+    context "when the viewer is logged in" do
+      let(:viewer) { double("User", name: "alice") }
+      let(:env) { action_params.merge("rack.session" => {user_id: 2}) }
+
+      before { allow(find_by_id).to receive(:call).with(user_id: 2).and_return(Success(viewer)) }
+
+      it "returns 200" do
+        response = action.call(env)
+
+        expect(response.status).to eq(200)
+      end
     end
   end
 
