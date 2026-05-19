@@ -12,7 +12,7 @@ module PastaAtlas
 
           include Deps[
             "repos.user_preference_repo",
-            verify_ownership: "operations.user.verify_ownership"
+            "operations.user.verify_ownership"
           ]
 
           def call(user_id:, user_name:, timezone:, locale:)

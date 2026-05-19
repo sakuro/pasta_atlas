@@ -4,7 +4,7 @@ module PastaAtlas
   module Actions
     module Uploads
       class Update < PastaAtlas::Action
-        include Deps[update_status: "operations.uploads.update_status"]
+        include Deps["operations.uploads.update_status"]
 
         def handle(request, response)
           result = update_status.call(

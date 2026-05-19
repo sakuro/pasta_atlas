@@ -6,8 +6,8 @@ module PastaAtlas
       module Credentials
         class Destroy < PastaAtlas::Action
           include Deps[
-            unlink: "operations.user.credentials.unlink",
-            verify_ownership: "operations.user.verify_ownership"
+            "operations.user.credentials.unlink",
+            "operations.user.verify_ownership"
           ]
 
           ALLOWED_PROVIDERS = %w[discord github steam].freeze

@@ -7,11 +7,11 @@ module PastaAtlas
     module User
       class Edit < PastaAtlas::Action
         include Deps[
-          "repos.user_profile_repo",
-          "repos.user_preference_repo",
           "repos.credential_repo",
           "settings",
-          verify_ownership: "operations.user.verify_ownership"
+          "repos.user_preference_repo",
+          "repos.user_profile_repo",
+          "operations.user.verify_ownership"
         ]
 
         OAUTH_PROVIDERS = %w[discord github steam].freeze

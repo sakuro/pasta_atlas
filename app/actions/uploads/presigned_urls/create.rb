@@ -5,7 +5,7 @@ module PastaAtlas
     module Uploads
       module PresignedUrls
         class Create < PastaAtlas::Action
-          include Deps[issue_presigned_urls: "operations.uploads.issue_presigned_urls"]
+          include Deps["operations.uploads.issue_presigned_urls"]
 
           def handle(request, response)
             result = issue_presigned_urls.call(

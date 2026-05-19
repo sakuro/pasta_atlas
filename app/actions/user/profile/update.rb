@@ -8,12 +8,12 @@ module PastaAtlas
       module Profile
         class Update < PastaAtlas::Action
           include Deps[
-            "repos.user_profile_repo",
-            "repos.user_preference_repo",
             "repos.credential_repo",
             "settings",
-            edit_view: "views.user.edit",
-            verify_ownership: "operations.user.verify_ownership"
+            "repos.user_preference_repo",
+            "repos.user_profile_repo",
+            "operations.user.verify_ownership",
+            edit_view: "views.user.edit"
           ]
 
           OAUTH_PROVIDERS = %w[discord github].freeze

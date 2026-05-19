@@ -7,7 +7,7 @@ module PastaAtlas
         class Update < PastaAtlas::Operation
           include Deps[
             "repos.user_profile_repo",
-            verify_ownership: "operations.user.verify_ownership"
+            "operations.user.verify_ownership"
           ]
 
           def call(user_id:, user_name:, s3_key:)
