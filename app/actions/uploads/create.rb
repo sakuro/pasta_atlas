@@ -4,11 +4,7 @@ module PastaAtlas
   module Actions
     module Uploads
       class Create < PastaAtlas::Action
-        include Deps[
-          "repos.generation_repo",
-          "repos.map_repo",
-          create_upload: "operations.uploads.create"
-        ]
+        include Deps[create_upload: "operations.uploads.create"]
 
         def handle(request, response)
           result = create_upload.call(
@@ -19,9 +15,7 @@ module PastaAtlas
           )
 
           case result
-          in Success(upload)
-            generation = generation_repo.find_by_id(upload.generation_id)
-            map = map_repo.find_by_id(generation.map_id)
+          in Success({upload:, generation:, map:})
             json_response(
               response,
               {

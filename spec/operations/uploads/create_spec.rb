@@ -15,7 +15,7 @@ RSpec.describe PastaAtlas::Operations::Uploads::Create, :db do
         result = operation.call(user_id: user.id, metadata:, total_image_count: 5)
 
         expect(result).to be_success
-        upload = result.value!
+        upload = result.value![:upload]
         expect(upload.status).to eq("pending")
         expect(upload.total_image_count).to eq(5)
       end
@@ -64,7 +64,7 @@ RSpec.describe PastaAtlas::Operations::Uploads::Create, :db do
         result = operation.call(user_id: user.id, metadata:, total_image_count: 5)
 
         expect(result).to be_success
-        expect(result.value!.id).to eq(existing_upload.id)
+        expect(result.value![:upload].id).to eq(existing_upload.id)
       end
     end
 

@@ -50,7 +50,7 @@ module PastaAtlas
               map_id: map.id, mapshot_unique_id:
             )
             if generation
-              result = result_for_existing_generation(generation)
+              result = result_for_existing_generation(generation, map)
               raise Sequel::Rollback if result.failure?
 
               next
@@ -82,12 +82,12 @@ module PastaAtlas
             status: "pending",
             total_image_count:
           )
-          Success(upload)
+          Success({upload:, generation:, map:})
         end
 
-        private def result_for_existing_generation(generation)
+        private def result_for_existing_generation(generation, map)
           upload = generation.upload
-          upload.complete? ? Failure(:conflict) : Success(upload)
+          upload.complete? ? Failure(:conflict) : Success({upload:, generation:, map:})
         end
 
         private def write_metadata_to_s3(key:, body:)

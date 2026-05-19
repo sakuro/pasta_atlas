@@ -2,16 +2,9 @@
 
 RSpec.describe PastaAtlas::Actions::Uploads::Create, :db do
   let(:create_upload) { instance_double(PastaAtlas::Operations::Uploads::Create) }
-  let(:generation_repo) { instance_double(PastaAtlas::Repos::GenerationRepo) }
-  let(:map_repo) { instance_double(PastaAtlas::Repos::MapRepo) }
   let(:user_repo) { instance_double(PastaAtlas::Repos::UserRepo) }
   let(:action) do
-    PastaAtlas::Actions::Uploads::Create.new(
-      create_upload:,
-      generation_repo:,
-      map_repo:,
-      user_repo:
-    )
+    PastaAtlas::Actions::Uploads::Create.new(create_upload:, user_repo:)
   end
 
   let(:session) { {"rack.session" => {"user_id" => 1}} }
@@ -20,17 +13,16 @@ RSpec.describe PastaAtlas::Actions::Uploads::Create, :db do
   end
   let(:action_params_with_name) { action_params.merge(name: "My Map") }
 
+  let(:upload) { double("Upload", ulid: "01UPLOAD") }
+  let(:generation) { double("Generation", ulid: "01GEN") }
+  let(:map) { double("Map", ulid: "01MAP") }
+
   context "when no session" do
     let(:guest_user) { double("User", id: 99) }
-    let(:upload) { double("Upload", ulid: "01UPLOAD", generation_id: 42) }
-    let(:generation) { double("Generation", ulid: "01GEN", map_id: 7) }
-    let(:map) { double("Map", ulid: "01MAP") }
 
     before do
       allow(user_repo).to receive(:find_by_name).with("guest").and_return(guest_user)
-      allow(create_upload).to receive(:call).and_return(Success(upload))
-      allow(generation_repo).to receive(:find_by_id).with(42).and_return(generation)
-      allow(map_repo).to receive(:find_by_id).with(7).and_return(map)
+      allow(create_upload).to receive(:call).and_return(Success({upload:, generation:, map:}))
     end
 
     it "uses the guest user" do
@@ -43,14 +35,8 @@ RSpec.describe PastaAtlas::Actions::Uploads::Create, :db do
 
   context "when authenticated" do
     context "when the operation succeeds" do
-      let(:upload) { double("Upload", ulid: "01UPLOAD", generation_id: 42) }
-      let(:generation) { double("Generation", ulid: "01GEN", map_id: 7) }
-      let(:map) { double("Map", ulid: "01MAP") }
-
       before do
-        allow(create_upload).to receive(:call).and_return(Success(upload))
-        allow(generation_repo).to receive(:find_by_id).with(42).and_return(generation)
-        allow(map_repo).to receive(:find_by_id).with(7).and_return(map)
+        allow(create_upload).to receive(:call).and_return(Success({upload:, generation:, map:}))
       end
 
       it "returns 201 with upload, map, and generation ULIDs" do
