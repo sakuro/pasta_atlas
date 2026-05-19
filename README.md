@@ -20,6 +20,7 @@ A web application for browsing Factorio map screenshots captured by the [mapshot
 - Docker — runs PostgreSQL and the S3 emulator (floci) via Docker Compose
 - A GitHub OAuth app — required for authentication
 - A Discord OAuth app — required for authentication
+- A Steam Web API key — required for authentication
 
 ## Setup
 
@@ -61,6 +62,14 @@ Create a Discord OAuth app at <https://discord.com/developers/applications>, add
 ```sh
 DISCORD_CLIENT_ID=your_client_id
 DISCORD_CLIENT_SECRET=your_client_secret
+```
+
+#### Steam
+
+Obtain a Steam Web API key at <https://steamcommunity.com/dev/apikey>, then add to `.env.development.local`:
+
+```sh
+STEAM_WEB_API_KEY=your_api_key
 ```
 
 ### 4. Install dependencies and prepare the database

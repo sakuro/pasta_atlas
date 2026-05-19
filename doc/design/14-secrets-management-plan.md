@@ -15,6 +15,7 @@ The following values are treated as secrets:
 | `SESSION_SECRET` | Session signing secret |
 | `GITHUB_CLIENT_SECRET` | OAuth client credential |
 | `DISCORD_CLIENT_SECRET` | OAuth client credential |
+| `STEAM_WEB_API_KEY` | Steam Web API key (OpenID profile fetch) |
 
 The following values are configuration, but not secrets:
 
@@ -22,6 +23,8 @@ The following values are configuration, but not secrets:
 |---|---|
 | `GITHUB_CLIENT_ID` | Public OAuth application identifier |
 | `DISCORD_CLIENT_ID` | Public OAuth application identifier |
+
+`STEAM_WEB_API_KEY` has no public counterpart; the single key covers both authentication and profile data retrieval.
 
 ## Current Repository State
 
@@ -32,6 +35,7 @@ The application already reads the relevant runtime values through Hanami setting
 - `GITHUB_CLIENT_SECRET`
 - `DISCORD_CLIENT_ID`
 - `DISCORD_CLIENT_SECRET`
+- `STEAM_WEB_API_KEY`
 
 The current Terraform implementation is mixed:
 
@@ -86,7 +90,7 @@ Operational note:
 
 Recommended direction:
 
-- Store `GITHUB_CLIENT_SECRET` and `DISCORD_CLIENT_SECRET` in AWS Secrets Manager.
+- Store `GITHUB_CLIENT_SECRET`, `DISCORD_CLIENT_SECRET`, and `STEAM_WEB_API_KEY` in AWS Secrets Manager.
 - Inject them into ECS tasks as runtime secrets.
 - Keep `GITHUB_CLIENT_ID` and `DISCORD_CLIENT_ID` as ordinary non-secret environment variables.
 
@@ -119,6 +123,7 @@ Terraform should avoid managing:
 | `SESSION_SECRET` | SSM SecureString or Secrets Manager | ECS secret injection |
 | `GITHUB_CLIENT_SECRET` | Secrets Manager | ECS secret injection |
 | `DISCORD_CLIENT_SECRET` | Secrets Manager | ECS secret injection |
+| `STEAM_WEB_API_KEY` | Secrets Manager | ECS secret injection |
 | `GITHUB_CLIENT_ID` | Plain environment variable | ECS environment |
 | `DISCORD_CLIENT_ID` | Plain environment variable | ECS environment |
 
@@ -127,13 +132,14 @@ Terraform should avoid managing:
 1. Decide whether runtime secrets should be split between SSM and Secrets Manager, or consolidated in Secrets Manager.
 2. Remove the production database password from Terraform variable input if the module redesign permits it.
 3. Add Terraform resources or data paths for OAuth client secrets.
-4. Extend ECS task secret injection for GitHub and Discord client secrets.
+4. Extend ECS task secret injection for GitHub, Discord, and Steam secrets.
 5. Normalize `doc/design/10-infrastructure.md` and `terraform/README.md` so they describe the same implementation.
 6. Document rotation procedures for:
    - database credentials
    - `SESSION_SECRET`
    - GitHub OAuth client secret
    - Discord OAuth client secret
+   - Steam Web API key
 
 ## Questions To Resolve During Module Review
 

@@ -35,21 +35,40 @@ cd -
 
 This creates the `pasta-atlas-local-mapshots` bucket in Floci.
 
-### 3. Configure GitHub OAuth
+### 3. Configure OAuth providers
+
+At least one provider must be configured. Create `.env.development.local` (gitignored) with credentials for the providers you want to use.
+
+#### GitHub
 
 Register a GitHub OAuth App at https://github.com/settings/developers with:
 
 - **Homepage URL**: `http://localhost:2300`
 - **Authorization callback URL**: `http://localhost:2300/auth/github/callback`
 
-Then create `.env.development.local` (gitignored):
-
 ```
 GITHUB_CLIENT_ID=<your client id>
 GITHUB_CLIENT_SECRET=<your client secret>
 ```
 
-Without this, the app starts but login is unavailable.
+#### Discord
+
+Register a Discord application at https://discord.com/developers/applications and add `http://localhost:2300/auth/discord/callback` as a redirect URL.
+
+```
+DISCORD_CLIENT_ID=<your client id>
+DISCORD_CLIENT_SECRET=<your client secret>
+```
+
+#### Steam
+
+Obtain a Steam Web API key at https://steamcommunity.com/dev/apikey.
+
+```
+STEAM_WEB_API_KEY=<your api key>
+```
+
+Without at least one provider configured, the app starts but login is unavailable.
 
 ### 4. Install dependencies and prepare the database
 
@@ -87,6 +106,6 @@ mise loads env files in this order for development:
 .env.local              # any other local overrides (gitignored)
 ```
 
-`.env.development` contains working dummy values for all settings except GitHub OAuth credentials. Only `GITHUB_CLIENT_ID` and `GITHUB_CLIENT_SECRET` need real values and belong in `.env.development.local`.
+`.env.development` contains working dummy values for all settings except OAuth credentials. `GITHUB_CLIENT_ID`, `GITHUB_CLIENT_SECRET`, `DISCORD_CLIENT_ID`, `DISCORD_CLIENT_SECRET`, and `STEAM_WEB_API_KEY` need real values and belong in `.env.development.local`.
 
 For tests, `.env.test` provides all dummy values and no additional configuration is needed. Override via `.env.test.local` if necessary.
