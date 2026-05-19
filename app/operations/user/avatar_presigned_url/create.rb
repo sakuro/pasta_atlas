@@ -20,7 +20,7 @@ module PastaAtlas
             user_id = step require_authentication(user_id)
             ext = step resolve_extension(content_type)
             key = "avatars/#{user_id}/#{ULID.generate}.#{ext}"
-            presigned_url = step generate_presigned_url(key:, content_type:)
+            presigned_url = generate_presigned_url(key:, content_type:)
             {presigned_url:, s3_key: key}
           end
 
@@ -34,15 +34,13 @@ module PastaAtlas
           end
 
           private def generate_presigned_url(key:, content_type:)
-            presigner = Aws::S3::Presigner.new(client: s3_client)
-            url = presigner.presigned_url(
+            Aws::S3::Presigner.new(client: s3_client).presigned_url(
               :put_object,
               bucket: settings.s3_bucket,
               key:,
               expires_in: settings.presigned_url_expiry,
               content_type:
             )
-            Success(url)
           end
         end
       end
