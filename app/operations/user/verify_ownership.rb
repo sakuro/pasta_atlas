@@ -8,16 +8,12 @@ module PastaAtlas
 
         def call(user_id:, user_name:)
           user_id = step require_authentication(user_id)
-          user = step find_user(user_id)
+          user = user_repo.find_by_id(user_id)
           step check_ownership(user, user_name)
         end
 
         private def require_authentication(user_id)
           user_id ? Success(user_id) : Failure(:forbidden)
-        end
-
-        private def find_user(user_id)
-          Success(user_repo.find_by_id(user_id))
         end
 
         private def check_ownership(user, user_name)
