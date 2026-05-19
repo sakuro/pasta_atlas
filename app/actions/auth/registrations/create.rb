@@ -25,9 +25,9 @@ module PastaAtlas
               avatar_url: pending["avatar_url"]
             )
             case result
-            in Failure(:invalid, error_key)
+            in Dry::Monads::Result::Failure(:invalid, error_key)
               response.render(view, suggested_name: name, error: i18n(request).format(error_key))
-            in Failure(status)
+            in Dry::Monads::Result::Failure(status)
               halt status
             in Success(user)
               request.session.delete(:pending_auth)
