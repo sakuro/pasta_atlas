@@ -2,9 +2,8 @@
 
 RSpec.describe PastaAtlas::Actions::Maps::Viewer, :action_env do
   let(:show_map) { instance_double(PastaAtlas::Operations::Maps::Show) }
-  let(:user_profile_repo) { instance_double(PastaAtlas::Repos::UserProfileRepo) }
   let(:settings) { double("Settings", cloudfront_base_url: "https://cdn.example.com") }
-  let(:action) { PastaAtlas::Actions::Maps::Viewer.new(show_map:, user_profile_repo:, settings:) }
+  let(:action) { PastaAtlas::Actions::Maps::Viewer.new(show_map:, settings:) }
 
   let(:action_params) { locale_env.merge(ulid: "01MAP") }
 
@@ -16,9 +15,8 @@ RSpec.describe PastaAtlas::Actions::Maps::Viewer, :action_env do
 
     before do
       allow(show_map).to receive(:call).and_return(
-        Success({map:, user:, generations: [generation]})
+        Success({map:, user:, profile:, generations: [generation]})
       )
-      allow(user_profile_repo).to receive(:find_by_user_id).with(1).and_return(profile)
     end
 
     it "returns 200" do

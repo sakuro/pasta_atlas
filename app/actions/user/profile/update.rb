@@ -8,12 +8,12 @@ module PastaAtlas
       module Profile
         class Update < PastaAtlas::Action
           include Deps[
-            "repos.credential_repo",
-            "settings",
-            "repos.user_preference_repo",
             "repos.user_profile_repo",
             "operations.user.verify_ownership",
-            edit_view: "views.user.edit"
+            edit_view: "views.user.edit",
+            load_credentials: "operations.user.credentials.load",
+            load_preferences: "operations.user.preferences.load",
+            load_profile: "operations.user.profile.load"
           ]
 
           OAUTH_PROVIDERS = %w[discord github].freeze
@@ -49,11 +49,10 @@ module PastaAtlas
 
               error = validate_display_name(display_name)
               if error
-                preference = user_preference_repo.find_by_user_id(user.id)
-                profile = user_profile_repo.find_by_user_id(user.id)
+                profile_data = load_profile.call(user_id: user.id).value!
+                preference = load_preferences.call(user_id: user.id, viewer_id: user.id).value!
+                connected_providers = load_credentials.call(user_id: user.id, viewer_id: user.id).value!
                 timezone_identifiers = TZInfo::Timezone.all_identifiers
-                avatar_url = profile.avatar_s3_key ? "#{settings.cloudfront_base_url}/#{profile.avatar_s3_key}" : nil
-                connected_providers = credential_repo.find_by_user_id(user.id).map(&:provider)
                 response.render(
                   edit_view,
                   user_name: user.name,
@@ -61,7 +60,7 @@ module PastaAtlas
                   timezone: preference.timezone,
                   timezone_identifiers:,
                   locale: preference.locale,
-                  avatar_url:,
+                  avatar_url: profile_data[:avatar_url],
                   supported_locales: PastaAtlas::I18n::SUPPORTED_LOCALES,
                   providers: OAUTH_PROVIDERS,
                   connected_providers:,

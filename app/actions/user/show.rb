@@ -4,7 +4,14 @@ module PastaAtlas
   module Actions
     module User
       class Show < PastaAtlas::Action
-        include Deps["repos.user_profile_repo", "repos.user_preference_repo", "repos.credential_repo", "repos.map_repo", "repos.generation_repo", "settings"]
+        include Deps[
+          "repos.generation_repo",
+          "repos.map_repo",
+          "settings",
+          load_credentials: "operations.user.credentials.load",
+          load_preferences: "operations.user.preferences.load",
+          load_profile: "operations.user.profile.load"
+        ]
 
         RECENT_MAPS_LIMIT = 3
         private_constant :RECENT_MAPS_LIMIT
@@ -13,13 +20,14 @@ module PastaAtlas
           user = user_repo.find_by_name(request.params[:user_name])
           halt 404 unless user
 
-          profile = user_profile_repo.find_by_user_id(user.id)
-          own_profile = current_user_id(request) == user.id
-          preference = own_profile ? user_preference_repo.find_by_user_id(user.id) : nil
-          connected_providers = own_profile ? credential_repo.find_by_user_id(user.id).map(&:provider).sort! : nil
+          viewer_id = current_user_id(request)
+          profile_data = load_profile.call(user_id: user.id).value!
+          preference = load_preferences.call(user_id: user.id, viewer_id:).value_or(nil)
+          connected_providers = load_credentials.call(user_id: user.id, viewer_id:).value_or(nil)
 
-          avatar_url = profile.avatar_s3_key ? "#{settings.cloudfront_base_url}/#{profile.avatar_s3_key}" : nil
-          user_info = Values::UserInfo[name: user.name, display_name: profile.display_name || user.name, avatar_url:]
+          own_profile = viewer_id == user.id
+          avatar_url = profile_data[:avatar_url]
+          user_info = Values::UserInfo[name: user.name, display_name: profile_data[:display_name] || user.name, avatar_url:]
 
           recent_maps = map_repo.list_with_complete_generation_by_user(user_id: user.id, limit: RECENT_MAPS_LIMIT)
           map_ids = recent_maps.map(&:id)
@@ -35,7 +43,7 @@ module PastaAtlas
 
           response.render view,
             user_name: user.name,
-            display_name: profile.display_name,
+            display_name: profile_data[:display_name],
             own_profile:,
             preference:,
             connected_providers:,

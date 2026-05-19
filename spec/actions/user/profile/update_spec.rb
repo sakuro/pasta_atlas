@@ -3,10 +3,10 @@
 RSpec.describe PastaAtlas::Actions::User::Profile::Update, :action_env do
   let(:verify_ownership) { instance_double(PastaAtlas::Operations::User::VerifyOwnership) }
   let(:user_profile_repo) { instance_double(PastaAtlas::Repos::UserProfileRepo) }
-  let(:user_preference_repo) { instance_double(PastaAtlas::Repos::UserPreferenceRepo) }
-  let(:credential_repo) { instance_double(PastaAtlas::Repos::CredentialRepo) }
-  let(:settings) { double("Settings", cloudfront_base_url: "http://cdn.example.com") }
-  let(:action) { PastaAtlas::Actions::User::Profile::Update.new(verify_ownership:, user_profile_repo:, user_preference_repo:, credential_repo:, settings:, edit_view:) }
+  let(:load_profile) { instance_double(PastaAtlas::Operations::User::Profile::Load) }
+  let(:load_preferences) { instance_double(PastaAtlas::Operations::User::Preferences::Load) }
+  let(:load_credentials) { instance_double(PastaAtlas::Operations::User::Credentials::Load) }
+  let(:action) { PastaAtlas::Actions::User::Profile::Update.new(verify_ownership:, user_profile_repo:, load_profile:, load_preferences:, load_credentials:, edit_view:) }
   let(:edit_view) { Hanami.app["views.user.edit"] }
 
   let(:user) { double("User", id: 1, name: "sakuro") }
@@ -71,13 +71,12 @@ RSpec.describe PastaAtlas::Actions::User::Profile::Update, :action_env do
 
     context "when display_name exceeds 64 grapheme clusters" do
       let(:env) { locale_env.merge("rack.session" => {"user_id" => 1}, :user_name => "sakuro", :display_name => "あ" * 65) }
-      let(:profile) { double("UserProfile", avatar_s3_key: nil) }
       let(:preference) { double("UserPreference", timezone: "UTC", locale: nil) }
 
       before do
-        allow(user_profile_repo).to receive(:find_by_user_id).with(1).and_return(profile)
-        allow(user_preference_repo).to receive(:find_by_user_id).with(1).and_return(preference)
-        allow(credential_repo).to receive(:find_by_user_id).with(1).and_return([])
+        allow(load_profile).to receive(:call).with(user_id: 1).and_return(Success({display_name: "Sakuro", avatar_url: nil}))
+        allow(load_preferences).to receive(:call).with(user_id: 1, viewer_id: 1).and_return(Success(preference))
+        allow(load_credentials).to receive(:call).with(user_id: 1, viewer_id: 1).and_return(Success([]))
       end
 
       it "re-renders the form without updating" do

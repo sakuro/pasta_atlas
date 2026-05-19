@@ -7,11 +7,10 @@ module PastaAtlas
     module User
       class Edit < PastaAtlas::Action
         include Deps[
-          "repos.credential_repo",
-          "settings",
-          "repos.user_preference_repo",
-          "repos.user_profile_repo",
-          "operations.user.verify_ownership"
+          "operations.user.verify_ownership",
+          load_credentials: "operations.user.credentials.load",
+          load_preferences: "operations.user.preferences.load",
+          load_profile: "operations.user.profile.load"
         ]
 
         OAUTH_PROVIDERS = %w[discord github steam].freeze
@@ -26,20 +25,18 @@ module PastaAtlas
           in Failure(status)
             halt status
           in Success(user)
-            profile = user_profile_repo.find_by_user_id(user.id)
-            preference = user_preference_repo.find_by_user_id(user.id)
+            profile_data = load_profile.call(user_id: user.id).value!
+            preference = load_preferences.call(user_id: user.id, viewer_id: user.id).value!
+            connected_providers = load_credentials.call(user_id: user.id, viewer_id: user.id).value!
             timezone_identifiers = TZInfo::Timezone.all_identifiers
-            avatar_url = profile.avatar_s3_key ? "#{settings.cloudfront_base_url}/#{profile.avatar_s3_key}" : nil
-            credentials = credential_repo.find_by_user_id(user.id)
-            connected_providers = credentials.map(&:provider)
             flash_error = request.flash[:error]
             response.render view,
               user_name: user.name,
-              display_name: profile.display_name.to_s,
+              display_name: profile_data[:display_name].to_s,
               timezone: preference.timezone,
               timezone_identifiers:,
               locale: preference.locale,
-              avatar_url:,
+              avatar_url: profile_data[:avatar_url],
               supported_locales: PastaAtlas::I18n::SUPPORTED_LOCALES,
               providers: OAUTH_PROVIDERS,
               connected_providers:,

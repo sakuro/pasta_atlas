@@ -5,17 +5,19 @@ module PastaAtlas
     module Maps
       class Show < PastaAtlas::Operation
         include Deps[
-          "repos.map_repo",
           "repos.generation_repo",
+          "repos.map_repo",
+          "repos.user_profile_repo",
           "repos.user_repo"
         ]
 
         def call(ulid:)
           map = step find_map(ulid)
           user = user_repo.find_by_id(map.user_id)
+          profile = user_profile_repo.find_by_user_id(user.id)
           generations = generation_repo.find_complete_by_map_id(map.id)
           step check_has_generations(generations)
-          {map:, user:, generations:}
+          {map:, user:, profile:, generations:}
         end
 
         private def find_map(ulid)
