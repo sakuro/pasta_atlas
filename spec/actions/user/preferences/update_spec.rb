@@ -1,18 +1,19 @@
 # frozen_string_literal: true
 
 RSpec.describe PastaAtlas::Actions::User::Preferences::Update do
-  let(:user_repo) { instance_double(PastaAtlas::Repos::UserRepo) }
+  let(:verify_ownership) { instance_double(PastaAtlas::Operations::User::VerifyOwnership) }
   let(:user_preference_repo) { instance_double(PastaAtlas::Repos::UserPreferenceRepo) }
-  let(:action) { PastaAtlas::Actions::User::Preferences::Update.new(user_repo:, user_preference_repo:) }
+  let(:action) { PastaAtlas::Actions::User::Preferences::Update.new(verify_ownership:, user_preference_repo:) }
 
   let(:user) { double("User", id: 1, name: "sakuro") }
 
-  before do
-    allow(user_repo).to receive(:find_by_id).with(1).and_return(user)
-  end
-
   context "when not logged in" do
     let(:env) { {"rack.session" => {}, :user_name => "sakuro"} }
+
+    before do
+      allow(verify_ownership).to receive(:call)
+        .with(user_id: nil, user_name: "sakuro").and_return(Failure(:forbidden))
+    end
 
     it "returns 403" do
       response = action.call(env)
@@ -24,6 +25,11 @@ RSpec.describe PastaAtlas::Actions::User::Preferences::Update do
   context "when logged in as a different user" do
     let(:env) { {"rack.session" => {"user_id" => 1}, :user_name => "bob"} }
 
+    before do
+      allow(verify_ownership).to receive(:call)
+        .with(user_id: 1, user_name: "bob").and_return(Failure(:forbidden))
+    end
+
     it "returns 403" do
       response = action.call(env)
 
@@ -34,7 +40,11 @@ RSpec.describe PastaAtlas::Actions::User::Preferences::Update do
   context "when logged in" do
     let(:env) { {"rack.session" => {"user_id" => 1}, :user_name => "sakuro", :timezone => "Asia/Tokyo", :locale => "ja"} }
 
-    before { allow(user_preference_repo).to receive(:update_preferences) }
+    before do
+      allow(verify_ownership).to receive(:call)
+        .with(user_id: 1, user_name: "sakuro").and_return(Success(user))
+      allow(user_preference_repo).to receive(:update_preferences)
+    end
 
     it "updates preferences and redirects to the user page" do
       response = action.call(env)

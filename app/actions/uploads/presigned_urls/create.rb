@@ -8,9 +8,6 @@ module PastaAtlas
           include Deps[issue_presigned_urls: "operations.uploads.issue_presigned_urls"]
 
           def handle(request, response)
-            user_id = current_user_or_guest_id(request)
-            halt 401 unless user_id
-
             result = issue_presigned_urls.call(
               upload_ulid: request.params[:ulid],
               filenames: request.params[:filenames]

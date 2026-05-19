@@ -7,7 +7,10 @@ module PastaAtlas
     module User
       module Preferences
         class Update < PastaAtlas::Action
-          include Deps["repos.user_preference_repo"]
+          include Deps[
+            "repos.user_preference_repo",
+            verify_ownership: "operations.user.verify_ownership"
+          ]
 
           SUPPORTED_LOCALES = PastaAtlas::I18n::SUPPORTED_LOCALES
           private_constant :SUPPORTED_LOCALES
@@ -19,18 +22,21 @@ module PastaAtlas
           end
 
           def handle(request, response)
-            user_id = current_user_id(request)
-            halt 403 unless user_id
-
-            user_name = request.params[:user_name]
-            halt 403 unless user_repo.find_by_id(user_id).name == user_name
-
-            timezone = valid_timezone(request.params[:timezone])
-            locale = valid_locale(request.params[:locale])
-            user_preference_repo.update_preferences(user_id, timezone:, locale:)
-            # Rack::ICU4X::Locale middleware cannot access the database; keep the session in sync so locale detection reflects the updated preference immediately.
-            request.session[:locale] = locale
-            response.redirect_to "/@#{user_name}"
+            result = verify_ownership.call(
+              user_id: current_user_id(request),
+              user_name: request.params[:user_name]
+            )
+            case result
+            in Failure(status)
+              halt status
+            in Success(user)
+              timezone = valid_timezone(request.params[:timezone])
+              locale = valid_locale(request.params[:locale])
+              user_preference_repo.update_preferences(user.id, timezone:, locale:)
+              # Rack::ICU4X::Locale middleware cannot access the database; keep the session in sync so locale detection reflects the updated preference immediately.
+              request.session[:locale] = locale
+              response.redirect_to "/@#{user.name}"
+            end
           end
 
           private def valid_timezone(name)

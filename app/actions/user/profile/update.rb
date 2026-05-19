@@ -12,7 +12,8 @@ module PastaAtlas
             "repos.user_preference_repo",
             "repos.credential_repo",
             "settings",
-            edit_view: "views.user.edit"
+            edit_view: "views.user.edit",
+            verify_ownership: "operations.user.verify_ownership"
           ]
 
           OAUTH_PROVIDERS = %w[discord github].freeze
@@ -36,46 +37,49 @@ module PastaAtlas
           end
 
           def handle(request, response)
-            user_id = current_user_id(request)
-            halt 403 unless user_id
+            result = verify_ownership.call(
+              user_id: current_user_id(request),
+              user_name: request.params[:user_name]
+            )
+            case result
+            in Failure(status)
+              halt status
+            in Success(user)
+              display_name = request.params[:display_name].to_s
 
-            user_name = request.params[:user_name]
-            halt 403 unless user_repo.find_by_id(user_id).name == user_name
+              error = validate_display_name(display_name)
+              if error
+                preference = user_preference_repo.find_by_user_id(user.id)
+                profile = user_profile_repo.find_by_user_id(user.id)
+                timezone_identifiers = TZInfo::Timezone.all_identifiers
+                avatar_url = profile.avatar_s3_key ? "#{settings.cloudfront_base_url}/#{profile.avatar_s3_key}" : nil
+                connected_providers = credential_repo.find_by_user_id(user.id).map(&:provider)
+                response.render(
+                  edit_view,
+                  user_name: user.name,
+                  display_name:,
+                  timezone: preference.timezone,
+                  timezone_identifiers:,
+                  locale: preference.locale,
+                  avatar_url:,
+                  supported_locales: PastaAtlas::I18n::SUPPORTED_LOCALES,
+                  providers: OAUTH_PROVIDERS,
+                  connected_providers:,
+                  flash_error: nil,
+                  error:
+                )
+                return
+              end
 
-            display_name = request.params[:display_name].to_s
+              user_profile_repo.update_profile(user.id, display_name: display_name.empty? ? nil : display_name)
 
-            error = validate_display_name(display_name)
-            if error
-              preference = user_preference_repo.find_by_user_id(user_id)
-              profile = user_profile_repo.find_by_user_id(user_id)
-              timezone_identifiers = TZInfo::Timezone.all_identifiers
-              avatar_url = profile.avatar_s3_key ? "#{settings.cloudfront_base_url}/#{profile.avatar_s3_key}" : nil
-              connected_providers = credential_repo.find_by_user_id(user_id).map(&:provider)
-              response.render(
-                edit_view,
-                user_name:,
-                display_name:,
-                timezone: preference.timezone,
-                timezone_identifiers:,
-                locale: preference.locale,
-                avatar_url:,
-                supported_locales: PastaAtlas::I18n::SUPPORTED_LOCALES,
-                providers: OAUTH_PROVIDERS,
-                connected_providers:,
-                flash_error: nil,
-                error:
-              )
-              return
+              avatar_s3_key = request.params[:avatar_s3_key].to_s
+              if !avatar_s3_key.empty? && avatar_s3_key.start_with?("avatars/#{user.id}/")
+                user_profile_repo.update_avatar(user.id, avatar_s3_key:)
+              end
+
+              response.redirect_to "/@#{user.name}"
             end
-
-            user_profile_repo.update_profile(user_id, display_name: display_name.empty? ? nil : display_name)
-
-            avatar_s3_key = request.params[:avatar_s3_key].to_s
-            if !avatar_s3_key.empty? && avatar_s3_key.start_with?("avatars/#{user_id}/")
-              user_profile_repo.update_avatar(user_id, avatar_s3_key:)
-            end
-
-            response.redirect_to "/@#{user_name}"
           end
 
           private def validate_display_name(name)

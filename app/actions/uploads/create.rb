@@ -11,11 +11,8 @@ module PastaAtlas
         ]
 
         def handle(request, response)
-          user_id = current_user_or_guest_id(request)
-          halt 401 unless user_id
-
           result = create_upload.call(
-            user_id:,
+            user_id: current_user_or_guest_id(request),
             metadata: request.params[:metadata].to_h.transform_keys(&:to_s),
             total_image_count: request.params[:total_image_count],
             name: request.params[:name].then {|n| n&.empty? ? nil : n }

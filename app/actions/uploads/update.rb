@@ -7,9 +7,6 @@ module PastaAtlas
         include Deps[update_status: "operations.uploads.update_status"]
 
         def handle(request, response)
-          user_id = current_user_or_guest_id(request)
-          halt 401 unless user_id
-
           result = update_status.call(
             upload_ulid: request.params[:ulid],
             status: request.params[:status]
