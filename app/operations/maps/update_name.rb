@@ -10,7 +10,7 @@ module PastaAtlas
           user = step find_user(current_user_id)
           map = step find_map(ulid)
           step check_owner(map, user)
-          step rename(map.id, name)
+          rename(map.id, name)
         end
 
         private def find_user(user_id)
@@ -31,7 +31,7 @@ module PastaAtlas
 
         private def rename(id, name)
           map_repo.update_name(id:, name:)
-          Success(map_repo.find_by_id(id))
+          map_repo.find_by_id(id)
         end
       end
     end
