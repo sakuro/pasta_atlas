@@ -21,7 +21,7 @@ module PastaAtlas
             ext = step resolve_extension(content_type)
             key = "avatars/#{user_id}/#{ULID.generate}.#{ext}"
             presigned_url = step generate_presigned_url(key:, content_type:)
-            Success({presigned_url:, s3_key: key})
+            {presigned_url:, s3_key: key}
           end
 
           private def require_authentication(user_id)

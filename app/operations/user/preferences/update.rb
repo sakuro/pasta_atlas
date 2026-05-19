@@ -20,7 +20,7 @@ module PastaAtlas
             timezone = valid_timezone(timezone)
             locale = valid_locale(locale)
             user_preference_repo.update_preferences(user.id, timezone:, locale:)
-            Success({user:, locale:})
+            {user:, locale:}
           end
 
           private def valid_timezone(name)

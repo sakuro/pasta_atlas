@@ -14,7 +14,6 @@ module PastaAtlas
             user = step verify_ownership.call(user_id:, user_name:)
             step validate_s3_key(s3_key, user.id)
             user_profile_repo.update_avatar(user.id, avatar_s3_key: s3_key)
-            Success(nil)
           end
 
           private def validate_s3_key(s3_key, user_id)
