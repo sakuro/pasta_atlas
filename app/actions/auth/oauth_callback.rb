@@ -4,7 +4,7 @@
 module PastaAtlas
   module Actions
     module Auth
-      class OauthCallback < PastaAtlas::Action
+      class OAuthCallback < PastaAtlas::Action
         include Deps[
           "operations.user.credentials.link",
           find_by_id: "operations.user.find_by_id",

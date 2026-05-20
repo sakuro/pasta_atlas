@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
-RSpec.describe PastaAtlas::Actions::Auth::OauthCallback, :action_env do
+RSpec.describe PastaAtlas::Actions::Auth::OAuthCallback, :action_env do
   let(:find_by_id) { instance_double(PastaAtlas::Operations::User::FindById) }
   let(:find_credential) { instance_double(PastaAtlas::Operations::User::Credentials::FindByProviderAndUid) }
   let(:link) { instance_double(PastaAtlas::Operations::User::Credentials::Link) }
   let(:load_preferences) { instance_double(PastaAtlas::Operations::User::Preferences::Load) }
-  let(:action) { PastaAtlas::Actions::Auth::OauthCallback.new(find_by_id:, find_credential:, link:, load_preferences:) }
+  let(:action) { PastaAtlas::Actions::Auth::OAuthCallback.new(find_by_id:, find_credential:, link:, load_preferences:) }
 
   let(:omniauth_auth) { {"provider" => "github", "uid" => "12345", "info" => {"nickname" => "alice", "image" => "http://example.com/avatar.jpg"}} }
   let(:base_env) { locale_env.merge("omniauth.auth" => omniauth_auth) }

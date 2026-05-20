@@ -4,7 +4,7 @@ module PastaAtlas
   module Actions
     module Auth
       module Github
-        class Callback < PastaAtlas::Actions::Auth::OauthCallback
+        class Callback < PastaAtlas::Actions::Auth::OAuthCallback
         end
       end
     end

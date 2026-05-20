@@ -50,6 +50,7 @@ Naming/MethodParameterName:
 
 RSpec/SpecFilePathFormat:
   CustomTransform:
+    OAuthCallback: oauth_callback
     PastaAtlas: ""
 
 # ROM structs are anonymous subclasses sharing the same constant name as their base class.

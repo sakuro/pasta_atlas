@@ -10,6 +10,10 @@ require_relative "../app/i18n"
 
 module PastaAtlas
   class App < Hanami::App
+    config.inflections do |i|
+      i.acronym "OAuth"
+    end
+
     config.actions.sessions = :cookie, {
       key: "pasta_atlas.session",
       secret: settings.session_secret,
