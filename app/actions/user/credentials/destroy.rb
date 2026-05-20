@@ -19,10 +19,10 @@ module PastaAtlas
               user_name: request.params[:user_name]
             )
             case result
-            in Failure(status)
+            in Failure(Symbol => status)
               halt status
             in Success(user)
-              halt 404 unless ALLOWED_PROVIDERS.include?(request.params[:provider])
+              halt :not_found unless ALLOWED_PROVIDERS.include?(request.params[:provider])
 
               unlink_result = unlink.call(user_id: user.id, provider: request.params[:provider])
               response.flash[:error] = "error-credential-last" if unlink_result.failure?

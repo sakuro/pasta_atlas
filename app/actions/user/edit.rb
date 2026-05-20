@@ -22,7 +22,7 @@ module PastaAtlas
             user_name: request.params[:user_name]
           )
           case result
-          in Failure(status)
+          in Failure(Symbol => status)
             halt status
           in Success(user)
             profile_data = load_profile.call(user_id: user.id).value!

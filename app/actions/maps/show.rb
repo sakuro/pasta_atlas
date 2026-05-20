@@ -25,8 +25,8 @@ module PastaAtlas
                 }
               }
             })
-          in Failure(:not_found)
-            halt 404
+          in Failure(Symbol => status)
+            halt status
           end
         end
       end

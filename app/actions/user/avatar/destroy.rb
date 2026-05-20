@@ -13,7 +13,7 @@ module PastaAtlas
               user_name: request.params[:user_name]
             )
             case result
-            in Failure(status)
+            in Failure(Symbol => status)
               halt status
             in Success
               response.status = 204

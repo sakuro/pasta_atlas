@@ -14,7 +14,7 @@ module PastaAtlas
 
         def handle(request, response)
           auth = request.env["omniauth.auth"]
-          halt 400 unless auth
+          halt :bad_request unless auth
 
           provider = auth["provider"]
           uid = auth["uid"].to_s

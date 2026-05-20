@@ -14,7 +14,7 @@ module PastaAtlas
               s3_key: request.params[:s3_key].to_s
             )
             case result
-            in Failure(status)
+            in Failure(Symbol => status)
               halt status
             in Success
               response.status = 204

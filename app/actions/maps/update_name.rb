@@ -15,7 +15,7 @@ module PastaAtlas
           case result
           in Success(map)
             json_response(response, {display_name: map.display_name})
-          in Failure(status)
+          in Failure(Symbol => status)
             halt status
           end
         end

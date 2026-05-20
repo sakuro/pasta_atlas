@@ -52,7 +52,7 @@ module PastaAtlas
                 flash_error: nil,
                 error:
               )
-            in Failure(status)
+            in Failure(Symbol => status)
               halt status
             in Success(user)
               response.redirect_to "/@#{user.name}"

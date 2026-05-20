@@ -62,7 +62,7 @@ RSpec.describe PastaAtlas::Operations::Uploads::IssuePresignedUrls, :db do
         result = operation.call(upload_ulid: upload.ulid, filenames:)
 
         expect(result).to be_failure
-        expect(result.failure).to eq(:unprocessable)
+        expect(result.failure).to eq(:unprocessable_entity)
       end
     end
   end

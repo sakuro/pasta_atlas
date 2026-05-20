@@ -15,7 +15,7 @@ module PastaAtlas
         def handle(request, response)
           result = find_by_name.call(user_name: request.params[:user_name])
           case result
-          in Failure(status)
+          in Failure(Symbol => status)
             halt status
           in Success(user)
             viewer_id = current_user_id(request)

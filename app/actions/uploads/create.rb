@@ -25,10 +25,10 @@ module PastaAtlas
               },
               status: 201
             )
-          in Failure(:conflict)
-            halt 409
           in Failure(:s3_error)
-            halt 502
+            halt :bad_gateway
+          in Failure(Symbol => status)
+            halt status
           end
         end
       end

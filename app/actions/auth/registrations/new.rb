@@ -7,7 +7,7 @@ module PastaAtlas
         class New < PastaAtlas::Action
           def handle(request, response)
             pending = request.session[:pending_auth]
-            halt 403 unless pending
+            halt :forbidden unless pending
 
             response.render view, suggested_name: pending["login"]
           end

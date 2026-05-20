@@ -51,7 +51,7 @@ RSpec.describe PastaAtlas::Actions::Uploads::PresignedUrls::Create, :db do
     end
 
     context "when the upload is not processable" do
-      before { allow(issue_presigned_urls).to receive(:call).and_return(Failure(:unprocessable)) }
+      before { allow(issue_presigned_urls).to receive(:call).and_return(Failure(:unprocessable_entity)) }
 
       it "returns 422" do
         response = action.call(session.merge(action_params))

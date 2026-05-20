@@ -21,7 +21,7 @@ module PastaAtlas
               locale: request.params[:locale]
             )
             case result
-            in Failure(status)
+            in Failure(Symbol => status)
               halt status
             in Success({user:, locale:})
               # Rack::ICU4X::Locale middleware cannot access the database; keep the session in sync so locale detection reflects the updated preference immediately.

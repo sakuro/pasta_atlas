@@ -14,7 +14,7 @@ module PastaAtlas
 
           def handle(request, response)
             pending = request.session[:pending_auth]
-            halt 403 unless pending
+            halt :forbidden unless pending
 
             name = request.params[:name].to_s.downcase
             result = create_registration.call(
@@ -27,7 +27,7 @@ module PastaAtlas
             case result
             in Dry::Monads::Result::Failure(:invalid, error_key)
               response.render(view, suggested_name: name, error: i18n(request).format(error_key))
-            in Dry::Monads::Result::Failure(status)
+            in Dry::Monads::Result::Failure(Symbol => status)
               halt status
             in Success(user)
               request.session.delete(:pending_auth)

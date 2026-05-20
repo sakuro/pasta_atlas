@@ -13,7 +13,7 @@ module PastaAtlas
               content_type: request.params[:content_type].to_s
             )
             case result
-            in Failure(status)
+            in Failure(Symbol => status)
               halt status
             in Success({presigned_url:, s3_key:})
               json_response(response, {presigned_url:, s3_key:})

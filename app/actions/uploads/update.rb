@@ -19,8 +19,8 @@ module PastaAtlas
               status: upload.status,
               completed_at: upload.completed_at&.iso8601
             })
-          in Failure(:not_found)
-            halt 404
+          in Failure(Symbol => status)
+            halt status
           end
         end
       end

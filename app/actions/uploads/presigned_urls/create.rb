@@ -16,10 +16,10 @@ module PastaAtlas
             case result
             in Success(urls)
               json_response(response, {presigned_urls: urls})
-            in Failure(:not_found)
-              halt 404
-            in Failure(:unprocessable)
-              halt 422
+            in Failure(:s3_error)
+              halt :bad_gateway
+            in Failure(Symbol => status)
+              halt status
             end
           end
         end
