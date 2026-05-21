@@ -71,6 +71,23 @@ resource "aws_iam_role_policy_attachment" "app_ssm" {
   policy_arn = aws_iam_policy.app_ssm.arn
 }
 
+resource "aws_iam_policy" "app_sqs" {
+  name   = "${var.app_name}-${var.environment}-sqs"
+  policy = data.aws_iam_policy_document.app_sqs.json
+}
+
+data "aws_iam_policy_document" "app_sqs" {
+  statement {
+    actions   = ["sqs:SendMessage"]
+    resources = [aws_sqs_queue.map_deletion.arn]
+  }
+}
+
+resource "aws_iam_role_policy_attachment" "app_sqs" {
+  role       = aws_iam_role.app.name
+  policy_arn = aws_iam_policy.app_sqs.arn
+}
+
 resource "aws_iam_role_policy_attachment" "execution_ssm" {
   role       = aws_iam_role.execution.name
   policy_arn = aws_iam_policy.app_ssm.arn
