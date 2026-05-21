@@ -17,6 +17,9 @@ module PastaAtlas
 
       attr_reader :i18n
 
+      def flash_notice = request&.flash&.[](:notice)
+      def flash_error = request&.flash&.[](:error)
+
       def path(...) = routes.path(...)
 
       def locale_tag = request.env[Rack::ICU4X::Locale::ENV_KEY].first.to_s

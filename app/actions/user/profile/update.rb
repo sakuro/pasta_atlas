@@ -49,7 +49,6 @@ module PastaAtlas
                 supported_locales: PastaAtlas::I18n::SUPPORTED_LOCALES,
                 providers: OAUTH_PROVIDERS,
                 connected_providers:,
-                flash_error: nil,
                 error:
               )
             in Failure(Symbol => status)

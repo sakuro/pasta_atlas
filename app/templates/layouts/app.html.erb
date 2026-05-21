@@ -71,6 +71,16 @@
         </div>
       </div>
     </nav>
+    <% if flash_notice %>
+      <div class="container mt-4 px-4">
+        <div class="notification is-success is-light"><%= t(flash_notice) %></div>
+      </div>
+    <% end %>
+    <% if flash_error %>
+      <div class="container mt-4 px-4">
+        <div class="notification is-danger is-light"><%= t(flash_error) %></div>
+      </div>
+    <% end %>
     <%= yield %>
     <footer class="footer">
       <div class="content has-text-centered">

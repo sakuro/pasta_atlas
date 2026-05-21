@@ -149,8 +149,9 @@ export const MapViewer = (props: MapViewerProps) => {
     const res = await fetch(`/maps/${props.ulid}/deletion_requests`, {
       method: "POST",
       headers: { "X-CSRF-Token": csrfToken() },
+      redirect: "manual",
     });
-    if (res.ok) window.location.href = "/";
+    if (res.type === "opaqueredirect") window.location.href = "/";
   };
 
   const [displayName, setDisplayName] = createSignal(props.displayName);
