@@ -10,7 +10,7 @@ RSpec.describe PastaAtlas::Views::Pages::About do
   it "renders the Japanese partial when ja is requested" do
     html = render(locale_tags: %w[ja en])
 
-    expect(html).to include("<h1>このサイトについて</h1>")
+    expect(html).to include('<h1 class="title">PastaAtlas について</h1>')
   end
 
   it "falls back to the English partial when no partial exists for the requested locale" do
