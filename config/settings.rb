@@ -19,5 +19,6 @@ module PastaAtlas
       uri
     }
     setting :presigned_url_expiry, default: 3600, constructor: Types::Params::Integer
+    setting :sqs_map_deletion_queue_url, constructor: Types::String
   end
 end

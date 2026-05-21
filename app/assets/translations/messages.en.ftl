@@ -75,6 +75,9 @@ credential-last-hint = At least one connected account is required.
 error-credential-conflict = That account is already linked to another user.
 error-credential-last = At least one connected account is required.
 
+## Map notices
+map-deletion-requested = Your map has been queued for deletion. It may remain visible for a short time.
+
 ## Map card
 map-card-updated-at = { $date }
 

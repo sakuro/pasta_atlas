@@ -23,6 +23,9 @@ GEM
       aws-sdk-core (~> 3, >= 3.247.0)
       aws-sdk-kms (~> 1)
       aws-sigv4 (~> 1.5)
+    aws-sdk-sqs (1.114.0)
+      aws-sdk-core (~> 3, >= 3.247.0)
+      aws-sigv4 (~> 1.5)
     aws-sigv4 (1.12.1)
       aws-eventstream (~> 1, >= 1.0.2)
     base64 (0.3.0)
@@ -557,6 +560,7 @@ PLATFORMS
 
 DEPENDENCIES
   aws-sdk-s3
+  aws-sdk-sqs
   capybara
   cgi
   database_cleaner-sequel
@@ -615,6 +619,7 @@ CHECKSUMS
   aws-sdk-core (3.247.0) sha256=789864594ce8cef05ee3d81fa8ed506099280bda6ea12a7612b8b7c5e5e62851
   aws-sdk-kms (1.126.0) sha256=6091644b50e59955e870f1ec3c5610584f8baa0e860a2a711a3f349ed93e6496
   aws-sdk-s3 (1.223.0) sha256=655e382af34926caa76b77cf0171caed5f61ff52b8b58ae50f6f3e22c39e6cbc
+  aws-sdk-sqs (1.114.0) sha256=d59464c1ab7bff1375050590213e1c362bfaafed5a86188c1c7d5f1e77e48ae9
   aws-sigv4 (1.12.1) sha256=6973ff95cb0fd0dc58ba26e90e9510a2219525d07620c8babeb70ef831826c00
   base64 (0.3.0) sha256=27337aeabad6ffae05c265c450490628ef3ebd4b67be58257393227588f5a97b
   better_errors (2.10.1) sha256=f798f1bac93f3e775925b7fcb24cffbcf0bb62ee2210f5350f161a6b75fc0a73

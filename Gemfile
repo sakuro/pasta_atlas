@@ -11,6 +11,7 @@ gem "hanami-validations", "~> 2.3.0"
 gem "hanami-view", "~> 2.3.0"
 
 gem "aws-sdk-s3"
+gem "aws-sdk-sqs"
 gem "dry-operation", ">= 1.0.1"
 gem "dry-types", "~> 1.7"
 gem "foxtail-runtime"

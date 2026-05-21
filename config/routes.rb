@@ -4,6 +4,7 @@ module PastaAtlas
   class Routes < Hanami::Routes
     root to: "maps.index"
     get "/@:user_name/maps/:ulid", to: "maps.viewer", as: :map_viewer
+    post "/maps/:ulid/deletion_requests", to: "maps.deletion_requests.create"
 
     get "/@:user_name", to: "user.show", as: :user
     get "/@:user_name/edit", to: "user.edit", as: :edit_user
