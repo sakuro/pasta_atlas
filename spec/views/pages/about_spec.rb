@@ -16,6 +16,6 @@ RSpec.describe PastaAtlas::Views::Pages::About do
   it "falls back to the English partial when no partial exists for the requested locale" do
     html = render(locale_tags: %w[und en])
 
-    expect(html).to include("<h1>About PastaAtlas</h1>")
+    expect(html).to include('<h1 class="title">About PastaAtlas</h1>')
   end
 end
