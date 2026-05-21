@@ -7,7 +7,7 @@ namespace :maps do
     abort "Usage: rake maps:delete_by_ulid[ULID]" unless ulid
 
     result = Hanami.app["operations.maps.delete"].call(ulid:)
-    if result.success?
+    if result.success? || result.failure == :not_found
       puts "Deleted map #{ulid}"
     else
       warn "Failed to delete map #{ulid}: #{result.failure}"

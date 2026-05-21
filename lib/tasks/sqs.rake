@@ -14,7 +14,7 @@ namespace :sqs do
       )
       resp.messages.each do |msg|
         result = Hanami.app["operations.maps.delete"].call(ulid: msg.body)
-        if result.success?
+        if result.success? || result.failure == :not_found
           sqs_client.delete_message(queue_url:, receipt_handle: msg.receipt_handle)
           puts "Deleted map #{msg.body}"
         else
