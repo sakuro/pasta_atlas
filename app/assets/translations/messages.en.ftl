@@ -167,6 +167,12 @@ map-name-save-button =
     .title = Save
 map-name-cancel-button =
     .title = Cancel
+map-delete-button =
+    .title = Delete map
+map-delete-confirm-title = Delete map
+map-delete-confirm-message = This map and all its data will be permanently deleted. Are you sure?
+map-delete-confirm-button = Delete
+map-delete-cancel-button = Cancel
 
 ## Map info modal
 map-info-title = Map Info

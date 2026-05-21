@@ -167,6 +167,12 @@ map-name-save-button =
     .title = 保存
 map-name-cancel-button =
     .title = キャンセル
+map-delete-button =
+    .title = マップを削除
+map-delete-confirm-title = マップを削除
+map-delete-confirm-message = このマップとすべてのデータが完全に削除されます。よろしいですか？
+map-delete-confirm-button = 削除
+map-delete-cancel-button = キャンセル
 
 ## Map info modal
 map-info-title = マップ情報
