@@ -27,6 +27,25 @@
         <p class="help"><%= t("registration-username.help") %></p>
       </div>
       <div class="field">
+        <p>
+          <a href="<%= path(:privacy_policy) %>" target="_blank" rel="noopener">
+            <%= t("nav-privacy-policy") %>
+            <span class="icon is-small"><i class="fa-solid fa-arrow-up-right-from-square"></i></span>
+          </a>
+          &middot;
+          <a href="<%= path(:terms_of_service) %>" target="_blank" rel="noopener">
+            <%= t("nav-terms-of-service") %>
+            <span class="icon is-small"><i class="fa-solid fa-arrow-up-right-from-square"></i></span>
+          </a>
+        </p>
+        <div class="control">
+          <label class="checkbox">
+            <input type="checkbox" name="terms" value="1" required>
+            <%= t("registration-terms-agree") %>
+          </label>
+        </div>
+      </div>
+      <div class="field">
         <div class="control">
           <button class="button is-primary" type="submit">
             <span class="icon"><i class="fa-solid fa-user-plus"></i></span>

@@ -214,3 +214,9 @@ share-reddit =
     .title = Share on Reddit
 share-copy-link =
     .title = Copy link
+nav-about = About
+nav-privacy-policy = Privacy Policy
+nav-terms-of-service = Terms of Service
+
+## Registration: terms agreement
+registration-terms-agree = I agree to the above.

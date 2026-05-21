@@ -210,3 +210,9 @@ share-reddit =
     .title = Reddit でシェア
 share-copy-link =
     .title = リンクをコピー
+nav-about = このサイトについて
+nav-privacy-policy = プライバシーポリシー
+nav-terms-of-service = 利用規約
+
+## Registration: terms agreement
+registration-terms-agree = 上記に同意します。

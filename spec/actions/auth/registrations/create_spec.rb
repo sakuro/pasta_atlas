@@ -5,7 +5,7 @@ RSpec.describe PastaAtlas::Actions::Auth::Registrations::Create, :action_env do
   let(:action) { PastaAtlas::Actions::Auth::Registrations::Create.new(create_registration:) }
 
   let(:pending_auth) { {"provider" => "github", "uid" => "12345", "avatar_url" => ""} }
-  let(:base_env) { locale_env.merge("rack.session" => {"pending_auth" => pending_auth}, :name => "alice") }
+  let(:base_env) { locale_env.merge("rack.session" => {"pending_auth" => pending_auth}, :name => "alice", :terms => "1") }
 
   context "when pending_auth is missing from session" do
     let(:env) { locale_env.merge("rack.session" => {}) }

@@ -3,6 +3,10 @@
 module PastaAtlas
   class Routes < Hanami::Routes
     root to: "maps.index"
+
+    get "/about", to: "pages.about", as: :about
+    get "/privacy", to: "pages.privacy_policy", as: :privacy_policy
+    get "/terms", to: "pages.terms_of_service", as: :terms_of_service
     get "/@:user_name/maps/:ulid", to: "maps.viewer", as: :map_viewer
     post "/maps/:ulid/deletion_requests", to: "maps.deletion_requests.create"
 
