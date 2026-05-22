@@ -24,7 +24,7 @@ Local development uses Docker-based substitutes for AWS services. No AWS account
 docker compose up -d
 ```
 
-### 2. Provision local S3 bucket
+### 2. Provision local AWS resources
 
 ```bash
 cd terraform/environments/local
@@ -33,7 +33,10 @@ terraform apply
 cd -
 ```
 
-This creates the `pasta-atlas-local-mapshots` bucket in Floci.
+This creates the following resources in Floci:
+
+- `pasta-atlas-local-mapshots` S3 bucket
+- `pasta-atlas-local-map-deletion` SQS queue
 
 ### 3. Configure OAuth providers
 

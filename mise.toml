@@ -14,7 +14,7 @@ tflint = "0.62"
 depends = ["dev"]
 
 [tasks.dev]
-depends = ["web", "assets", "islands", "floci"]
+depends = ["web", "assets", "islands", "floci", "sqs-worker"]
 
 [tasks.web]
 run = "bundle exec hanami server"
@@ -27,3 +27,6 @@ run = "npm run dev:islands"
 
 [tasks.floci]
 run = "docker compose up"
+
+[tasks.sqs-worker]
+run = "bundle exec rake sqs:worker"

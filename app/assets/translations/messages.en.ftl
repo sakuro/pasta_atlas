@@ -75,6 +75,9 @@ credential-last-hint = At least one connected account is required.
 error-credential-conflict = That account is already linked to another user.
 error-credential-last = At least one connected account is required.
 
+## Map notices
+map-deletion-requested = Your map has been queued for deletion. It may remain visible for a short time.
+
 ## Map card
 map-card-updated-at = { $date }
 
@@ -164,6 +167,12 @@ map-name-save-button =
     .title = Save
 map-name-cancel-button =
     .title = Cancel
+map-delete-button =
+    .title = Delete map
+map-delete-confirm-title = Delete map
+map-delete-confirm-message = This map and all its data will be permanently deleted. Are you sure?
+map-delete-confirm-button = Delete
+map-delete-cancel-button = Cancel
 
 ## Map info modal
 map-info-title = Map Info

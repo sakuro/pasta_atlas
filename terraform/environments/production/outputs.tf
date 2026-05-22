@@ -22,3 +22,7 @@ output "rds_endpoint" {
 output "session_secret_ssm_path" {
   value = aws_ssm_parameter.session_secret.name
 }
+
+output "sqs_map_deletion_queue_url" {
+  value = aws_sqs_queue.map_deletion.url
+}

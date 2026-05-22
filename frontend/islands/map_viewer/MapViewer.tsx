@@ -143,6 +143,16 @@ export const MapViewer = (props: MapViewerProps) => {
   });
 
   const [showInfo, setShowInfo] = createSignal(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = createSignal(false);
+
+  const handleDelete = async () => {
+    const res = await fetch(`/maps/${props.ulid}/deletion_requests`, {
+      method: "POST",
+      headers: { "X-CSRF-Token": csrfToken() },
+      redirect: "manual",
+    });
+    if (res.type === "opaqueredirect") window.location.href = "/";
+  };
 
   const [displayName, setDisplayName] = createSignal(props.displayName);
   const [isEditing, setIsEditing] = createSignal(false);
@@ -199,6 +209,14 @@ export const MapViewer = (props: MapViewerProps) => {
                   data-l10n-id="map-name-edit-button"
                 >
                   <span class="icon is-small"><i class="fa-solid fa-pencil" /></span>
+                </button>
+                <button
+                  class="button is-ghost is-small has-text-danger"
+                  style={{ padding: 0, height: "auto", "min-width": 0, "flex-shrink": 0 }}
+                  onClick={() => setShowDeleteConfirm(true)}
+                  data-l10n-id="map-delete-button"
+                >
+                  <span class="icon is-small"><i class="fa-solid fa-trash" /></span>
                 </button>
               </Show>
             </span>
@@ -275,6 +293,28 @@ export const MapViewer = (props: MapViewerProps) => {
       </div>
       <Show when={showInfo() && mapshot()}>
         <MapInfoModal mapshot={mapshot()!} onClose={() => setShowInfo(false)} />
+      </Show>
+      <Show when={showDeleteConfirm()}>
+        <div class="modal is-active">
+          <div class="modal-background" onClick={() => setShowDeleteConfirm(false)} />
+          <div class="modal-card">
+            <header class="modal-card-head">
+              <p class="modal-card-title"><span data-l10n-id="map-delete-confirm-title" /></p>
+              <button class="delete" aria-label="close" onClick={() => setShowDeleteConfirm(false)} />
+            </header>
+            <section class="modal-card-body">
+              <span data-l10n-id="map-delete-confirm-message" />
+            </section>
+            <footer class="modal-card-foot" style={{ gap: "0.5rem" }}>
+              <button class="button is-danger" onClick={() => void handleDelete()}>
+                <span data-l10n-id="map-delete-confirm-button" />
+              </button>
+              <button class="button" onClick={() => setShowDeleteConfirm(false)}>
+                <span data-l10n-id="map-delete-cancel-button" />
+              </button>
+            </footer>
+          </div>
+        </div>
       </Show>
       <div style={{ flex: 1, "min-height": 0 }}>
         <Suspense fallback={<div class="p-4">Loading...</div>}>

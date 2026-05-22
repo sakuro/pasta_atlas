@@ -1,9 +1,6 @@
 <section class="section">
   <div class="container is-max-tablet">
     <h1 class="title"><%= t("edit-title") %></h1>
-    <% if flash_error %>
-      <div class="notification is-danger is-light"><%= t(flash_error) %></div>
-    <% end %>
     <div class="tabs" data-tabs="user-edit">
       <ul>
         <li data-target="edit-profile" class="is-active"><a><%= t("user-tab-profile") %></a></li>

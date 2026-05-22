@@ -29,7 +29,6 @@ module PastaAtlas
             preference = load_preferences.call(user_id: user.id, viewer_id: user.id).value!
             connected_providers = load_credentials.call(user_id: user.id, viewer_id: user.id).value!
             timezone_identifiers = TZInfo::Timezone.all_identifiers
-            flash_error = request.flash[:error]
             response.render view,
               user_name: user.name,
               display_name: profile_data[:display_name].to_s,
@@ -39,8 +38,7 @@ module PastaAtlas
               avatar_url: profile_data[:avatar_url],
               supported_locales: PastaAtlas::I18n::SUPPORTED_LOCALES,
               providers: OAUTH_PROVIDERS,
-              connected_providers:,
-              flash_error:
+              connected_providers:
           end
         end
       end
