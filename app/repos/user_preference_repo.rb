@@ -5,7 +5,7 @@ module PastaAtlas
     class UserPreferenceRepo < PastaAtlas::DB::Repo
       def create(user_id:, timezone:) = user_preferences.command(:create).call(user_id:, timezone:)
       def find_by_user_id(user_id) = user_preferences.where(user_id:).one!
-      def update_preferences(user_id, timezone:, locale:) = user_preferences.where(user_id:).command(:update).call(timezone:, locale:)
+      def update_preferences(user_id, timezone:, locale:, relative_timestamps:) = user_preferences.where(user_id:).command(:update).call(timezone:, locale:, relative_timestamps:)
     end
   end
 end

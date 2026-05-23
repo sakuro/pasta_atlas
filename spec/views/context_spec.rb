@@ -13,7 +13,7 @@ RSpec.describe PastaAtlas::Views::Context do
   context "when not logged in" do
     let(:session) { {} }
     let(:guest_user) { double("User", id: 99) }
-    let(:guest_preference) { double("UserPreference", timezone: "UTC") }
+    let(:guest_preference) { double("UserPreference", timezone: "UTC", relative_timestamps: false) }
 
     it "returns nil for current_user_name" do
       expect(view_context.current_user_name).to be_nil
@@ -55,7 +55,7 @@ RSpec.describe PastaAtlas::Views::Context do
     end
 
     describe "#localize_datetime" do
-      let(:preference) { double("UserPreference", timezone: "Asia/Tokyo") }
+      let(:preference) { double("UserPreference", timezone: "Asia/Tokyo", relative_timestamps: false) }
 
       before { allow(user_preference_repo).to receive(:find_by_user_id).with(1).and_return(preference) }
 

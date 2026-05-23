@@ -42,6 +42,7 @@ module PastaAtlas
               timezone_identifiers: [],
               locale: nil,
               supported_locales: [],
+              relative_timestamps: false,
               providers: [],
               connected_providers: []
             }
@@ -54,6 +55,7 @@ module PastaAtlas
                 timezone_identifiers: TZInfo::Timezone.all_identifiers,
                 locale: preference.locale,
                 supported_locales: PastaAtlas::I18n::SUPPORTED_LOCALES,
+                relative_timestamps: preference.relative_timestamps,
                 providers: OAUTH_PROVIDERS,
                 connected_providers:
               )

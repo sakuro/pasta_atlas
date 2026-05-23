@@ -109,6 +109,18 @@ interface MapViewerProps {
 
 const formatDate = (iso: string): string => {
   const locale = document.documentElement.lang || "en";
+  if (document.documentElement.dataset.relativeTimestamps === "true") {
+    const rtf = new Intl.RelativeTimeFormat(locale, { style: "long", numeric: "auto" });
+    const diffSecs = Math.round((new Date(iso).getTime() - Date.now()) / 1000);
+    const abs = Math.abs(diffSecs);
+    if (abs < 60) return rtf.format(diffSecs, "second");
+    if (abs < 3600) return rtf.format(Math.trunc(diffSecs / 60), "minute");
+    if (abs < 86400) return rtf.format(Math.trunc(diffSecs / 3600), "hour");
+    if (abs < 7 * 86400) return rtf.format(Math.trunc(diffSecs / 86400), "day");
+    if (abs < 30 * 86400) return rtf.format(Math.trunc(diffSecs / (7 * 86400)), "week");
+    if (abs < 365 * 86400) return rtf.format(Math.trunc(diffSecs / (30 * 86400)), "month");
+    return rtf.format(Math.trunc(diffSecs / (365 * 86400)), "year");
+  }
   return new Intl.DateTimeFormat(locale, { dateStyle: "medium", timeStyle: "short" }).format(new Date(iso));
 };
 

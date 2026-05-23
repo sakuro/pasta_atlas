@@ -32,6 +32,8 @@ module PastaAtlas
       end
 
       def localize_datetime(time)
+        return localize_relative_time(time) if viewer_relative_timestamps
+
         Foxtail::Function::DateTime[time.utc, {timeZone: viewer_timezone, dateStyle: :medium, timeStyle: :short}]
       end
 
@@ -77,13 +79,35 @@ module PastaAtlas
         Rack::Protection::AuthenticityToken.token(session)
       end
 
-      private def viewer_timezone
-        @viewer_timezone ||= begin
+      def viewer_relative_timestamps = viewer_preference&.relative_timestamps || false
+
+      private def viewer_preference
+        @viewer_preference ||= begin
           user_id = session[:user_id] || user_repo.find_by_name("guest").id
-          user_preference_repo.find_by_user_id(user_id).timezone
+          user_preference_repo.find_by_user_id(user_id)
         rescue ROM::TupleCountMismatchError
-          "UTC"
+          nil
         end
+      end
+
+      private def viewer_timezone = viewer_preference&.timezone || "UTC"
+
+      private def localize_relative_time(time)
+        locale = ICU4X::Locale.parse(locale_tag)
+        formatter = ICU4X::RelativeTimeFormat.new(locale, style: :long, numeric: :auto)
+        diff = Integer(Time.now.utc - time.utc)
+        abs = diff.abs
+        unit =
+          if abs < 60 then :second
+          elsif abs < 3600 then :minute
+          elsif abs < 86_400 then :hour
+          elsif abs < 7 * 86_400 then :day
+          elsif abs < 30 * 86_400 then :week
+          elsif abs < 365 * 86_400 then :month
+          else :year
+          end
+        divisor = {second: 1, minute: 60, hour: 3600, day: 86_400, week: 7 * 86_400, month: 30 * 86_400, year: 365 * 86_400}[unit]
+        formatter.format(-(diff / divisor), unit)
       end
     end
   end

@@ -2,7 +2,7 @@
 
 RSpec.describe PastaAtlas::Operations::CleanupGuestMaps, :db do
   let(:operation) { Hanami.app["operations.cleanup_guest_maps"] }
-  let(:guest_user) { Factory[:user, name: "guest"] }
+  let(:guest_user) { Hanami.app["repos.user_repo"].find_by_name("guest") }
   let(:regular_user) { Factory[:user] }
 
   def generation_count = Hanami.app["relations.generations"].dataset.count
