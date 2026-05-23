@@ -32,9 +32,29 @@ module PastaAtlas
       end
 
       def localize_datetime(time)
-        return localize_relative_time(time) if viewer_relative_timestamps
+        viewer_relative_timestamps ? localize_relative_datetime(time) : localize_absolute_datetime(time)
+      end
 
+      def localize_absolute_datetime(time)
         Foxtail::Function::DateTime[time.utc, {timeZone: viewer_timezone, dateStyle: :medium, timeStyle: :short}]
+      end
+
+      def localize_relative_datetime(time)
+        locale = ICU4X::Locale.parse(locale_tag)
+        formatter = ICU4X::RelativeTimeFormat.new(locale, style: :long, numeric: :auto)
+        diff = Integer(Time.now.utc - time.utc)
+        abs = diff.abs
+        unit =
+          if abs < 60 then :second
+          elsif abs < 3600 then :minute
+          elsif abs < 86_400 then :hour
+          elsif abs < 7 * 86_400 then :day
+          elsif abs < 30 * 86_400 then :week
+          elsif abs < 365 * 86_400 then :month
+          else :year
+          end
+        divisor = {second: 1, minute: 60, hour: 3600, day: 86_400, week: 7 * 86_400, month: 30 * 86_400, year: 365 * 86_400}[unit]
+        formatter.format(-(diff / divisor), unit)
       end
 
       def t(key, **args)
@@ -91,24 +111,6 @@ module PastaAtlas
       end
 
       private def viewer_timezone = viewer_preference&.timezone || "UTC"
-
-      private def localize_relative_time(time)
-        locale = ICU4X::Locale.parse(locale_tag)
-        formatter = ICU4X::RelativeTimeFormat.new(locale, style: :long, numeric: :auto)
-        diff = Integer(Time.now.utc - time.utc)
-        abs = diff.abs
-        unit =
-          if abs < 60 then :second
-          elsif abs < 3600 then :minute
-          elsif abs < 86_400 then :hour
-          elsif abs < 7 * 86_400 then :day
-          elsif abs < 30 * 86_400 then :week
-          elsif abs < 365 * 86_400 then :month
-          else :year
-          end
-        divisor = {second: 1, minute: 60, hour: 3600, day: 86_400, week: 7 * 86_400, month: 30 * 86_400, year: 365 * 86_400}[unit]
-        formatter.format(-(diff / divisor), unit)
-      end
     end
   end
 end
