@@ -31,7 +31,7 @@ RSpec.describe PastaAtlas::Actions::User::Show, :action_env do
 
   context "when the viewer is the profile owner" do
     let(:env) { locale_env.merge("rack.session" => {"user_id" => 1}, :user_name => "sakuro") }
-    let(:preference) { double("UserPreference", timezone: "Asia/Tokyo", locale: nil) }
+    let(:preference) { double("UserPreference", timezone: "Asia/Tokyo", locale: nil, relative_timestamps: false) }
 
     before do
       allow(find_by_name).to receive(:call).with(user_name: "sakuro").and_return(Success(user))

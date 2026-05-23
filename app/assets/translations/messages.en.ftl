@@ -67,6 +67,8 @@ edit-save-profile = Save Profile
 edit-timezone-label = Timezone
 edit-locale = Locale
     .use-browser = (Use browser)
+edit-time-display = Time display
+    .relative = Show relative timestamps (e.g. "3 days ago")
 edit-save-preferences = Save Preferences
 edit-cancel = Cancel
 

@@ -11,6 +11,7 @@ module PastaAtlas
             required(:user_name).filled(:string)
             optional(:timezone).maybe(:string)
             optional(:locale).maybe(:string)
+            optional(:relative_timestamps).maybe(:string)
           end
 
           def handle(request, response)
@@ -18,7 +19,8 @@ module PastaAtlas
               user_id: current_user_id(request),
               user_name: request.params[:user_name],
               timezone: request.params[:timezone],
-              locale: request.params[:locale]
+              locale: request.params[:locale],
+              relative_timestamps: request.params[:relative_timestamps] == "true"
             )
             case result
             in Failure(Symbol => status)

@@ -23,6 +23,9 @@ RSpec.configure do |config|
     all_databases.call.each do |db|
       DatabaseCleaner[:sequel, db:].clean_with :truncation, except: ["schema_migrations"]
     end
+
+    guest = Factory.create(:user, name: "guest")
+    Factory.create(:user_preference, user_id: guest.id)
   end
 
   config.before :each, :db do |example|

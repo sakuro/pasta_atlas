@@ -67,6 +67,8 @@ edit-save-profile = 프로필 저장
 edit-timezone-label = 시간대
 edit-locale = 언어
     .use-browser = (브라우저 설정 사용)
+edit-time-display = 시간 표시
+    .relative = 상대 시간으로 표시 (예: "3일 전")
 edit-save-preferences = 설정 저장
 edit-cancel = 취소
 

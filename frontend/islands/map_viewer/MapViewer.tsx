@@ -104,13 +104,31 @@ interface MapViewerProps {
   authorAvatarUrl: string | null;
   updatedAt: string | null;
   viewerName: string | null;
+  relativeTimestamps: boolean;
 }
 
 
-const formatDate = (iso: string): string => {
+const formatAbsoluteDate = (iso: string): string => {
   const locale = document.documentElement.lang || "en";
   return new Intl.DateTimeFormat(locale, { dateStyle: "medium", timeStyle: "short" }).format(new Date(iso));
 };
+
+const formatRelativeDate = (iso: string): string => {
+  const locale = document.documentElement.lang || "en";
+  const rtf = new Intl.RelativeTimeFormat(locale, { style: "long", numeric: "auto" });
+  const diffSecs = Math.round((new Date(iso).getTime() - Date.now()) / 1000);
+  const abs = Math.abs(diffSecs);
+  if (abs < 60) return rtf.format(diffSecs, "second");
+  if (abs < 3600) return rtf.format(Math.trunc(diffSecs / 60), "minute");
+  if (abs < 86400) return rtf.format(Math.trunc(diffSecs / 3600), "hour");
+  if (abs < 7 * 86400) return rtf.format(Math.trunc(diffSecs / 86400), "day");
+  if (abs < 30 * 86400) return rtf.format(Math.trunc(diffSecs / (7 * 86400)), "week");
+  if (abs < 365 * 86400) return rtf.format(Math.trunc(diffSecs / (30 * 86400)), "month");
+  return rtf.format(Math.trunc(diffSecs / (365 * 86400)), "year");
+};
+
+const formatDate = (iso: string, relativeTimestamps: boolean): string =>
+  relativeTimestamps ? formatRelativeDate(iso) : formatAbsoluteDate(iso);
 
 export const MapViewer = (props: MapViewerProps) => {
   const [mapData] = createResource(() =>
@@ -256,7 +274,7 @@ export const MapViewer = (props: MapViewerProps) => {
             <span class="is-size-7 has-text-grey" style={{ "flex-shrink": 0 }}>
               <span class="icon-text">
                 <span class="icon is-small"><i class="fa-regular fa-calendar" /></span>
-                <time datetime={iso()}>{formatDate(iso())}</time>
+                <time datetime={iso()} title={props.relativeTimestamps ? formatAbsoluteDate(iso()) : formatRelativeDate(iso())}>{formatDate(iso(), props.relativeTimestamps)}</time>
               </span>
             </span>
           )}

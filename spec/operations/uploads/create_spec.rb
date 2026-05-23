@@ -34,7 +34,7 @@ RSpec.describe PastaAtlas::Operations::Uploads::Create, :db do
     end
 
     context "when uploading as a guest user" do
-      let(:user) { Factory[:user, name: "guest"] }
+      let(:user) { Hanami.app["repos.user_repo"].find_by_name("guest") }
 
       it "sets expires_at approximately 8 days from now" do
         operation.call(user_id: user.id, metadata:, total_image_count: 5)

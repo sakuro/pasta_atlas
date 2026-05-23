@@ -154,7 +154,8 @@ CREATE TABLE public.user_preferences (
     id bigint NOT NULL,
     user_id bigint NOT NULL,
     timezone text DEFAULT 'UTC'::text NOT NULL,
-    locale text
+    locale text,
+    relative_timestamps boolean DEFAULT false NOT NULL
 );
 
 
@@ -452,4 +453,5 @@ INSERT INTO schema_migrations (filename) VALUES
 ('20260502133550_add_avatar_s3_key_to_user_profiles.rb'),
 ('20260504120000_add_expires_at_to_generations.rb'),
 ('20260504130000_create_user_preferences.rb'),
-('20260504140000_remove_timezone_from_user_profiles.rb');
+('20260504140000_remove_timezone_from_user_profiles.rb'),
+('20260523000000_add_relative_timestamps_to_user_preferences.rb');

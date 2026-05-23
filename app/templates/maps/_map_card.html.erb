@@ -34,7 +34,7 @@
           <p class="is-size-7 has-text-grey">
             <span class="icon-text">
               <span class="icon is-small"><i class="fa-regular fa-calendar"></i></span>
-              <time datetime="<%= updated_at.iso8601 %>"><%= t("map-card-updated-at", date: localize_datetime(updated_at)) %></time>
+              <time datetime="<%= updated_at.iso8601 %>" title="<%= viewer_relative_timestamps ? t("map-card-updated-at", date: localize_absolute_datetime(updated_at)) : localize_relative_datetime(updated_at) %>"><%= t("map-card-updated-at", date: localize_datetime(updated_at)) %></time>
             </span>
           </p>
         <% end %>

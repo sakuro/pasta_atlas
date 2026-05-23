@@ -94,25 +94,39 @@
           <input type="hidden" name="_method" value="patch">
           <input type="hidden" name="_csrf_token" value="<%= csrf_token %>">
           <div class="field">
-            <label class="label" for="timezone-select">
+            <p class="label">
               <span class="icon-text">
                 <span class="icon"><i class="fa-solid fa-clock"></i></span>
-                <span><%= t("edit-timezone-label") %></span>
+                <span><%= t("edit-time-display") %></span>
               </span>
-            </label>
-            <div class="control is-flex is-align-items-center">
-              <div class="select">
-                <select id="timezone-select" name="timezone">
-                  <% timezone_identifiers.group_by { |tz| tz.include?("/") ? tz.split("/").first : "Other" }.each do |region, tzs| %>
-                    <optgroup label="<%= region %>">
-                      <% tzs.each do |tz| %>
-                        <option value="<%= tz %>"<%= " selected" if tz == timezone %>><%= tz %></option>
+            </p>
+            <div class="pl-4">
+              <div class="field">
+                <label class="label is-small" for="timezone-select"><%= t("edit-timezone-label") %></label>
+                <div class="control is-flex is-align-items-center">
+                  <div class="select">
+                    <select id="timezone-select" name="timezone">
+                      <% timezone_identifiers.group_by { |tz| tz.include?("/") ? tz.split("/").first : "Other" }.each do |region, tzs| %>
+                        <optgroup label="<%= region %>">
+                          <% tzs.each do |tz| %>
+                            <option value="<%= tz %>"<%= " selected" if tz == timezone %>><%= tz %></option>
+                          <% end %>
+                        </optgroup>
                       <% end %>
-                    </optgroup>
-                  <% end %>
-                </select>
+                    </select>
+                  </div>
+                  <span class="ml-3" id="timezone-time"></span>
+                </div>
               </div>
-              <span class="ml-3" id="timezone-time"></span>
+              <div class="field">
+                <div class="control">
+                  <input type="hidden" name="relative_timestamps" value="false">
+                  <label class="checkbox">
+                    <input type="checkbox" id="relative-timestamps-checkbox" name="relative_timestamps" value="true"<%= " checked" if relative_timestamps %>>
+                    <%= t("edit-time-display.relative") %>
+                  </label>
+                </div>
+              </div>
             </div>
           </div>
           <div class="field">

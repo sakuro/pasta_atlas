@@ -15,11 +15,11 @@ module PastaAtlas
             "operations.user.verify_ownership"
           ]
 
-          def call(user_id:, user_name:, timezone:, locale:)
+          def call(user_id:, user_name:, timezone:, locale:, relative_timestamps:)
             user = step verify_ownership.call(user_id:, user_name:)
             timezone = valid_timezone(timezone)
             locale = valid_locale(locale)
-            user_preference_repo.update_preferences(user.id, timezone:, locale:)
+            user_preference_repo.update_preferences(user.id, timezone:, locale:, relative_timestamps:)
             {user:, locale:}
           end
 
