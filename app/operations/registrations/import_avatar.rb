@@ -29,7 +29,10 @@ module PastaAtlas
         end
 
         private def check_url(url)
-          url.nil? || url.empty? ? Failure(:no_url) : Success(nil)
+          return Failure(:no_url) if url.nil? || url.empty?
+          return Failure(:fetch_failed) unless URI(url).scheme == "https"
+
+          Success(nil)
         end
 
         private def download(url)
@@ -55,7 +58,9 @@ module PastaAtlas
           return nil if redirect_count > MAX_REDIRECTS
 
           uri = URI(url)
-          response = Net::HTTP.start(uri.host, uri.port, use_ssl: uri.scheme == "https") {|http|
+          return nil unless uri.scheme == "https"
+
+          response = Net::HTTP.start(uri.host, uri.port, use_ssl: true) {|http|
             http.get(uri.request_uri)
           }
 
