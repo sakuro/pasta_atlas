@@ -7,6 +7,11 @@
 
 ## App
 app-name = { -app-name }
+discord-name = { -discord }
+factorio-name = { -factorio }
+github-name = { -github }
+mapshot-name = { -mapshot }
+steam-name = { -steam }
 
 ## Surfaces
 surface-nauvis = Nauvis
