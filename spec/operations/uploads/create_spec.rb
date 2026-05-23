@@ -88,6 +88,44 @@ RSpec.describe PastaAtlas::Operations::Uploads::Create, :db do
       end
     end
 
+    context "when metadata fields are invalid" do
+      it "returns an unprocessable_entity failure for non-hex map_id" do
+        result = operation.call(user_id: user.id, metadata: metadata.merge("map_id" => "xyz!"), total_image_count: 5)
+        expect(result).to be_failure
+        expect(result.failure).to eq(:unprocessable_entity)
+      end
+
+      it "returns an unprocessable_entity failure for map_id with path separators" do
+        result = operation.call(user_id: user.id, metadata: metadata.merge("map_id" => "ae8ec3ab/x"), total_image_count: 5)
+        expect(result).to be_failure
+        expect(result.failure).to eq(:unprocessable_entity)
+      end
+
+      it "returns an unprocessable_entity failure for non-hex unique_id" do
+        result = operation.call(user_id: user.id, metadata: metadata.merge("unique_id" => "xyz!"), total_image_count: 5)
+        expect(result).to be_failure
+        expect(result.failure).to eq(:unprocessable_entity)
+      end
+
+      it "returns an unprocessable_entity failure for non-integer tick" do
+        result = operation.call(user_id: user.id, metadata: metadata.merge("tick" => "abc"), total_image_count: 5)
+        expect(result).to be_failure
+        expect(result.failure).to eq(:unprocessable_entity)
+      end
+
+      it "returns an unprocessable_entity failure for negative tick" do
+        result = operation.call(user_id: user.id, metadata: metadata.merge("tick" => "-1"), total_image_count: 5)
+        expect(result).to be_failure
+        expect(result.failure).to eq(:unprocessable_entity)
+      end
+
+      it "returns an unprocessable_entity failure for tick exceeding uint32 max" do
+        result = operation.call(user_id: user.id, metadata: metadata.merge("tick" => "4294967296"), total_image_count: 5)
+        expect(result).to be_failure
+        expect(result.failure).to eq(:unprocessable_entity)
+      end
+    end
+
     context "when S3 write fails" do
       before do
         allow(s3_client).to receive(:put_object)
