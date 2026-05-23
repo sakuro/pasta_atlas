@@ -12,11 +12,11 @@ A web application for browsing Factorio map screenshots captured by the [mapshot
 | CSS | [Bulma](https://bulma.io/) |
 | Icons | [Font Awesome](https://fontawesome.com/) |
 | Database | PostgreSQL |
-| Object storage | AWS S3 (local: [floci](https://github.com/gmr/floci)) |
+| Object storage | AWS S3 (local: [floci](https://floci.io/)) |
 
 ## Prerequisites
 
-- [mise](https://mise.jdx.dev/) — task runner and tool version manager
+- [mise](https://mise.en.dev/) — task runner and tool version manager
 - Docker — runs PostgreSQL and the S3 emulator (floci) via Docker Compose
 - A GitHub OAuth app — required for authentication
 - A Discord OAuth app — required for authentication
