@@ -10,7 +10,8 @@ module PastaAtlas
           user = step find_user(current_user_id)
           map = step find_map(ulid)
           step check_owner(map, user)
-          send_deletion_request(map)
+          request_deletion(map)
+          map
         end
 
         private def find_user(user_id)
@@ -29,12 +30,11 @@ module PastaAtlas
           map.owned_by?(user) ? Success(map) : Failure(:forbidden)
         end
 
-        private def send_deletion_request(map)
+        private def request_deletion(map)
           sqs_client.send_message(
             queue_url: settings.sqs_map_deletion_queue_url,
             message_body: map.ulid
           )
-          map
         end
       end
     end
