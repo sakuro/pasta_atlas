@@ -61,11 +61,11 @@ RSpec.describe PastaAtlas::Actions::Auth::OAuthCallback, :action_env do
       allow(link).to receive(:call).with(user_id: 1, provider: "github", uid: "12345").and_return(Success(nil))
     end
 
-    it "links the provider and redirects to edit page" do
+    it "links the provider and redirects to user page" do
       response = action.call(env)
 
       expect(response.status).to eq(302)
-      expect(response.headers["Location"]).to eq("/@alice/edit")
+      expect(response.headers["Location"]).to eq("/@alice")
     end
   end
 end

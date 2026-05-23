@@ -27,7 +27,7 @@ module PastaAtlas
               unlink_result = unlink.call(user_id: user.id, provider: request.params[:provider])
               response.flash[:error] = "error-credential-last" if unlink_result.failure?
 
-              response.redirect_to "/@#{user.name}/edit"
+              response.redirect_to "/@#{user.name}"
             end
           end
         end

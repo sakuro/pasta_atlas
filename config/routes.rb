@@ -11,7 +11,6 @@ module PastaAtlas
     post "/maps/:ulid/deletion_requests", to: "maps.deletion_requests.create"
 
     get "/@:user_name", to: "user.show", as: :user
-    get "/@:user_name/edit", to: "user.edit", as: :edit_user
     patch "/@:user_name/profile", to: "user.profile.update", as: :user_profile
     patch "/@:user_name/preferences", to: "user.preferences.update", as: :user_preferences
     patch "/@:user_name/avatar", to: "user.avatar.update"

@@ -1,12 +1,13 @@
 # frozen_string_literal: true
 
 RSpec.describe PastaAtlas::Actions::User::Profile::Update, :action_env do
-  let(:update_profile) { instance_double(PastaAtlas::Operations::User::Profile::Update) }
-  let(:load_profile) { instance_double(PastaAtlas::Operations::User::Profile::Load) }
-  let(:load_preferences) { instance_double(PastaAtlas::Operations::User::Preferences::Load) }
+  let(:list_recent_maps) { instance_double(PastaAtlas::Operations::Maps::ListRecentByUser) }
   let(:load_credentials) { instance_double(PastaAtlas::Operations::User::Credentials::Load) }
-  let(:action) { PastaAtlas::Actions::User::Profile::Update.new(update_profile:, load_profile:, load_preferences:, load_credentials:, edit_view:) }
-  let(:edit_view) { Hanami.app["views.user.edit"] }
+  let(:load_preferences) { instance_double(PastaAtlas::Operations::User::Preferences::Load) }
+  let(:load_profile) { instance_double(PastaAtlas::Operations::User::Profile::Load) }
+  let(:show_view) { Hanami.app["views.user.show"] }
+  let(:update_profile) { instance_double(PastaAtlas::Operations::User::Profile::Update) }
+  let(:action) { PastaAtlas::Actions::User::Profile::Update.new(list_recent_maps:, load_credentials:, load_preferences:, load_profile:, show_view:, update_profile:) }
 
   let(:user) { double("User", id: 1, name: "sakuro") }
 
@@ -79,6 +80,7 @@ RSpec.describe PastaAtlas::Actions::User::Profile::Update, :action_env do
         allow(load_profile).to receive(:call).with(user_id: 1).and_return(Success({display_name: "Sakuro", avatar_url: nil}))
         allow(load_preferences).to receive(:call).with(user_id: 1, viewer_id: 1).and_return(Success(preference))
         allow(load_credentials).to receive(:call).with(user_id: 1, viewer_id: 1).and_return(Success([]))
+        allow(list_recent_maps).to receive(:call).with(user_id: 1, user_info: anything).and_return(Success([]))
       end
 
       it "re-renders the form" do
