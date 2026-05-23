@@ -241,12 +241,24 @@ export const MapViewer = (props: MapViewerProps) => {
             </button>
           </span>
         </Show>
-        <a href={`/@${props.authorName}`} class="is-flex is-align-items-center" style={{ "flex-shrink": 0, gap: "0.4rem" }}>
-          <Show when={props.authorAvatarUrl} fallback={<i class="fa-solid fa-circle-user" style={{ "font-size": "24px" }} />}>
-            {(url) => <img src={url()} width="24" height="24" style={{ "border-radius": "50%" }} />}
-          </Show>
-          <span class="is-size-7">{props.authorDisplayName}</span>
-        </a>
+        <Show
+          when={props.authorName !== "guest"}
+          fallback={
+            <span class="is-flex is-align-items-center" style={{ "flex-shrink": 0, gap: "0.4rem" }}>
+              <Show when={props.authorAvatarUrl} fallback={<i class="fa-solid fa-circle-user" style={{ "font-size": "24px" }} />}>
+                {(url) => <img src={url()} width="24" height="24" style={{ "border-radius": "50%" }} />}
+              </Show>
+              <span class="is-size-7">{props.authorDisplayName}</span>
+            </span>
+          }
+        >
+          <a href={`/@${props.authorName}`} class="is-flex is-align-items-center" style={{ "flex-shrink": 0, gap: "0.4rem" }}>
+            <Show when={props.authorAvatarUrl} fallback={<i class="fa-solid fa-circle-user" style={{ "font-size": "24px" }} />}>
+              {(url) => <img src={url()} width="24" height="24" style={{ "border-radius": "50%" }} />}
+            </Show>
+            <span class="is-size-7">{props.authorDisplayName}</span>
+          </a>
+        </Show>
         <Show when={props.updatedAt}>
           {(iso) => (
             <span class="is-size-7 has-text-grey" style={{ "flex-shrink": 0 }}>
