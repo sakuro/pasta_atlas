@@ -1,143 +1,39 @@
 <section class="section">
   <div class="container is-max-tablet">
-    <% if own_profile %>
-      <div class="tabs" data-tabs="user-show">
-        <ul>
-          <li data-target="show-profile" class="is-active">
-            <a><%= t("user-tab-profile") %></a>
-            <a href="<%= path(:edit_user, user_name:) %>#edit-profile" class="tab-edit-link" title="<%= t("user-tab-profile-edit.title") %>">
-              <span class="icon is-small"><i class="fa-solid fa-pencil"></i></span>
-            </a>
-          </li>
-          <li data-target="show-preferences">
-            <a><%= t("user-tab-preferences") %></a>
-            <a href="<%= path(:edit_user, user_name:) %>#edit-preferences" class="tab-edit-link" title="<%= t("user-tab-preferences-edit.title") %>">
-              <span class="icon is-small"><i class="fa-solid fa-pencil"></i></span>
-            </a>
-          </li>
-        </ul>
+    <div class="level">
+      <div class="level-left">
+        <%= render "shared/avatar", avatar_url:, avatar_size: 64 %>
+        <h1 class="title ml-3"><%= display_name || user_name %></h1>
       </div>
-    <% else %>
-      <div class="level">
-        <div class="level-left">
-          <%= render "shared/avatar", avatar_url:, avatar_size: 64 %>
-          <h1 class="title ml-3"><%= display_name || user_name %></h1>
-        </div>
-      </div>
-      <p class="subtitle">@<%= user_name %></p>
-    <% end %>
+    </div>
+    <p class="subtitle">@<%= user_name %></p>
   </div>
 
-  <% if own_profile %>
-    <div id="show-profile" data-tab-panel="user-show">
-      <div class="container is-max-tablet mt-5">
-        <div class="level">
-          <div class="level-left">
-            <%= render "shared/avatar", avatar_url:, avatar_size: 64 %>
-            <h1 class="title ml-3"><%= display_name || user_name %></h1>
+  <% unless recent_map_infos.empty? %>
+    <div class="container mt-5">
+      <h2 class="title is-4">
+        <span class="icon-text">
+          <span class="icon"><i class="fa-solid fa-map"></i></span>
+          <span><%= t("user-recent-maps") %></span>
+        </span>
+      </h2>
+      <div class="columns is-multiline">
+        <% recent_map_infos.each do |map_info| %>
+          <div class="column is-half-tablet is-one-quarter-desktop">
+            <%= render "maps/map_card",
+                  map_ulid: map_info.ulid,
+                  map_display_name: map_info.display_name,
+                  user_name: map_info.user_info.name,
+                  author_display_name: map_info.user_info.display_name,
+                  author_avatar_url: map_info.user_info.avatar_url,
+                  thumbnail_url: map_info.thumbnail_url,
+                  metadata_url: map_info.metadata_url,
+                  updated_at: map_info.updated_at %>
           </div>
-        </div>
-        <p class="subtitle">@<%= user_name %></p>
+        <% end %>
       </div>
-      <% unless recent_map_infos.empty? %>
-        <div class="container mt-5">
-          <h2 class="title is-4">
-            <span class="icon-text">
-              <span class="icon"><i class="fa-solid fa-map"></i></span>
-              <span><%= t("user-recent-maps") %></span>
-            </span>
-          </h2>
-          <div class="columns is-multiline">
-            <% recent_map_infos.each do |map_info| %>
-              <div class="column is-half-tablet is-one-quarter-desktop">
-                <%= render "maps/map_card",
-                      map_ulid: map_info.ulid,
-                      map_display_name: map_info.display_name,
-                      user_name: map_info.user_info.name,
-                      author_display_name: map_info.user_info.display_name,
-                      author_avatar_url: map_info.user_info.avatar_url,
-                      thumbnail_url: map_info.thumbnail_url,
-                      metadata_url: map_info.metadata_url,
-                      updated_at: map_info.updated_at %>
-              </div>
-            <% end %>
-          </div>
-          <script src="<%= island_src("map_info_button") %>" type="module"></script>
-          <script src="<%= island_src("share_buttons") %>" type="module"></script>
-        </div>
-      <% end %>
+      <script src="<%= island_src("map_info_button") %>" type="module"></script>
+      <script src="<%= island_src("share_buttons") %>" type="module"></script>
     </div>
-
-    <div id="show-preferences" class="is-hidden" data-tab-panel="user-show">
-      <div class="container is-max-tablet mt-5">
-        <div class="field">
-          <label class="label">
-            <span class="icon-text">
-              <span class="icon"><i class="fa-solid fa-link"></i></span>
-              <span><%= t("user-connected-accounts-label") %></span>
-            </span>
-          </label>
-          <div class="level">
-            <div class="level-left">
-              <% connected_providers.each do |provider| %>
-                <div class="level-item">
-                  <span class="icon-text">
-                    <span class="icon"><i class="fa-brands fa-<%= provider %>"></i></span>
-                    <span><%= t("provider-#{provider}") %></span>
-                  </span>
-                </div>
-              <% end %>
-            </div>
-          </div>
-        </div>
-        <hr>
-        <div class="field">
-          <label class="label">
-            <span class="icon-text">
-              <span class="icon"><i class="fa-solid fa-clock"></i></span>
-              <span><%= t("user-timezone-label") %></span>
-            </span>
-          </label>
-          <p><%= preference.timezone %></p>
-        </div>
-        <div class="field">
-          <label class="label">
-            <span class="icon-text">
-              <span class="icon"><i class="fa-solid fa-language"></i></span>
-              <span><%= t("user-locale-label") %></span>
-            </span>
-          </label>
-          <p><%= preference.locale ? locale_name(preference.locale) : t("edit-locale.use-browser") %></p>
-        </div>
-      </div>
-    </div>
-  <% else %>
-    <% unless recent_map_infos.empty? %>
-      <div class="container mt-5">
-        <h2 class="title is-4">
-          <span class="icon-text">
-            <span class="icon"><i class="fa-solid fa-map"></i></span>
-            <span><%= t("user-recent-maps") %></span>
-          </span>
-        </h2>
-        <div class="columns is-multiline">
-          <% recent_map_infos.each do |map_info| %>
-            <div class="column is-half-tablet is-one-quarter-desktop">
-              <%= render "maps/map_card",
-                    map_ulid: map_info.ulid,
-                    map_display_name: map_info.display_name,
-                    user_name: map_info.user_info.name,
-                    author_display_name: map_info.user_info.display_name,
-                    author_avatar_url: map_info.user_info.avatar_url,
-                    thumbnail_url: map_info.thumbnail_url,
-                    metadata_url: map_info.metadata_url,
-                    updated_at: map_info.updated_at %>
-            </div>
-          <% end %>
-        </div>
-        <script src="<%= island_src("map_info_button") %>" type="module"></script>
-        <script src="<%= island_src("share_buttons") %>" type="module"></script>
-      </div>
-    <% end %>
   <% end %>
 </section>
