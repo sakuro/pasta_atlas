@@ -55,6 +55,32 @@ RSpec.describe PastaAtlas::Operations::Uploads::IssuePresignedUrls, :db do
       end
     end
 
+    context "when filenames contain invalid entries" do
+      it "returns an unprocessable_entity failure for a path traversal attempt" do
+        result = operation.call(upload_ulid: upload.ulid, filenames: ["../../other/file.jpg"])
+        expect(result).to be_failure
+        expect(result.failure).to eq(:unprocessable_entity)
+      end
+
+      it "returns an unprocessable_entity failure for a filename without the zoom directory" do
+        result = operation.call(upload_ulid: upload.ulid, filenames: ["tile_0_0.jpg"])
+        expect(result).to be_failure
+        expect(result.failure).to eq(:unprocessable_entity)
+      end
+
+      it "returns an unprocessable_entity failure for mapshot.json" do
+        result = operation.call(upload_ulid: upload.ulid, filenames: ["mapshot.json"])
+        expect(result).to be_failure
+        expect(result.failure).to eq(:unprocessable_entity)
+      end
+
+      it "returns an unprocessable_entity failure when filenames is not an array" do
+        result = operation.call(upload_ulid: upload.ulid, filenames: "s1zoom_4/tile_0_0.jpg")
+        expect(result).to be_failure
+        expect(result.failure).to eq(:unprocessable_entity)
+      end
+    end
+
     context "when the upload is not pending" do
       before { upload_repo.update_status(id: upload.id, status: "complete", completed_at: Time.now) }
 

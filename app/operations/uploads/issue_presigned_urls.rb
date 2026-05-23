@@ -13,9 +13,17 @@ module PastaAtlas
           s3_client: "s3.client"
         ]
 
+        # file_prefix = "s" .. surface.index .. "zoom_":
+        # https://github.com/Palats/mapshot/blob/ddad172f187d08e56df720efe2fe0bddfb65e347/mod/control.lua#L295
+        # path = data_prefix .. "tile_" .. tile_x .. "_" .. tile_y .. ".jpg":
+        # https://github.com/Palats/mapshot/blob/ddad172f187d08e56df720efe2fe0bddfb65e347/mod/control.lua#L338
+        TILE_FILENAME_PATTERN = %r{\As\d+zoom_\d+/tile_-?\d+_-?\d+\.jpg\z}
+        private_constant :TILE_FILENAME_PATTERN
+
         def call(upload_ulid:, filenames:)
           upload = step find_upload(upload_ulid)
           step validate_pending(upload)
+          step validate_filenames(filenames)
 
           generation = generation_repo.find_by_id(upload.generation_id)
           map = map_repo.find_by_id(generation.map_id)
@@ -25,6 +33,13 @@ module PastaAtlas
           existing_keys = step list_existing_keys(prefix)
 
           presigned_urls_for(filenames:, prefix:, existing_keys:)
+        end
+
+        private def validate_filenames(filenames)
+          return Failure(:unprocessable_entity) unless filenames.is_a?(Array)
+          return Failure(:unprocessable_entity) unless filenames.all? {|f| f.is_a?(String) && TILE_FILENAME_PATTERN.match?(f) }
+
+          Success(nil)
         end
 
         private def find_upload(ulid)
