@@ -12,7 +12,9 @@ export const HowToUploadModal = (props: { onClose: () => void }) => (
         <section class="modal-card-body">
           <div class="content">
             <h4 data-l10n-id="how-to-upload-step1-heading" />
-            <p data-l10n-id="how-to-upload-step1-body" />
+            <p data-l10n-id="how-to-upload-step1-body">
+              <a data-l10n-name="mapshot-link" href="https://mods.factorio.com/mod/mapshot" target="_blank" rel="noopener noreferrer" />
+            </p>
 
             <h4 data-l10n-id="how-to-upload-step2-heading" />
             <p data-l10n-id="how-to-upload-step2-open-console" />

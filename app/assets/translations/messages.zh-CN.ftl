@@ -143,7 +143,7 @@ how-to-upload-button =
 how-to-upload-title = 上传说明
 how-to-upload-close = 关闭
 how-to-upload-step1-heading = 1. 安装 { -mapshot } MOD
-how-to-upload-step1-body = 从 { -factorio } 游戏内的 MOD 菜单安装 { -mapshot }，然后重启游戏。
+how-to-upload-step1-body = 从 { -factorio } 游戏内的 MOD 菜单安装 <a data-l10n-name="mapshot-link">{ -mapshot }</a>，然后重启游戏。
 how-to-upload-step2-heading = 2. 截取地图
 how-to-upload-step2-open-console = 打开游戏内控制台并运行：
 how-to-upload-step2-wait = 截取期间游戏可能暂时无响应，请等待其恢复正常。

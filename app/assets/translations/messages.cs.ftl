@@ -160,7 +160,7 @@ how-to-upload-button =
 how-to-upload-title = Jak nahrát
 how-to-upload-close = Zavřít
 how-to-upload-step1-heading = 1. Nainstalujte mod { -mapshot }
-how-to-upload-step1-body = Nainstalujte { -mapshot(case: "accusative") } z herního menu Modů a restartujte hru.
+how-to-upload-step1-body = Nainstalujte <a data-l10n-name="mapshot-link">{ -mapshot(case: "accusative") }</a> z herního menu Modů a restartujte hru.
 how-to-upload-step2-heading = 2. Zachyťte svou mapu
 how-to-upload-step2-open-console = Otevřete herní konzoli a spusťte:
 how-to-upload-step2-wait = Během snímání hra dočasně přestane reagovat — počkejte, dokud se nevrátí do normálního stavu.

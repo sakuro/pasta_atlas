@@ -143,7 +143,7 @@ how-to-upload-button =
 how-to-upload-title = 업로드 방법
 how-to-upload-close = 닫기
 how-to-upload-step1-heading = 1. { -mapshot } MOD 설치
-how-to-upload-step1-body = { -factorio } 게임 내 MOD 메뉴에서 { -mapshot }을 설치하고 게임을 재시작하세요.
+how-to-upload-step1-body = { -factorio } 게임 내 MOD 메뉴에서 <a data-l10n-name="mapshot-link">{ -mapshot }</a>을 설치하고 게임을 재시작하세요.
 how-to-upload-step2-heading = 2. 맵 캡처
 how-to-upload-step2-open-console = 게임 내 콘솔을 열고 다음 명령어를 실행하세요:
 how-to-upload-step2-wait = 캡처 중에는 게임이 잠시 응답하지 않을 수 있습니다 — 정상으로 돌아올 때까지 기다려 주세요.
