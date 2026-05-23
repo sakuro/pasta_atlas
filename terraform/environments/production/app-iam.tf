@@ -79,7 +79,7 @@ resource "aws_iam_policy" "app_sqs" {
 data "aws_iam_policy_document" "app_sqs" {
   statement {
     actions   = ["sqs:SendMessage"]
-    resources = [aws_sqs_queue.map_deletion.arn]
+    resources = [aws_sqs_queue.s3_cleanup.arn]
   }
 }
 

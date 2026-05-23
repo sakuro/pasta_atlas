@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
 namespace :sqs do
-  desc "Poll SQS map deletion queue and process messages (local dev)"
+  desc "Poll SQS S3 cleanup queue and process messages (local dev)"
   task worker: :environment do
     sqs_client = Hanami.app["sqs.client"]
-    queue_url = Hanami.app["settings"].sqs_map_deletion_queue_url
+    queue_url = Hanami.app["settings"].sqs_s3_cleanup_queue_url
 
     loop do
       resp = sqs_client.receive_message(
@@ -13,14 +13,28 @@ namespace :sqs do
         wait_time_seconds: 20
       )
       resp.messages.each do |msg|
-        result = Hanami.app["operations.maps.delete"].call(ulid: msg.body)
-        if result.success? || result.failure == :not_found
+        result = Hanami.app["operations.maps.delete"].call(s3_prefix: msg.body)
+        if result.success?
           sqs_client.delete_message(queue_url:, receipt_handle: msg.receipt_handle)
-          puts "Deleted map #{msg.body}"
+          puts "Deleted S3 objects under #{msg.body}"
         else
-          warn "Failed to delete map #{msg.body}: #{result.failure}"
+          warn "Failed to delete S3 objects under #{msg.body}: #{result.failure}"
         end
       end
+    end
+  end
+
+  desc "Delete S3 objects under the given prefix (one-shot, for EventBridge Pipes)"
+  task :delete_s3_prefix, [:s3_prefix] => :environment do |_, args|
+    s3_prefix = args[:s3_prefix]
+    abort "Usage: rake sqs:delete_s3_prefix[S3_PREFIX]" unless s3_prefix
+
+    result = Hanami.app["operations.maps.delete"].call(s3_prefix:)
+    if result.success?
+      puts "Deleted S3 objects under #{s3_prefix}"
+    else
+      warn "Failed to delete S3 objects under #{s3_prefix}: #{result.failure}"
+      exit 1
     end
   end
 end

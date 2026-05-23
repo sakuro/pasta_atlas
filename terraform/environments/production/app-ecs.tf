@@ -61,7 +61,7 @@ resource "aws_ecs_task_definition" "app" {
       environment = [
         { name = "S3_BUCKET", value = aws_s3_bucket.mapshots.bucket },
         { name = "CLOUDFRONT_BASE_URL", value = "https://${aws_cloudfront_distribution.mapshots.domain_name}" },
-        { name = "SQS_MAP_DELETION_QUEUE_URL", value = aws_sqs_queue.map_deletion.url },
+        { name = "SQS_S3_CLEANUP_QUEUE_URL", value = aws_sqs_queue.s3_cleanup.url },
       ]
       secrets = [
         { name = "SESSION_SECRET", valueFrom = aws_ssm_parameter.session_secret.arn },

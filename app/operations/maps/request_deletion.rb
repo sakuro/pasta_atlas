@@ -10,7 +10,9 @@ module PastaAtlas
           user = step find_user(current_user_id)
           map = step find_map(ulid)
           step check_owner(map, user)
-          request_deletion(map)
+          s3_prefix = "#{user.name}/#{map.mapshot_map_id}/"
+          map_repo.delete_by_id(map.id)
+          schedule_s3_cleanup(s3_prefix)
           map
         end
 
@@ -30,11 +32,13 @@ module PastaAtlas
           map.owned_by?(user) ? Success(map) : Failure(:forbidden)
         end
 
-        private def request_deletion(map)
+        private def schedule_s3_cleanup(s3_prefix)
           sqs_client.send_message(
-            queue_url: settings.sqs_map_deletion_queue_url,
-            message_body: map.ulid
+            queue_url: settings.sqs_s3_cleanup_queue_url,
+            message_body: s3_prefix
           )
+        rescue Aws::SQS::Errors::ServiceError
+          # Objects will be cleaned up by the periodic orphan cleanup job
         end
       end
     end
