@@ -210,14 +210,6 @@ export const MapViewer = (props: MapViewerProps) => {
                 >
                   <span class="icon is-small"><i class="fa-solid fa-pencil" /></span>
                 </button>
-                <button
-                  class="button is-ghost is-small has-text-danger"
-                  style={{ padding: 0, height: "auto", "min-width": 0, "flex-shrink": 0 }}
-                  onClick={() => setShowDeleteConfirm(true)}
-                  data-l10n-id="map-delete-button"
-                >
-                  <span class="icon is-small"><i class="fa-solid fa-trash" /></span>
-                </button>
               </Show>
             </span>
           }
@@ -290,9 +282,16 @@ export const MapViewer = (props: MapViewerProps) => {
           )}
         </Show>
         <Show when={mapshot()}>
-          <button class="button is-small" onClick={() => setShowInfo(true)} data-l10n-id="map-info-button">
-            <span class="icon is-small"><i class="fa-solid fa-circle-info" /></span>
-          </button>
+          <div class="buttons has-addons mb-0">
+            <button class="button is-small" onClick={() => setShowInfo(true)} data-l10n-id="map-info-button">
+              <span class="icon is-small"><i class="fa-solid fa-circle-info" /></span>
+            </button>
+            <Show when={isOwner()}>
+              <button class="button is-small" onClick={() => setShowDeleteConfirm(true)} data-l10n-id="map-delete-button">
+                <span class="icon is-small has-text-danger"><i class="fa-solid fa-trash" /></span>
+              </button>
+            </Show>
+          </div>
         </Show>
         <Show when={mapData()}>
           {(data) => (
