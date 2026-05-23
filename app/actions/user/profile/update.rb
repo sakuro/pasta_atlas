@@ -60,7 +60,7 @@ module PastaAtlas
             in Failure(Symbol => status)
               halt status
             in Success(user)
-              response.redirect_to "/@#{user.name}"
+              response.redirect_to "/@#{user.name}#edit-profile"
             end
           end
         end

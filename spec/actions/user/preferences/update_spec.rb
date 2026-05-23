@@ -51,7 +51,7 @@ RSpec.describe PastaAtlas::Actions::User::Preferences::Update do
       response = action.call(env)
 
       expect(response.status).to eq(302)
-      expect(response.headers["Location"]).to eq("/@sakuro")
+      expect(response.headers["Location"]).to eq("/@sakuro#edit-preferences")
     end
 
     context "when timezone is invalid" do

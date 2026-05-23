@@ -65,7 +65,7 @@ RSpec.describe PastaAtlas::Actions::Auth::OAuthCallback, :action_env do
       response = action.call(env)
 
       expect(response.status).to eq(302)
-      expect(response.headers["Location"]).to eq("/@alice")
+      expect(response.headers["Location"]).to eq("/@alice#edit-credentials")
     end
   end
 end
