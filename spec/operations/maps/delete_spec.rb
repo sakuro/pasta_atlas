@@ -40,10 +40,10 @@ RSpec.describe PastaAtlas::Operations::Maps::Delete do
         expect(result.failure).to eq(:s3_error)
       end
 
-      it "does not delete the DB record" do
+      it "deletes the DB record before attempting S3 deletion" do
         operation.call(ulid: "01MAP1")
 
-        expect(map_repo).not_to have_received(:delete_by_id)
+        expect(map_repo).to have_received(:delete_by_id).with(10)
       end
     end
 

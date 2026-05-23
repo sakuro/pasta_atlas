@@ -9,8 +9,8 @@ module PastaAtlas
         def call(ulid:)
           map = step find_map(ulid)
           user = step find_user(map.user_id)
+          map_repo.delete_by_id(map.id)
           step delete_s3_objects(user, map)
-          delete_map_record(map.id)
           map
         end
 
@@ -37,10 +37,6 @@ module PastaAtlas
           Success(nil)
         rescue Aws::S3::Errors::ServiceError
           Failure(:s3_error)
-        end
-
-        private def delete_map_record(id)
-          map_repo.delete_by_id(id)
         end
       end
     end
