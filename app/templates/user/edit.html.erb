@@ -91,6 +91,30 @@
         </div>
       </div>
       <hr>
+      <h2 class="subtitle has-text-danger"><%= t("account-delete-title") %></h2>
+      <p class="mb-3"><%= t("account-delete-warning") %></p>
+      <form action="/@<%= user_name %>" method="post" data-confirm-delete="true">
+        <input type="hidden" name="_method" value="delete">
+        <input type="hidden" name="_csrf_token" value="<%= csrf_token %>">
+        <input type="hidden" name="user_name" value="<%= user_name %>">
+        <div class="field">
+          <label class="label" for="confirm_user_name"><%= t("account-delete-confirm-label") %></label>
+          <div class="control">
+            <input class="input" type="text" id="confirm_user_name" name="confirm_user_name"
+                   autocomplete="off" data-confirm-username="<%= user_name %>">
+          </div>
+        </div>
+        <div class="field">
+          <div class="control">
+            <button class="button is-danger" type="submit" id="delete-account-button" disabled>
+              <span class="icon"><i class="fa-solid fa-trash"></i></span>
+              <span><%= t("account-delete-button") %></span>
+            </button>
+          </div>
+        </div>
+      </form>
+
+      <hr>
       <form action="<%= path(:user_preferences, user_name:) %>" method="post">
         <input type="hidden" name="_method" value="patch">
         <input type="hidden" name="_csrf_token" value="<%= csrf_token %>">

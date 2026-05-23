@@ -7,6 +7,7 @@ module PastaAtlas
       def find_by_ids(ids) = users.where(id: ids).to_a
       def find_by_name(name) = users.where(name:).one
       def create(name:) = users.command(:create).call(name:)
+      def destroy(id) = users.dataset.where(id:).delete
     end
   end
 end

@@ -62,6 +62,12 @@ edit-locale = 語言
 edit-save-preferences = 儲存偏好設定
 edit-cancel = 取消
 
+## Danger zone
+account-delete-title = 刪除帳戶
+account-delete-warning = 此操作無法復原。您所擁有的所有地圖資料也將被刪除。
+account-delete-confirm-label = 請輸入使用者名稱以確認：
+account-delete-button = 刪除我的帳戶
+
 ## Connected accounts
 credential-connect-discord = 連結 { -discord }
 credential-connect-github = 連結 { -github }

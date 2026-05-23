@@ -62,6 +62,12 @@ edit-locale = 言語
 edit-save-preferences = 設定を保存
 edit-cancel = キャンセル
 
+## Danger zone
+account-delete-title = アカウントを削除する
+account-delete-warning = この操作は取り消せません。所有する全ての地図データも削除されます。
+account-delete-confirm-label = ユーザー名を入力して確認してください:
+account-delete-button = アカウントを削除する
+
 ## Connected accounts
 credential-connect-discord = { -discord } と連携する
 credential-connect-github = { -github } と連携する

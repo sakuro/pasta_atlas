@@ -62,6 +62,12 @@ edit-locale = 언어
 edit-save-preferences = 설정 저장
 edit-cancel = 취소
 
+## Danger zone
+account-delete-title = 계정 삭제
+account-delete-warning = 이 작업은 되돌릴 수 없습니다. 소유한 모든 지도 데이터도 삭제됩니다.
+account-delete-confirm-label = 확인을 위해 사용자 이름을 입력하세요:
+account-delete-button = 내 계정 삭제
+
 ## Connected accounts
 credential-connect-discord = { -discord }로 연결
 credential-connect-github = { -github }로 연결
