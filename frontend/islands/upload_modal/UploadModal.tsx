@@ -128,12 +128,24 @@ export const UploadModal = (props: { isGuest: boolean }) => {
     const fileMap = new Map<string, File>();
     for (const f of imageFiles) fileMap.set(relPath(f), f);
 
-    setDisplayName(resolveDisplayName(mapshotJson));
+    const defaultName = resolveDisplayName(mapshotJson);
+    let initialName = defaultName;
+    try {
+      const resp = await fetch(`/api/v1/maps/lookup?mapshot_map_id=${encodeURIComponent(mapshotJson.map_id)}`);
+      if (resp.ok) {
+        const data = await resp.json() as { name: string | null };
+        if (data.name) initialName = data.name;
+      }
+    } catch {
+      // Use JSON-derived name if lookup fails
+    }
+
+    setDisplayName(initialName);
     setState({
       type: "confirming",
       mapshotJson,
       fileMap,
-      mapName: resolveDisplayName(mapshotJson),
+      mapName: defaultName,
       surfaceCount: mapshotJson.surfaces?.length ?? 0,
       imageCount: imageFiles.length,
       totalBytes: imageFiles.reduce((sum, f) => sum + f.size, 0),

@@ -22,6 +22,7 @@ module PastaAtlas
     post "/auth/register", to: "auth.registrations.create"
     delete "/auth/session", to: "auth.session.destroy", as: :auth_session
 
+    get "/api/v1/maps/lookup", to: "maps.lookup"
     get "/api/v1/maps/:ulid", to: "maps.show"
     patch "/api/v1/maps/:ulid/name", to: "maps.update_name"
     post "/api/v1/profile/avatar_presigned_url", to: "user.avatar_presigned_url.create"
