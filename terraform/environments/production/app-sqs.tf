@@ -1,5 +1,5 @@
-resource "aws_sqs_queue" "map_deletion" {
-  name = "${var.app_name}-${var.environment}-map-deletion"
+resource "aws_sqs_queue" "s3_cleanup" {
+  name = "${var.app_name}-${var.environment}-s3-cleanup"
 }
 
 resource "aws_iam_role" "pipe" {
@@ -30,7 +30,7 @@ data "aws_iam_policy_document" "pipe" {
       "sqs:DeleteMessage",
       "sqs:GetQueueAttributes",
     ]
-    resources = [aws_sqs_queue.map_deletion.arn]
+    resources = [aws_sqs_queue.s3_cleanup.arn]
   }
 
   statement {
@@ -52,10 +52,10 @@ resource "aws_iam_role_policy_attachment" "pipe" {
   policy_arn = aws_iam_policy.pipe.arn
 }
 
-resource "aws_pipes_pipe" "map_deletion" {
-  name     = "${var.app_name}-${var.environment}-map-deletion"
+resource "aws_pipes_pipe" "s3_cleanup" {
+  name     = "${var.app_name}-${var.environment}-s3-cleanup"
   role_arn = aws_iam_role.pipe.arn
-  source   = aws_sqs_queue.map_deletion.arn
+  source   = aws_sqs_queue.s3_cleanup.arn
   target   = aws_ecs_cluster.main.arn
 
   source_parameters {
@@ -68,7 +68,7 @@ resource "aws_pipes_pipe" "map_deletion" {
     input_template = jsonencode({
       containerOverrides = [{
         name    = var.app_name
-        command = ["bundle", "exec", "rake", "maps:delete_by_ulid[<$.body>]"]
+        command = ["bundle", "exec", "rake", "sqs:delete_s3_prefix[<$.body>]"]
       }]
     })
 

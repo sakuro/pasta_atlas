@@ -62,6 +62,12 @@ edit-locale = Locale
 edit-save-preferences = Save Preferences
 edit-cancel = Cancel
 
+## Danger zone
+account-delete-title = Delete Account
+account-delete-warning = This action cannot be undone. All maps you own will also be deleted.
+account-delete-confirm-label = Type your username to confirm:
+account-delete-button = Delete My Account
+
 ## Connected accounts
 credential-connect-discord = Connect with { -discord }
 credential-connect-github = Connect with { -github }

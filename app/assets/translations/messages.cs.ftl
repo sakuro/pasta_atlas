@@ -79,6 +79,12 @@ edit-locale = Jazyk
 edit-save-preferences = Uložit nastavení
 edit-cancel = Zrušit
 
+## Danger zone
+account-delete-title = Smazat účet
+account-delete-warning = Tato akce je nevratná. Všechny vaše mapy budou také smazány.
+account-delete-confirm-label = Pro potvrzení zadejte své uživatelské jméno:
+account-delete-button = Smazat můj účet
+
 ## Connected accounts
 credential-connect-discord = Propojit s { -discord(case: "instrumental") }
 credential-connect-github = Propojit s { -github(case: "instrumental") }

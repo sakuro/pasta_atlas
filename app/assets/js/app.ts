@@ -50,6 +50,15 @@ if (initialHash) {
   document.querySelector<HTMLElement>(`[data-target="${initialHash}"]`)?.click();
 }
 
+const confirmInput = document.getElementById("confirm_user_name") as HTMLInputElement | null;
+const deleteButton = document.getElementById("delete-account-button") as HTMLButtonElement | null;
+if (confirmInput && deleteButton) {
+  const expectedUsername = confirmInput.dataset.confirmUsername ?? "";
+  confirmInput.addEventListener("input", () => {
+    deleteButton.disabled = confirmInput.value !== expectedUsername;
+  });
+}
+
 const timezoneInput = document.getElementById("timezone") as HTMLInputElement | null;
 if (timezoneInput) {
   timezoneInput.value = Intl.DateTimeFormat().resolvedOptions().timeZone;

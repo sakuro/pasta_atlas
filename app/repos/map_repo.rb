@@ -10,6 +10,7 @@ module PastaAtlas
 
       def find_by_id(id) = maps.where(id:).one!
       def find_by_ulid(ulid) = maps.where(ulid:).one
+      def find_all_by_user_id(user_id) = maps.where(user_id:).to_a
       def delete_by_id(id) = maps.dataset.where(id:).delete
 
       def list_with_complete_generation(page:, per_page:)
