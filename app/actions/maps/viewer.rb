@@ -6,6 +6,7 @@ module PastaAtlas
       class Viewer < PastaAtlas::Action
         include Deps[
           "operations.user.find_by_id",
+          "repos.user_preference_repo",
           "settings",
           show_map: "operations.maps.show"
         ]
@@ -19,17 +20,25 @@ module PastaAtlas
             updated_at = generations.map(&:created_at).max
             viewer_id = current_user_id(request)
             viewer_name = viewer_id && find_by_id.call(user_id: viewer_id).value!.name
+            relative_timestamps = viewer_id ? viewer_relative_timestamps(viewer_id) : false
             response.render(
               view,
               ulid: map.ulid,
               display_name: map.display_name,
               author_info:,
               updated_at:,
-              viewer_name:
+              viewer_name:,
+              relative_timestamps:
             )
           in Failure(Symbol => status)
             halt status
           end
+        end
+
+        private def viewer_relative_timestamps(user_id)
+          user_preference_repo.find_by_user_id(user_id).relative_timestamps
+        rescue ROM::TupleCountMismatchError
+          false
         end
       end
     end

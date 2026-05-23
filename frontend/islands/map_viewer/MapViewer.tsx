@@ -104,12 +104,13 @@ interface MapViewerProps {
   authorAvatarUrl: string | null;
   updatedAt: string | null;
   viewerName: string | null;
+  relativeTimestamps: boolean;
 }
 
 
-const formatDate = (iso: string): string => {
+const formatDate = (iso: string, relativeTimestamps: boolean): string => {
   const locale = document.documentElement.lang || "en";
-  if (document.documentElement.dataset.relativeTimestamps === "true") {
+  if (relativeTimestamps) {
     const rtf = new Intl.RelativeTimeFormat(locale, { style: "long", numeric: "auto" });
     const diffSecs = Math.round((new Date(iso).getTime() - Date.now()) / 1000);
     const abs = Math.abs(diffSecs);
@@ -268,7 +269,7 @@ export const MapViewer = (props: MapViewerProps) => {
             <span class="is-size-7 has-text-grey" style={{ "flex-shrink": 0 }}>
               <span class="icon-text">
                 <span class="icon is-small"><i class="fa-regular fa-calendar" /></span>
-                <time datetime={iso()}>{formatDate(iso())}</time>
+                <time datetime={iso()}>{formatDate(iso(), props.relativeTimestamps)}</time>
               </span>
             </span>
           )}
