@@ -67,8 +67,8 @@ edit-save-profile = 儲存個人資料
 edit-timezone-label = 時區
 edit-locale = 語言
     .use-browser = （依瀏覽器設定）
-edit-relative-timestamps = 時間顯示
-    .enable = 顯示相對時間（如「3天前」）
+edit-time-display = 時間顯示
+    .relative = 顯示相對時間（如「3天前」）
 edit-save-preferences = 儲存偏好設定
 edit-cancel = 取消
 
