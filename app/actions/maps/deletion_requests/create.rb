@@ -5,7 +5,7 @@ module PastaAtlas
     module Maps
       module DeletionRequests
         class Create < PastaAtlas::Action
-          include Deps[request_deletion: "operations.maps.request_deletion"]
+          include Deps["operations.maps.request_deletion"]
 
           def handle(request, response)
             result = request_deletion.call(

@@ -5,10 +5,10 @@ module PastaAtlas
     module User
       class Destroy < PastaAtlas::Operation
         include Deps[
+          "operations.user.verify_ownership",
           "repos.map_repo",
           "repos.user_repo",
           "settings",
-          verify_ownership: "operations.user.verify_ownership",
           sqs_client: "sqs.client"
         ]
 

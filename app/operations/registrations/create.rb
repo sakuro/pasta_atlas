@@ -7,11 +7,11 @@ module PastaAtlas
     module Registrations
       class Create < PastaAtlas::Operation
         include Deps[
+          "operations.registrations.import_avatar",
           "repos.credential_repo",
           "repos.user_profile_repo",
           "repos.user_preference_repo",
-          "repos.user_repo",
-          import_avatar: "operations.registrations.import_avatar"
+          "repos.user_repo"
         ]
 
         USERNAME_PATTERN = /\A[a-zA-Z0-9][a-zA-Z0-9_-]*[a-zA-Z0-9]\z|\A[a-zA-Z0-9]\z/
