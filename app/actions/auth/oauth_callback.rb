@@ -31,12 +31,14 @@ module PastaAtlas
             request.session[:pending_auth] = {
               "provider" => provider,
               "uid" => uid,
-              "login" => info["nickname"].to_s.downcase,
+              "login" => login_name_from(info),
               "avatar_url" => info["image"].to_s
             }
             response.redirect_to "/auth/register"
           end
         end
+
+        private def login_name_from(info) = info["nickname"].to_s.downcase
 
         private def handle_connect(response, user_id, credential, provider, uid)
           user_name = find_by_id.call(user_id:).value!.name

@@ -10,11 +10,13 @@ module PastaAtlas
           params do
             required(:name).filled(:string)
             optional(:timezone).maybe(:string)
+            optional(:terms).maybe(:string)
           end
 
           def handle(request, response)
             pending = request.session[:pending_auth]
             halt :forbidden unless pending
+            halt :unprocessable_entity unless request.params[:terms] == "1"
 
             name = request.params[:name].to_s.downcase
             result = create_registration.call(

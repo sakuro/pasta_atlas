@@ -232,3 +232,9 @@ share-reddit =
     .title = Sdílet na Reddit
 share-copy-link =
     .title = Kopírovat odkaz
+nav-about = O službě
+nav-privacy-policy = Zásady ochrany osobních údajů
+nav-terms-of-service = Podmínky služby
+
+## Registration: terms agreement
+registration-terms-agree = Souhlasím s výše uvedeným.
