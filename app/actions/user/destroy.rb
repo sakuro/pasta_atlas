@@ -7,7 +7,7 @@ module PastaAtlas
         include Deps[destroy_user: "operations.user.destroy"]
 
         def handle(request, response)
-          halt :forbidden if request.params[:confirm_user_name] != request.params[:user_name]
+          halt :bad_request if request.params[:confirm_user_name] != request.params[:user_name]
 
           result = destroy_user.call(
             user_id: current_user_id(request),
