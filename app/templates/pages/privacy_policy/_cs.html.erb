@@ -1,0 +1,62 @@
+<section class="section">
+  <div class="container">
+    <h1 class="title">Zásady ochrany osobních údajů</h1>
+
+    <section class="section">
+      <h2 class="title is-4">Informace, které shromažďujeme</h2>
+      <p>Při přihlášení přes OAuth (<%= t("github-name") %>, <%= t("discord-name") %> nebo <%= t("steam-name") %>) obdržíme od poskytovatele následující informace:</p>
+      <ul>
+        <li>Jedinečný identifikátor vašeho účtu u daného poskytovatele</li>
+        <li>Vaše uživatelské jméno u poskytovatele, použité jako návrh uživatelského jména pro <%= t("app-name") %></li>
+        <li>URL vaší profilové fotografie, použité jako návrh avataru</li>
+      </ul>
+      <p class="mt-3">Dále ukládáme informace, které poskytnete při používání služby:</p>
+      <ul>
+        <li>Obrázky dlaždic mapy a metadata, která nahrajete (výstup <%= t("factorio-name") %> <%= t("mapshot-name") %>)</li>
+        <li>Váš avatar, pokud si ho zvolíte</li>
+        <li>Vaše zobrazované jméno, časové pásmo a jazykové preference</li>
+      </ul>
+    </section>
+
+    <section class="section">
+      <h2 class="title is-4">Jak vaše informace používáme</h2>
+      <p>Shromážděné informace používáme výhradně k poskytování služby:</p>
+      <ul>
+        <li>K ověření vaší identity a udržení vaší relace</li>
+        <li>K zobrazení a sdílení map, které nahrajete</li>
+        <li>K zobrazení vašeho profilu ostatním uživatelům</li>
+      </ul>
+      <p class="mt-3">Vaše osobní údaje neprodáváme ani nesdílíme s třetími stranami, s výjimkou nutnou pro provoz služby (viz Ukládání dat níže).</p>
+    </section>
+
+    <section class="section">
+      <h2 class="title is-4">Soubory cookie</h2>
+      <p>
+        Používáme jeden relační soubor cookie (<code>pasta_atlas.session</code>) k udržení stavu přihlášení a jazykové preference.
+        Nepoužíváme sledovací, reklamní ani analytické cookies.
+      </p>
+    </section>
+
+    <section class="section">
+      <h2 class="title is-4">Ukládání dat</h2>
+      <p>
+        Obrázky map a avatary jsou uloženy na Amazon S3 a dostupné přes Amazon CloudFront.
+        Žádné jiné třetí strany nemají přístup k vašim datům.
+      </p>
+    </section>
+
+    <section class="section">
+      <h2 class="title is-4">Uchovávání dat</h2>
+      <ul>
+        <li>Mapy a přidružená data jsou uchovávána, dokud je neodstraníte nebo nezrušíte účet.</li>
+        <li>Nahrávky z hostovských účtů jsou automaticky smazány přibližně po jednom týdnu.</li>
+        <li>Pokud smažete účet, vaše mapy a avatar budou trvale odstraněny.</li>
+      </ul>
+    </section>
+
+    <section class="section">
+      <h2 class="title is-4">Kontakt</h2>
+      <p>V případě dotazů k těmto zásadám otevřete diskusi na <a href="https://github.com/sakuro/pasta_atlas/discussions">GitHub Discussions</a>.</p>
+    </section>
+  </div>
+</section>

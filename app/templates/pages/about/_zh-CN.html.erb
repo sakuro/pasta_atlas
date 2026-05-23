@@ -1,0 +1,56 @@
+<section class="section">
+  <div class="container">
+    <h1 class="title">关于 <%= t("app-name") %></h1>
+
+    <section class="section">
+      <h2 class="title is-4"><%= t("app-name") %> 是什么？</h2>
+      <p>
+        <%= t("app-name") %> 是一个用于上传和浏览由
+        <a href="https://mods.factorio.com/mod/mapshot"><%= t("mapshot-name") %></a> MOD 截取的
+        <%= t("factorio-name") %> 世界地图的 Web 应用。
+        您可以直接从浏览器上传瓦片集并与他人分享，
+        或探索社区分享的地图。
+      </p>
+    </section>
+
+    <section class="section">
+      <h2 class="title is-4">功能</h2>
+      <ul>
+        <li>直接从浏览器上传 <%= t("mapshot-name") %> 输出文件（瓦片图片及元数据）</li>
+        <li>浏览社区分享的地图</li>
+        <li>支持平移、缩放、切换表面、世代历史、火车站图层和资源标签图层的交互式查看器</li>
+        <li>通过 <%= t("github-name") %>、<%= t("discord-name") %> 或 <%= t("steam-name") %> 登录</li>
+      </ul>
+    </section>
+
+    <section class="section">
+      <h2 class="title is-4">技术栈</h2>
+      <ul>
+        <li><strong>后端：</strong>Ruby &middot; Hanami 2 &middot; Dry.rb &middot; ROM.rb &middot; PostgreSQL</li>
+        <li><strong>前端：</strong>SolidJS &middot; Leaflet &middot; Bulma &middot; TypeScript</li>
+        <li><strong>基础设施：</strong>AWS S3 &middot; CloudFront &middot; ECS Fargate</li>
+      </ul>
+    </section>
+
+    <section class="section">
+      <h2 class="title is-4">作者</h2>
+      <p>由 <a href="https://github.com/sakuro">sakuro</a> 开发。</p>
+    </section>
+
+    <section class="section">
+      <h2 class="title is-4">许可证</h2>
+      <p>
+        <%= t("app-name") %> 基于
+        <a href="https://github.com/sakuro/pasta_atlas/blob/main/LICENSE.txt">MIT 许可证</a>
+        发布。
+        本应用使用了众多优秀的开源项目，包括 Hanami、SolidJS、Leaflet、Bulma 等。
+      </p>
+      <p>
+        <%= t("factorio-name") %> 图标归 <a href="https://factorio.com/">Wube Software</a> 所有。
+      </p>
+      <p>
+        本应用基于 Pierre Palats 开发的 <a href="https://github.com/Palats/mapshot"><%= t("mapshot-name") %></a> MOD 构建。
+      </p>
+    </section>
+  </div>
+</section>

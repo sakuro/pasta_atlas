@@ -1,0 +1,62 @@
+<section class="section">
+  <div class="container">
+    <h1 class="title">개인정보 처리방침</h1>
+
+    <section class="section">
+      <h2 class="title is-4">수집하는 정보</h2>
+      <p>OAuth(<%= t("github-name") %>, <%= t("discord-name") %>, <%= t("steam-name") %>)로 로그인할 때 각 제공자로부터 다음 정보를 수신합니다:</p>
+      <ul>
+        <li>해당 제공자에서의 계정을 식별하는 고유 ID</li>
+        <li>해당 제공자에서의 사용자 이름(<%=  t("app-name") %>의 사용자 이름 후보로 사용)</li>
+        <li>프로필 사진 URL(아바타 후보로 사용)</li>
+      </ul>
+      <p class="mt-3">서비스 이용 중 제공하는 정보도 저장합니다:</p>
+      <ul>
+        <li>업로드한 지도 타일 이미지 및 메타데이터(<%= t("factorio-name") %> <%= t("mapshot-name") %> 출력물)</li>
+        <li>설정한 아바타 이미지</li>
+        <li>표시 이름, 시간대, 언어 설정</li>
+      </ul>
+    </section>
+
+    <section class="section">
+      <h2 class="title is-4">정보 이용 목적</h2>
+      <p>수집한 정보는 서비스 제공 목적으로만 사용합니다:</p>
+      <ul>
+        <li>본인 확인 및 로그인 상태 유지</li>
+        <li>업로드한 지도 표시 및 공유</li>
+        <li>다른 사용자에게 프로필 표시</li>
+      </ul>
+      <p class="mt-3">서비스 운영에 필요한 경우를 제외하고 개인정보를 제3자에게 판매하거나 공유하지 않습니다(아래 데이터 저장 참조).</p>
+    </section>
+
+    <section class="section">
+      <h2 class="title is-4">쿠키</h2>
+      <p>
+        로그인 상태와 언어 설정을 유지하기 위해 세션 쿠키(<code>pasta_atlas.session</code>) 하나를 사용합니다.
+        추적, 광고, 분석 목적의 쿠키는 사용하지 않습니다.
+      </p>
+    </section>
+
+    <section class="section">
+      <h2 class="title is-4">데이터 저장</h2>
+      <p>
+        지도 이미지와 아바타는 Amazon S3에 저장되며 Amazon CloudFront를 통해 제공됩니다.
+        그 외의 제3자는 데이터에 접근할 수 없습니다.
+      </p>
+    </section>
+
+    <section class="section">
+      <h2 class="title is-4">데이터 보존</h2>
+      <ul>
+        <li>지도 및 관련 데이터는 삭제하거나 계정을 탈퇴할 때까지 보존됩니다.</li>
+        <li>게스트 계정의 업로드는 약 1주일 후에 자동으로 삭제됩니다.</li>
+        <li>계정을 삭제하면 지도와 아바타가 영구적으로 제거됩니다.</li>
+      </ul>
+    </section>
+
+    <section class="section">
+      <h2 class="title is-4">문의</h2>
+      <p>본 방침에 관한 문의는 <a href="https://github.com/sakuro/pasta_atlas/discussions">GitHub Discussions</a>를 이용해 주세요.</p>
+    </section>
+  </div>
+</section>

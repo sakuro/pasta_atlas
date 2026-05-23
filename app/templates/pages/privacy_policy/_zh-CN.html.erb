@@ -1,0 +1,62 @@
+<section class="section">
+  <div class="container">
+    <h1 class="title">隐私政策</h1>
+
+    <section class="section">
+      <h2 class="title is-4">我们收集的信息</h2>
+      <p>当您通过 OAuth（<%= t("github-name") %>、<%= t("discord-name") %> 或 <%= t("steam-name") %>）登录时，我们从提供商处获取以下信息：</p>
+      <ul>
+        <li>您在该提供商的账号唯一标识符</li>
+        <li>您在该提供商的用户名（用作 <%= t("app-name") %> 用户名的建议）</li>
+        <li>您的头像图片 URL（用作头像建议）</li>
+      </ul>
+      <p class="mt-3">我们还会存储您在使用服务过程中提供的信息：</p>
+      <ul>
+        <li>您上传的地图瓦片图片及元数据（<%= t("factorio-name") %> <%= t("mapshot-name") %> 输出）</li>
+        <li>您设置的头像图片</li>
+        <li>您的显示名称、时区和语言偏好</li>
+      </ul>
+    </section>
+
+    <section class="section">
+      <h2 class="title is-4">我们如何使用您的信息</h2>
+      <p>我们收集的信息仅用于提供服务：</p>
+      <ul>
+        <li>对您进行身份验证并维持您的会话</li>
+        <li>展示和分享您上传的地图</li>
+        <li>向其他用户显示您的个人资料</li>
+      </ul>
+      <p class="mt-3">除运营服务所必需的情况外（见下方数据存储），我们不会向第三方出售或分享您的个人信息。</p>
+    </section>
+
+    <section class="section">
+      <h2 class="title is-4">Cookie</h2>
+      <p>
+        我们使用单个会话 Cookie（<code>pasta_atlas.session</code>）来维持您的登录状态和语言偏好。
+        我们不使用跟踪、广告或分析 Cookie。
+      </p>
+    </section>
+
+    <section class="section">
+      <h2 class="title is-4">数据存储</h2>
+      <p>
+        地图图片和头像存储在 Amazon S3 上，通过 Amazon CloudFront 提供服务。
+        其他第三方无法访问您的数据。
+      </p>
+    </section>
+
+    <section class="section">
+      <h2 class="title is-4">数据保留</h2>
+      <ul>
+        <li>地图及相关数据将保留至您删除它们或注销账户。</li>
+        <li>访客账号的上传将于约一周后自动删除。</li>
+        <li>注销账户后，您的地图和头像将被永久删除。</li>
+      </ul>
+    </section>
+
+    <section class="section">
+      <h2 class="title is-4">联系方式</h2>
+      <p>如有关于本政策的疑问，请在 <a href="https://github.com/sakuro/pasta_atlas/discussions">GitHub Discussions</a> 发起讨论。</p>
+    </section>
+  </div>
+</section>
