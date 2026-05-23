@@ -15,6 +15,8 @@
         <ul>
           <li data-target="edit-profile" class="is-active"><a><%= t("user-tab-profile") %></a></li>
           <li data-target="edit-preferences"><a><%= t("user-tab-preferences") %></a></li>
+          <li data-target="edit-credentials"><a><%= t("user-tab-credentials") %></a></li>
+          <li data-target="edit-danger"><a><%= t("user-tab-danger") %></a></li>
         </ul>
       </div>
 
@@ -65,66 +67,6 @@
       </div>
 
       <div id="edit-preferences" class="is-hidden" data-tab-panel="user-edit">
-        <div class="field">
-          <label class="label">
-            <span class="icon-text">
-              <span class="icon"><i class="fa-solid fa-link"></i></span>
-              <span><%= t("user-connected-accounts-label") %></span>
-            </span>
-          </label>
-          <% only_one = connected_providers.size <= 1 %>
-          <div class="level">
-            <div class="level-left">
-              <% providers.each do |provider| %>
-                <div class="level-item">
-                  <% if connected_providers.include?(provider) %>
-                    <form action="<%= path(:user_credential, user_name:, provider:) %>" method="post">
-                      <input type="hidden" name="_method" value="delete">
-                      <input type="hidden" name="_csrf_token" value="<%= csrf_token %>">
-                      <button class="button is-danger is-light" type="submit"<% if only_one %> disabled title="<%= t("credential-last-hint") %>"<% end %>>
-                        <span class="icon"><i class="fa-brands fa-<%= provider %>"></i></span>
-                        <span><%= t("credential-disconnect-#{provider}") %></span>
-                      </button>
-                    </form>
-                  <% else %>
-                    <form action="/auth/<%= provider %>" method="post">
-                      <input type="hidden" name="authenticity_token" value="<%= omniauth_authenticity_token %>">
-                      <button class="button" type="submit">
-                        <span class="icon"><i class="fa-brands fa-<%= provider %>"></i></span>
-                        <span><%= t("credential-connect-#{provider}") %></span>
-                      </button>
-                    </form>
-                  <% end %>
-                </div>
-              <% end %>
-            </div>
-          </div>
-        </div>
-        <hr>
-        <h2 class="subtitle has-text-danger"><%= t("account-delete-title") %></h2>
-        <p class="mb-3"><%= t("account-delete-warning") %></p>
-        <form action="/@<%= user_name %>" method="post" data-confirm-delete="true">
-          <input type="hidden" name="_method" value="delete">
-          <input type="hidden" name="_csrf_token" value="<%= csrf_token %>">
-          <input type="hidden" name="user_name" value="<%= user_name %>">
-          <div class="field">
-            <label class="label" for="confirm_user_name"><%= t("account-delete-confirm-label") %></label>
-            <div class="control">
-              <input class="input" type="text" id="confirm_user_name" name="confirm_user_name"
-                     autocomplete="off" data-confirm-username="<%= user_name %>">
-            </div>
-          </div>
-          <div class="field">
-            <div class="control">
-              <button class="button is-danger" type="submit" id="delete-account-button" disabled>
-                <span class="icon"><i class="fa-solid fa-trash"></i></span>
-                <span><%= t("account-delete-button") %></span>
-              </button>
-            </div>
-          </div>
-        </form>
-
-        <hr>
         <form action="<%= path(:user_preferences, user_name:) %>" method="post">
           <input type="hidden" name="_method" value="patch">
           <input type="hidden" name="_csrf_token" value="<%= csrf_token %>">
@@ -177,6 +119,63 @@
               <a class="button ml-2" href="<%= path(:root) %>">
                 <span><%= t("edit-cancel") %></span>
               </a>
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <div id="edit-credentials" class="is-hidden" data-tab-panel="user-edit">
+        <div class="field">
+          <% only_one = connected_providers.size <= 1 %>
+          <div class="level">
+            <div class="level-left">
+              <% providers.each do |provider| %>
+                <div class="level-item">
+                  <% if connected_providers.include?(provider) %>
+                    <form action="<%= path(:user_credential, user_name:, provider:) %>" method="post">
+                      <input type="hidden" name="_method" value="delete">
+                      <input type="hidden" name="_csrf_token" value="<%= csrf_token %>">
+                      <button class="button is-danger is-light" type="submit"<% if only_one %> disabled title="<%= t("credential-last-hint") %>"<% end %>>
+                        <span class="icon"><i class="fa-brands fa-<%= provider %>"></i></span>
+                        <span><%= t("credential-disconnect-#{provider}") %></span>
+                      </button>
+                    </form>
+                  <% else %>
+                    <form action="/auth/<%= provider %>" method="post">
+                      <input type="hidden" name="authenticity_token" value="<%= omniauth_authenticity_token %>">
+                      <button class="button" type="submit">
+                        <span class="icon"><i class="fa-brands fa-<%= provider %>"></i></span>
+                        <span><%= t("credential-connect-#{provider}") %></span>
+                      </button>
+                    </form>
+                  <% end %>
+                </div>
+              <% end %>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="edit-danger" class="is-hidden" data-tab-panel="user-edit">
+        <h2 class="subtitle has-text-danger"><%= t("account-delete-title") %></h2>
+        <p class="mb-3"><%= t("account-delete-warning") %></p>
+        <form action="/@<%= user_name %>" method="post" data-confirm-delete="true">
+          <input type="hidden" name="_method" value="delete">
+          <input type="hidden" name="_csrf_token" value="<%= csrf_token %>">
+          <input type="hidden" name="user_name" value="<%= user_name %>">
+          <div class="field">
+            <label class="label" for="confirm_user_name"><%= t("account-delete-confirm-label") %></label>
+            <div class="control">
+              <input class="input" type="text" id="confirm_user_name" name="confirm_user_name"
+                     autocomplete="off" data-confirm-username="<%= user_name %>">
+            </div>
+          </div>
+          <div class="field">
+            <div class="control">
+              <button class="button is-danger" type="submit" id="delete-account-button" disabled>
+                <span class="icon"><i class="fa-solid fa-trash"></i></span>
+                <span><%= t("account-delete-button") %></span>
+              </button>
             </div>
           </div>
         </form>

@@ -55,6 +55,8 @@ error-username-taken = Toto uživatelské jméno je již obsazeno.
 ## User page
 user-tab-profile = Profil
 user-tab-preferences = Nastavení
+user-tab-credentials = Propojené účty
+user-tab-danger = Smazat účet
 user-tab-profile-edit =
     .title = Upravit profil
 user-tab-preferences-edit =

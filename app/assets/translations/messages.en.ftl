@@ -38,6 +38,8 @@ error-username-taken = That username is already taken.
 ## User page
 user-tab-profile = Profile
 user-tab-preferences = Preferences
+user-tab-credentials = Connections
+user-tab-danger = Delete Account
 user-tab-profile-edit =
     .title = Edit profile
 user-tab-preferences-edit =

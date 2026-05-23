@@ -38,6 +38,8 @@ error-username-taken = そのユーザー名はすでに使われています。
 ## User page
 user-tab-profile = プロフィール
 user-tab-preferences = 設定
+user-tab-credentials = アカウント連携
+user-tab-danger = アカウント削除
 user-tab-profile-edit =
     .title = プロフィールを編集
 user-tab-preferences-edit =
