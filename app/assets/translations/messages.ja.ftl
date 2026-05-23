@@ -1,4 +1,4 @@
-# -app-name = Pasta Atlas
+-app-name = Pasta Atlas
 -mapshot = Mapshot
 -discord = Discord
 -github = GitHub
@@ -6,7 +6,7 @@
 -factorio = Factorio
 
 ## App
-# app-name = { -app-name }
+app-name = { -app-name }
 
 ## Surfaces
 surface-nauvis = ナウヴィス

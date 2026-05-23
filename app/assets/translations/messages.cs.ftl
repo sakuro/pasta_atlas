@@ -98,6 +98,9 @@ credential-last-hint = Je vyžadován alespoň jeden propojený účet.
 error-credential-conflict = Tento účet je již propojen s jiným uživatelem.
 error-credential-last = Je vyžadován alespoň jeden propojený účet.
 
+## Map notices
+map-deletion-requested = Vaše mapa byla zařazena do fronty k odstranění. Může být ještě chvíli viditelná.
+
 ## Map card
 map-card-updated-at = { $date }
 
@@ -187,6 +190,12 @@ map-name-save-button =
     .title = Uložit
 map-name-cancel-button =
     .title = Zrušit
+map-delete-button =
+    .title = Smazat mapu
+map-delete-confirm-title = Smazat mapu
+map-delete-confirm-message = Tato mapa a všechna její data budou trvale smazána. Jste si jisti?
+map-delete-confirm-button = Smazat
+map-delete-cancel-button = Zrušit
 
 ## Map info modal
 map-info-title = Informace o mapě
