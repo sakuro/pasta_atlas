@@ -53,6 +53,7 @@ error-username-reserved = Toto uživatelské jméno je rezervováno.
 error-username-taken = Toto uživatelské jméno je již obsazeno.
 
 ## User page
+user-tab-maps = Nedávné mapy
 user-tab-profile = Profil
 user-tab-preferences = Nastavení
 user-tab-credentials = Propojené účty

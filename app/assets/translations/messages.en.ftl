@@ -36,6 +36,7 @@ error-username-reserved = That username is reserved.
 error-username-taken = That username is already taken.
 
 ## User page
+user-tab-maps = Recent Maps
 user-tab-profile = Profile
 user-tab-preferences = Preferences
 user-tab-credentials = Connections

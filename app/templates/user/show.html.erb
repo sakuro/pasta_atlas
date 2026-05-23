@@ -13,14 +13,37 @@
     <div class="container mt-5">
       <div class="tabs" data-tabs="user-edit">
         <ul>
-          <li data-target="edit-profile" class="is-active"><a><%= t("user-tab-profile") %></a></li>
+          <li data-target="edit-maps" class="is-active"><a><%= t("user-tab-maps") %></a></li>
+          <li data-target="edit-profile"><a><%= t("user-tab-profile") %></a></li>
           <li data-target="edit-preferences"><a><%= t("user-tab-preferences") %></a></li>
           <li data-target="edit-credentials"><a><%= t("user-tab-credentials") %></a></li>
           <li data-target="edit-danger"><a><span class="icon-text"><span class="icon has-text-danger"><i class="fa-solid fa-triangle-exclamation"></i></span><span><%= t("user-tab-danger") %></span></span></a></li>
         </ul>
       </div>
 
-      <div id="edit-profile" data-tab-panel="user-edit">
+      <div id="edit-maps" data-tab-panel="user-edit">
+        <% unless recent_map_infos.empty? %>
+          <div class="columns is-multiline">
+            <% recent_map_infos.each do |map_info| %>
+              <div class="column is-half-tablet is-one-quarter-desktop">
+                <%= render "maps/map_card",
+                      map_ulid: map_info.ulid,
+                      map_display_name: map_info.display_name,
+                      user_name: map_info.user_info.name,
+                      author_display_name: map_info.user_info.display_name,
+                      author_avatar_url: map_info.user_info.avatar_url,
+                      thumbnail_url: map_info.thumbnail_url,
+                      metadata_url: map_info.metadata_url,
+                      updated_at: map_info.updated_at %>
+              </div>
+            <% end %>
+          </div>
+          <script src="<%= island_src("map_info_button") %>" type="module"></script>
+          <script src="<%= island_src("share_buttons") %>" type="module"></script>
+        <% end %>
+      </div>
+
+      <div id="edit-profile" class="is-hidden" data-tab-panel="user-edit">
         <% if error %>
           <div class="notification is-danger is-light"><%= error %></div>
         <% end %>
@@ -180,33 +203,33 @@
         </form>
       </div>
     </div>
-  <% end %>
-
-  <% unless recent_map_infos.empty? %>
-    <div class="container mt-5">
-      <h2 class="title is-4">
-        <span class="icon-text">
-          <span class="icon"><i class="fa-solid fa-map"></i></span>
-          <span><%= t("user-recent-maps") %></span>
-        </span>
-      </h2>
-      <div class="columns is-multiline">
-        <% recent_map_infos.each do |map_info| %>
-          <div class="column is-half-tablet is-one-quarter-desktop">
-            <%= render "maps/map_card",
-                  map_ulid: map_info.ulid,
-                  map_display_name: map_info.display_name,
-                  user_name: map_info.user_info.name,
-                  author_display_name: map_info.user_info.display_name,
-                  author_avatar_url: map_info.user_info.avatar_url,
-                  thumbnail_url: map_info.thumbnail_url,
-                  metadata_url: map_info.metadata_url,
-                  updated_at: map_info.updated_at %>
-          </div>
-        <% end %>
+  <% else %>
+    <% unless recent_map_infos.empty? %>
+      <div class="container mt-5">
+        <h2 class="title is-4">
+          <span class="icon-text">
+            <span class="icon"><i class="fa-solid fa-map"></i></span>
+            <span><%= t("user-recent-maps") %></span>
+          </span>
+        </h2>
+        <div class="columns is-multiline">
+          <% recent_map_infos.each do |map_info| %>
+            <div class="column is-half-tablet is-one-quarter-desktop">
+              <%= render "maps/map_card",
+                    map_ulid: map_info.ulid,
+                    map_display_name: map_info.display_name,
+                    user_name: map_info.user_info.name,
+                    author_display_name: map_info.user_info.display_name,
+                    author_avatar_url: map_info.user_info.avatar_url,
+                    thumbnail_url: map_info.thumbnail_url,
+                    metadata_url: map_info.metadata_url,
+                    updated_at: map_info.updated_at %>
+            </div>
+          <% end %>
+        </div>
+        <script src="<%= island_src("map_info_button") %>" type="module"></script>
+        <script src="<%= island_src("share_buttons") %>" type="module"></script>
       </div>
-      <script src="<%= island_src("map_info_button") %>" type="module"></script>
-      <script src="<%= island_src("share_buttons") %>" type="module"></script>
-    </div>
+    <% end %>
   <% end %>
 </section>

@@ -36,6 +36,7 @@ error-username-reserved = そのユーザー名は使用できません。
 error-username-taken = そのユーザー名はすでに使われています。
 
 ## User page
+user-tab-maps = 最近のマップ
 user-tab-profile = プロフィール
 user-tab-preferences = 設定
 user-tab-credentials = アカウント連携
