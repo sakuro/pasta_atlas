@@ -1,5 +1,5 @@
 <section class="section">
-  <div class="container is-max-tablet">
+  <div class="container">
     <div class="level">
       <div class="level-left">
         <%= render "shared/avatar", avatar_url:, avatar_size: 64 %>
@@ -10,13 +10,13 @@
   </div>
 
   <% if is_owner %>
-    <div class="container is-max-tablet mt-5">
+    <div class="container mt-5">
       <div class="tabs" data-tabs="user-edit">
         <ul>
           <li data-target="edit-profile" class="is-active"><a><%= t("user-tab-profile") %></a></li>
           <li data-target="edit-preferences"><a><%= t("user-tab-preferences") %></a></li>
           <li data-target="edit-credentials"><a><%= t("user-tab-credentials") %></a></li>
-          <li data-target="edit-danger"><a><%= t("user-tab-danger") %></a></li>
+          <li data-target="edit-danger"><a><span class="icon-text"><span class="icon has-text-danger"><i class="fa-solid fa-triangle-exclamation"></i></span><span><%= t("user-tab-danger") %></span></span></a></li>
         </ul>
       </div>
 
@@ -157,7 +157,6 @@
       </div>
 
       <div id="edit-danger" class="is-hidden" data-tab-panel="user-edit">
-        <h2 class="subtitle has-text-danger"><%= t("account-delete-title") %></h2>
         <p class="mb-3"><%= t("account-delete-warning") %></p>
         <form action="/@<%= user_name %>" method="post" data-confirm-delete="true">
           <input type="hidden" name="_method" value="delete">
