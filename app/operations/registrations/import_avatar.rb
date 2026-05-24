@@ -32,7 +32,7 @@ module PastaAtlas
           return Failure(:no_url) if url.nil? || url.empty?
           return Failure(:fetch_failed) unless URI(url).scheme == "https"
 
-          Success(nil)
+          Success()
         end
 
         private def download(url)
@@ -49,7 +49,7 @@ module PastaAtlas
 
         private def upload(key:, body:, content_type:)
           s3_client.put_object(bucket: settings.s3_bucket, key:, body:, content_type:)
-          Success(nil)
+          Success()
         rescue Aws::S3::Errors::ServiceError
           Failure(:upload_failed)
         end

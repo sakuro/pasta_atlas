@@ -12,7 +12,7 @@ module PastaAtlas
             user_preference_repo.find_by_user_id(user_id)
           end
 
-          private def same_user?(user_id, viewer_id) = viewer_id == user_id ? Success(nil) : Failure(:not_viewable)
+          private def same_user?(user_id, viewer_id) = viewer_id == user_id ? Success() : Failure(:not_viewable)
         end
       end
     end

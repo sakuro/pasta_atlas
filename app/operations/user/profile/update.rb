@@ -32,11 +32,11 @@ module PastaAtlas
           end
 
           private def validate_display_name(name)
-            return Success(nil) if name.empty?
+            return Success() if name.empty?
             return Failure([:invalid, "Display name must be 64 characters or fewer."]) if name.scan(/\X/).length > DISPLAY_NAME_MAX_GRAPHEME_CLUSTERS
             return Failure([:invalid, "Display name contains disallowed characters."]) if name.match?(DISALLOWED_CHARS)
 
-            Success(nil)
+            Success()
           end
         end
       end

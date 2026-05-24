@@ -39,7 +39,7 @@ module PastaAtlas
           return Failure(:unprocessable_entity) unless filenames.is_a?(Array)
           return Failure(:unprocessable_entity) unless filenames.all? {|f| f.is_a?(String) && TILE_FILENAME_PATTERN.match?(f) }
 
-          Success(nil)
+          Success()
         end
 
         private def find_upload(ulid)

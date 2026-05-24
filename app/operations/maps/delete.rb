@@ -21,7 +21,7 @@ module PastaAtlas
               delete: {objects: keys, quiet: true}
             )
           end
-          Success(nil)
+          Success()
         rescue Aws::S3::Errors::ServiceError
           Failure(:s3_error)
         end

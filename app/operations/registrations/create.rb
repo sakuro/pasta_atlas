@@ -34,11 +34,11 @@ module PastaAtlas
           return Failure([:invalid, "error-username-invalid-chars"]) unless name.match?(USERNAME_PATTERN)
           return Failure([:invalid, "error-username-reserved"]) if RESERVED_NAMES.include?(name)
 
-          Success(nil)
+          Success()
         end
 
         private def check_availability(name)
-          user_repo.find_by_name(name) ? Failure([:invalid, "error-username-taken"]) : Success(nil)
+          user_repo.find_by_name(name) ? Failure([:invalid, "error-username-taken"]) : Success()
         end
 
         private def resolve_timezone(name)

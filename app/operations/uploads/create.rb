@@ -62,7 +62,7 @@ module PastaAtlas
           tick_int = Integer(tick, exception: false)
           return Failure(:unprocessable_entity) unless tick_int && tick_int.between?(0, TICK_MAX)
 
-          Success(nil)
+          Success()
         end
 
         private def within_transaction(map:, user:, mapshot_map_id:, mapshot_unique_id:, tick:, metadata:, total_image_count:)
