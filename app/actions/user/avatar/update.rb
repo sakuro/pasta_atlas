@@ -17,7 +17,7 @@ module PastaAtlas
             in Failure(Symbol => status)
               halt status
             in Success
-              response.status = 204
+              response.status = :no_content
             end
           end
         end
