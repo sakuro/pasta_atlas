@@ -67,7 +67,7 @@ module PastaAtlas
 
         private def within_transaction(map:, user:, mapshot_map_id:, mapshot_unique_id:, tick:, metadata:, total_image_count:)
           result = nil
-          generation_repo.db.transaction do
+          generation_repo.transaction do
             generation = generation_repo.find_with_upload(
               map_id: map.id, mapshot_unique_id:
             )
