@@ -23,7 +23,7 @@ module PastaAtlas
                 map_ulid: map.ulid,
                 generation_ulid: generation.ulid
               },
-              status: 201
+              status: :created
             )
           in Failure(:s3_error)
             halt :bad_gateway

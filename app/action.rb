@@ -11,7 +11,7 @@ module PastaAtlas
     include Deps["repos.user_repo", i18n_bundles: "i18n.bundles"]
     include Dry::Monads[:result]
 
-    private def json_response(response, data, status: 200)
+    private def json_response(response, data, status: :ok)
       response.status = status
       response.headers["Content-Type"] = "application/json"
       response.body = JSON.generate(data)
