@@ -8,7 +8,7 @@ require "rack/icu4x/locale"
 
 module PastaAtlas
   class Action < Hanami::Action
-    include Deps["repos.user_repo", i18n_bundles: "i18n.bundles"]
+    include Deps["repos.user_repo", "routes", i18n_bundles: "i18n.bundles"]
     include Dry::Monads[:result]
 
     private def json_response(response, data, status: :ok)

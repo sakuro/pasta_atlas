@@ -34,7 +34,7 @@ module PastaAtlas
               "login" => login_name_from(info),
               "avatar_url" => info["image"].to_s
             }
-            response.redirect_to "/auth/register"
+            response.redirect_to routes.path(:auth_registrations)
           end
         end
 
@@ -50,13 +50,13 @@ module PastaAtlas
             response.flash[:error] = "error-credential-conflict" if result.failure?
           end
 
-          response.redirect_to "/@#{user_name}#edit-credentials"
+          response.redirect_to "#{routes.path(:user, user_name:)}#edit-credentials"
         end
 
         private def login(request, response, user_id)
           request.session[:user_id] = user_id
           request.session[:locale] = load_preferences.call(user_id:, viewer_id: user_id).value!.locale
-          response.redirect_to "/"
+          response.redirect_to routes.path(:root)
         end
       end
     end

@@ -15,7 +15,7 @@ module PastaAtlas
             case result
             in Success(_)
               response.flash[:notice] = "map-deletion-requested"
-              response.redirect_to "/"
+              response.redirect_to routes.path(:root)
             in Failure(Symbol => status)
               halt status
             end

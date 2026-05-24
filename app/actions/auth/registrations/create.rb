@@ -34,7 +34,7 @@ module PastaAtlas
             in Success(user)
               request.session.delete(:pending_auth)
               request.session[:user_id] = user.id
-              response.redirect_to "/"
+              response.redirect_to routes.path(:root)
             end
           end
         end

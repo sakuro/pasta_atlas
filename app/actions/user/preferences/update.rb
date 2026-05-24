@@ -28,7 +28,7 @@ module PastaAtlas
             in Success({user:, locale:})
               # Rack::ICU4X::Locale middleware cannot access the database; keep the session in sync so locale detection reflects the updated preference immediately.
               request.session[:locale] = locale
-              response.redirect_to "/@#{user.name}#edit-preferences"
+              response.redirect_to "#{routes.path(:user, user_name: user.name)}#edit-preferences"
             end
           end
         end

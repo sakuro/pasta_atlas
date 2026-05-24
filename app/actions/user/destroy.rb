@@ -16,7 +16,7 @@ module PastaAtlas
           case result
           in Success(_)
             request.session.clear
-            response.redirect_to "/"
+            response.redirect_to routes.path(:root)
           in Failure(Symbol => status)
             halt status
           end

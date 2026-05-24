@@ -7,7 +7,7 @@ module PastaAtlas
         class Destroy < PastaAtlas::Action
           def handle(request, response)
             request.session.clear
-            response.redirect_to "/"
+            response.redirect_to routes.path(:root)
           end
         end
       end
