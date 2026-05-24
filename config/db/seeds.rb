@@ -19,9 +19,4 @@ db.transaction do
   user_profiles.dataset.insert_conflict(target: :user_id).insert(user_id: guest_id, display_name: "Guest")
   user_profiles.dataset.where(user_id: guest_id).update(display_name: "Guest")
   user_preferences.dataset.insert_conflict(target: :user_id).insert(user_id: guest_id)
-
-  users.dataset.each do |user|
-    user_profiles.dataset.insert_conflict(target: :user_id).insert(user_id: user[:id])
-    user_preferences.dataset.insert_conflict(target: :user_id).insert(user_id: user[:id])
-  end
 end
