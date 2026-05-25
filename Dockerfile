@@ -66,4 +66,4 @@ ENV BUNDLE_PATH=/usr/local/bundle \
 
 EXPOSE 3000
 
-CMD ["bundle", "exec", "hanami", "server"]
+CMD ["bundle", "exec", "puma", "-C", "config/puma.rb"]

@@ -4,6 +4,8 @@ module PastaAtlas
   class Routes < Hanami::Routes
     root to: "maps.index"
 
+    get "/up", to: ->(env) { [200, {"content-type" => "text/plain"}, ["OK"]] }
+
     get "/about", to: "pages.about", as: :about
     get "/privacy", to: "pages.privacy_policy", as: :privacy_policy
     get "/terms", to: "pages.terms_of_service", as: :terms_of_service
