@@ -28,11 +28,6 @@ variable "allowed_origins" {
   default = ["https://pasta-atlas.layer8.works"]
 }
 
-variable "db_password" {
-  type      = string
-  sensitive = true
-}
-
 variable "db_username" {
   type    = string
   default = "pasta_atlas"

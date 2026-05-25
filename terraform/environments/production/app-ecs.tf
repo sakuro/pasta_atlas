@@ -64,7 +64,11 @@ resource "aws_ecs_task_definition" "app" {
         { name = "SQS_S3_CLEANUP_QUEUE_URL", value = aws_sqs_queue.s3_cleanup.url },
       ]
       secrets = [
-        { name = "SESSION_SECRET", valueFrom = aws_ssm_parameter.session_secret.arn },
+        { name = "SESSION_SECRET",        valueFrom = aws_ssm_parameter.session_secret.arn },
+        { name = "GITHUB_CLIENT_SECRET",  valueFrom = aws_ssm_parameter.github_client_secret.arn },
+        { name = "DISCORD_CLIENT_SECRET", valueFrom = aws_ssm_parameter.discord_client_secret.arn },
+        { name = "STEAM_WEB_API_KEY",     valueFrom = aws_ssm_parameter.steam_web_api_key.arn },
+        { name = "DATABASE_URL",          valueFrom = aws_ssm_parameter.database_url.arn },
       ]
       logConfiguration = {
         logDriver = "awslogs"
