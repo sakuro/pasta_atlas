@@ -2,6 +2,7 @@
 
 require "hanami"
 require "omniauth"
+require_relative "../app/middleware/reverse_proxy_fix"
 require "omniauth-discord"
 require "omniauth-github"
 require "omniauth-steam"
@@ -28,7 +29,10 @@ module PastaAtlas
       ],
       default: "en"
 
-    OmniAuth.config.full_host = ENV["APP_BASE_URL"] if ENV["APP_BASE_URL"]
+    if (base_url = ENV.fetch("APP_BASE_URL", nil))
+      OmniAuth.config.full_host = base_url
+      config.middleware.use PastaAtlas::Middleware::ReverseProxyFix, base_url:
+    end
 
     config.middleware.use OmniAuth::Builder do
       provider :discord,
