@@ -32,8 +32,12 @@ COPY . .
 RUN SESSION_SECRET=dummy \
     GITHUB_CLIENT_ID=dummy \
     GITHUB_CLIENT_SECRET=dummy \
+    DISCORD_CLIENT_ID=dummy \
+    DISCORD_CLIENT_SECRET=dummy \
+    STEAM_WEB_API_KEY=dummy \
     S3_BUCKET=dummy \
     CLOUDFRONT_BASE_URL=https://dummy.example.com \
+    SQS_S3_CLEANUP_QUEUE_URL=https://dummy.example.com/dummy \
     bundle exec hanami assets compile && \
     npm run build:islands
 

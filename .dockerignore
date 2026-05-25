@@ -1,6 +1,7 @@
 .bundle
 .claude
 .dockerignore
+.env
 .env.development
 .env.test
 .env*.local
