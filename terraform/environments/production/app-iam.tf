@@ -78,7 +78,12 @@ resource "aws_iam_policy" "app_sqs" {
 
 data "aws_iam_policy_document" "app_sqs" {
   statement {
-    actions   = ["sqs:SendMessage"]
+    actions = [
+      "sqs:SendMessage",
+      "sqs:ReceiveMessage",
+      "sqs:DeleteMessage",
+      "sqs:GetQueueAttributes",
+    ]
     resources = [aws_sqs_queue.s3_cleanup.arn]
   }
 }

@@ -23,17 +23,4 @@ namespace :sqs do
       end
     end
   end
-
-  desc "Delete S3 objects under the given prefix (one-shot, for EventBridge Pipes)"
-  task delete_s3_prefix: :environment do
-    s3_prefix = ENV.fetch("S3_PREFIX") { abort "S3_PREFIX environment variable is required" }
-
-    result = Hanami.app["operations.maps.delete"].call(s3_prefix:)
-    if result.success?
-      puts "Deleted S3 objects under #{s3_prefix}"
-    else
-      warn "Failed to delete S3 objects under #{s3_prefix}: #{result.failure}"
-      exit 1
-    end
-  end
 end
