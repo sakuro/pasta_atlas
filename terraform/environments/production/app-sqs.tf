@@ -68,7 +68,8 @@ resource "aws_pipes_pipe" "s3_cleanup" {
     input_template = jsonencode({
       containerOverrides = [{
         name    = var.app_name
-        command = ["bundle", "exec", "rake", "sqs:delete_s3_prefix[<$.body>]"]
+        command      = ["bundle", "exec", "rake", "sqs:delete_s3_prefix"]
+        environment  = [{ name = "S3_PREFIX", value = "<$.body>" }]
       }]
     })
 
