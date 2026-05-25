@@ -140,6 +140,7 @@ upload-images = Obrázky
 upload-total-size = Celková velikost
 upload-start = Zahájit nahrávání
 upload-back = Zpět
+upload-preparing = Připravuji nahrávání...
 upload-progress = Nahrávám { $progress } / { $total } souborů...
 upload-complete = Nahrávání dokončeno!
 upload-view-map = Zobrazit mapu

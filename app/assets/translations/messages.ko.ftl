@@ -123,6 +123,7 @@ upload-images = 이미지 수
 upload-total-size = 전체 크기
 upload-start = 업로드 시작
 upload-back = 뒤로
+upload-preparing = 업로드 준비 중...
 upload-progress = { $progress } / { $total } 파일 업로드 중...
 upload-complete = 업로드 완료!
 upload-view-map = 맵 보기

@@ -34,6 +34,7 @@ type State =
       imageCount: number;
       totalBytes: number;
     }
+  | { type: "preparing" }
   | { type: "uploading"; progress: number; total: number }
   | { type: "done"; viewerUrl: string }
   | { type: "error"; error: I18nError };
@@ -158,7 +159,7 @@ export const UploadModal = (props: { isGuest: boolean }) => {
 
     const { mapshotJson, fileMap } = s;
     const imageCount = fileMap.size;
-    setState({ type: "uploading", progress: 0, total: imageCount });
+    setState({ type: "preparing" });
 
     // Step 1: POST /api/v1/uploads
     let uploadUlid: string, mapUlid: string, generationUlid: string;
@@ -308,7 +309,7 @@ export const UploadModal = (props: { isGuest: boolean }) => {
           <div class="modal-card" style={{ width: "90vw", "max-width": "1000px" }}>
             <header class="modal-card-head">
               <p class="modal-card-title" data-l10n-id="upload-modal-title" />
-              <Show when={state().type !== "uploading"}>
+              <Show when={state().type !== "uploading" && state().type !== "preparing"}>
                 <button class="delete" aria-label="close" onClick={dismiss} />
               </Show>
             </header>
@@ -404,6 +405,10 @@ export const UploadModal = (props: { isGuest: boolean }) => {
                     </tbody>
                   </table>
                 )}
+              </Show>
+              <Show when={state().type === "preparing"}>
+                <p class="mb-2" data-l10n-id="upload-preparing" />
+                <progress class="progress is-primary" />
               </Show>
               <Show when={uploadingState()} keyed>
                 {(s) => (

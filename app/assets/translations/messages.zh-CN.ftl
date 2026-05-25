@@ -123,6 +123,7 @@ upload-images = 图片数量
 upload-total-size = 总大小
 upload-start = 开始上传
 upload-back = 返回
+upload-preparing = 正在准备上传...
 upload-progress = 正在上传第 { $progress } / { $total } 个文件...
 upload-complete = 上传完成！
 upload-view-map = 查看地图

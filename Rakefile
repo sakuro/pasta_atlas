@@ -13,12 +13,14 @@ begin
   require "rubocop/rake_task"
   RuboCop::RakeTask.new
 rescue LoadError
+  raise unless ENV.fetch("HANAMI_ENV", "development") == "production"
 end
 
 begin
   require "yard"
   YARD::Rake::YardocTask.new(:doc)
 rescue LoadError
+  raise unless ENV.fetch("HANAMI_ENV", "development") == "production"
 end
 
 task default: %i[spec rubocop]
