@@ -65,13 +65,9 @@ resource "aws_pipes_pipe" "s3_cleanup" {
   }
 
   target_parameters {
-    input_template = jsonencode({
-      containerOverrides = [{
-        name    = var.app_name
-        command      = ["bundle", "exec", "rake", "sqs:delete_s3_prefix"]
-        environment  = [{ name = "S3_PREFIX", value = "<$.body>" }]
-      }]
-    })
+    # jsonencode escapes < and > as </>, breaking EventBridge template substitution.
+    # Use a raw string so <$.body> is preserved literally.
+    input_template = "{\"containerOverrides\":[{\"name\":\"${var.app_name}\",\"command\":[\"bundle\",\"exec\",\"rake\",\"sqs:delete_s3_prefix\"],\"environment\":[{\"name\":\"S3_PREFIX\",\"value\":\"<$.body>\"}]}]}"
 
     ecs_task_parameters {
       task_definition_arn = aws_ecs_task_definition.app.arn
