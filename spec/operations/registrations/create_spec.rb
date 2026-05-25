@@ -70,7 +70,7 @@ RSpec.describe PastaAtlas::Operations::Registrations::Create do
         allow(user_profile_repo).to receive(:create).with(user_id: 1)
         allow(user_preference_repo).to receive(:create).with(user_id: 1, timezone: "Asia/Tokyo")
         allow(credential_repo).to receive(:create).with(user_id: 1, provider: "github", uid: "123")
-        allow(import_avatar).to receive(:call).with(user_id: 1, avatar_url: "http://example.com/avatar.jpg").and_return(Failure(:error))
+        allow(import_avatar).to receive(:call).with(user:, avatar_url: "http://example.com/avatar.jpg").and_return(Failure(:error))
       end
 
       it "returns success with the created user" do

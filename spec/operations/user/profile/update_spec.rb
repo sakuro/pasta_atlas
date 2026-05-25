@@ -77,9 +77,9 @@ RSpec.describe PastaAtlas::Operations::User::Profile::Update do
       end
 
       it "updates the avatar" do
-        operation.call(user_id: 1, user_name: "sakuro", display_name: "Sakuro", avatar_s3_key: "avatars/1/abc.jpg")
+        operation.call(user_id: 1, user_name: "sakuro", display_name: "Sakuro", avatar_s3_key: "sakuro/avatar/abc.jpg")
 
-        expect(user_profile_repo).to have_received(:update_avatar).with(1, avatar_s3_key: "avatars/1/abc.jpg")
+        expect(user_profile_repo).to have_received(:update_avatar).with(1, avatar_s3_key: "sakuro/avatar/abc.jpg")
       end
     end
   end

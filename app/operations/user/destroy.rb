@@ -14,7 +14,7 @@ module PastaAtlas
 
         def call(user_id:, user_name:)
           user = step verify_ownership.call(user_id:, user_name:)
-          s3_prefixes = map_s3_prefixes(user) + ["avatars/#{user.id}/"]
+          s3_prefixes = map_s3_prefixes(user) + ["#{user.name}/avatar/"]
           user_repo.destroy(user.id)
           s3_prefixes.each {|prefix| schedule_s3_cleanup(prefix) }
           user

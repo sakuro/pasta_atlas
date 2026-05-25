@@ -3,8 +3,8 @@
 module PastaAtlas
   module Operations
     class CleanupOrphanedS3Objects < PastaAtlas::Operation
-      SKIP_PREFIXES = %w[avatars/].freeze
-      private_constant :SKIP_PREFIXES
+      SYSTEM_SUBPREFIXES = %w[avatar].freeze
+      private_constant :SYSTEM_SUBPREFIXES
 
       include Deps["repos.map_repo", "repos.user_repo", "settings", s3_client: "s3.client"]
 
@@ -16,14 +16,14 @@ module PastaAtlas
       private def cleanup_orphaned_prefixes
         deleted_count = 0
         list_prefixes("").each do |user_prefix|
-          next if SKIP_PREFIXES.include?(user_prefix)
-
           user_name = user_prefix.chomp("/")
           user = user_repo.find_by_name(user_name)
           next unless user
 
           list_prefixes(user_prefix).each do |map_prefix|
             mapshot_map_id = map_prefix.delete_prefix(user_prefix).chomp("/")
+            next if SYSTEM_SUBPREFIXES.include?(mapshot_map_id)
+
             unless map_repo.find_by_user_and_mapshot_id(user_id: user.id, mapshot_map_id:)
               delete_objects(map_prefix)
               deleted_count += 1

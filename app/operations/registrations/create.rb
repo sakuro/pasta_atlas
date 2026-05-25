@@ -59,7 +59,7 @@ module PastaAtlas
         end
 
         private def import_avatar_for(user, avatar_url)
-          avatar_result = import_avatar.call(user_id: user.id, avatar_url:)
+          avatar_result = import_avatar.call(user:, avatar_url:)
           user_profile_repo.update_avatar(user.id, avatar_s3_key: avatar_result.value!) if avatar_result.success?
         end
       end

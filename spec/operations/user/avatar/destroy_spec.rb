@@ -10,7 +10,7 @@ RSpec.describe PastaAtlas::Operations::User::Avatar::Destroy do
   let(:operation) { PastaAtlas::Operations::User::Avatar::Destroy.new(verify_ownership:, user_profile_repo:, settings:, sqs_client:) }
 
   let(:user) { double("User", id: 1, name: "alice") }
-  let(:profile_with_avatar) { double("UserProfile", avatar_s3_key: "avatars/1/photo.jpg") }
+  let(:profile_with_avatar) { double("UserProfile", avatar_s3_key: "alice/avatar/photo.jpg") }
   let(:profile_without_avatar) { double("UserProfile", avatar_s3_key: nil) }
 
   before do
@@ -77,7 +77,7 @@ RSpec.describe PastaAtlas::Operations::User::Avatar::Destroy do
 
         expect(sqs_client).to have_received(:send_message).with(
           queue_url: "https://sqs.example.com/queue",
-          message_body: "avatars/1/photo.jpg"
+          message_body: "alice/avatar/photo.jpg"
         )
       end
 

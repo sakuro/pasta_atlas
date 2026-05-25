@@ -25,7 +25,7 @@ module PastaAtlas
             user = step verify_ownership.call(user_id:, user_name:)
             step validate_display_name(display_name)
             user_profile_repo.update_profile(user.id, display_name: display_name.empty? ? nil : display_name)
-            if !avatar_s3_key.empty? && avatar_s3_key.start_with?("avatars/#{user.id}/")
+            if !avatar_s3_key.empty? && avatar_s3_key.start_with?("#{user.name}/avatar/")
               user_profile_repo.update_avatar(user.id, avatar_s3_key:)
             end
             user

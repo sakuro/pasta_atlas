@@ -19,11 +19,11 @@ module PastaAtlas
         MAX_REDIRECTS = 5
         private_constant :MAX_REDIRECTS
 
-        def call(user_id:, avatar_url:)
+        def call(user:, avatar_url:)
           step check_url(avatar_url)
           body, content_type = step download(avatar_url)
           ext = step resolve_ext(content_type)
-          key = "avatars/#{user_id}/#{ULID.generate}.#{ext}"
+          key = "#{user.name}/avatar/#{ULID.generate}.#{ext}"
           step upload(key:, body:, content_type:)
           key
         end

@@ -14,12 +14,13 @@ module PastaAtlas
           }.freeze
           private_constant :ALLOWED_CONTENT_TYPES
 
-          include Deps["settings", s3_client: "s3.client"]
+          include Deps["settings", "repos.user_repo", s3_client: "s3.client"]
 
           def call(user_id:, content_type:)
             user_id = step require_authentication(user_id)
             ext = step resolve_extension(content_type)
-            key = "avatars/#{user_id}/#{ULID.generate}.#{ext}"
+            user = user_repo.find_by_id(user_id)
+            key = "#{user.name}/avatar/#{ULID.generate}.#{ext}"
             presigned_url = generate_presigned_url(key:, content_type:)
             {presigned_url:, s3_key: key}
           end

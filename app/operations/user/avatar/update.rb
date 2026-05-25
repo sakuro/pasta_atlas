@@ -14,15 +14,15 @@ module PastaAtlas
 
           def call(user_id:, user_name:, s3_key:)
             user = step verify_ownership.call(user_id:, user_name:)
-            step validate_s3_key(s3_key, user.id)
+            step validate_s3_key(s3_key, user.name)
             old_s3_key = user_profile_repo.find_by_user_id(user.id).avatar_s3_key
             user_profile_repo.update_avatar(user.id, avatar_s3_key: s3_key)
             schedule_s3_cleanup(old_s3_key) if old_s3_key
             user
           end
 
-          private def validate_s3_key(s3_key, user_id)
-            s3_key.start_with?("avatars/#{user_id}/") ? Success(s3_key) : Failure(:unprocessable_entity)
+          private def validate_s3_key(s3_key, user_name)
+            s3_key.start_with?("#{user_name}/avatar/") ? Success(s3_key) : Failure(:unprocessable_entity)
           end
 
           private def schedule_s3_cleanup(s3_key)

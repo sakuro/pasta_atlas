@@ -65,7 +65,7 @@ RSpec.describe PastaAtlas::Operations::User::Destroy do
 
         expect(sqs_client).to have_received(:send_message).with(
           queue_url: "https://sqs.example.com/queue",
-          message_body: "avatars/1/"
+          message_body: "alice/avatar/"
         )
       end
 
@@ -89,7 +89,7 @@ RSpec.describe PastaAtlas::Operations::User::Destroy do
 
         expect(sqs_client).to have_received(:send_message).with(
           queue_url: "https://sqs.example.com/queue",
-          message_body: "avatars/1/"
+          message_body: "alice/avatar/"
         )
       end
 
