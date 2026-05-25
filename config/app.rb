@@ -50,6 +50,11 @@ module PastaAtlas
     if Hanami.env?(:development)
       config.actions.content_security_policy[:connect_src] += " http://localhost:4566"
       config.actions.content_security_policy[:img_src] += " http://localhost:4566"
+    else
+      s3_origin = "https://#{settings.s3_bucket}.s3.#{settings.aws_region}.amazonaws.com"
+      cloudfront_origin = settings.cloudfront_base_url.to_s
+      config.actions.content_security_policy[:connect_src] += " #{s3_origin} #{cloudfront_origin}"
+      config.actions.content_security_policy[:img_src] += " #{cloudfront_origin}"
     end
   end
 end

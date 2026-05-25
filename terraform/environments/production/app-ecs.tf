@@ -65,6 +65,7 @@ resource "aws_ecs_task_definition" "app" {
       ]
       environment = [
         { name = "HANAMI_ENV",             value = var.environment },
+        { name = "AWS_REGION",             value = var.aws_region },
         { name = "HANAMI_SERVE_ASSETS",    value = "true" },
         { name = "APP_BASE_URL",           value = "https://${var.app_domain_name}" },
         { name = "S3_BUCKET",              value = aws_s3_bucket.mapshots.bucket },

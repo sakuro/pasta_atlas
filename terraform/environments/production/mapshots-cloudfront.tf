@@ -1,3 +1,15 @@
+resource "aws_cloudfront_response_headers_policy" "mapshots_cors" {
+  name = "${var.app_name}-${var.environment}-mapshots-cors"
+
+  cors_config {
+    access_control_allow_credentials = false
+    access_control_allow_headers { items = ["*"] }
+    access_control_allow_methods { items = ["GET", "HEAD"] }
+    access_control_allow_origins { items = var.allowed_origins }
+    origin_override = true
+  }
+}
+
 resource "aws_cloudfront_origin_access_control" "mapshots" {
   name                              = "${var.app_name}-${var.environment}-mapshots"
   origin_access_control_origin_type = "s3"
@@ -23,7 +35,8 @@ resource "aws_cloudfront_distribution" "mapshots" {
     target_origin_id       = aws_s3_bucket.mapshots.id
     viewer_protocol_policy = "redirect-to-https"
     compress               = true
-    cache_policy_id        = data.aws_cloudfront_cache_policy.mapshots_caching_optimized.id
+    cache_policy_id             = data.aws_cloudfront_cache_policy.mapshots_caching_optimized.id
+    response_headers_policy_id  = aws_cloudfront_response_headers_policy.mapshots_cors.id
   }
 
   restrictions {
