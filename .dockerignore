@@ -1,3 +1,4 @@
+.DS_Store
 .bundle
 .claude
 .dockerignore
@@ -22,6 +23,7 @@ AGENTS.md
 CLAUDE.md
 Dockerfile
 Guardfile
+LICENSE.txt
 README.md
 TODO.md
 bin
@@ -33,6 +35,7 @@ log
 mise.toml
 node_modules
 public/assets
+scripts
 spec
 terraform
 vendor/bundle
