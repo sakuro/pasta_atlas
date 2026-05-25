@@ -62,7 +62,8 @@ USER app
 ENV BUNDLE_PATH=/usr/local/bundle \
     BUNDLE_WITHOUT="development:test" \
     HANAMI_ENV=production \
-    HANAMI_PORT=3000
+    HANAMI_PORT=3000 \
+    HOME=/app
 
 EXPOSE 3000
 

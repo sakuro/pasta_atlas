@@ -3,6 +3,7 @@
 namespace :sqs do
   desc "Poll SQS S3 cleanup queue and process messages (local dev)"
   task worker: :environment do
+    $stdout.sync = true
     sqs_client = Hanami.app["sqs.client"]
     queue_url = Hanami.app["settings"].sqs_s3_cleanup_queue_url
 
