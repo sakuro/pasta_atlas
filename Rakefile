@@ -9,10 +9,16 @@ require "rake/clean"
 CLEAN.include("coverage", ".rspec_status", ".yardoc")
 CLOBBER.include("doc/api")
 
-require "rubocop/rake_task"
-RuboCop::RakeTask.new
+begin
+  require "rubocop/rake_task"
+  RuboCop::RakeTask.new
+rescue LoadError
+end
 
-require "yard"
-YARD::Rake::YardocTask.new(:doc)
+begin
+  require "yard"
+  YARD::Rake::YardocTask.new(:doc)
+rescue LoadError
+end
 
 task default: %i[spec rubocop]
