@@ -66,6 +66,7 @@ resource "aws_ecs_task_definition" "app" {
       environment = [
         { name = "HANAMI_ENV",             value = var.environment },
         { name = "HANAMI_SERVE_ASSETS",    value = "true" },
+        { name = "APP_BASE_URL",           value = "https://${var.app_domain_name}" },
         { name = "S3_BUCKET",              value = aws_s3_bucket.mapshots.bucket },
         { name = "CLOUDFRONT_BASE_URL",    value = "https://${aws_cloudfront_distribution.mapshots.domain_name}" },
         { name = "SQS_S3_CLEANUP_QUEUE_URL", value = aws_sqs_queue.s3_cleanup.url },

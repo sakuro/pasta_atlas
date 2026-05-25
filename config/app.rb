@@ -28,6 +28,8 @@ module PastaAtlas
       ],
       default: "en"
 
+    OmniAuth.config.full_host = ENV["APP_BASE_URL"] if ENV["APP_BASE_URL"]
+
     config.middleware.use OmniAuth::Builder do
       provider :discord,
         PastaAtlas::App.settings.discord_client_id,
