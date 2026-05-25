@@ -60,6 +60,7 @@ RUN groupadd --gid 1000 app && \
 USER app
 
 ENV BUNDLE_PATH=/usr/local/bundle \
+    BUNDLE_WITHOUT="development:test" \
     HANAMI_ENV=production \
     HANAMI_PORT=3000
 
