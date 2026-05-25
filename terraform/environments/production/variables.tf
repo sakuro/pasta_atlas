@@ -53,6 +53,16 @@ variable "presigned_url_expiry" {
   default = 3600
 }
 
+variable "github_client_id" {
+  type    = string
+  default = "Ov23liGNU3RVMN2XrLUC"
+}
+
+variable "discord_client_id" {
+  type    = string
+  default = "1506102791695761548"
+}
+
 variable "container_port" {
   type    = number
   default = 3000

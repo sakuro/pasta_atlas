@@ -59,9 +59,13 @@ resource "aws_ecs_task_definition" "app" {
         }
       ]
       environment = [
-        { name = "S3_BUCKET", value = aws_s3_bucket.mapshots.bucket },
-        { name = "CLOUDFRONT_BASE_URL", value = "https://${aws_cloudfront_distribution.mapshots.domain_name}" },
+        { name = "HANAMI_ENV",             value = var.environment },
+        { name = "S3_BUCKET",              value = aws_s3_bucket.mapshots.bucket },
+        { name = "CLOUDFRONT_BASE_URL",    value = "https://${aws_cloudfront_distribution.mapshots.domain_name}" },
         { name = "SQS_S3_CLEANUP_QUEUE_URL", value = aws_sqs_queue.s3_cleanup.url },
+        { name = "PRESIGNED_URL_EXPIRY",   value = tostring(var.presigned_url_expiry) },
+        { name = "GITHUB_CLIENT_ID",       value = var.github_client_id },
+        { name = "DISCORD_CLIENT_ID",      value = var.discord_client_id },
       ]
       secrets = [
         { name = "SESSION_SECRET",        valueFrom = aws_ssm_parameter.session_secret.arn },
