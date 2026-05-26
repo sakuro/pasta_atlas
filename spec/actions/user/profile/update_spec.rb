@@ -56,7 +56,7 @@ RSpec.describe PastaAtlas::Actions::User::Profile::Update, :action_env do
       response = action.call(env)
 
       expect(response.status).to eq(302)
-      expect(response.headers["Location"]).to eq("/@sakuro#edit-profile")
+      expect(response.headers["Location"]).to eq("/@sakuro#tab-profile")
     end
 
     context "when display_name is blank" do
