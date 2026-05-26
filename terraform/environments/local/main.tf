@@ -10,7 +10,7 @@ terraform {
 }
 
 provider "aws" {
-  region                      = "us-east-1"
+  region                      = "ap-northeast-1"
   access_key                  = "dummy"
   secret_key                  = "dummy"
   skip_credentials_validation = true

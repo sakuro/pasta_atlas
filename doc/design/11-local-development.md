@@ -18,13 +18,26 @@ Local development uses Docker-based substitutes for AWS services. No AWS account
 
 ## First-time setup
 
-### 1. Start Docker services
+### 1. Add AWS profile
+
+Add the following profile to `~/.aws/config`:
+
+```ini
+[profile pasta-atlas-local]
+region = ap-northeast-1
+aws_access_key_id = dummy
+aws_secret_access_key = dummy
+```
+
+This provides dummy credentials and region for Floci. No real AWS account is needed.
+
+### 2. Start Docker services
 
 ```bash
 docker compose up -d
 ```
 
-### 2. Provision local AWS resources
+### 3. Provision local AWS resources
 
 ```bash
 cd terraform/environments/local
@@ -36,9 +49,9 @@ cd -
 This creates the following resources in Floci:
 
 - `pasta-atlas-local-mapshots` S3 bucket
-- `pasta-atlas-local-map-deletion` SQS queue
+- `pasta-atlas-local-s3-cleanup` SQS queue
 
-### 3. Configure OAuth providers
+### 4. Configure OAuth providers
 
 At least one provider must be configured. Create `.env.development.local` (gitignored) with credentials for the providers you want to use.
 
@@ -73,7 +86,7 @@ STEAM_WEB_API_KEY=<your api key>
 
 Without at least one provider configured, the app starts but login is unavailable.
 
-### 4. Install dependencies and prepare the database
+### 5. Install dependencies and prepare the database
 
 ```bash
 bin/setup
@@ -95,6 +108,7 @@ Starts all services concurrently via mise:
 | Asset watch (esbuild) | `bundle exec hanami assets watch` |
 | Island watch (Vite) | `npm run dev:islands` |
 | Docker Compose (Floci + PostgreSQL) | `docker compose up` |
+| SQS worker | `bundle exec rake sqs:worker` |
 
 Access the app at **http://localhost:2300**.
 
