@@ -3,6 +3,10 @@ name: Deploy
 on:
   workflow_dispatch:
 
+permissions:
+  id-token: write
+  contents: read
+
 env:
   AWS_REGION: ap-northeast-1
   ECR_REPOSITORY: pasta-atlas-production
