@@ -68,9 +68,14 @@
     --leaflet-ctrl-slider-knob-border: #4c566a;
   }
 }
-/* Leaflet controls reach z-index 800; modal must exceed that */
+/* Leaflet control containers (.leaflet-top/.leaflet-bottom) reach z-index 1000 */
+.navbar {
+  position: relative;
+  z-index: 1100;
+}
+
 .modal {
-  z-index: 1000;
+  z-index: 1200;
 }
 
 /* Map info modal label column */
