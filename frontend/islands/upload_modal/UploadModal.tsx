@@ -288,13 +288,15 @@ export const UploadModal = (props: { isGuest: boolean }) => {
           if (files && files.length > 0) onFilesSelected(files);
         }}
       />
-      <button class="button" onClick={openModal}>
-        <span class="icon"><i class="fa-solid fa-upload" /></span>
-        <span data-l10n-id="upload-button" />
-      </button>
-      <button class="button" data-l10n-id="how-to-upload-button" onClick={() => setShowHowTo(true)}>
-        <span class="icon"><i class="fa-solid fa-circle-question" /></span>
-      </button>
+      <div class="buttons has-addons">
+        <button class="button" onClick={openModal}>
+          <span class="icon"><i class="fa-solid fa-upload" /></span>
+          <span data-l10n-id="upload-button" />
+        </button>
+        <button class="button" data-l10n-id="how-to-upload-button" onClick={() => setShowHowTo(true)}>
+          <span class="icon"><i class="fa-solid fa-circle-question" /></span>
+        </button>
+      </div>
       <Show when={showHowTo()}>
         <HowToUploadModal onClose={() => setShowHowTo(false)} />
       </Show>
