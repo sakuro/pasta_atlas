@@ -22,6 +22,10 @@ namespace :sqs do
           warn "Failed to delete S3 objects under #{msg.body}: #{result.failure}"
         end
       end
+    rescue Seahorse::Client::NetworkingError, Aws::SQS::Errors::NonExistentQueue => e
+      warn "#{e.message}, retrying in 5 seconds..."
+      sleep 5
+      retry
     end
   end
 end
