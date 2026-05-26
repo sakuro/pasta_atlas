@@ -10,7 +10,7 @@
   </div>
 
   <div class="container mt-5">
-    <div class="tabs" data-tabs="user-edit">
+    <div class="tabs" data-tabs="user-tabs">
       <ul>
         <li data-target="tab-recent-maps" class="is-active"><a><span class="icon-text"><span class="icon"><i class="fa-solid fa-map"></i></span><span><%= t("user-tab-maps") %></span></span></a></li>
         <% if is_owner %>
@@ -22,7 +22,7 @@
       </ul>
     </div>
 
-    <div id="tab-recent-maps" data-tab-panel="user-edit">
+    <div id="tab-recent-maps" data-tab-panel="user-tabs">
       <% unless recent_map_infos.empty? %>
         <div class="columns is-multiline">
           <% recent_map_infos.each do |map_info| %>
@@ -45,7 +45,7 @@
     </div>
 
     <% if is_owner %>
-      <div id="tab-profile" class="is-hidden" data-tab-panel="user-edit">
+      <div id="tab-profile" class="is-hidden" data-tab-panel="user-tabs">
         <% if error %>
           <div class="notification is-danger is-light"><%= error %></div>
         <% end %>
@@ -91,7 +91,7 @@
         </form>
       </div>
 
-      <div id="tab-preferences" class="is-hidden" data-tab-panel="user-edit">
+      <div id="tab-preferences" class="is-hidden" data-tab-panel="user-tabs">
         <form action="<%= path(:user_preferences, user_name:) %>" method="post">
           <input type="hidden" name="_method" value="patch">
           <input type="hidden" name="_csrf_token" value="<%= csrf_token %>">
@@ -163,7 +163,7 @@
         </form>
       </div>
 
-      <div id="tab-credentials" class="is-hidden" data-tab-panel="user-edit">
+      <div id="tab-credentials" class="is-hidden" data-tab-panel="user-tabs">
         <div class="field">
           <% only_one = connected_providers.size <= 1 %>
           <div class="level">
@@ -195,7 +195,7 @@
         </div>
       </div>
 
-      <div id="tab-danger" class="is-hidden" data-tab-panel="user-edit">
+      <div id="tab-danger" class="is-hidden" data-tab-panel="user-tabs">
         <p class="mb-3"><%= t("account-delete-warning") %></p>
         <form action="/@<%= user_name %>" method="post" data-confirm-delete="true">
           <input type="hidden" name="_method" value="delete">
