@@ -442,32 +442,40 @@ export const UploadModal = (props: { isGuest: boolean }) => {
             </section>
             <footer class="modal-card-foot">
               <Show when={state().type === "instructions"}>
-                <button class="button is-primary" onClick={openPicker}>
-                  <span class="icon"><i class="fa-solid fa-folder-open" /></span>
-                  <span data-l10n-id="upload-select-folder" />
-                </button>
-                <button class="button" data-l10n-id="upload-cancel" onClick={dismiss} />
+                <div class="buttons">
+                  <button class="button is-primary" onClick={openPicker}>
+                    <span class="icon"><i class="fa-solid fa-folder-open" /></span>
+                    <span data-l10n-id="upload-select-folder" />
+                  </button>
+                  <button class="button" data-l10n-id="upload-cancel" onClick={dismiss} />
+                </div>
               </Show>
               <Show when={state().type === "confirming"}>
-                <button class="button is-primary" onClick={startUpload}>
-                  <span class="icon"><i class="fa-solid fa-upload" /></span>
-                  <span data-l10n-id="upload-start" />
-                </button>
-                <button class="button" onClick={backToInstructions}>
-                  <span class="icon"><i class="fa-solid fa-arrow-left" /></span>
-                  <span data-l10n-id="upload-back" />
-                </button>
-                <button class="button" data-l10n-id="upload-cancel" onClick={dismiss} />
+                <div class="buttons">
+                  <button class="button" onClick={openPicker}>
+                    <span class="icon"><i class="fa-solid fa-folder-open" /></span>
+                    <span data-l10n-id="upload-reselect-folder" />
+                  </button>
+                  <button class="button is-primary" onClick={startUpload}>
+                    <span class="icon"><i class="fa-solid fa-upload" /></span>
+                    <span data-l10n-id="upload-start" />
+                  </button>
+                  <button class="button" data-l10n-id="upload-cancel" onClick={dismiss} />
+                </div>
               </Show>
               <Show when={state().type === "done"}>
-                <button class="button" data-l10n-id="upload-close" onClick={dismiss} />
+                <div class="buttons">
+                  <button class="button" data-l10n-id="upload-close" onClick={dismiss} />
+                </div>
               </Show>
               <Show when={state().type === "error"}>
-                <button class="button" data-l10n-id="upload-dismiss" onClick={dismiss} />
-                <button class="button" onClick={backToInstructions}>
-                  <span class="icon"><i class="fa-solid fa-arrow-left" /></span>
-                  <span data-l10n-id="upload-back" />
-                </button>
+                <div class="buttons">
+                  <button class="button" data-l10n-id="upload-dismiss" onClick={dismiss} />
+                  <button class="button" onClick={backToInstructions}>
+                    <span class="icon"><i class="fa-solid fa-arrow-left" /></span>
+                    <span data-l10n-id="upload-back" />
+                  </button>
+                </div>
               </Show>
             </footer>
           </div>

@@ -123,6 +123,7 @@ upload-images = Images
 upload-total-size = Total size
 upload-start = Start Upload
 upload-back = Back
+upload-reselect-folder = Change Folder
 upload-preparing = Preparing upload...
 upload-progress = Uploading { $progress } / { $total } files...
 upload-complete = Upload complete!
