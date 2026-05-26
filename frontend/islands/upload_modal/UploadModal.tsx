@@ -104,10 +104,6 @@ export const UploadModal = (props: { isGuest: boolean }) => {
     inputRef.click();
   };
 
-  const backToInstructions = () => {
-    setState({ type: "instructions" });
-  };
-
   const onFilesSelected = async (files: FileList) => {
     const allFiles = Array.from(files);
 
@@ -470,11 +466,11 @@ export const UploadModal = (props: { isGuest: boolean }) => {
               </Show>
               <Show when={state().type === "error"}>
                 <div class="buttons">
-                  <button class="button" data-l10n-id="upload-dismiss" onClick={dismiss} />
-                  <button class="button" onClick={backToInstructions}>
-                    <span class="icon"><i class="fa-solid fa-arrow-left" /></span>
-                    <span data-l10n-id="upload-back" />
+                  <button class="button" onClick={openPicker}>
+                    <span class="icon"><i class="fa-solid fa-folder-open" /></span>
+                    <span data-l10n-id="upload-reselect-folder" />
                   </button>
+                  <button class="button" data-l10n-id="upload-dismiss" onClick={dismiss} />
                 </div>
               </Show>
             </footer>

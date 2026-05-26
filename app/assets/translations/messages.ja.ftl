@@ -122,7 +122,6 @@ upload-surfaces = サーフィス
 upload-images = 画像数
 upload-total-size = 合計サイズ
 upload-start = アップロード開始
-upload-back = 戻る
 upload-reselect-folder = フォルダーを選び直す
 upload-preparing = アップロードの準備中...
 upload-progress = { $progress } / { $total } ファイルをアップロード中...

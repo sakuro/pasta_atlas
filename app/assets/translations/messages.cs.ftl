@@ -139,7 +139,6 @@ upload-surfaces = Povrchy
 upload-images = Obrázky
 upload-total-size = Celková velikost
 upload-start = Zahájit nahrávání
-upload-back = Zpět
 upload-reselect-folder = Změnit složku
 upload-preparing = Připravuji nahrávání...
 upload-progress = Nahrávám { $progress } / { $total } souborů...

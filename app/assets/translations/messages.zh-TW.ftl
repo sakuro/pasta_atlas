@@ -122,7 +122,6 @@ upload-surfaces = 表面
 upload-images = 圖片數量
 upload-total-size = 總大小
 upload-start = 開始上傳
-upload-back = 返回
 upload-reselect-folder = 重新選取資料夾
 upload-preparing = 正在準備上傳...
 upload-progress = 正在上傳第 { $progress } / { $total } 個檔案...
