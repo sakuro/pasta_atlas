@@ -45,10 +45,13 @@ document.querySelectorAll<HTMLAnchorElement>(".tab-edit-link").forEach((link) =>
   link.addEventListener("click", (e) => e.stopPropagation());
 });
 
-const initialHash = location.hash.slice(1);
-if (initialHash) {
-  document.querySelector<HTMLElement>(`[data-target="${initialHash}"]`)?.click();
-}
+const activateTabByHash = (hash: string) => {
+  if (hash) document.querySelector<HTMLElement>(`[data-target="${hash}"]`)?.click();
+};
+
+activateTabByHash(location.hash.slice(1));
+
+window.addEventListener("hashchange", () => activateTabByHash(location.hash.slice(1)));
 
 const confirmInput = document.getElementById("confirm_user_name") as HTMLInputElement | null;
 const deleteButton = document.getElementById("delete-account-button") as HTMLButtonElement | null;
