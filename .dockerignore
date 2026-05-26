@@ -37,4 +37,4 @@ public/assets
 scripts
 spec
 terraform
-vendor/bundle
+vendor

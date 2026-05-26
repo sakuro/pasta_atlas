@@ -22,7 +22,10 @@ ENV BUNDLE_PATH=/usr/local/bundle \
     BUNDLE_WITHOUT="development:test"
 
 COPY Gemfile Gemfile.lock ./
-RUN bundle install --jobs 4 --retry 3
+RUN bundle install --jobs 4 --retry 3 && \
+    rm -rf /usr/local/bundle/ruby/*/cache \
+           /usr/local/bundle/ruby/*/doc \
+           /usr/local/bundle/ruby/*/build_info
 
 COPY package.json package-lock.json ./
 RUN npm ci
@@ -52,7 +55,14 @@ RUN apt-get update -qq && \
 WORKDIR /app
 
 COPY --from=builder /usr/local/bundle /usr/local/bundle
-COPY --from=builder /app .
+COPY --from=builder /app/app ./app
+COPY --from=builder /app/config ./config
+COPY --from=builder /app/config.ru ./config.ru
+COPY --from=builder /app/Gemfile ./Gemfile
+COPY --from=builder /app/Gemfile.lock ./Gemfile.lock
+COPY --from=builder /app/lib ./lib
+COPY --from=builder /app/public ./public
+COPY --from=builder /app/Rakefile ./Rakefile
 
 RUN groupadd --gid 1000 app && \
     useradd --uid 1000 --gid app --no-create-home app && \
