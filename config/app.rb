@@ -29,6 +29,8 @@ module PastaAtlas
       ],
       default: "en"
 
+    OmniAuth.config.failure_raise_out_environments = []
+
     if (base_url = ENV.fetch("APP_BASE_URL", nil))
       OmniAuth.config.full_host = base_url
       config.middleware.use PastaAtlas::Middleware::ReverseProxyFix, base_url:
