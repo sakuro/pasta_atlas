@@ -23,18 +23,39 @@
       <div id="navbar-main" class="navbar-menu">
         <div class="navbar-end">
           <% if current_user_name %>
-            <a class="navbar-item" href="<%= path(:user, user_name: current_user_name) %>">
-              <%= render "shared/avatar", avatar_url: current_avatar_url, avatar_size: 24 %>
-              <span class="ml-2"><%= current_user_display_name %></span>
-            </a>
-            <form action="<%= path(:auth_session) %>" method="post" style="display: contents">
-              <input type="hidden" name="_method" value="delete">
-              <input type="hidden" name="_csrf_token" value="<%= csrf_token %>">
-              <button class="navbar-item" type="submit">
-                <span class="icon"><i class="fa-solid fa-arrow-right-from-bracket"></i></span>
-                <span><%= t("nav-log-out") %></span>
-              </button>
-            </form>
+            <div class="navbar-item has-dropdown is-hoverable">
+              <a class="navbar-link">
+                <%= render "shared/avatar", avatar_url: current_avatar_url, avatar_size: 24 %>
+                <span class="ml-2"><%= current_user_display_name %></span>
+              </a>
+              <div class="navbar-dropdown is-right">
+                <a class="navbar-item" href="<%= path(:user, user_name: current_user_name) %>#tab-recent-maps">
+                  <span class="icon"><i class="fa-solid fa-map"></i></span>
+                  <span><%= t("user-tab-maps") %></span>
+                </a>
+                <a class="navbar-item" href="<%= path(:user, user_name: current_user_name) %>#tab-profile">
+                  <span class="icon"><i class="fa-solid fa-circle-user"></i></span>
+                  <span><%= t("user-tab-profile") %></span>
+                </a>
+                <a class="navbar-item" href="<%= path(:user, user_name: current_user_name) %>#tab-preferences">
+                  <span class="icon"><i class="fa-solid fa-gear"></i></span>
+                  <span><%= t("user-tab-preferences") %></span>
+                </a>
+                <a class="navbar-item" href="<%= path(:user, user_name: current_user_name) %>#tab-credentials">
+                  <span class="icon"><i class="fa-solid fa-link"></i></span>
+                  <span><%= t("user-tab-credentials") %></span>
+                </a>
+                <hr class="navbar-divider">
+                <form action="<%= path(:auth_session) %>" method="post" style="display: contents">
+                  <input type="hidden" name="_method" value="delete">
+                  <input type="hidden" name="_csrf_token" value="<%= csrf_token %>">
+                  <button class="navbar-item" type="submit">
+                    <span class="icon"><i class="fa-solid fa-arrow-right-from-bracket"></i></span>
+                    <span><%= t("nav-log-out") %></span>
+                  </button>
+                </form>
+              </div>
+            </div>
           <% else %>
             <div class="navbar-item has-dropdown is-hoverable">
               <a class="navbar-link">
