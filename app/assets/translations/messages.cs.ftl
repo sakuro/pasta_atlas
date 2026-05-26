@@ -67,7 +67,6 @@ user-tab-profile-edit =
     .title = Upravit profil
 user-tab-preferences-edit =
     .title = Upravit nastavení
-user-recent-maps = Nedávné mapy
 user-connected-accounts-label = Propojené účty
 provider-discord = { -discord }
 provider-github = { -github }

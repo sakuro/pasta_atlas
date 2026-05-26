@@ -50,7 +50,7 @@ module PastaAtlas
             response.flash[:error] = "error-credential-conflict" if result.failure?
           end
 
-          response.redirect_to "#{routes.path(:user, user_name:)}#edit-credentials"
+          response.redirect_to "#{routes.path(:user, user_name:)}#tab-credentials"
         end
 
         private def login(request, response, user_id)

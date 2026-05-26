@@ -50,7 +50,6 @@ user-tab-profile-edit =
     .title = プロフィールを編集
 user-tab-preferences-edit =
     .title = 設定を編集
-user-recent-maps = 最近のマップ
 user-connected-accounts-label = 連携済アカウント
 provider-discord = { -discord }
 provider-github = { -github }

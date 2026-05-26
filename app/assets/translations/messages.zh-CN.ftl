@@ -50,7 +50,6 @@ user-tab-profile-edit =
     .title = 编辑个人资料
 user-tab-preferences-edit =
     .title = 编辑偏好设置
-user-recent-maps = 最近的地图
 user-connected-accounts-label = 已关联账号
 provider-discord = { -discord }
 provider-github = { -github }

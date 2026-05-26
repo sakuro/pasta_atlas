@@ -50,7 +50,6 @@ user-tab-profile-edit =
     .title = Edit profile
 user-tab-preferences-edit =
     .title = Edit preferences
-user-recent-maps = Recent Maps
 user-connected-accounts-label = Connected Accounts
 provider-discord = { -discord }
 provider-github = { -github }

@@ -50,7 +50,6 @@ user-tab-profile-edit =
     .title = 프로필 편집
 user-tab-preferences-edit =
     .title = 설정 편집
-user-recent-maps = 최근 맵
 user-connected-accounts-label = 연결된 계정
 provider-discord = { -discord }
 provider-github = { -github }
