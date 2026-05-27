@@ -23,7 +23,7 @@ jobs:
           role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/github-actions-cicd
           aws-region: ${{ env.AWS_REGION }}
 
-      - name: Run migration
+      - name: Start migration task
         run: |
           NETWORK_CONFIG=$(aws ecs describe-services \
             --region "$AWS_REGION" \
@@ -42,17 +42,22 @@ jobs:
             --query 'tasks[0].taskArn' \
             --output text)
 
+          echo "TASK_ARN=$TASK_ARN" >> "$GITHUB_ENV"
+
+      - name: Wait for migration task to finish
+        run: |
           aws ecs wait tasks-stopped \
             --region "$AWS_REGION" \
             --cluster "$ECS_CLUSTER" \
             --tasks "$TASK_ARN"
 
+      - name: Check migration result
+        run: |
           EXIT_CODE=$(aws ecs describe-tasks \
             --region "$AWS_REGION" \
             --cluster "$ECS_CLUSTER" \
             --tasks "$TASK_ARN" \
             --query 'tasks[0].containers[0].exitCode' \
             --output text)
-
           echo "Exit code: $EXIT_CODE"
           [ "$EXIT_CODE" = "0" ] || exit 1
