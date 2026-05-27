@@ -111,8 +111,9 @@
     <%= yield %>
     <footer class="footer">
       <div class="content has-text-centered">
-        <p>&copy; 2026 <%= t("app-name") %></p>
         <p>
+          &copy; 2026 <%= t("app-name") %>
+          |
           <span class="icon-text">
             <span class="icon"><i class="fa-brands fa-github"></i></span>
             <span>
@@ -123,8 +124,7 @@
               <a href="https://github.com/sakuro/pasta_atlas/discussions" target="_blank" rel="noopener">Discussions</a>
             </span>
           </span>
-        </p>
-        <p>
+          |
           <a href="<%= path(:about) %>"><%= t("nav-about") %></a>
           |
           <a href="<%= path(:privacy_policy) %>"><%= t("nav-privacy-policy") %></a>

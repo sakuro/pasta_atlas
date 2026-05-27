@@ -31,8 +31,15 @@
 
 /* Leaflet control containers (.leaflet-top/.leaflet-bottom) reach z-index 1000 */
 .navbar {
-  position: relative;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
   z-index: 1100;
+}
+
+body {
+  padding-top: 3.25rem;
 }
 
 .modal {
@@ -62,11 +69,16 @@
   opacity: 1;
 }
 
+.footer {
+  padding: 1rem 1.5rem;
+}
+
 /* Viewer page: map fills remaining viewport below navbar */
 .map-viewer-page {
   display: flex;
   flex-direction: column;
-  height: 100vh;
+  flex: 1;
+  min-height: 0;
 }
 
 #map-viewer {
