@@ -27,6 +27,7 @@ README.md
 TODO.md
 bin
 compose.yml
+config/db/structure.sql
 coverage
 doc
 eslint.config.js
