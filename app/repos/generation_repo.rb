@@ -11,7 +11,7 @@ module PastaAtlas
       def find_latest_complete_by_map_ids(map_ids)
         generations.where(map_id: map_ids)
           .where(NOT_EXPIRED)
-          .combine(:upload)
+          .combine(upload: :current_upload_status)
           .to_a
           .select {|g| g.upload&.status == "complete" }
           .group_by(&:map_id)
@@ -32,14 +32,16 @@ module PastaAtlas
       def find_complete_by_map_id(map_id)
         generations.where(map_id:)
           .where(NOT_EXPIRED)
-          .combine(:upload)
+          .combine(upload: :current_upload_status)
           .to_a
           .select {|g| g.upload&.status == "complete" }
           .sort_by {|g| -g.tick }
       end
 
       def find_with_upload(map_id:, mapshot_unique_id:)
-        generations.by_map_and_unique_id(map_id, mapshot_unique_id).combine(:upload).one
+        generations.by_map_and_unique_id(map_id, mapshot_unique_id)
+          .combine(upload: :current_upload_status)
+          .one
       end
 
       def create(attrs)

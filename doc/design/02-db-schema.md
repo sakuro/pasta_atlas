@@ -103,14 +103,42 @@ Indexes:
 | id | bigserial | PRIMARY KEY |
 | ulid | varchar(26) | NOT NULL |
 | generation_id | bigint | NOT NULL, REFERENCES generations(id) ON DELETE CASCADE |
-| status | varchar | NOT NULL DEFAULT 'pending', CHECK (status IN ('pending', 'complete', 'failed')) |
 | total_image_count | integer | |
 | created_at | timestamptz | NOT NULL DEFAULT now() |
-| completed_at | timestamptz | |
 
 Indexes:
 - UNIQUE on `ulid`
 - UNIQUE on `generation_id`
+
+### upload_events
+
+Append-only log of status transitions. Never updated, only inserted.
+
+| Column | Type | Constraints |
+|---|---|---|
+| id | bigserial | PRIMARY KEY |
+| upload_id | bigint | NOT NULL, REFERENCES uploads(id) ON DELETE CASCADE |
+| event_type | varchar | NOT NULL, CHECK (event_type IN ('pending', 'complete', 'failed')) |
+| occurred_at | timestamptz | NOT NULL DEFAULT now() |
+
+Indexes:
+- INDEX on `upload_id`
+
+## Views
+
+### current_upload_statuses
+
+Returns the latest event per upload, representing the current status.
+
+```sql
+CREATE VIEW current_upload_statuses AS
+SELECT DISTINCT ON (upload_id)
+  upload_id,
+  event_type AS status,
+  occurred_at
+FROM upload_events
+ORDER BY upload_id, occurred_at DESC, id DESC;
+```
 
 ## Cascade policy
 
@@ -119,3 +147,4 @@ Indexes:
 | users | user_profiles, user_preferences, credentials, maps |
 | maps | generations |
 | generations | uploads |
+| uploads | upload_events |

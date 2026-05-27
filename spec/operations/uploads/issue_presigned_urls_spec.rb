@@ -2,7 +2,8 @@
 
 RSpec.describe PastaAtlas::Operations::Uploads::IssuePresignedUrls, :db do
   let(:operation) { Hanami.app["operations.uploads.issue_presigned_urls"] }
-  let(:upload_repo) { Hanami.app["repos.upload_repo"] }
+  let(:filenames) { ["s1zoom_4/tile_0_0.jpg", "s1zoom_4/tile_0_1.jpg"] }
+  let(:upload_event_repo) { Hanami.app["repos.upload_event_repo"] }
   let(:s3_client) { Hanami.app["s3.client"] }
 
   let(:user) { Factory[:user, name: "testuser"] }
@@ -15,7 +16,8 @@ RSpec.describe PastaAtlas::Operations::Uploads::IssuePresignedUrls, :db do
       metadata_s3_key: "testuser/ae8ec3ab/550f41a9/mapshot.json"]
   end
   let!(:upload) { Factory[:upload, generation:, total_image_count: 10] }
-  let(:filenames) { ["s1zoom_4/tile_0_0.jpg", "s1zoom_4/tile_0_1.jpg"] }
+
+  before { Factory[:upload_event, upload:, event_type: "pending"] }
 
   describe "#call" do
     before { s3_client.stub_responses(:list_objects_v2, {contents: []}) }
@@ -82,7 +84,9 @@ RSpec.describe PastaAtlas::Operations::Uploads::IssuePresignedUrls, :db do
     end
 
     context "when the upload is not pending" do
-      before { upload_repo.update_status(id: upload.id, status: "complete", completed_at: Time.now) }
+      # +1 ensures occurred_at is strictly after the pending event created in the outer before,
+      # avoiding non-deterministic ordering when both timestamps fall within the same microsecond.
+      before { upload_event_repo.create(upload_id: upload.id, event_type: "complete", occurred_at: Time.now + 1) }
 
       it "returns an unprocessable failure" do
         result = operation.call(upload_ulid: upload.ulid, filenames:)

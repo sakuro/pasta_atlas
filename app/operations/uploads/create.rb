@@ -12,6 +12,7 @@ module PastaAtlas
 
         include Deps[
           "repos.generation_repo",
+          "repos.upload_event_repo",
           "repos.upload_repo",
           "repos.user_repo",
           "settings",
@@ -101,9 +102,10 @@ module PastaAtlas
           upload = upload_repo.create(
             ulid: ULID.generate,
             generation_id: generation.id,
-            status: "pending",
             total_image_count:
           )
+          upload_event_repo.create(upload_id: upload.id, event_type: "pending")
+          upload = upload_repo.find_by_ulid(upload.ulid)
           Success({upload:, generation:, map:})
         end
 

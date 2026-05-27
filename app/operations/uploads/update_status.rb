@@ -4,11 +4,15 @@ module PastaAtlas
   module Operations
     module Uploads
       class UpdateStatus < PastaAtlas::Operation
-        include Deps["repos.upload_repo"]
+        include Deps[
+          "repos.upload_event_repo",
+          "repos.upload_repo"
+        ]
 
         def call(upload_ulid:, status:)
           upload = step find_upload(upload_ulid)
-          update_upload(upload, status)
+          step append_event(upload, status)
+          step find_upload(upload_ulid)
         end
 
         private def find_upload(ulid)
@@ -16,10 +20,9 @@ module PastaAtlas
           upload ? Success(upload) : Failure(:not_found)
         end
 
-        private def update_upload(upload, status)
-          attrs = {status:}
-          attrs[:completed_at] = Time.now if status == "complete"
-          upload_repo.update_status(id: upload.id, **attrs)
+        private def append_event(upload, status)
+          upload_event_repo.create(upload_id: upload.id, event_type: status)
+          Success()
         end
       end
     end

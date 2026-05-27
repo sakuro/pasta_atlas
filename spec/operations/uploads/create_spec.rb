@@ -60,6 +60,8 @@ RSpec.describe PastaAtlas::Operations::Uploads::Create, :db do
       end
       let!(:existing_upload) { Factory[:upload, generation:, total_image_count: 3] }
 
+      before { Factory[:upload_event, upload: existing_upload, event_type: "pending"] }
+
       it "returns the existing upload" do
         result = operation.call(user_id: user.id, metadata:, total_image_count: 5)
 
@@ -78,7 +80,11 @@ RSpec.describe PastaAtlas::Operations::Uploads::Create, :db do
           metadata_s3_key: "testuser/ae8ec3ab/550f41a9/mapshot.json"]
       end
 
-      before { Factory[:upload, :complete, generation:, total_image_count: 5] }
+      before do
+        upload = Factory[:upload, generation:, total_image_count: 5]
+        Factory[:upload_event, upload:, event_type: "pending"]
+        Factory[:upload_event, upload:, event_type: "complete"]
+      end
 
       it "returns a conflict failure" do
         result = operation.call(user_id: user.id, metadata:, total_image_count: 5)

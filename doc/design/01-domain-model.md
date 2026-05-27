@@ -112,19 +112,32 @@ Unique constraint: `(map_id, mapshot_unique_id)`
 
 ### Upload
 
-Tracks the upload progress of a generation's image files.
+Tracks an upload session for a generation's image files. Status is derived from the latest UploadEvent.
 
 | Field | Type | Notes |
 |---|---|---|
 | id | bigserial PK | |
 | ulid | varchar(26) | unique; referenced by client during upload |
 | generation_id | FK → Generation (1:1) | |
-| status | enum: pending\|complete\|failed | |
 | total_image_count | integer | nullable; set when known |
 | created_at | timestamp | |
-| completed_at | timestamp | nullable |
 
-A Generation is not shown to viewers until its Upload is `complete`.
+A Generation is not shown to viewers until its Upload's current status is `complete`.
+
+### UploadEvent
+
+Append-only log of status transitions for an Upload.
+
+| Field | Type | Notes |
+|---|---|---|
+| id | bigserial PK | |
+| upload_id | FK → Upload | |
+| event_type | enum: pending\|complete\|failed | |
+| occurred_at | timestamp | |
+
+The current status of an Upload is the `event_type` of the latest UploadEvent ordered by `occurred_at DESC`. This is exposed via the `current_upload_statuses` database view.
+
+On Upload creation, a `pending` event is inserted within the same transaction.
 
 ## Out of scope for persistence
 
