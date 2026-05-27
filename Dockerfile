@@ -49,7 +49,7 @@ RUN SESSION_SECRET=dummy \
 FROM ruby:4.0.5-slim AS runtime
 
 RUN apt-get update -qq && \
-    apt-get install -y --no-install-recommends libpq-dev && \
+    apt-get install -y --no-install-recommends libpq-dev postgresql-client && \
     rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
