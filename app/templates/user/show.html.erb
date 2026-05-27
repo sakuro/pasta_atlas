@@ -1,3 +1,12 @@
+<script nonce="<%= content_security_policy_nonce %>">
+  (function() {
+    var hash = location.hash.slice(1);
+    if (hash) {
+      document.documentElement.dataset.pendingTab = hash;
+      history.replaceState(null, document.title, location.pathname + location.search);
+    }
+  })();
+</script>
 <section class="section">
   <div class="container">
     <div class="level">

@@ -49,7 +49,7 @@ const activateTabByHash = (hash: string) => {
   if (hash) document.querySelector<HTMLElement>(`[data-target="${hash}"]`)?.click();
 };
 
-activateTabByHash(location.hash.slice(1));
+activateTabByHash(document.documentElement.dataset.pendingTab ?? location.hash.slice(1));
 
 window.addEventListener("hashchange", () => activateTabByHash(location.hash.slice(1)));
 
