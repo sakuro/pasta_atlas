@@ -49,8 +49,10 @@ RUN SESSION_SECRET=dummy \
 FROM ruby:4.0.5-slim AS runtime
 
 RUN apt-get update -qq && \
-    apt-get install -y --no-install-recommends libpq-dev postgresql-client && \
-    rm -rf /var/lib/apt/lists/*
+    apt-get install -y --no-install-recommends libpq-dev && \
+    rm -rf /var/lib/apt/lists/* && \
+    printf '#!/bin/sh\necho "pg_dump: skipped in production"\n' > /usr/local/bin/pg_dump && \
+    chmod +x /usr/local/bin/pg_dump
 
 WORKDIR /app
 
