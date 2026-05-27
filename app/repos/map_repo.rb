@@ -15,11 +15,12 @@ module PastaAtlas
 
       def list_with_complete_generation(page:, per_page:)
         ordered_ids = uploads
-          .where(status: "complete")
-          .join(:generations, id: :generation_id)
+          .join(:current_upload_statuses, upload_id: :id)
+          .where(Sequel[:current_upload_statuses][:status] => "complete")
+          .join(:generations, {Sequel[:generations][:id] => Sequel[:uploads][:generation_id]})
           .where(NOT_EXPIRED_GENERATION)
           .group(Sequel[:generations][:map_id])
-          .order(Sequel.desc(Sequel.function(:max, Sequel[:uploads][:completed_at])))
+          .order(Sequel.desc(Sequel.function(:max, Sequel[:current_upload_statuses][:occurred_at])))
           .offset((page - 1) * per_page)
           .limit(per_page)
           .dataset
@@ -32,8 +33,9 @@ module PastaAtlas
 
       def count_with_complete_generation
         uploads
-          .where(status: "complete")
-          .join(:generations, id: :generation_id)
+          .join(:current_upload_statuses, upload_id: :id)
+          .where(Sequel[:current_upload_statuses][:status] => "complete")
+          .join(:generations, {Sequel[:generations][:id] => Sequel[:uploads][:generation_id]})
           .where(NOT_EXPIRED_GENERATION)
           .dataset
           .unordered
@@ -47,12 +49,13 @@ module PastaAtlas
         return [] if user_map_ids.empty?
 
         ordered_ids = uploads
-          .where(status: "complete")
-          .join(:generations, id: :generation_id)
+          .join(:current_upload_statuses, upload_id: :id)
+          .where(Sequel[:current_upload_statuses][:status] => "complete")
+          .join(:generations, {Sequel[:generations][:id] => Sequel[:uploads][:generation_id]})
           .where(NOT_EXPIRED_GENERATION)
           .where(Sequel[:generations][:map_id] => user_map_ids)
           .group(Sequel[:generations][:map_id])
-          .order(Sequel.desc(Sequel.function(:max, Sequel[:uploads][:completed_at])))
+          .order(Sequel.desc(Sequel.function(:max, Sequel[:current_upload_statuses][:occurred_at])))
           .limit(limit)
           .dataset
           .select_map(Sequel[:generations][:map_id])
