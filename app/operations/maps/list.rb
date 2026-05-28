@@ -4,7 +4,7 @@ module PastaAtlas
   module Operations
     module Maps
       class List < PastaAtlas::Operation
-        include Deps["repos.map_repo", "repos.user_repo", "repos.user_profile_repo", "repos.generation_repo", "settings"]
+        include Deps["repos.generation_repo", "repos.map_repo", "repos.user_profile_repo", "repos.user_repo", "settings"]
 
         PER_PAGE = 20
         private_constant :PER_PAGE

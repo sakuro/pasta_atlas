@@ -11,8 +11,8 @@ module PastaAtlas
           private_constant :SUPPORTED_LOCALES
 
           include Deps[
-            "repos.user_preference_repo",
-            "operations.user.verify_ownership"
+            "operations.user.verify_ownership",
+            "repos.user_preference_repo"
           ]
 
           def call(user_id:, user_name:, timezone:, locale:, relative_timestamps:)

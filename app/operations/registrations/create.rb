@@ -9,8 +9,8 @@ module PastaAtlas
         include Deps[
           "operations.registrations.import_avatar",
           "repos.credential_repo",
-          "repos.user_profile_repo",
           "repos.user_preference_repo",
+          "repos.user_profile_repo",
           "repos.user_repo"
         ]
 

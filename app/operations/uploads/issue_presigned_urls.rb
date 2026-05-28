@@ -5,9 +5,9 @@ module PastaAtlas
     module Uploads
       class IssuePresignedUrls < PastaAtlas::Operation
         include Deps[
-          "repos.upload_repo",
           "repos.generation_repo",
           "repos.map_repo",
+          "repos.upload_repo",
           "repos.user_repo",
           "settings",
           s3_client: "s3.client"

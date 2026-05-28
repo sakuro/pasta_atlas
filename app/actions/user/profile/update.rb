@@ -12,8 +12,8 @@ module PastaAtlas
             load_credentials: "operations.user.credentials.load",
             load_preferences: "operations.user.preferences.load",
             load_profile: "operations.user.profile.load",
-            show_view: "views.user.show",
-            update_profile: "operations.user.profile.update"
+            update_profile: "operations.user.profile.update",
+            show_view: "views.user.show"
           ]
 
           OAUTH_PROVIDERS = %w[discord github steam].freeze

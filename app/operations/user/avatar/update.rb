@@ -6,9 +6,9 @@ module PastaAtlas
       module Avatar
         class Update < PastaAtlas::Operation
           include Deps[
+            "operations.user.verify_ownership",
             "repos.user_profile_repo",
             "settings",
-            "operations.user.verify_ownership",
             sqs_client: "sqs.client"
           ]
 

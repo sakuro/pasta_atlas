@@ -14,7 +14,7 @@ module PastaAtlas
           }.freeze
           private_constant :ALLOWED_CONTENT_TYPES
 
-          include Deps["settings", "repos.user_repo", s3_client: "s3.client"]
+          include Deps["repos.user_repo", "settings", s3_client: "s3.client"]
 
           def call(user_id:, content_type:)
             user_id = step require_authentication(user_id)

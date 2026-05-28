@@ -6,8 +6,8 @@ module PastaAtlas
       module Profile
         class Update < PastaAtlas::Operation
           include Deps[
-            "repos.user_profile_repo",
-            "operations.user.verify_ownership"
+            "operations.user.verify_ownership",
+            "repos.user_profile_repo"
           ]
 
           DISPLAY_NAME_MAX_GRAPHEME_CLUSTERS = 64
