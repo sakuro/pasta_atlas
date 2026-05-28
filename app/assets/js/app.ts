@@ -41,10 +41,6 @@ document.querySelectorAll<HTMLElement>("[data-tabs]").forEach((tabsEl) => {
   });
 });
 
-document.querySelectorAll<HTMLAnchorElement>(".tab-edit-link").forEach((link) => {
-  link.addEventListener("click", (e) => e.stopPropagation());
-});
-
 const activateTabByHash = (hash: string) => {
   if (hash) document.querySelector<HTMLElement>(`[data-target="${hash}"]`)?.click();
 };

@@ -52,23 +52,6 @@ body {
   min-width: 12rem;
 }
 
-/* Tab with inline edit link: stretch both anchors vertically */
-.tabs li:has(.tab-edit-link) {
-  display: flex;
-  align-items: stretch;
-}
-
-.tab-edit-link {
-  border-bottom-color: transparent !important;
-  padding-left: 0.25em !important;
-  padding-right: 0.5em !important;
-  opacity: 0.4;
-}
-
-.tab-edit-link:hover {
-  opacity: 1;
-}
-
 .footer {
   padding: 1rem 1.5rem;
 }
