@@ -170,6 +170,36 @@
             </div>
           </div>
         </form>
+        <script nonce="<%= content_security_policy_nonce %>">
+          (function() {
+            var tzSelect = document.getElementById("timezone-select");
+            var tzTimeEl = document.getElementById("timezone-time");
+            if (!tzSelect || !tzTimeEl) return;
+
+            function currentTimeInTz(tz) {
+              return new Intl.DateTimeFormat("en", {
+                timeZone: tz,
+                hour: "2-digit",
+                minute: "2-digit",
+                hour12: false,
+              }).format(new Date());
+            }
+
+            function updateTzTime() {
+              tzTimeEl.textContent = currentTimeInTz(tzSelect.value);
+            }
+
+            tzSelect.addEventListener("change", updateTzTime);
+            updateTzTime();
+
+            // sync updates to minute boundaries
+            var now = new Date();
+            setTimeout(function() {
+              updateTzTime();
+              setInterval(updateTzTime, 60000);
+            }, (60 - now.getSeconds()) * 1000 - now.getMilliseconds());
+          })();
+        </script>
       </div>
 
       <div id="tab-credentials" class="is-hidden" data-tab-panel="user-tabs">
