@@ -259,4 +259,28 @@
       </div>
     <% end %>
   </div>
+  <script nonce="<%= content_security_policy_nonce %>">
+    (function() {
+      document.querySelectorAll("[data-tabs]").forEach(function(tabsEl) {
+        var groupId = tabsEl.dataset.tabs;
+        var panels = document.querySelectorAll('[data-tab-panel="' + groupId + '"]');
+        tabsEl.querySelectorAll("li[data-target]").forEach(function(tab) {
+          tab.addEventListener("click", function() {
+            tabsEl.querySelectorAll("li").forEach(function(t) { t.classList.remove("is-active"); });
+            panels.forEach(function(p) { p.classList.add("is-hidden"); });
+            tab.classList.add("is-active");
+            var target = tab.dataset.target;
+            if (target) document.getElementById(target)?.classList.remove("is-hidden");
+          });
+        });
+      });
+
+      function activateTabByHash(hash) {
+        if (hash) document.querySelector('[data-target="' + hash + '"]')?.click();
+      }
+
+      activateTabByHash(document.documentElement.dataset.pendingTab || location.hash.slice(1));
+      window.addEventListener("hashchange", function() { activateTabByHash(location.hash.slice(1)); });
+    })();
+  </script>
 </section>

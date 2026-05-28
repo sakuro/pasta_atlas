@@ -27,27 +27,6 @@ if (burger?.dataset.target) {
   });
 }
 
-document.querySelectorAll<HTMLElement>("[data-tabs]").forEach((tabsEl) => {
-  const groupId = tabsEl.dataset.tabs!;
-  const panels = document.querySelectorAll<HTMLElement>(`[data-tab-panel="${groupId}"]`);
-  tabsEl.querySelectorAll<HTMLElement>("li[data-target]").forEach((tab) => {
-    tab.addEventListener("click", () => {
-      tabsEl.querySelectorAll("li").forEach((t) => t.classList.remove("is-active"));
-      panels.forEach((p) => p.classList.add("is-hidden"));
-      tab.classList.add("is-active");
-      const target = tab.dataset.target;
-      if (target) document.getElementById(target)?.classList.remove("is-hidden");
-    });
-  });
-});
-
-const activateTabByHash = (hash: string) => {
-  if (hash) document.querySelector<HTMLElement>(`[data-target="${hash}"]`)?.click();
-};
-
-activateTabByHash(document.documentElement.dataset.pendingTab ?? location.hash.slice(1));
-
-window.addEventListener("hashchange", () => activateTabByHash(location.hash.slice(1)));
 
 const confirmInput = document.getElementById("confirm_user_name") as HTMLInputElement | null;
 const deleteButton = document.getElementById("delete-account-button") as HTMLButtonElement | null;
