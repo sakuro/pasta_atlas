@@ -221,8 +221,7 @@ export const MapViewer = (props: MapViewerProps) => {
               </span>
               <Show when={isOwner()}>
                 <button
-                  class="button is-ghost is-small"
-                  style={{ padding: 0, height: "auto", "min-width": 0, "flex-shrink": 0 }}
+                  class="button is-small"
                   onClick={startEdit}
                   data-l10n-id="map-name-edit-button"
                 >
@@ -232,24 +231,30 @@ export const MapViewer = (props: MapViewerProps) => {
             </span>
           }
         >
-          <span style={{ display: "flex", "align-items": "center", gap: "0.25rem", "flex-shrink": 1, "min-width": 0, "margin-right": "0.25rem" }}>
-            <input
-              class="input is-small"
-              type="text"
-              maxLength={255}
-              value={editValue()}
-              onInput={(e) => setEditValue(e.currentTarget.value)}
-              onKeyDown={(e) => { if (e.key === "Enter") void saveEdit(); if (e.key === "Escape") cancelEdit(); }}
-              ref={(el) => { el.focus(); el.select(); }}
-              style={{ "min-width": "8rem", "max-width": "20rem" }}
-            />
-            <button class="button is-small is-success" onClick={() => void saveEdit()} data-l10n-id="map-name-save-button">
-              <span class="icon is-small"><i class="fa-solid fa-check" /></span>
-            </button>
-            <button class="button is-small" onClick={cancelEdit} data-l10n-id="map-name-cancel-button">
-              <span class="icon is-small"><i class="fa-solid fa-xmark" /></span>
-            </button>
-          </span>
+          <div class="field has-addons mb-0" style={{ "flex-shrink": 1, "min-width": 0, "margin-right": "0.25rem" }}>
+            <div class="control">
+              <input
+                class="input is-small"
+                type="text"
+                maxLength={255}
+                value={editValue()}
+                onInput={(e) => setEditValue(e.currentTarget.value)}
+                onKeyDown={(e) => { if (e.key === "Enter") void saveEdit(); if (e.key === "Escape") cancelEdit(); }}
+                ref={(el) => { el.focus(); el.select(); }}
+                style={{ "min-width": "8rem", "max-width": "20rem" }}
+              />
+            </div>
+            <div class="control">
+              <button class="button is-small is-success" onClick={() => void saveEdit()} data-l10n-id="map-name-save-button">
+                <span class="icon is-small"><i class="fa-solid fa-check" /></span>
+              </button>
+            </div>
+            <div class="control">
+              <button class="button is-small" onClick={cancelEdit} data-l10n-id="map-name-cancel-button">
+                <span class="icon is-small"><i class="fa-solid fa-xmark" /></span>
+              </button>
+            </div>
+          </div>
         </Show>
         <Show
           when={props.authorName !== "guest"}
