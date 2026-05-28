@@ -256,6 +256,17 @@
             </div>
           </div>
         </form>
+        <script nonce="<%= content_security_policy_nonce %>">
+          (function() {
+            var confirmInput = document.getElementById("confirm_user_name");
+            var deleteButton = document.getElementById("delete-account-button");
+            if (!confirmInput || !deleteButton) return;
+            var expectedUsername = confirmInput.dataset.confirmUsername || "";
+            confirmInput.addEventListener("input", function() {
+              deleteButton.disabled = confirmInput.value !== expectedUsername;
+            });
+          })();
+        </script>
       </div>
     <% end %>
   </div>
