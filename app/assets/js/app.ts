@@ -5,6 +5,3 @@ import "@fortawesome/fontawesome-free/css/brands.css";
 import "../css/app.css";
 import "./navbar";
 import "./notifications";
-
-
-
