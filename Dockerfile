@@ -72,8 +72,10 @@ RUN groupadd --gid 1000 app && \
 
 USER app
 
+ARG COMMIT_SHA
 ENV BUNDLE_PATH=/usr/local/bundle \
     BUNDLE_WITHOUT="development:test" \
+    COMMIT_SHA=${COMMIT_SHA} \
     HANAMI_ENV=production \
     HANAMI_PORT=3000 \
     HOME=/app
