@@ -64,7 +64,7 @@ jobs:
 
       - name: Update ECS services
         run: |
-          for SERVICE in pasta-atlas-production pasta-atlas-production-worker; do
+          for SERVICE in pasta-atlas-production pasta-atlas-production-s3-cleanup-queue-worker; do
             aws ecs update-service \
               --region "$AWS_REGION" \
               --cluster "$ECS_CLUSTER" \
@@ -79,7 +79,7 @@ jobs:
           aws ecs wait services-stable \
             --region "$AWS_REGION" \
             --cluster "$ECS_CLUSTER" \
-            --services pasta-atlas-production pasta-atlas-production-worker
+            --services pasta-atlas-production pasta-atlas-production-s3-cleanup-queue-worker
 
       - name: Invalidate CloudFront cache
         run: |
