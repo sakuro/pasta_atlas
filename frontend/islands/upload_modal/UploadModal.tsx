@@ -121,7 +121,7 @@ export const UploadModal = (props: { isGuest: boolean }) => {
       return;
     }
 
-    const imageFiles = allFiles.filter((f) => relPath(f) !== "mapshot.json");
+    const imageFiles = allFiles.filter((f) => relPath(f).endsWith(".jpg"));
     const fileMap = new Map<string, File>();
     for (const f of imageFiles) fileMap.set(relPath(f), f);
 
