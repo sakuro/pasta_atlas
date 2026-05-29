@@ -1,3 +1,4 @@
+<% content_for :canonical_url, url(:map_viewer, user_name: author_info.name, ulid: ulid) %>
 <style nonce="<%= content_security_policy_nonce %>">
   html, body { height: 100%; overflow: hidden; }
   body { display: flex; flex-direction: column; }

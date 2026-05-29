@@ -10,6 +10,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Jost:wght@400;700;900&display=swap" rel="stylesheet">
+    <% if (canonical_url = content_for(:canonical_url)) %><link rel="canonical" href="<%= canonical_url %>"><% end %>
   </head>
   <body>
     <nav class="navbar" role="navigation" aria-label="main navigation">

@@ -21,6 +21,7 @@ module PastaAtlas
       def flash_error = request&.flash&.[](:error)
 
       def path(...) = routes.path(...)
+      def url(...) = routes.url(...)
 
       def locale_tag = request.env[Rack::ICU4X::Locale::ENV_KEY].first.to_s
       def locale_tags = request.env[Rack::ICU4X::Locale::ENV_KEY].map(&:to_s)
