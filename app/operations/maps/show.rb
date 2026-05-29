@@ -8,7 +8,8 @@ module PastaAtlas
           "repos.generation_repo",
           "repos.map_repo",
           "repos.user_profile_repo",
-          "repos.user_repo"
+          "repos.user_repo",
+          "settings"
         ]
 
         def call(ulid:)
@@ -17,7 +18,10 @@ module PastaAtlas
           profile = user_profile_repo.find_by_user_id(user.id)
           generations = generation_repo.find_complete_by_map_id(map.id)
           step check_has_generations(generations)
-          {map:, user:, profile:, generations:}
+          latest_generation = generations.max_by(&:created_at)
+          updated_at = latest_generation.created_at
+          thumbnail_url = "#{settings.cloudfront_base_url}/#{latest_generation.metadata_s3_key.sub("mapshot.json", "s1zoom_4/tile_0_0.jpg")}"
+          {map:, user:, profile:, generations:, updated_at:, thumbnail_url:}
         end
 
         private def find_map(ulid)

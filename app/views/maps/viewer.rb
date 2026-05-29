@@ -4,7 +4,7 @@ module PastaAtlas
   module Views
     module Maps
       class Viewer < Hanami::View
-        expose :ulid, :display_name, :author_info, :updated_at, :viewer_name, decorate: false
+        expose :ulid, :display_name, :author_info, :updated_at, :thumbnail_url, :viewer_name, decorate: false
         expose :relative_timestamps, decorate: false
 
         private def relative_timestamps(context:, relative_timestamps: nil)

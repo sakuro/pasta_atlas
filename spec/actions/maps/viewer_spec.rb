@@ -16,7 +16,7 @@ RSpec.describe PastaAtlas::Actions::Maps::Viewer, :action_env do
 
     before do
       allow(show_map).to receive(:call).and_return(
-        Success({map:, user:, profile:, generations: [generation]})
+        Success({map:, user:, profile:, generations: [generation], updated_at: generation.created_at, thumbnail_url: "https://cdn.example.com/s1zoom_4/tile_0_0.jpg"})
       )
     end
 

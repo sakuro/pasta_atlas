@@ -11,6 +11,19 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Jost:wght@400;700;900&display=swap" rel="stylesheet">
     <% if (canonical_url = content_for(:canonical_url)) %><link rel="canonical" href="<%= canonical_url %>"><% end %>
+    <% if (og = content_for(:og_data)) %>
+    <meta property="og:type" content="article">
+    <meta property="og:site_name" content="<%= t("app-name") %>">
+    <meta property="og:title" content="<%= og[:title] %>">
+    <meta property="og:description" content="<%= og[:description] %>">
+    <% if canonical_url %><meta property="og:url" content="<%= canonical_url %>"><% end %>
+    <% if og[:image] %><meta property="og:image" content="<%= og[:image] %>"><% end %>
+    <% if og[:updated_time] %><meta property="article:modified_time" content="<%= og[:updated_time] %>"><% end %>
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="<%= og[:title] %>">
+    <meta name="twitter:description" content="<%= og[:description] %>">
+    <% if og[:image] %><meta name="twitter:image" content="<%= og[:image] %>"><% end %>
+    <% end %>
   </head>
   <body>
     <nav class="navbar" role="navigation" aria-label="main navigation">

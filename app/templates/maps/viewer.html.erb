@@ -1,4 +1,5 @@
 <% content_for :canonical_url, url(:map_viewer, user_name: author_info.name, ulid: ulid) %>
+<% content_for :og_data, {title: display_name, description: "by #{author_info.display_name}", image: thumbnail_url, updated_time: updated_at&.iso8601} %>
 <style nonce="<%= content_security_policy_nonce %>">
   html, body { height: 100%; overflow: hidden; }
   body { display: flex; flex-direction: column; }

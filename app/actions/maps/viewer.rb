@@ -13,10 +13,9 @@ module PastaAtlas
         def handle(request, response)
           ulid = request.params[:ulid]
           case show_map.call(ulid:)
-          in Success({map:, user:, profile:, generations:})
+          in Success({map:, user:, profile:, updated_at:, thumbnail_url:})
             avatar_url = profile.avatar_s3_key ? "#{settings.cloudfront_base_url}/#{profile.avatar_s3_key}" : nil
             author_info = Values::UserInfo[name: user.name, display_name: profile.display_name || user.name, avatar_url:]
-            updated_at = generations.map(&:created_at).max
             viewer_id = current_user_id(request)
             viewer_name = viewer_id && find_by_id.call(user_id: viewer_id).value!.name
             response.render(
@@ -25,6 +24,7 @@ module PastaAtlas
               display_name: map.display_name,
               author_info:,
               updated_at:,
+              thumbnail_url:,
               viewer_name:
             )
           in Failure(Symbol => status)

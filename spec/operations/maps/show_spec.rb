@@ -5,12 +5,14 @@ RSpec.describe PastaAtlas::Operations::Maps::Show do
   let(:user_repo) { instance_double(PastaAtlas::Repos::UserRepo) }
   let(:user_profile_repo) { instance_double(PastaAtlas::Repos::UserProfileRepo) }
   let(:generation_repo) { instance_double(PastaAtlas::Repos::GenerationRepo) }
-  let(:operation) { PastaAtlas::Operations::Maps::Show.new(map_repo:, user_repo:, user_profile_repo:, generation_repo:) }
+  let(:settings) { double("Settings", cloudfront_base_url: "https://cdn.example.com") }
+  let(:operation) { PastaAtlas::Operations::Maps::Show.new(map_repo:, user_repo:, user_profile_repo:, generation_repo:, settings:) }
 
   let(:map) { double("Map", id: 1, ulid: "01MAP1", user_id: 1) }
   let(:user) { double("User", id: 1, name: "alice") }
   let(:profile) { double("UserProfile", display_name: "Alice", avatar_s3_key: nil) }
-  let(:generations) { [double("Generation", tick: 100)] }
+  let(:generation_time) { Time.now }
+  let(:generations) { [double("Generation", tick: 100, created_at: generation_time, metadata_s3_key: "alice/map1/gen1/mapshot.json")] }
 
   describe "#call" do
     context "when map is found" do
@@ -21,7 +23,7 @@ RSpec.describe PastaAtlas::Operations::Maps::Show do
         allow(generation_repo).to receive(:find_complete_by_map_id).with(1).and_return(generations)
       end
 
-      it "returns success with map, user, profile, and generations" do
+      it "returns success with map, user, profile, generations, updated_at, and thumbnail_url" do
         result = operation.call(ulid: "01MAP1")
 
         expect(result).to be_success
@@ -30,6 +32,8 @@ RSpec.describe PastaAtlas::Operations::Maps::Show do
         expect(payload[:user]).to eq(user)
         expect(payload[:profile]).to eq(profile)
         expect(payload[:generations]).to eq(generations)
+        expect(payload[:updated_at]).to eq(generation_time)
+        expect(payload[:thumbnail_url]).to eq("https://cdn.example.com/alice/map1/gen1/s1zoom_4/tile_0_0.jpg")
       end
     end
 
