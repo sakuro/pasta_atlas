@@ -70,7 +70,19 @@ body {
   color: #C8D400;
 }
 
-/* Viewer page: map fills remaining viewport below navbar */
+/* Viewer page: lock scroll on html/body so the map fills the viewport */
+html:has(.map-viewer-page) {
+  height: 100%;
+  overflow: hidden;
+}
+
+html:has(.map-viewer-page) body {
+  height: 100%;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
 .map-viewer-page {
   display: flex;
   flex-direction: column;
