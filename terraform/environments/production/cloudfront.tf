@@ -94,13 +94,13 @@ resource "aws_cloudfront_distribution" "mapshots" {
   aliases         = [var.maps_domain_name]
 
   default_cache_behavior {
-    allowed_methods             = ["GET", "HEAD"]
-    cached_methods              = ["GET", "HEAD"]
-    target_origin_id            = aws_s3_bucket.mapshots.id
-    viewer_protocol_policy      = "redirect-to-https"
-    compress                    = true
-    cache_policy_id             = data.aws_cloudfront_cache_policy.caching_optimized.id
-    response_headers_policy_id  = aws_cloudfront_response_headers_policy.mapshots_cors.id
+    allowed_methods            = ["GET", "HEAD"]
+    cached_methods             = ["GET", "HEAD"]
+    target_origin_id           = aws_s3_bucket.mapshots.id
+    viewer_protocol_policy     = "redirect-to-https"
+    compress                   = true
+    cache_policy_id            = data.aws_cloudfront_cache_policy.caching_optimized.id
+    response_headers_policy_id = aws_cloudfront_response_headers_policy.mapshots_cors.id
   }
 
   restrictions {
