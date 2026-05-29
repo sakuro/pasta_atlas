@@ -117,6 +117,12 @@
         <p>
           &copy; 2026 <%= image_tag "layer8.png", alt: "layer8", class: "footer-logo" %> <span class="footer-brand">layer<span class="footer-brand-accent">8</span>.works</span>
           |
+          <a href="<%= path(:about) %>"><%= t("nav-about") %></a>
+          |
+          <a href="<%= path(:privacy_policy) %>"><%= t("nav-privacy-policy") %></a>
+          |
+          <a href="<%= path(:terms_of_service) %>"><%= t("nav-terms-of-service") %></a>
+          |
           <span class="icon-text">
             <span class="icon"><i class="fa-brands fa-github"></i></span>
             <span>
@@ -127,12 +133,6 @@
               <a href="https://github.com/sakuro/pasta_atlas/discussions" target="_blank" rel="noopener">Discussions</a>
             </span>
           </span>
-          |
-          <a href="<%= path(:about) %>"><%= t("nav-about") %></a>
-          |
-          <a href="<%= path(:privacy_policy) %>"><%= t("nav-privacy-policy") %></a>
-          |
-          <a href="<%= path(:terms_of_service) %>"><%= t("nav-terms-of-service") %></a>
         </p>
       </div>
     </footer>
