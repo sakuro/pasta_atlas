@@ -104,14 +104,15 @@ pagination-next = 次へ
 ## Upload modal
 upload-button = アップロード
 upload-modal-title = { -mapshot } をアップロード
-upload-instructions-folder = mapshot.json を含むフォルダーを選択してください。
-upload-instructions-folder-path = { -mapshot } の標準的なフォルダー:
+upload-instructions-folder = <code data-l10n-name="filename">mapshot.json</code> を含むフォルダーを選択してください。
+upload-instructions-folder-path = { -mapshot } の出力フォルダー:
 upload-copy-path-windows =
     .title = パスをコピー — フォルダーダイアログで Ctrl+L を押して貼り付け
 upload-copy-path-macos =
     .title = パスをコピー — Finder ダイアログで ⌘⇧G を押して貼り付け
 upload-copy-path-linux =
     .title = パスをコピー — フォルダーダイアログで Ctrl+L を押して貼り付け
+upload-instructions-folder-subfolder = 続いてマップと世代のサブフォルダーを選択してください:
 upload-instructions-generations = 既存マップの異なる世代もアップロードできます。
 upload-instructions-guest = ゲストアカウントからのアップロードは約 1 週間後に削除されます。
 upload-select-folder = フォルダーを選択

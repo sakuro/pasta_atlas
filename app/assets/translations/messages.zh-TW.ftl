@@ -104,14 +104,15 @@ pagination-next = 下一頁
 ## Upload modal
 upload-button = 上傳
 upload-modal-title = 上傳 { -mapshot }
-upload-instructions-folder = 請選取包含 mapshot.json 的資料夾。
-upload-instructions-folder-path = { -mapshot } 的典型資料夾路徑：
+upload-instructions-folder = 請選取包含 <code data-l10n-name="filename">mapshot.json</code> 的資料夾。
+upload-instructions-folder-path = { -mapshot } 的輸出資料夾：
 upload-copy-path-windows =
     .title = 複製路徑 — 在資料夾對話框中按 Ctrl+L 貼上
 upload-copy-path-macos =
     .title = 複製路徑 — 在 Finder 對話框中按 ⌘⇧G 貼上
 upload-copy-path-linux =
     .title = 複製路徑 — 在資料夾對話框中按 Ctrl+L 貼上
+upload-instructions-folder-subfolder = 接著選取您的地圖與世代的子資料夾：
 upload-instructions-generations = 您可以上傳同一張地圖的不同世代。
 upload-instructions-guest = 訪客帳號的上傳將於約一週後刪除。
 upload-select-folder = 選取資料夾

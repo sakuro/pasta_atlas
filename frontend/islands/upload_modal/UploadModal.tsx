@@ -317,7 +317,7 @@ export const UploadModal = (props: { isGuest: boolean }) => {
                   <p>
                     <span class="icon-text">
                       <span class="icon"><i class="fa-solid fa-folder-open" /></span>
-                      <span data-l10n-id="upload-instructions-folder" />
+                      <span data-l10n-id="upload-instructions-folder"><code data-l10n-name="filename">mapshot.json</code></span>
                     </span>
                   </p>
                   <div class="notification is-info is-light">
@@ -329,7 +329,6 @@ export const UploadModal = (props: { isGuest: boolean }) => {
                           <span>
                             <code>%APPDATA%\Factorio\script-output\mapshot</code>
                             <CopyButton text="%APPDATA%\Factorio\script-output\mapshot" l10nId="upload-copy-path-windows" />
-                            <code>\<var>map-abcd1234</var>\<var>d-abcd1234</var>\</code>
                           </span>
                         </span>
                       </li>
@@ -339,7 +338,6 @@ export const UploadModal = (props: { isGuest: boolean }) => {
                           <span>
                             <code>~/Library/Application Support/factorio/script-output/mapshot</code>
                             <CopyButton text="~/Library/Application Support/factorio/script-output/mapshot" l10nId="upload-copy-path-macos" />
-                            <code>/<var>map-abcd1234</var>/<var>d-abcd1234</var>/</code>
                           </span>
                         </span>
                       </li>
@@ -349,11 +347,11 @@ export const UploadModal = (props: { isGuest: boolean }) => {
                           <span>
                             <code>~/.factorio/script-output/mapshot</code>
                             <CopyButton text="~/.factorio/script-output/mapshot" l10nId="upload-copy-path-linux" />
-                            <code>/<var>map-abcd1234</var>/<var>d-abcd1234</var>/</code>
                           </span>
                         </span>
                       </li>
                     </ul>
+                    <p class="mt-3"><span data-l10n-id="upload-instructions-folder-subfolder" /> <code><var>map-abcd1234</var>/<var>d-abcd1234</var></code></p>
                   </div>
                   <p>
                     <span class="icon-text">

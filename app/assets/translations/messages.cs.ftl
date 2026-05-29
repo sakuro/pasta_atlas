@@ -121,14 +121,15 @@ pagination-next = Další
 ## Upload modal
 upload-button = Nahrát
 upload-modal-title = Nahrát { -mapshot(case: "accusative") }
-upload-instructions-folder = Vyberte složku obsahující mapshot.json.
-upload-instructions-folder-path = Typická složka { -mapshot(case: "genitive") }:
+upload-instructions-folder = Vyberte složku obsahující <code data-l10n-name="filename">mapshot.json</code>.
+upload-instructions-folder-path = Výstupní složka { -mapshot(case: "genitive") }:
 upload-copy-path-windows =
     .title = Kopírovat cestu — vložit v dialogu složky (Ctrl+L)
 upload-copy-path-macos =
     .title = Kopírovat cestu — vložit v dialogu Finderu (⌘⇧G)
 upload-copy-path-linux =
     .title = Kopírovat cestu — vložit v dialogu složky (Ctrl+L)
+upload-instructions-folder-subfolder = Poté vyberte podsložku pro vaši mapu a generaci:
 upload-instructions-generations = Můžete nahrát různé generace existující mapy.
 upload-instructions-guest = Nahrávky z hostovských účtů jsou po přibližně jednom týdnu smazány.
 upload-select-folder = Vybrat složku
