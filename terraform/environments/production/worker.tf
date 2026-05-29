@@ -14,9 +14,10 @@ resource "aws_ecs_task_definition" "worker" {
 
   container_definitions = jsonencode([
     {
-      name    = var.app_name
-      image   = local.container_image
-      command = ["bundle", "exec", "rake", "sqs:worker"]
+      name        = var.app_name
+      image       = local.container_image
+      command     = ["bundle", "exec", "rake", "sqs:worker"]
+      stopTimeout = 60
       environment = [
         { name = "HANAMI_ENV", value = var.environment },
         { name = "AWS_REGION", value = var.aws_region },

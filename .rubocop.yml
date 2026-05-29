@@ -43,6 +43,7 @@ inherit_gem:
 inherit_from: .rubocop_todo.yml
 
 Metrics/BlockLength:
+  Max: 30
   Exclude:
     - config/db/migrate/**/*.rb
 

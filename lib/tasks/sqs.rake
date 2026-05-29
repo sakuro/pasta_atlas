@@ -6,6 +6,9 @@ namespace :sqs do
     $stdout.sync = true
     sqs_client = Hanami.app["sqs.client"]
     queue_url = Hanami.app["settings"].sqs_s3_cleanup_queue_url
+    stop = false
+    trap("SIGTERM") { stop = true }
+    trap("SIGINT") { stop = true }
 
     loop do
       resp = sqs_client.receive_message(
@@ -22,10 +25,10 @@ namespace :sqs do
           warn "Failed to delete S3 objects under #{msg.body}: #{result.failure}"
         end
       end
+      break if stop
     rescue Seahorse::Client::NetworkingError, Aws::SQS::Errors::NonExistentQueue => e
       warn "#{e.message}, retrying in 5 seconds..."
       sleep 5
-      retry
     end
   end
 end
