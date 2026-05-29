@@ -1,5 +1,5 @@
-resource "aws_ecs_task_definition" "worker" {
-  family                   = "${var.app_name}-${var.environment}-worker"
+resource "aws_ecs_task_definition" "s3_cleanup_queue_worker" {
+  family                   = "${var.app_name}-${var.environment}-s3-cleanup-queue-worker"
   requires_compatibilities = ["FARGATE"]
   network_mode             = "awsvpc"
   cpu                      = 256
@@ -16,7 +16,7 @@ resource "aws_ecs_task_definition" "worker" {
     {
       name        = var.app_name
       image       = local.container_image
-      command     = ["bundle", "exec", "rake", "sqs:worker"]
+      command     = ["bundle", "exec", "rake", "s3:process_cleanup_queue"]
       stopTimeout = 60
       environment = [
         { name = "HANAMI_ENV", value = var.environment },
@@ -41,17 +41,17 @@ resource "aws_ecs_task_definition" "worker" {
         options = {
           "awslogs-group"         = aws_cloudwatch_log_group.app.name
           "awslogs-region"        = var.aws_region
-          "awslogs-stream-prefix" = "worker"
+          "awslogs-stream-prefix" = "s3-cleanup-queue-worker"
         }
       }
     }
   ])
 }
 
-resource "aws_ecs_service" "worker" {
-  name            = "${var.app_name}-${var.environment}-worker"
+resource "aws_ecs_service" "s3_cleanup_queue_worker" {
+  name            = "${var.app_name}-${var.environment}-s3-cleanup-queue-worker"
   cluster         = aws_ecs_cluster.main.id
-  task_definition = aws_ecs_task_definition.worker.arn
+  task_definition = aws_ecs_task_definition.s3_cleanup_queue_worker.arn
   desired_count   = 1
   launch_type     = "FARGATE"
 

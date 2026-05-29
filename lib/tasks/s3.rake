@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-namespace :sqs do
+namespace :s3 do
   desc "Poll SQS S3 cleanup queue and process messages"
-  task worker: :environment do
+  task process_cleanup_queue: :environment do
     $stdout.sync = true
     sqs_client = Hanami.app["sqs.client"]
     queue_url = Hanami.app["settings"].sqs_s3_cleanup_queue_url

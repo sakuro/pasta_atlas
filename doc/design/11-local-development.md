@@ -108,7 +108,7 @@ Starts all services concurrently via mise:
 | Asset watch (esbuild) | `bundle exec hanami assets watch` |
 | Island watch (Vite) | `npm run dev:islands` |
 | Docker Compose (Floci + PostgreSQL) | `docker compose up` |
-| SQS worker | `bundle exec rake sqs:worker` |
+| S3 cleanup queue worker | `bundle exec rake s3:process_cleanup_queue` |
 
 Access the app at **http://localhost:2300**.
 
