@@ -7,6 +7,9 @@
     <title><%= t("app-name") %></title>
     <%= favicon_tag %>
     <%= stylesheet_tag "app" %>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Jost:wght@400;700;900&display=swap" rel="stylesheet">
   </head>
   <body>
     <nav class="navbar" role="navigation" aria-label="main navigation">
@@ -112,7 +115,7 @@
     <footer class="footer">
       <div class="content has-text-centered">
         <p>
-          &copy; 2026 <%= t("app-name") %>
+          &copy; 2026 <%= image_tag "layer8.png", alt: "layer8", class: "footer-logo" %> <span class="footer-brand">layer<span class="footer-brand-accent">8</span>.works</span>
           |
           <span class="icon-text">
             <span class="icon"><i class="fa-brands fa-github"></i></span>

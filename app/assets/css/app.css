@@ -56,6 +56,20 @@ body {
   padding: 1rem 1.5rem;
 }
 
+.footer-logo {
+  height: 1em;
+  vertical-align: middle;
+}
+
+.footer-brand {
+  font-family: 'Jost', sans-serif;
+  font-weight: 700;
+}
+
+.footer-brand-accent {
+  color: #C8D400;
+}
+
 /* Viewer page: map fills remaining viewport below navbar */
 .map-viewer-page {
   display: flex;
