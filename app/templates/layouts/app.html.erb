@@ -63,7 +63,7 @@
                   <span><%= t("user-tab-credentials") %></span>
                 </a>
                 <hr class="navbar-divider">
-                <form action="<%= path(:auth_session) %>" method="post" style="display: contents">
+                <form action="<%= path(:auth_session) %>" method="post">
                   <input type="hidden" name="_method" value="delete">
                   <input type="hidden" name="_csrf_token" value="<%= csrf_token %>">
                   <button class="navbar-item" type="submit">
