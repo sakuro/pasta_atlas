@@ -289,7 +289,7 @@ export const UploadModal = (props: { isGuest: boolean }) => {
         }}
       />
       <div class="buttons has-addons">
-        <button class="button" onClick={openModal}>
+        <button class="button is-primary" onClick={openModal}>
           <span class="icon"><i class="fa-solid fa-upload" /></span>
           <span data-l10n-id="upload-button" />
         </button>
@@ -468,7 +468,7 @@ export const UploadModal = (props: { isGuest: boolean }) => {
               </Show>
               <Show when={state().type === "error"}>
                 <div class="buttons">
-                  <button class="button" onClick={openPicker}>
+                  <button class="button is-primary" onClick={openPicker}>
                     <span class="icon"><i class="fa-solid fa-folder-open" /></span>
                     <span data-l10n-id="upload-reselect-folder" />
                   </button>
