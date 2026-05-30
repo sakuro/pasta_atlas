@@ -456,7 +456,7 @@ const LeafletMap = (props: { mapshot: Mapshot; assetBase: string }) => {
       });
       tagMarkers[label] = Object.values(surface.tags ?? {})
         .filter((t) => t?.position != null)
-        .map((t) => L.marker(toLL(t.position.x, t.position.y)).bindPopup(t.text ?? ""));
+        .map((t) => L.marker(toLL(t.position.x, t.position.y)).bindPopup(renderRichText(t.text ?? "")));
     }
 
     const populateOverlays = (label: string) => {
