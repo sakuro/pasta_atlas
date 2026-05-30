@@ -5,6 +5,8 @@ import { UserMapsTab } from "./UserMapsTab";
 const mountEl = document.getElementById("tab-recent-maps");
 if (mountEl) {
   const userName = mountEl.dataset.userName ?? "";
+  const relativeTimestamps = mountEl.dataset.relativeTimestamps === "true";
+  const timezone = mountEl.dataset.viewerTimezone ?? "UTC";
   const [active, setActive] = createSignal(!mountEl.classList.contains("is-hidden"));
 
   const observer = new MutationObserver(() => {
@@ -15,5 +17,5 @@ if (mountEl) {
   });
   observer.observe(mountEl, { attributes: true, attributeFilter: ["class"] });
 
-  render(() => <UserMapsTab userName={userName} active={active} />, mountEl);
+  render(() => <UserMapsTab userName={userName} active={active} relativeTimestamps={relativeTimestamps} timezone={timezone} />, mountEl);
 }

@@ -16,6 +16,7 @@ export default defineConfig({
         upload_modal: "frontend/islands/upload_modal/index.tsx",
         avatar_upload: "frontend/islands/avatar_upload/index.tsx",
         map_info_button: "frontend/islands/map_info_button/index.tsx",
+        maps_index: "frontend/islands/maps_index/index.tsx",
         share_buttons: "frontend/islands/share_buttons/index.tsx",
         user_maps_tab: "frontend/islands/user_maps_tab/index.tsx",
         user_profile_tab: "frontend/islands/user_profile_tab/index.tsx",

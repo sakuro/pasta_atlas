@@ -100,6 +100,8 @@ module PastaAtlas
 
       def viewer_relative_timestamps? = viewer_preference&.relative_timestamps || false
 
+      def viewer_timezone = viewer_preference&.timezone || "UTC"
+
       private def locale = request.env[Rack::ICU4X::Locale::ENV_KEY].first
 
       private def viewer_preference
@@ -110,8 +112,6 @@ module PastaAtlas
           nil
         end
       end
-
-      private def viewer_timezone = viewer_preference&.timezone || "UTC"
     end
   end
 end

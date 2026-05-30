@@ -31,7 +31,9 @@
       </ul>
     </div>
 
-    <div id="tab-recent-maps" data-tab-panel="user-tabs" data-user-name="<%= user_name %>"></div>
+    <div id="tab-recent-maps" data-tab-panel="user-tabs" data-user-name="<%= user_name %>"
+         data-relative-timestamps="<%= viewer_relative_timestamps? %>"
+         data-viewer-timezone="<%= viewer_timezone %>"></div>
 
     <% if is_owner %>
       <div id="tab-profile" class="is-hidden" data-tab-panel="user-tabs" data-user-name="<%= user_name %>"></div>
