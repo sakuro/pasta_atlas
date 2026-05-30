@@ -87,7 +87,7 @@ This runs `bundle install`, `npm install`, and `hanami db prepare` (create + mig
 bin/dev
 ```
 
-This starts four concurrent processes via mise:
+This starts five concurrent processes via mise:
 
 | Process | Command | Role |
 |---------|---------|------|
@@ -95,6 +95,7 @@ This starts four concurrent processes via mise:
 | `assets` | `bundle exec hanami assets watch` | CSS/JS asset pipeline |
 | `islands` | `npm run dev:islands` | SolidJS island watcher (Vite HMR) |
 | `floci` | `docker compose up` | S3 emulator + PostgreSQL |
+| `s3-cleanup-queue-worker` | `bundle exec rake s3:process_cleanup_queue` | S3 deletion queue worker |
 
 Open <http://localhost:2300> in a browser.
 
