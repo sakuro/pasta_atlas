@@ -18,8 +18,8 @@ module PastaAtlas
 
           def call(user_id:, content_type:)
             user_id = step require_authentication(user_id)
-            ext = step resolve_extension(content_type)
             user = user_repo.find_by_id(user_id)
+            ext = ALLOWED_CONTENT_TYPES[content_type]
             key = "#{user.name}/avatar/#{ULID.generate}.#{ext}"
             presigned_url = generate_presigned_url(key:, content_type:)
             {presigned_url:, s3_key: key}
@@ -27,11 +27,6 @@ module PastaAtlas
 
           private def require_authentication(user_id)
             user_id ? Success(user_id) : Failure(:forbidden)
-          end
-
-          private def resolve_extension(content_type)
-            ext = ALLOWED_CONTENT_TYPES[content_type]
-            ext ? Success(ext) : Failure(:unprocessable_entity)
           end
 
           private def generate_presigned_url(key:, content_type:)

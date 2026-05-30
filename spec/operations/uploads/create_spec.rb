@@ -7,7 +7,7 @@ RSpec.describe PastaAtlas::Operations::Uploads::Create, :db do
   let(:s3_client) { Hanami.app["s3.client"] }
 
   let(:user) { Factory[:user, name: "testuser"] }
-  let(:metadata) { {"map_id" => "ae8ec3ab", "unique_id" => "550f41a9", "tick" => "1000"} }
+  let(:metadata) { {map_id: "ae8ec3ab", unique_id: "550f41a9", tick: "1000"} }
 
   describe "#call" do
     context "when no generation exists" do
@@ -25,9 +25,9 @@ RSpec.describe PastaAtlas::Operations::Uploads::Create, :db do
 
         generation = generation_repo.find_with_upload(
           map_id: map_repo.find_or_create_by_user_and_mapshot_id(
-            user_id: user.id, mapshot_map_id: metadata["map_id"]
+            user_id: user.id, mapshot_map_id: metadata[:map_id]
           ).id,
-          mapshot_unique_id: metadata["unique_id"]
+          mapshot_unique_id: metadata[:unique_id]
         )
         expect(generation.expires_at).to be_nil
       end
@@ -41,9 +41,9 @@ RSpec.describe PastaAtlas::Operations::Uploads::Create, :db do
 
         generation = generation_repo.find_with_upload(
           map_id: map_repo.find_or_create_by_user_and_mapshot_id(
-            user_id: user.id, mapshot_map_id: metadata["map_id"]
+            user_id: user.id, mapshot_map_id: metadata[:map_id]
           ).id,
-          mapshot_unique_id: metadata["unique_id"]
+          mapshot_unique_id: metadata[:unique_id]
         )
         expect(generation.expires_at).to be_within(60).of(Time.now + (7 * 86400))
       end
@@ -94,44 +94,6 @@ RSpec.describe PastaAtlas::Operations::Uploads::Create, :db do
       end
     end
 
-    context "when metadata fields are invalid" do
-      it "returns an unprocessable_entity failure for non-hex map_id" do
-        result = operation.call(user_id: user.id, metadata: metadata.merge("map_id" => "xyz!"), total_image_count: 5)
-        expect(result).to be_failure
-        expect(result.failure).to eq(:unprocessable_entity)
-      end
-
-      it "returns an unprocessable_entity failure for map_id with path separators" do
-        result = operation.call(user_id: user.id, metadata: metadata.merge("map_id" => "ae8ec3ab/x"), total_image_count: 5)
-        expect(result).to be_failure
-        expect(result.failure).to eq(:unprocessable_entity)
-      end
-
-      it "returns an unprocessable_entity failure for non-hex unique_id" do
-        result = operation.call(user_id: user.id, metadata: metadata.merge("unique_id" => "xyz!"), total_image_count: 5)
-        expect(result).to be_failure
-        expect(result.failure).to eq(:unprocessable_entity)
-      end
-
-      it "returns an unprocessable_entity failure for non-integer tick" do
-        result = operation.call(user_id: user.id, metadata: metadata.merge("tick" => "abc"), total_image_count: 5)
-        expect(result).to be_failure
-        expect(result.failure).to eq(:unprocessable_entity)
-      end
-
-      it "returns an unprocessable_entity failure for negative tick" do
-        result = operation.call(user_id: user.id, metadata: metadata.merge("tick" => "-1"), total_image_count: 5)
-        expect(result).to be_failure
-        expect(result.failure).to eq(:unprocessable_entity)
-      end
-
-      it "returns an unprocessable_entity failure for tick exceeding uint32 max" do
-        result = operation.call(user_id: user.id, metadata: metadata.merge("tick" => "4294967296"), total_image_count: 5)
-        expect(result).to be_failure
-        expect(result.failure).to eq(:unprocessable_entity)
-      end
-    end
-
     context "when S3 write fails" do
       before do
         allow(s3_client).to receive(:put_object)
@@ -145,11 +107,11 @@ RSpec.describe PastaAtlas::Operations::Uploads::Create, :db do
         expect(result.failure).to eq(:s3_error)
 
         map = map_repo.find_or_create_by_user_and_mapshot_id(
-          user_id: user.id, mapshot_map_id: metadata["map_id"]
+          user_id: user.id, mapshot_map_id: metadata[:map_id]
         )
         expect(
           generation_repo.find_with_upload(
-            map_id: map.id, mapshot_unique_id: metadata["unique_id"]
+            map_id: map.id, mapshot_unique_id: metadata[:unique_id]
           )
         ).to be_nil
       end

@@ -20,28 +20,16 @@ module PastaAtlas
           s3_client: "s3.client"
         ]
 
-        # gen_map_id / gen_unique_id produce 8 hex chars sliced from SHA-256:
-        # https://github.com/Palats/mapshot/blob/ddad172f187d08e56df720efe2fe0bddfb65e347/mod/control.lua#L206-L222
-        MAPSHOT_ID_PATTERN = /\A[0-9a-f]{8}\z/
-        private_constant :MAPSHOT_ID_PATTERN
-
-        # game.tick is an unsigned 32-bit counter:
-        # https://lua-api.factorio.com/latest/classes/LuaGameScript.html#tick
-        TICK_MAX = 4_294_967_295
-        private_constant :TICK_MAX
-
         def call(user_id:, metadata:, total_image_count:, name: nil)
-          mapshot_map_id = metadata["map_id"]
-          mapshot_unique_id = metadata["unique_id"]
-          tick = metadata["tick"]
-          step validate_metadata(mapshot_map_id:, mapshot_unique_id:, tick:)
-          tick = Integer(tick)
+          mapshot_map_id = metadata[:map_id]
+          mapshot_unique_id = metadata[:unique_id]
+          tick = Integer(metadata[:tick])
           user = user_repo.find_by_id(user_id)
 
           map = step find_or_create_map.call(
             user_id:,
             mapshot_map_id:,
-            savename: metadata.fetch("savename", "").to_s,
+            savename: metadata.fetch(:savename, "").to_s,
             name:
           )
 
@@ -54,16 +42,6 @@ module PastaAtlas
             metadata:,
             total_image_count:
           )
-        end
-
-        private def validate_metadata(mapshot_map_id:, mapshot_unique_id:, tick:)
-          return Failure(:unprocessable_entity) unless mapshot_map_id.is_a?(String) && MAPSHOT_ID_PATTERN.match?(mapshot_map_id)
-          return Failure(:unprocessable_entity) unless mapshot_unique_id.is_a?(String) && MAPSHOT_ID_PATTERN.match?(mapshot_unique_id)
-
-          tick_int = Integer(tick, exception: false)
-          return Failure(:unprocessable_entity) unless tick_int && tick_int.between?(0, TICK_MAX)
-
-          Success()
         end
 
         private def within_transaction(map:, user:, mapshot_map_id:, mapshot_unique_id:, tick:, metadata:, total_image_count:)

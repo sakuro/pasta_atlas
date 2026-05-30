@@ -40,6 +40,22 @@ RSpec.describe PastaAtlas::Actions::Uploads::PresignedUrls::Create, :db do
       end
     end
 
+    context "when filenames are invalid" do
+      before { allow(issue_presigned_urls).to receive(:call) }
+
+      it "returns 400 for a path traversal attempt without calling the operation" do
+        response = action.call(session.merge(ulid: "01UPLOAD", filenames: ["../../other/file.jpg"]))
+        expect(response.status).to eq(400)
+        expect(issue_presigned_urls).not_to have_received(:call)
+      end
+
+      it "returns 400 for a filename not matching the tile pattern without calling the operation" do
+        response = action.call(session.merge(ulid: "01UPLOAD", filenames: ["mapshot.json"]))
+        expect(response.status).to eq(400)
+        expect(issue_presigned_urls).not_to have_received(:call)
+      end
+    end
+
     context "when the upload is not found" do
       before { allow(issue_presigned_urls).to receive(:call).and_return(Failure(:not_found)) }
 

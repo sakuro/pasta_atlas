@@ -6,7 +6,14 @@ module PastaAtlas
       class Update < PastaAtlas::Action
         include Deps["operations.uploads.update_status"]
 
+        params do
+          required(:ulid).filled(:string)
+          required(:status).filled(:string, included_in?: %w[complete failed])
+        end
+
         def handle(request, response)
+          halt :bad_request unless request.params.valid?
+
           result = update_status.call(
             upload_ulid: request.params[:ulid],
             status: request.params[:status],

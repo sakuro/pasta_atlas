@@ -76,6 +76,38 @@ RSpec.describe PastaAtlas::Actions::Uploads::Create, :db do
       end
     end
 
+    context "when metadata fields are invalid" do
+      before { allow(create_upload).to receive(:call) }
+
+      it "returns 400 for invalid map_id without calling the operation" do
+        params = action_params.merge(metadata: action_params[:metadata].merge(map_id: "xyz!"))
+        response = action.call(session.merge(params))
+        expect(response.status).to eq(400)
+        expect(create_upload).not_to have_received(:call)
+      end
+
+      it "returns 400 for invalid unique_id without calling the operation" do
+        params = action_params.merge(metadata: action_params[:metadata].merge(unique_id: "xyz!"))
+        response = action.call(session.merge(params))
+        expect(response.status).to eq(400)
+        expect(create_upload).not_to have_received(:call)
+      end
+
+      it "returns 400 for non-integer tick without calling the operation" do
+        params = action_params.merge(metadata: action_params[:metadata].merge(tick: "abc"))
+        response = action.call(session.merge(params))
+        expect(response.status).to eq(400)
+        expect(create_upload).not_to have_received(:call)
+      end
+
+      it "returns 400 for tick exceeding uint32 max without calling the operation" do
+        params = action_params.merge(metadata: action_params[:metadata].merge(tick: 4_294_967_296))
+        response = action.call(session.merge(params))
+        expect(response.status).to eq(400)
+        expect(create_upload).not_to have_received(:call)
+      end
+    end
+
     context "when the operation returns an S3 error failure" do
       before { allow(create_upload).to receive(:call).and_return(Failure(:s3_error)) }
 

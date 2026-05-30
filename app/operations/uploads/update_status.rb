@@ -4,9 +4,6 @@ module PastaAtlas
   module Operations
     module Uploads
       class UpdateStatus < PastaAtlas::Operation
-        ALLOWED_STATUSES = %w[complete failed].freeze
-        private_constant :ALLOWED_STATUSES
-
         include Deps[
           "repos.generation_repo",
           "repos.map_repo",
@@ -15,14 +12,11 @@ module PastaAtlas
         ]
 
         def call(upload_ulid:, status:, user_id:)
-          step validate_status(status)
           upload = step find_upload(upload_ulid)
           step validate_ownership(upload, user_id)
           step append_event(upload, status)
           step find_upload(upload_ulid)
         end
-
-        private def validate_status(status) = ALLOWED_STATUSES.include?(status) ? Success() : Failure(:bad_request)
 
         private def validate_ownership(upload, user_id)
           generation = generation_repo.find_by_id(upload.generation_id)

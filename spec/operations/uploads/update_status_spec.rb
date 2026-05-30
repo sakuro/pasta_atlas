@@ -34,15 +34,6 @@ RSpec.describe PastaAtlas::Operations::Uploads::UpdateStatus, :db do
       end
     end
 
-    context "when the status is invalid" do
-      it "returns a bad_request failure" do
-        result = operation.call(upload_ulid: upload.ulid, status: "pending", user_id: user.id)
-
-        expect(result).to be_failure
-        expect(result.failure).to eq(:bad_request)
-      end
-    end
-
     context "when the upload belongs to another user" do
       let(:other_user) { Factory[:user] }
 

@@ -52,12 +52,13 @@ RSpec.describe PastaAtlas::Actions::Uploads::Update, :db do
     end
 
     context "when the status is invalid" do
-      before { allow(update_status).to receive(:call).and_return(Failure(:bad_request)) }
+      before { allow(update_status).to receive(:call) }
 
-      it "returns 400" do
-        response = action.call(session.merge(action_params))
+      it "returns 400 without calling the operation" do
+        response = action.call(session.merge(action_params.merge(status: "pending")))
 
         expect(response.status).to eq(400)
+        expect(update_status).not_to have_received(:call)
       end
     end
 
