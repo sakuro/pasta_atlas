@@ -6,8 +6,8 @@ module PastaAtlas
       module Profile
         class Show < PastaAtlas::Action
           include Deps[
-            load_profile: "operations.user.profile.load",
-            verify_ownership: "operations.user.verify_ownership"
+            "operations.user.verify_ownership",
+            load_profile: "operations.user.profile.load"
           ]
 
           def handle(request, response)

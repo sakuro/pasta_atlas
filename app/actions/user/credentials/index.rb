@@ -6,8 +6,8 @@ module PastaAtlas
       module Credentials
         class Index < PastaAtlas::Action
           include Deps[
-            load_credentials: "operations.user.credentials.load",
-            verify_ownership: "operations.user.verify_ownership"
+            "operations.user.verify_ownership",
+            load_credentials: "operations.user.credentials.load"
           ]
 
           PROVIDERS = %w[discord github steam].freeze

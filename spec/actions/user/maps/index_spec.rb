@@ -9,13 +9,15 @@ RSpec.describe PastaAtlas::Actions::User::Maps::Index do
   let(:user) { double("User", id: 1, name: "sakuro", guest?: false) }
   let(:user_info) { PastaAtlas::Values::UserInfo[name: "sakuro", display_name: "Sakuro", avatar_url: nil] }
   let(:map_info) do
-    double("MapInfo",
+    double(
+      "MapInfo",
       ulid: "01MAP1",
       display_name: "Map 1",
       user_info:,
       thumbnail_url: "https://cdn.example.com/thumb.jpg",
       metadata_url: "https://cdn.example.com/mapshot.json",
-      updated_at: Time.new(2024, 1, 1))
+      updated_at: Time.new(2024, 1, 1)
+    )
   end
 
   context "when the user does not exist" do

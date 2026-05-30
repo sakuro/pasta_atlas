@@ -65,10 +65,8 @@ edit-display-name = Display name
 edit-save-profile = Save Profile
 edit-timezone-label = Timezone
 edit-locale = Locale
-    .use-browser = (Use browser)
 edit-locale-use-browser = (Use browser)
 edit-time-display = Time display
-    .relative = Show relative timestamps (e.g. "3 days ago")
 edit-time-display-relative = Show relative timestamps (e.g. "3 days ago")
 edit-save-preferences = Save Preferences
 edit-cancel = Cancel
@@ -91,6 +89,8 @@ credential-last-hint = At least one connected account is required.
 ## Credential errors
 error-credential-conflict = That account is already linked to another user.
 error-credential-last = At least one connected account is required.
+error-profile-display-name-too-long = Display name must be 64 characters or fewer.
+error-profile-display-name-invalid-chars = Display name contains disallowed characters.
 
 ## Map notices
 map-deletion-requested = Your map has been queued for deletion. It may remain visible for a short time.

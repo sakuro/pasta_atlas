@@ -82,10 +82,8 @@ edit-display-name = Zobrazované jméno
 edit-save-profile = Uložit profil
 edit-timezone-label = Časové pásmo
 edit-locale = Jazyk
-    .use-browser = (Podle prohlížeče)
 edit-locale-use-browser = (Podle prohlížeče)
 edit-time-display = Zobrazení času
-    .relative = Zobrazovat relativní čas (např. „před 3 dny")
 edit-time-display-relative = Zobrazovat relativní čas (např. „před 3 dny")
 edit-save-preferences = Uložit nastavení
 edit-cancel = Zrušit
@@ -108,6 +106,8 @@ credential-last-hint = Je vyžadován alespoň jeden propojený účet.
 ## Credential errors
 error-credential-conflict = Tento účet je již propojen s jiným uživatelem.
 error-credential-last = Je vyžadován alespoň jeden propojený účet.
+error-profile-display-name-too-long = Zobrazované jméno musí mít nejvýše 64 znaků.
+error-profile-display-name-invalid-chars = Zobrazované jméno obsahuje nepovoleé znaky.
 
 ## Map notices
 map-deletion-requested = Vaše mapa byla zařazena do fronty k odstranění. Může být ještě chvíli viditelná.

@@ -5,7 +5,7 @@ module PastaAtlas
     module User
       class Show < PastaAtlas::Action
         include Deps[
-          find_by_name: "operations.user.find_by_name",
+          "operations.user.find_by_name",
           load_profile: "operations.user.profile.load"
         ]
 

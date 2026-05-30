@@ -6,7 +6,7 @@ module PastaAtlas
       module Maps
         class Index < PastaAtlas::Action
           include Deps[
-            find_by_name: "operations.user.find_by_name",
+            "operations.user.find_by_name",
             list_recent_maps: "operations.maps.list_recent_by_user",
             load_profile: "operations.user.profile.load"
           ]
@@ -27,7 +27,7 @@ module PastaAtlas
               ]
               map_infos = list_recent_maps.call(user_id: user.id, user_info:).value!
               json_response(response, {
-                maps: map_infos.map { |m|
+                maps: map_infos.map {|m|
                   {
                     ulid: m.ulid,
                     display_name: m.display_name,

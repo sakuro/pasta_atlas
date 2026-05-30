@@ -8,8 +8,8 @@ module PastaAtlas
       module Preferences
         class Show < PastaAtlas::Action
           include Deps[
-            load_preferences: "operations.user.preferences.load",
-            verify_ownership: "operations.user.verify_ownership"
+            "operations.user.verify_ownership",
+            load_preferences: "operations.user.preferences.load"
           ]
 
           def handle(request, response)

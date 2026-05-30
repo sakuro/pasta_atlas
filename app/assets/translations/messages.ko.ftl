@@ -65,10 +65,8 @@ edit-display-name = 표시 이름
 edit-save-profile = 프로필 저장
 edit-timezone-label = 시간대
 edit-locale = 언어
-    .use-browser = (브라우저 설정 사용)
 edit-locale-use-browser = (브라우저 설정 사용)
 edit-time-display = 시간 표시
-    .relative = 상대 시간으로 표시 (예: "3일 전")
 edit-time-display-relative = 상대 시간으로 표시 (예: "3일 전")
 edit-save-preferences = 설정 저장
 edit-cancel = 취소
@@ -91,6 +89,8 @@ credential-last-hint = 최소 하나의 연결된 계정이 필요합니다.
 ## Credential errors
 error-credential-conflict = 해당 계정은 이미 다른 사용자에게 연결되어 있습니다.
 error-credential-last = 최소 하나의 연결된 계정이 필요합니다.
+error-profile-display-name-too-long = 표시 이름은 64자 이하이어야 합니다.
+error-profile-display-name-invalid-chars = 표시 이름에 허용되지 않는 문자가 포함되어 있습니다.
 
 ## Map notices
 map-deletion-requested = 맵이 삭제 대기열에 추가되었습니다. 잠시 동안 표시될 수 있습니다.
