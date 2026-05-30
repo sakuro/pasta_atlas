@@ -1,4 +1,4 @@
-import { createResource, createSignal, createMemo, Show, Suspense, For, onMount, onCleanup } from "solid-js";
+import { createResource, createSignal, createMemo, Show, Suspense, For, onMount, onCleanup, untrack } from "solid-js";
 
 const csrfToken = (): string =>
   document.querySelector<HTMLMetaElement>('meta[name="csrf-token"]')?.content ?? "";
@@ -172,7 +172,7 @@ export const MapViewer = (props: MapViewerProps) => {
     if (res.type === "opaqueredirect") window.location.href = "/";
   };
 
-  const [displayName, setDisplayName] = createSignal(props.displayName);
+  const [displayName, setDisplayName] = createSignal(untrack(() => props.displayName));
   const [isEditing, setIsEditing] = createSignal(false);
   const [editValue, setEditValue] = createSignal("");
   const isOwner = () => props.viewerName !== null && props.viewerName === props.authorName;

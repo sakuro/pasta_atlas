@@ -3,11 +3,11 @@ import { Portal } from "solid-js/web";
 export const HowToUploadModal = (props: { onClose: () => void }) => (
   <Portal mount={document.body}>
     <div class="modal is-active">
-      <div class="modal-background" onClick={props.onClose} />
+      <div class="modal-background" onClick={() => props.onClose()} />
       <div class="modal-card" style={{ width: "90vw", "max-width": "700px" }}>
         <header class="modal-card-head">
           <p class="modal-card-title" data-l10n-id="how-to-upload-title" />
-          <button class="delete" aria-label="close" onClick={props.onClose} />
+          <button class="delete" aria-label="close" onClick={() => props.onClose()} />
         </header>
         <section class="modal-card-body">
           <div class="content">
@@ -40,7 +40,7 @@ export const HowToUploadModal = (props: { onClose: () => void }) => (
           </div>
         </section>
         <footer class="modal-card-foot">
-          <button class="button" data-l10n-id="how-to-upload-close" onClick={props.onClose} />
+          <button class="button" data-l10n-id="how-to-upload-close" onClick={() => props.onClose()} />
         </footer>
       </div>
     </div>
