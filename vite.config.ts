@@ -24,6 +24,7 @@ export default defineConfig({
         user_credentials_tab: "frontend/islands/user_credentials_tab/index.tsx",
         footer: "frontend/islands/footer/index.tsx",
         navbar_end: "frontend/islands/navbar_end/index.tsx",
+        user_header: "frontend/islands/user_header/index.tsx",
       },
       output: {
         entryFileNames: "[name]-[hash].js",

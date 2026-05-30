@@ -1,36 +1,11 @@
-<script nonce="<%= content_security_policy_nonce %>">
-  (function() {
-    var hash = location.hash.slice(1);
-    if (hash) {
-      document.documentElement.dataset.pendingTab = hash;
-      history.replaceState(null, document.title, location.pathname + location.search);
-    }
-  })();
-</script>
 <section class="section">
+  <div id="user-header"
+       data-user-name="<%= user_name %>"
+       data-display-name="<%= display_name || "" %>"
+       data-avatar-url="<%= avatar_url || "" %>"
+       data-is-owner="<%= is_owner %>"></div>
+
   <div class="container">
-    <div class="level">
-      <div class="level-left">
-        <%= render "shared/avatar", avatar_url:, avatar_size: 64 %>
-        <h1 class="title ml-3"><%= display_name || user_name %></h1>
-      </div>
-    </div>
-    <p class="subtitle">@<%= user_name %></p>
-  </div>
-
-  <div class="container mt-5">
-    <div class="tabs" data-tabs="user-tabs">
-      <ul>
-        <li data-target="tab-recent-maps" class="is-active"><a><span class="icon-text"><span class="icon"><i class="fa-solid fa-map"></i></span><span><%= t("user-tab-maps") %></span></span></a></li>
-        <% if is_owner %>
-          <li data-target="tab-profile"><a><span class="icon-text"><span class="icon"><i class="fa-solid fa-circle-user"></i></span><span><%= t("user-tab-profile") %></span></span></a></li>
-          <li data-target="tab-preferences"><a><span class="icon-text"><span class="icon"><i class="fa-solid fa-gear"></i></span><span><%= t("user-tab-preferences") %></span></span></a></li>
-          <li data-target="tab-credentials"><a><span class="icon-text"><span class="icon"><i class="fa-solid fa-link"></i></span><span><%= t("user-tab-credentials") %></span></span></a></li>
-          <li data-target="tab-danger"><a><span class="icon-text"><span class="icon has-text-danger"><i class="fa-solid fa-triangle-exclamation"></i></span><span><%= t("user-tab-danger") %></span></span></a></li>
-        <% end %>
-      </ul>
-    </div>
-
     <div id="tab-recent-maps" data-tab-panel="user-tabs" data-user-name="<%= user_name %>"
          data-relative-timestamps="<%= viewer_relative_timestamps? %>"
          data-viewer-timezone="<%= viewer_timezone %>"></div>
@@ -80,30 +55,7 @@
       </div>
     <% end %>
   </div>
-  <script nonce="<%= content_security_policy_nonce %>">
-    (function() {
-      document.querySelectorAll("[data-tabs]").forEach(function(tabsEl) {
-        var groupId = tabsEl.dataset.tabs;
-        var panels = document.querySelectorAll('[data-tab-panel="' + groupId + '"]');
-        tabsEl.querySelectorAll("li[data-target]").forEach(function(tab) {
-          tab.addEventListener("click", function() {
-            tabsEl.querySelectorAll("li").forEach(function(t) { t.classList.remove("is-active"); });
-            panels.forEach(function(p) { p.classList.add("is-hidden"); });
-            tab.classList.add("is-active");
-            var target = tab.dataset.target;
-            if (target) document.getElementById(target)?.classList.remove("is-hidden");
-          });
-        });
-      });
-
-      function activateTabByHash(hash) {
-        if (hash) document.querySelector('[data-target="' + hash + '"]')?.click();
-      }
-
-      activateTabByHash(document.documentElement.dataset.pendingTab || location.hash.slice(1));
-      window.addEventListener("hashchange", function() { activateTabByHash(location.hash.slice(1)); });
-    })();
-  </script>
+  <script src="<%= island_src("user_header") %>" type="module"></script>
   <script src="<%= island_src("user_maps_tab") %>" type="module"></script>
   <% if is_owner %>
     <script src="<%= island_src("user_profile_tab") %>" type="module"></script>
