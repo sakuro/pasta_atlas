@@ -4,6 +4,7 @@ const csrfToken = (): string =>
   document.querySelector<HTMLMetaElement>('meta[name="csrf-token"]')?.content ?? "";
 import L from "leaflet";
 import { Avatar } from "../../components/Avatar";
+import { FormattedDateTime } from "../../components/FormattedDateTime";
 import { MapInfoModal, formatTicks, type Mapshot as MapInfoMapshot } from "../../components/MapInfoModal";
 import { ShareButtons } from "../share_buttons/ShareButtons";
 import { l10n } from "../../l10n";
@@ -105,40 +106,14 @@ interface MapViewerProps {
   authorAvatarUrl: string | null;
   updatedAt: string | null;
   viewerName: string | null;
-  relativeTimestamps: boolean;
 }
-
-
-const formatAbsoluteDate = (iso: string): string => {
-  const locale = document.documentElement.lang || "en";
-  return new Intl.DateTimeFormat(locale, { dateStyle: "medium", timeStyle: "short" }).format(new Date(iso));
-};
-
-const formatRelativeDate = (iso: string): string => {
-  const locale = document.documentElement.lang || "en";
-  const rtf = new Intl.RelativeTimeFormat(locale, { style: "long", numeric: "auto" });
-  const diffSecs = Math.round((new Date(iso).getTime() - Date.now()) / 1000);
-  const abs = Math.abs(diffSecs);
-  if (abs < 60) return rtf.format(diffSecs, "second");
-  if (abs < 3600) return rtf.format(Math.trunc(diffSecs / 60), "minute");
-  if (abs < 86400) return rtf.format(Math.trunc(diffSecs / 3600), "hour");
-  if (abs < 7 * 86400) return rtf.format(Math.trunc(diffSecs / 86400), "day");
-  if (abs < 30 * 86400) return rtf.format(Math.trunc(diffSecs / (7 * 86400)), "week");
-  if (abs < 365 * 86400) return rtf.format(Math.trunc(diffSecs / (30 * 86400)), "month");
-  return rtf.format(Math.trunc(diffSecs / (365 * 86400)), "year");
-};
-
-const formatDate = (iso: string, relativeTimestamps: boolean): string =>
-  relativeTimestamps ? formatRelativeDate(iso) : formatAbsoluteDate(iso);
 
 export const MapViewer = (props: MapViewerProps) => {
   const [mapData] = createResource(() =>
     fetch(`/api/v1/maps/${props.ulid}`).then((r) => r.json() as Promise<MapData>)
   );
 
-  const [generationUlid, setGenerationUlid] = createSignal<string | null>(
-    getParam("generation")
-  );
+  const [generationUlid, setGenerationUlid] = createSignal<string | null>(getParam("generation"));
 
   const activeGeneration = createMemo(() => {
     const data = mapData();
@@ -274,10 +249,7 @@ export const MapViewer = (props: MapViewerProps) => {
         <Show when={props.updatedAt}>
           {(iso) => (
             <span class="is-size-7 has-text-grey" style={{ "flex-shrink": 0 }}>
-              <span class="icon-text">
-                <span class="icon is-small"><i class="fa-regular fa-calendar" /></span>
-                <time datetime={iso()} title={props.relativeTimestamps ? formatAbsoluteDate(iso()) : formatRelativeDate(iso())}>{formatDate(iso(), props.relativeTimestamps)}</time>
-              </span>
+              <FormattedDateTime dateTime={iso()} />
             </span>
           )}
         </Show>

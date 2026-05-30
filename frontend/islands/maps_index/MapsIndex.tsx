@@ -1,5 +1,5 @@
 import { createResource, createSignal, For, Show } from "solid-js";
-import { MapCard, type MapData, type DateDisplayProps } from "../../components/MapCard";
+import { MapCard, type MapData } from "../../components/MapCard";
 import "../../l10n";
 
 type MapsResponse = {
@@ -42,7 +42,7 @@ const Pagination = (props: {
   );
 };
 
-export const MapsIndex = (props: DateDisplayProps) => {
+export const MapsIndex = () => {
   const [page, setPage] = createSignal(1);
   const [data] = createResource(page, fetchMaps);
 
@@ -68,7 +68,7 @@ export const MapsIndex = (props: DateDisplayProps) => {
               <For each={response.maps}>
                 {(map) => (
                   <div class="column is-half-tablet is-one-quarter-desktop">
-                    <MapCard map={map} relativeTimestamps={props.relativeTimestamps} timezone={props.timezone} />
+                    <MapCard map={map} />
                   </div>
                 )}
               </For>

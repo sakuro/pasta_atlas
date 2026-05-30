@@ -1,10 +1,10 @@
 import { createResource, For, Show } from "solid-js";
-import { MapCard, type MapData, type DateDisplayProps } from "../../components/MapCard";
+import { MapCard, type MapData } from "../../components/MapCard";
 import "../../l10n";
 
 type MapsResponse = { maps: MapData[] };
 
-export const UserMapsTab = (props: { userName: string; active: () => boolean } & DateDisplayProps) => {
+export const UserMapsTab = (props: { userName: string; active: () => boolean }) => {
   const [data] = createResource(props.active, async (isActive) => {
     if (!isActive) return undefined;
     const res = await fetch(`/@${props.userName}/maps`);
@@ -28,7 +28,7 @@ export const UserMapsTab = (props: { userName: string; active: () => boolean } &
             <For each={response.maps}>
               {(map) => (
                 <div class="column is-half-tablet is-one-quarter-desktop">
-                  <MapCard map={map} relativeTimestamps={props.relativeTimestamps} timezone={props.timezone} />
+                  <MapCard map={map} />
                 </div>
               )}
             </For>

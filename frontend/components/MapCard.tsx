@@ -1,5 +1,6 @@
 import { Show } from "solid-js";
 import { Avatar } from "./Avatar";
+import { FormattedDateTime } from "./FormattedDateTime";
 import { MapInfoButton } from "../islands/map_info_button/MapInfoButton";
 import { ShareButtons } from "../islands/share_buttons/ShareButtons";
 
@@ -14,45 +15,11 @@ export type MapData = {
   updated_at: string | null;
 };
 
-export type DateDisplayProps = {
-  relativeTimestamps: boolean;
-  timezone: string;
-};
-
-const lang = () => document.documentElement.lang || "en";
-
-const formatAbsolute = (iso: string, timezone: string): string =>
-  new Intl.DateTimeFormat(lang(), {
-    year: "numeric", month: "short", day: "numeric",
-    hour: "numeric", minute: "numeric",
-    timeZone: timezone,
-  }).format(new Date(iso));
-
-const formatRelative = (iso: string): string => {
-  const diff = Math.round((Date.now() - new Date(iso).getTime()) / 1000);
-  const abs = Math.abs(diff);
-  const fmt = new Intl.RelativeTimeFormat(lang(), { style: "long", numeric: "auto" });
-  if (abs < 60) return fmt.format(-diff, "second");
-  if (abs < 3600) return fmt.format(-Math.round(diff / 60), "minute");
-  if (abs < 86400) return fmt.format(-Math.round(diff / 3600), "hour");
-  if (abs < 7 * 86400) return fmt.format(-Math.round(diff / 86400), "day");
-  if (abs < 30 * 86400) return fmt.format(-Math.round(diff / (7 * 86400)), "week");
-  if (abs < 365 * 86400) return fmt.format(-Math.round(diff / (30 * 86400)), "month");
-  return fmt.format(-Math.round(diff / (365 * 86400)), "year");
-};
-
-
-export const MapCard = (props: { map: MapData } & DateDisplayProps) => {
+export const MapCard = (props: { map: MapData }) => {
   const map = props.map;
   const isGuest = map.user_name === "guest";
   const mapHref = `/@${map.user_name}/maps/${map.ulid}`;
   const userHref = `/@${map.user_name}`;
-
-  const displayText = (iso: string) =>
-    props.relativeTimestamps ? formatRelative(iso) : formatAbsolute(iso, props.timezone);
-
-  const tooltipText = (iso: string) =>
-    props.relativeTimestamps ? formatAbsolute(iso, props.timezone) : formatRelative(iso);
 
   return (
     <div class="card">
@@ -83,12 +50,7 @@ export const MapCard = (props: { map: MapData } & DateDisplayProps) => {
             </p>
             <Show when={map.updated_at}>
               <p class="is-size-7 has-text-grey">
-                <span class="icon-text">
-                  <span class="icon is-small"><i class="fa-regular fa-calendar" /></span>
-                  <time datetime={map.updated_at!} title={tooltipText(map.updated_at!)}>
-                    {displayText(map.updated_at!)}
-                  </time>
-                </span>
+                <FormattedDateTime dateTime={map.updated_at!} />
               </p>
             </Show>
           </div>

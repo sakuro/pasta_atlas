@@ -6,9 +6,7 @@
        data-is-owner="<%= is_owner %>"></div>
 
   <div class="container">
-    <div id="tab-recent-maps" data-tab-panel="user-tabs" data-user-name="<%= user_name %>"
-         data-relative-timestamps="<%= viewer_relative_timestamps? %>"
-         data-viewer-timezone="<%= viewer_timezone %>"></div>
+    <div id="tab-recent-maps" data-tab-panel="user-tabs" data-user-name="<%= user_name %>"></div>
 
     <% if is_owner %>
       <div id="tab-profile" class="is-hidden" data-tab-panel="user-tabs" data-user-name="<%= user_name %>"></div>
