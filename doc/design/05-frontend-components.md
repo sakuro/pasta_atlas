@@ -2,7 +2,7 @@
 
 Framework: Solid.js (islands) + Bulma + Leaflet.js
 
-Regular page navigation uses server-rendered HTML (Hanami `web` slice). Client-side JavaScript is used only for the two interactive islands: the map viewer and the upload modal.
+Regular page navigation uses server-rendered HTML. Client-side JavaScript is used only for interactive islands.
 
 ## URL Structure
 
@@ -27,7 +27,7 @@ Map viewer query parameters (managed by the Leaflet island via `history.replaceS
 
 ### Top page (`/`)
 
-Rendered by `web` slice. Fetches paginated map list from DB and renders MapCard list and Pagination. Full page reload on page change (`/maps?page=N`).
+Server-rendered. Fetches paginated map list from DB and renders MapCard list and Pagination. Full page reload on page change (`/maps?page=N`).
 
 Shows only maps with at least one `complete` generation, ordered by most recent generation upload.
 
@@ -37,7 +37,7 @@ MapCard displays: `display_name`, owner name, latest generation tick, created_at
 
 ### Map viewer page (`/@:userProfileName/maps/:mapUlid`)
 
-Rendered by `web` slice as an HTML shell. The shell embeds the map ULID as a `data-` attribute on the island mount point. The Leaflet island mounts on this element and fetches map data from the API.
+Server-rendered as an HTML shell. The shell embeds the map ULID as a `data-` attribute on the island mount point. The Leaflet island mounts on this element and fetches map data from the API.
 
 ```erb
 <div id="map-viewer" data-map-ulid="<%= map.ulid %>"></div>
@@ -171,3 +171,9 @@ Directory selection uses `<input type="file" webkitdirectory>`. The hidden input
 | PATCH /api/v1/uploads/:ulid → network error | `uploading → error` | Generic error message (images are uploaded; user can retry PATCH manually if needed) |
 
 From the `error` state, the user can dismiss the modal (returning to `idle`) or go back to `instructions` to retry.
+
+---
+
+### ShareButtons island
+
+Mounted on the map viewer page. Renders share buttons for X, Bluesky, Reddit, and a copy-link button. Props: `mapPath` (URL path) and `mapName` (display name). The share URL is built from the current origin + `mapPath` + the active query string (preserving generation/surface/viewport state).

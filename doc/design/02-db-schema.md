@@ -41,6 +41,7 @@ Indexes:
 | user_id | bigint | NOT NULL, REFERENCES users(id) ON DELETE CASCADE |
 | timezone | varchar | NOT NULL DEFAULT 'UTC' |
 | locale | varchar | |
+| relative_timestamps | boolean | NOT NULL DEFAULT false |
 
 Indexes:
 - UNIQUE on `user_id`

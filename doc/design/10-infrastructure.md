@@ -14,11 +14,12 @@ pasta_atlas runs on AWS with container-based deployment. DNS is managed by Gandi
 | ACM | TLS certificate for ALB and CloudFront |
 | RDS (PostgreSQL) | Database |
 | S3 | Tile image and mapshot.json storage |
-| CloudFront | CDN for S3 content |
+| CloudFront | CDN for S3 content and static assets |
+| SQS | Async queue for S3 object deletion requests |
 | VPC | Network isolation; RDS in private subnet |
-| Secrets Manager | Runtime secrets (SESSION_SECRET, DATABASE_URL) |
-| CloudWatch Logs | Application and ALB logs |
-| IAM | ECS task role (S3 access), deploy role (CI/CD) |
+| SSM Parameter Store | Runtime secrets (SecureString) |
+| CloudWatch Logs | Application logs (30-day retention) |
+| IAM | ECS task role (S3/SQS/SSM access), deploy role (CI/CD) |
 
 ACM certificates for CloudFront must be provisioned in us-east-1 (AWS requirement). The ALB certificate is provisioned in the primary region (ap-northeast-1).
 

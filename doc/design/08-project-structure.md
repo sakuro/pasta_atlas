@@ -15,6 +15,8 @@ pasta_atlas/
     relations/           # ROM relations
     repos/               # Repositories
     structs/             # Immutable value objects (ROM structs)
+    values/              # Non-ROM value objects
+    middleware/          # Rack middleware
     operations/          # Use cases (orchestrate repos, S3, etc.)
   frontend/              # Vite source (island bundles only)
     components/          # Shared SolidJS components (not mounted as islands)

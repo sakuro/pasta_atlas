@@ -25,6 +25,8 @@ app/
   relations/         # ROM relations (DB table mappings)
   repos/             # Repositories
   structs/           # Immutable value objects (ROM structs)
+  values/            # Non-ROM value objects
+  middleware/        # Rack middleware
   operations/        # Use cases (orchestrate repos, S3, etc.)
 ```
 

@@ -87,3 +87,4 @@ Detailed design documents are in `doc/design/`:
 | 11 | [Local Development](doc/design/11-local-development.md) |
 | 12 | [Factorio Rich Text](doc/design/12-rich-text.md) |
 | 13 | [Comments](doc/design/13-comments.md) |
+| 14 | [Secrets Management](doc/design/14-secrets-management.md) |

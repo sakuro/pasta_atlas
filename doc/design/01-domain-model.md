@@ -42,6 +42,7 @@ Private per-user app behavior settings.
 | user_id | FK → User (1:1) | |
 | timezone | string | IANA timezone identifier; defaults to `"UTC"` |
 | locale | string | nullable; BCP 47 language tag (e.g. `"ja"`, `"en-US"`); NULL = use browser default |
+| relative_timestamps | boolean | defaults to `false`; show timestamps as relative time (e.g. "3 hours ago") instead of absolute |
 
 ### Credential
 

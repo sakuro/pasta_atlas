@@ -44,10 +44,6 @@ Profile pages are server-rendered HTML. The avatar upload uses a JSON API endpoi
 
 Displays a user's public profile page: display name, avatar, and recent maps.
 
-### GET /@:user_name/edit
-
-Displays the profile and preferences edit form (authenticated, own profile only).
-
 ### PATCH /@:user_name/profile
 
 Updates `display_name`. Authenticated, own profile only.
@@ -102,7 +98,7 @@ Clears `avatar_s3_key`. Authenticated, own profile only.
 
 Unlinks the OAuth credential for the given provider. Supported providers: `github`, `discord`. Authenticated, own profile only.
 
-**Response:** Redirects to `/@:user_name/edit`. Sets a flash error if the credential being removed is the user's last one.
+**Response:** Redirects to `/@:user_name#tab-credentials`. Sets a flash error if the credential being removed is the user's last one.
 
 **Error responses:**
 
