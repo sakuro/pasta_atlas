@@ -23,12 +23,12 @@ module PastaAtlas
       def path(...) = routes.path(...)
       def url(...) = routes.url(...)
 
-      def locale_tag = request.env[Rack::ICU4X::Locale::ENV_KEY].first.to_s
+      def locale_tag = locale.to_s
       def locale_tags = request.env[Rack::ICU4X::Locale::ENV_KEY].map(&:to_s)
 
       def locale_name(locale_code)
         target = ICU4X::DisplayNames.new(ICU4X::Locale.parse(locale_code.to_s), type: :locale).of(locale_code.to_s)
-        current = ICU4X::DisplayNames.new(ICU4X::Locale.parse(locale_tag), type: :locale).of(locale_code.to_s)
+        current = ICU4X::DisplayNames.new(locale, type: :locale).of(locale_code.to_s)
         target == current ? target : "#{target} (#{current})"
       end
 
@@ -41,7 +41,6 @@ module PastaAtlas
       end
 
       def localize_relative_datetime(time)
-        locale = ICU4X::Locale.parse(locale_tag)
         formatter = ICU4X::RelativeTimeFormat.new(locale, style: :long, numeric: :auto)
         diff = Integer(Time.now.utc - time.utc)
         abs = diff.abs
@@ -101,6 +100,8 @@ module PastaAtlas
       end
 
       def viewer_relative_timestamps = viewer_preference&.relative_timestamps || false
+
+      private def locale = request.env[Rack::ICU4X::Locale::ENV_KEY].first
 
       private def viewer_preference
         @viewer_preference ||= begin
