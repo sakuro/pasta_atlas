@@ -17,8 +17,8 @@ module PastaAtlas
 
       attr_reader :i18n
 
-      def flash_notice = request&.flash&.[](:notice)
-      def flash_error = request&.flash&.[](:error)
+      def flash_notice = request.flash[:notice]
+      def flash_error = request.flash[:error]
 
       def path(...) = routes.path(...)
       def url(...) = routes.url(...)
