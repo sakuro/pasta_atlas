@@ -13,10 +13,14 @@ module PastaAtlas
     post "/maps/:ulid/deletion_requests", to: "maps.deletion_requests.create"
 
     get "/@:user_name", to: "user.show", as: :user
+    get "/@:user_name/maps", to: "user.maps.index"
+    get "/@:user_name/profile", to: "user.profile.show"
     patch "/@:user_name/profile", to: "user.profile.update", as: :user_profile
+    get "/@:user_name/preferences", to: "user.preferences.show"
     patch "/@:user_name/preferences", to: "user.preferences.update", as: :user_preferences
     patch "/@:user_name/avatar", to: "user.avatar.update"
     delete "/@:user_name/avatar", to: "user.avatar.destroy"
+    get "/@:user_name/credentials", to: "user.credentials.index"
     delete "/@:user_name/credentials/:provider", to: "user.credentials.destroy", as: :user_credential
     delete "/@:user_name", to: "user.destroy"
 
