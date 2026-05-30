@@ -13,7 +13,7 @@ module PastaAtlas
               current_user_id: current_user_id(request)
             )
             case result
-            in Success(_)
+            in Success
               response.flash[:notice] = "map-deletion-requested"
               response.redirect_to routes.path(:root)
             in Failure(Symbol => status)

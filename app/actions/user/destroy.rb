@@ -14,7 +14,7 @@ module PastaAtlas
             user_name: request.params[:user_name]
           )
           case result
-          in Success(_)
+          in Success
             request.session.clear
             response.redirect_to routes.path(:root)
           in Failure(Symbol => status)
