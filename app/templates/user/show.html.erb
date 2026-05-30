@@ -19,40 +19,10 @@
            data-user-name="<%= user_name %>"
            data-omniauth-token="<%= omniauth_authenticity_token %>"></div>
 
-      <div id="tab-danger" class="is-hidden" data-tab-panel="user-tabs">
-        <p class="mb-3"><%= t("account-delete-warning") %></p>
-        <form action="/@<%= user_name %>" method="post" data-confirm-delete="true">
-          <input type="hidden" name="_method" value="delete">
-          <input type="hidden" name="_csrf_token" value="<%= csrf_token %>">
-          <input type="hidden" name="user_name" value="<%= user_name %>">
-          <div class="field">
-            <label class="label" for="confirm_user_name"><%= t("account-delete-confirm-label") %></label>
-            <div class="control">
-              <input class="input" type="text" id="confirm_user_name" name="confirm_user_name"
-                     autocomplete="off" data-confirm-username="<%= user_name %>">
-            </div>
-          </div>
-          <div class="field">
-            <div class="control">
-              <button class="button is-danger" type="submit" id="delete-account-button" disabled>
-                <span class="icon"><i class="fa-solid fa-trash"></i></span>
-                <span><%= t("account-delete-button") %></span>
-              </button>
-            </div>
-          </div>
-        </form>
-        <script nonce="<%= content_security_policy_nonce %>">
-          (function() {
-            var confirmInput = document.getElementById("confirm_user_name");
-            var deleteButton = document.getElementById("delete-account-button");
-            if (!confirmInput || !deleteButton) return;
-            var expectedUsername = confirmInput.dataset.confirmUsername || "";
-            confirmInput.addEventListener("input", function() {
-              deleteButton.disabled = confirmInput.value !== expectedUsername;
-            });
-          })();
-        </script>
-      </div>
+      <div id="tab-danger" class="is-hidden" data-tab-panel="user-tabs"
+           data-user-name="<%= user_name %>"
+           data-action-path="/@<%= user_name %>"
+           data-csrf-token="<%= csrf_token %>"></div>
     <% end %>
   </div>
   <script src="<%= island_src("user_header") %>" type="module"></script>
@@ -61,5 +31,6 @@
     <script src="<%= island_src("user_profile_tab") %>" type="module"></script>
     <script src="<%= island_src("user_preferences_tab") %>" type="module"></script>
     <script src="<%= island_src("user_credentials_tab") %>" type="module"></script>
+    <script src="<%= island_src("user_danger_tab") %>" type="module"></script>
   <% end %>
 </section>
