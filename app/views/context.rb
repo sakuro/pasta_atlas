@@ -39,7 +39,7 @@ module PastaAtlas
       end
 
       def localize_datetime(time)
-        viewer_relative_timestamps ? localize_relative_datetime(time) : localize_absolute_datetime(time)
+        viewer_relative_timestamps? ? localize_relative_datetime(time) : localize_absolute_datetime(time)
       end
 
       def localize_absolute_datetime(time)
@@ -98,7 +98,7 @@ module PastaAtlas
         Rack::Protection::AuthenticityToken.token(session)
       end
 
-      def viewer_relative_timestamps = viewer_preference&.relative_timestamps || false
+      def viewer_relative_timestamps? = viewer_preference&.relative_timestamps || false
 
       private def locale = request.env[Rack::ICU4X::Locale::ENV_KEY].first
 
