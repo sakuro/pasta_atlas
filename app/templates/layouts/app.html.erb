@@ -38,75 +38,14 @@
         </a>
       </div>
       <div id="navbar-main" class="navbar-menu">
-        <div class="navbar-end">
-          <% if current_user_name %>
-            <div class="navbar-item has-dropdown is-hoverable">
-              <a class="navbar-link">
-                <%= render "shared/avatar", avatar_url: current_avatar_url, avatar_size: 24 %>
-                <span class="ml-2"><%= current_user_display_name %></span>
-              </a>
-              <div class="navbar-dropdown is-right">
-                <a class="navbar-item" href="<%= path(:user, user_name: current_user_name) %>#tab-recent-maps">
-                  <span class="icon"><i class="fa-solid fa-map"></i></span>
-                  <span><%= t("user-tab-maps") %></span>
-                </a>
-                <a class="navbar-item" href="<%= path(:user, user_name: current_user_name) %>#tab-profile">
-                  <span class="icon"><i class="fa-solid fa-circle-user"></i></span>
-                  <span><%= t("user-tab-profile") %></span>
-                </a>
-                <a class="navbar-item" href="<%= path(:user, user_name: current_user_name) %>#tab-preferences">
-                  <span class="icon"><i class="fa-solid fa-gear"></i></span>
-                  <span><%= t("user-tab-preferences") %></span>
-                </a>
-                <a class="navbar-item" href="<%= path(:user, user_name: current_user_name) %>#tab-credentials">
-                  <span class="icon"><i class="fa-solid fa-link"></i></span>
-                  <span><%= t("user-tab-credentials") %></span>
-                </a>
-                <hr class="navbar-divider">
-                <form action="<%= path(:auth_session) %>" method="post">
-                  <input type="hidden" name="_method" value="delete">
-                  <input type="hidden" name="_csrf_token" value="<%= csrf_token %>">
-                  <button class="navbar-item" type="submit">
-                    <span class="icon"><i class="fa-solid fa-arrow-right-from-bracket"></i></span>
-                    <span><%= t("nav-log-out") %></span>
-                  </button>
-                </form>
-              </div>
-            </div>
-          <% else %>
-            <div class="navbar-item has-dropdown is-hoverable">
-              <a class="navbar-link">
-                <span class="icon"><i class="fa-solid fa-arrow-right-to-bracket"></i></span>
-                <span><%= t("nav-log-in") %></span>
-              </a>
-              <div class="navbar-dropdown is-right">
-                <form action="/auth/discord" method="post">
-                  <input type="hidden" name="authenticity_token" value="<%= omniauth_authenticity_token %>">
-                  <button class="navbar-item" type="submit">
-                    <span class="icon"><i class="fa-brands fa-discord"></i></span>
-                    <span><%= t("nav-log-in-discord") %></span>
-                  </button>
-                </form>
-                <hr class="navbar-divider">
-                <form action="/auth/github" method="post">
-                  <input type="hidden" name="authenticity_token" value="<%= omniauth_authenticity_token %>">
-                  <button class="navbar-item" type="submit">
-                    <span class="icon"><i class="fa-brands fa-github"></i></span>
-                    <span><%= t("nav-log-in-github") %></span>
-                  </button>
-                </form>
-                <hr class="navbar-divider">
-                <form action="/auth/steam" method="post">
-                  <input type="hidden" name="authenticity_token" value="<%= omniauth_authenticity_token %>">
-                  <button class="navbar-item" type="submit">
-                    <span class="icon"><i class="fa-brands fa-steam"></i></span>
-                    <span><%= t("nav-log-in-steam") %></span>
-                  </button>
-                </form>
-              </div>
-            </div>
-          <% end %>
-        </div>
+        <div id="navbar-end" class="navbar-end"
+             data-user-name="<%= current_user_name || "" %>"
+             data-display-name="<%= current_user_display_name || "" %>"
+             data-avatar-url="<%= current_avatar_url || "" %>"
+             data-user-path="<%= current_user_name ? path(:user, user_name: current_user_name) : "" %>"
+             data-logout-path="<%= current_user_name ? path(:auth_session) : "" %>"
+             data-csrf-token="<%= csrf_token %>"
+             data-omniauth-token="<%= omniauth_authenticity_token %>"></div>
       </div>
     </nav>
     <% if flash_notice %>
@@ -130,6 +69,7 @@
     <script src="<%= island_src("upload_modal") %>" type="module"></script>
     <script src="<%= island_src("avatar_upload") %>" type="module"></script>
     <script src="<%= island_src("footer") %>" type="module"></script>
+    <script src="<%= island_src("navbar_end") %>" type="module"></script>
     <%= javascript_tag "app" %>
   </body>
 </html>
