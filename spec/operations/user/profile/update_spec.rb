@@ -56,7 +56,7 @@ RSpec.describe PastaAtlas::Operations::User::Profile::Update do
         expect(result).to be_failure
         code, message = result.failure
         expect(code).to eq(:invalid)
-        expect(message).to include("64")
+        expect(message).to eq("error-profile-display-name-too-long")
       end
     end
 

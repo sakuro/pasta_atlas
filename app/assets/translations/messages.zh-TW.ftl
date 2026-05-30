@@ -65,9 +65,9 @@ edit-display-name = 顯示名稱
 edit-save-profile = 儲存個人資料
 edit-timezone-label = 時區
 edit-locale = 語言
-    .use-browser = （依瀏覽器設定）
+edit-locale-use-browser = （依瀏覽器設定）
 edit-time-display = 時間顯示
-    .relative = 顯示相對時間（如「3天前」）
+edit-time-display-relative = 顯示相對時間（如「3天前」）
 edit-save-preferences = 儲存偏好設定
 edit-cancel = 取消
 
@@ -89,6 +89,8 @@ credential-last-hint = 至少需要一個已連結帳號。
 ## Credential errors
 error-credential-conflict = 此帳號已連結至其他使用者。
 error-credential-last = 至少需要一個已連結帳號。
+error-profile-display-name-too-long = 顯示名稱不得超過 64 個字元。
+error-profile-display-name-invalid-chars = 顯示名稱包含不允許的字元。
 
 ## Map notices
 map-deletion-requested = 您的地圖已加入刪除佇列。可能會短暫顯示一段時間。
