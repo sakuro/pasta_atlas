@@ -52,8 +52,6 @@ module PastaAtlas
         generations.dataset.where(Sequel.lit("expires_at IS NOT NULL AND expires_at <= NOW()")).delete
       end
 
-      # Returns the Sequel::Database connection for transaction management
-      def db = generations.dataset.db
     end
   end
 end
