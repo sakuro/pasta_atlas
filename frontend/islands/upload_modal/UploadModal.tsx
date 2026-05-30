@@ -1,5 +1,6 @@
 import { createSignal, Show } from "solid-js";
 import { Portal } from "solid-js/web";
+import { adjectives, animals, colors, uniqueNamesGenerator } from "unique-names-generator";
 import "../../l10n";
 import { HowToUploadModal } from "./HowToUploadModal";
 
@@ -39,10 +40,9 @@ type State =
   | { type: "done"; viewerUrl: string }
   | { type: "error"; error: I18nError };
 
-const resolveDisplayName = (m: MapshotJson): string => {
-  if (m.name) return m.name;
-  if (m.savename) return m.savename;
-  return m.map_id;
+const generateMapName = (): string => {
+  const raw = uniqueNamesGenerator({ dictionaries: [adjectives, colors, animals], separator: " ", style: "lowerCase" });
+  return raw.charAt(0).toUpperCase() + raw.slice(1);
 };
 
 const formatBytes = (n: number): string => {
@@ -126,8 +126,7 @@ export const UploadModal = (props: { isGuest: boolean }) => {
     const fileMap = new Map<string, File>();
     for (const f of imageFiles) fileMap.set(relPath(f), f);
 
-    const defaultName = resolveDisplayName(mapshotJson);
-    let initialName = defaultName;
+    let initialName = mapshotJson.name || mapshotJson.savename || generateMapName();
     let existingMap = false;
     try {
       const resp = await fetch(`/api/v1/maps/lookup?mapshot_map_id=${encodeURIComponent(mapshotJson.map_id)}`);
@@ -146,7 +145,7 @@ export const UploadModal = (props: { isGuest: boolean }) => {
       type: "confirming",
       mapshotJson,
       fileMap,
-      mapName: defaultName,
+      mapName: initialName,
       surfaceCount: mapshotJson.surfaces?.length ?? 0,
       imageCount: imageFiles.length,
       totalBytes: imageFiles.reduce((sum, f) => sum + f.size, 0),
@@ -167,7 +166,7 @@ export const UploadModal = (props: { isGuest: boolean }) => {
       const resp = await fetch("/api/v1/uploads", {
         method: "POST",
         headers: jsonHeaders(),
-        body: JSON.stringify({ metadata: mapshotJson, total_image_count: imageCount, name: displayName() || null }),
+        body: JSON.stringify({ metadata: mapshotJson, total_image_count: imageCount, name: displayName() || s.mapName }),
       });
       if (resp.status === 409) {
         setState({ type: "error", error: { msgId: "upload-error-conflict" } });

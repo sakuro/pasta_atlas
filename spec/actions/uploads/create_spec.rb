@@ -9,9 +9,8 @@ RSpec.describe PastaAtlas::Actions::Uploads::Create, :db do
 
   let(:session) { {"rack.session" => {"user_id" => 1}} }
   let(:action_params) do
-    {metadata: {map_id: "ae8ec3ab", unique_id: "550f41a9", tick: "1000"}, total_image_count: 5}
+    {metadata: {map_id: "ae8ec3ab", unique_id: "550f41a9", tick: "1000"}, total_image_count: 5, name: "My Map"}
   end
-  let(:action_params_with_name) { action_params.merge(name: "My Map") }
 
   let(:upload) { double("Upload", ulid: "01UPLOAD") }
   let(:generation) { double("Generation", ulid: "01GEN") }
@@ -47,22 +46,24 @@ RSpec.describe PastaAtlas::Actions::Uploads::Create, :db do
         expect(body).to include("ulid" => "01UPLOAD", "map_ulid" => "01MAP", "generation_ulid" => "01GEN")
       end
 
-      it "passes name to the operation when provided" do
-        action.call(session.merge(action_params_with_name))
+      it "passes name to the operation" do
+        action.call(session.merge(action_params))
 
         expect(create_upload).to have_received(:call).with(hash_including(name: "My Map"))
       end
 
-      it "passes nil name to the operation when not provided" do
-        action.call(session.merge(action_params))
+      it "returns 400 when name is not provided" do
+        response = action.call(session.merge(action_params.except(:name)))
 
-        expect(create_upload).to have_received(:call).with(hash_including(name: nil))
+        expect(response.status).to eq(400)
+        expect(create_upload).not_to have_received(:call)
       end
 
-      it "passes nil name to the operation when name is empty" do
-        action.call(session.merge(action_params.merge(name: "")))
+      it "returns 400 when name is empty" do
+        response = action.call(session.merge(action_params.merge(name: "")))
 
-        expect(create_upload).to have_received(:call).with(hash_including(name: nil))
+        expect(response.status).to eq(400)
+        expect(create_upload).not_to have_received(:call)
       end
     end
 

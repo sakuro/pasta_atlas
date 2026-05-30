@@ -10,7 +10,7 @@ module PastaAtlas
           params do
             required(:metadata).filled(:hash)
             required(:total_image_count).filled(:integer)
-            optional(:name).maybe(:string)
+            required(:name).filled(:string)
           end
 
           rule(:metadata) do
@@ -36,7 +36,7 @@ module PastaAtlas
             user_id: current_user_or_guest_id(request),
             metadata: request.params[:metadata].to_h,
             total_image_count: request.params[:total_image_count],
-            name: request.params[:name].then {|n| n&.empty? ? nil : n }
+            name: request.params[:name]
           )
 
           case result
