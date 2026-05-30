@@ -83,8 +83,8 @@ module PastaAtlas
         maps.by_user_and_mapshot_id(user_id, mapshot_map_id).one
       end
 
-      def find_or_create_by_user_and_mapshot_id(user_id:, mapshot_map_id:, savename: "", name: nil)
-        conflict_opts = if name
+      def find_or_create_by_user_and_mapshot_id(user_id:, mapshot_map_id:, savename: "", name: nil, update_name_on_conflict: true)
+        conflict_opts = if name && update_name_on_conflict
                           {target: %i[user_id mapshot_map_id], update: {name:}}
                         else
                           {target: %i[user_id mapshot_map_id]}

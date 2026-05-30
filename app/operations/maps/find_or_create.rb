@@ -6,12 +6,13 @@ module PastaAtlas
       class FindOrCreate < PastaAtlas::Operation
         include Deps["repos.map_repo"]
 
-        def call(user_id:, mapshot_map_id:, savename: "", name: nil)
+        def call(user_id:, mapshot_map_id:, savename: "", name: nil, update_name_on_conflict: true)
           map_repo.find_or_create_by_user_and_mapshot_id(
             user_id:,
             mapshot_map_id:,
             savename:,
-            name:
+            name:,
+            update_name_on_conflict:
           )
         end
       end

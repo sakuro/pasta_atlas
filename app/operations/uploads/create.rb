@@ -30,7 +30,8 @@ module PastaAtlas
             user_id:,
             mapshot_map_id:,
             savename: metadata.fetch(:savename, "").to_s,
-            name:
+            name:,
+            update_name_on_conflict: !user.guest?
           )
 
           step within_transaction(

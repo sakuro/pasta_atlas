@@ -104,6 +104,7 @@ pagination-next = 次へ
 ## Upload modal
 upload-button = アップロード
 upload-modal-title = { -mapshot } をアップロード
+upload-modal-title-guest = { -mapshot } をアップロード（ゲストとして）
 upload-instructions-folder = <code data-l10n-name="filename">mapshot.json</code> を含むフォルダーを選択してください。
 upload-instructions-folder-path = { -mapshot } の出力フォルダー:
 upload-copy-path-windows =
@@ -114,7 +115,7 @@ upload-copy-path-linux =
     .title = パスをコピー — フォルダーダイアログで Ctrl+L を押して貼り付け
 upload-instructions-folder-subfolder = 続いてマップと世代のサブフォルダーを選択してください:
 upload-instructions-generations = 既存マップの異なる世代もアップロードできます。
-upload-instructions-guest = ゲストアカウントからのアップロードは約 1 週間後に削除されます。
+upload-instructions-guest = ゲストアカウントのアップロードは、アップロード後にマップ名を変更できません。手動では削除できず、約 1 週間後に自動的に削除されます。
 upload-select-folder = フォルダーを選択
 upload-cancel = キャンセル
 upload-map-title = マップタイトル

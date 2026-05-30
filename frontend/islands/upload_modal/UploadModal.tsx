@@ -92,6 +92,7 @@ const CopyButton = (props: { text: string; l10nId: string }) => {
 export const UploadModal = (props: { isGuest: boolean }) => {
   const [state, setState] = createSignal<State>({ type: "idle" });
   const [displayName, setDisplayName] = createSignal("");
+  const [isExistingMap, setIsExistingMap] = createSignal(false);
   const [showHowTo, setShowHowTo] = createSignal(false);
   let inputRef!: HTMLInputElement;
 
@@ -127,15 +128,18 @@ export const UploadModal = (props: { isGuest: boolean }) => {
 
     const defaultName = resolveDisplayName(mapshotJson);
     let initialName = defaultName;
+    let existingMap = false;
     try {
       const resp = await fetch(`/api/v1/maps/lookup?mapshot_map_id=${encodeURIComponent(mapshotJson.map_id)}`);
       if (resp.ok) {
+        existingMap = true;
         const data = await resp.json() as { name: string | null };
         if (data.name) initialName = data.name;
       }
     } catch {
       // Use JSON-derived name if lookup fails
     }
+    setIsExistingMap(existingMap);
 
     setDisplayName(initialName);
     setState({
@@ -306,12 +310,20 @@ export const UploadModal = (props: { isGuest: boolean }) => {
           <div class="modal-background" onClick={dismiss} />
           <div class="modal-card" style={{ width: "90vw", "max-width": "1000px" }}>
             <header class="modal-card-head">
-              <p class="modal-card-title" data-l10n-id="upload-modal-title" />
+              <p class="modal-card-title" data-l10n-id={props.isGuest ? "upload-modal-title-guest" : "upload-modal-title"} />
               <Show when={state().type !== "uploading" && state().type !== "preparing"}>
                 <button class="delete" aria-label="close" onClick={dismiss} />
               </Show>
             </header>
             <section class="modal-card-body">
+              <Show when={props.isGuest && state().type === "instructions"}>
+                <div class="notification is-warning is-light mb-4" style={{ display: "flex", gap: "0.5em", "align-items": "flex-start" }}>
+                  <span class="icon" style={{ "flex-shrink": 0 }}>
+                    <i class="fa-solid fa-triangle-exclamation" />
+                  </span>
+                  <span data-l10n-id="upload-instructions-guest" />
+                </div>
+              </Show>
               <Show when={state().type === "instructions"}>
                 <div class="content">
                   <p>
@@ -359,14 +371,6 @@ export const UploadModal = (props: { isGuest: boolean }) => {
                       <span data-l10n-id="upload-instructions-generations" />
                     </span>
                   </p>
-                  <Show when={props.isGuest}>
-                    <p>
-                      <span class="icon-text">
-                        <span class="icon"><i class="fa-solid fa-triangle-exclamation" /></span>
-                        <span data-l10n-id="upload-instructions-guest" />
-                      </span>
-                    </p>
-                  </Show>
                 </div>
               </Show>
               <Show when={confirmingState()} keyed>
@@ -377,11 +381,12 @@ export const UploadModal = (props: { isGuest: boolean }) => {
                         <th><span class="icon-text"><span class="icon"><i class="fa-solid fa-map" /></span><span data-l10n-id="upload-map-title" /></span></th>
                         <td>
                           <input
-                            ref={(el) => setTimeout(() => { el.focus(); el.select(); }, 0)}
+                            ref={(el) => { if (!props.isGuest || !isExistingMap()) setTimeout(() => { el.focus(); el.select(); }, 0); }}
                             class="input"
                             type="text"
                             value={displayName()}
                             placeholder={s.mapName}
+                            disabled={props.isGuest && isExistingMap()}
                             onInput={(e) => setDisplayName(e.currentTarget.value)}
                           />
                         </td>

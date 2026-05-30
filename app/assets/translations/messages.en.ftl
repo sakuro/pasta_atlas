@@ -104,6 +104,7 @@ pagination-next = Next
 ## Upload modal
 upload-button = Upload
 upload-modal-title = Upload { -mapshot }
+upload-modal-title-guest = Upload { -mapshot } (as Guest)
 upload-instructions-folder = Select the folder containing <code data-l10n-name="filename">mapshot.json</code>.
 upload-instructions-folder-path = { -mapshot } output folder:
 upload-copy-path-windows =
@@ -114,7 +115,7 @@ upload-copy-path-linux =
     .title = Copy path — paste in folder dialog (Ctrl+L)
 upload-instructions-folder-subfolder = Then select the subfolder for your map and generation:
 upload-instructions-generations = You can upload different generations of an existing map.
-upload-instructions-guest = Uploads from guest accounts are deleted after approximately one week.
+upload-instructions-guest = For guest account uploads, the map name cannot be changed after uploading. They are not manually deletable and are automatically deleted after approximately one week.
 upload-select-folder = Select Folder
 upload-cancel = Cancel
 upload-map-title = Map title
