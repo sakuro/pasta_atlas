@@ -24,7 +24,6 @@ module PastaAtlas
       def url(...) = routes.url(...)
 
       def locale_tag = locale.to_s
-      def locale_tags = request.env[Rack::ICU4X::Locale::ENV_KEY].map(&:to_s)
 
       def locale_name(locale_code)
         target = ICU4X::DisplayNames.new(ICU4X::Locale.parse(locale_code.to_s), type: :locale).of(locale_code.to_s)
