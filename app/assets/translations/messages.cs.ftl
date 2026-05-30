@@ -49,7 +49,7 @@ nav-log-in-steam = Přihlásit se přes { -steam }
 ## Registration
 registration-title = Vytvořit účet
 registration-username = Uživatelské jméno
-    .help = 1–39 znaků. Písmena, číslice, pomlčky a podtržítka. Musí začínat a končit písmenem nebo číslicí.
+registration-username-help = 1–39 znaků. Písmena, číslice, pomlčky a podtržítka. Musí začínat a končit písmenem nebo číslicí.
 registration-submit = Vytvořit účet
 
 ## Registration errors

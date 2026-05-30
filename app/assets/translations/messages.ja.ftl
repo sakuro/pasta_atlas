@@ -32,7 +32,7 @@ nav-log-in-steam = { -steam } でログイン
 ## Registration
 registration-title = アカウントを作成
 registration-username = ユーザー名
-    .help = 1〜39文字。英数字・ハイフン・アンダースコアが使用できます。先頭と末尾は英数字にしてください。
+registration-username-help = 1〜39文字。英数字・ハイフン・アンダースコアが使用できます。先頭と末尾は英数字にしてください。
 registration-submit = アカウントを作成する
 
 ## Registration errors

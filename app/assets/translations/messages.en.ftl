@@ -32,7 +32,7 @@ nav-log-in-steam = Log in with { -steam }
 ## Registration
 registration-title = Create your account
 registration-username = Username
-    .help = 1–39 characters. Letters, numbers, hyphens, and underscores. Must start and end with a letter or number.
+registration-username-help = 1–39 characters. Letters, numbers, hyphens, and underscores. Must start and end with a letter or number.
 registration-submit = Create account
 
 ## Registration errors

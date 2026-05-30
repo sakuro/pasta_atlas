@@ -1,58 +1,8 @@
-<section class="section">
-  <div class="container is-max-tablet">
-    <h1 class="title"><%= t("registration-title") %></h1>
-    <% if error %>
-      <div class="notification is-danger is-light"><%= error %></div>
-    <% end %>
-    <form action="<%= path(:auth_registrations) %>" method="post">
-      <input type="hidden" name="_csrf_token" value="<%= csrf_token %>">
-      <input type="hidden" id="timezone" name="timezone" value="UTC">
-      <script nonce="<%= content_security_policy_nonce %>">
-        document.getElementById("timezone").value =
-          Intl.DateTimeFormat().resolvedOptions().timeZone;
-      </script>
-      <div class="field">
-        <label class="label" for="name">
-          <span class="icon-text">
-            <span class="icon"><i class="fa-solid fa-id-badge"></i></span>
-            <span><%= t("registration-username") %></span>
-          </span>
-        </label>
-        <div class="control">
-          <input class="input" type="text" id="name" name="name"
-                 value="<%= suggested_name %>"
-                 pattern="[a-zA-Z0-9][a-zA-Z0-9_\-]{0,37}[a-zA-Z0-9]|[a-zA-Z0-9]"
-                 maxlength="39" required autofocus>
-        </div>
-        <p class="help"><%= t("registration-username.help") %></p>
-      </div>
-      <div class="field">
-        <p>
-          <a href="<%= path(:privacy_policy) %>" target="_blank" rel="noopener">
-            <%= t("nav-privacy-policy") %>
-            <span class="icon is-small"><i class="fa-solid fa-arrow-up-right-from-square"></i></span>
-          </a>
-          &middot;
-          <a href="<%= path(:terms_of_service) %>" target="_blank" rel="noopener">
-            <%= t("nav-terms-of-service") %>
-            <span class="icon is-small"><i class="fa-solid fa-arrow-up-right-from-square"></i></span>
-          </a>
-        </p>
-        <div class="control">
-          <label class="checkbox">
-            <input type="checkbox" name="terms" value="1" required>
-            <%= t("registration-terms-agree") %>
-          </label>
-        </div>
-      </div>
-      <div class="field">
-        <div class="control">
-          <button class="button is-primary" type="submit">
-            <span class="icon"><i class="fa-solid fa-user-plus"></i></span>
-            <span><%= t("registration-submit") %></span>
-          </button>
-        </div>
-      </div>
-    </form>
-  </div>
-</section>
+<div id="registration-form"
+     data-action-path="<%= path(:auth_registrations) %>"
+     data-csrf-token="<%= csrf_token %>"
+     data-suggested-name="<%= suggested_name %>"
+     data-privacy-policy-path="<%= path(:privacy_policy) %>"
+     data-terms-of-service-path="<%= path(:terms_of_service) %>"
+     <% if error %>data-error="<%= error %>"<% end %>></div>
+<script src="<%= island_src("registration_form") %>" type="module"></script>

@@ -26,6 +26,7 @@ export default defineConfig({
         navbar_end: "frontend/islands/navbar_end/index.tsx",
         user_header: "frontend/islands/user_header/index.tsx",
         user_danger_tab: "frontend/islands/user_danger_tab/index.tsx",
+        registration_form: "frontend/islands/registration_form/index.tsx",
       },
       output: {
         entryFileNames: "[name]-[hash].js",

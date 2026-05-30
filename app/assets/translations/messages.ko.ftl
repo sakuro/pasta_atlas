@@ -32,7 +32,7 @@ nav-log-in-steam = { -steam }으로 로그인
 ## Registration
 registration-title = 계정 만들기
 registration-username = 사용자 이름
-    .help = 1~39자. 영문자, 숫자, 하이픈, 밑줄을 사용할 수 있습니다. 첫 글자와 마지막 글자는 영문자 또는 숫자여야 합니다.
+registration-username-help = 1~39자. 영문자, 숫자, 하이픈, 밑줄을 사용할 수 있습니다. 첫 글자와 마지막 글자는 영문자 또는 숫자여야 합니다.
 registration-submit = 계정 만들기
 
 ## Registration errors

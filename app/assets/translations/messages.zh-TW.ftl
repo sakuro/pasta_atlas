@@ -32,7 +32,7 @@ nav-log-in-steam = 以 { -steam } 登入
 ## Registration
 registration-title = 建立帳號
 registration-username = 使用者名稱
-    .help = 1–39 個字元，可使用英文字母、數字、連字號和底線，開頭與結尾必須為英文字母或數字。
+registration-username-help = 1–39 個字元，可使用英文字母、數字、連字號和底線，開頭與結尾必須為英文字母或數字。
 registration-submit = 建立帳號
 
 ## Registration errors
