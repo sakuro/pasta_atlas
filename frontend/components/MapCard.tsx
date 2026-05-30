@@ -1,4 +1,5 @@
 import { Show } from "solid-js";
+import { Avatar } from "./Avatar";
 import { MapInfoButton } from "../islands/map_info_button/MapInfoButton";
 import { ShareButtons } from "../islands/share_buttons/ShareButtons";
 
@@ -40,11 +41,6 @@ const formatRelative = (iso: string): string => {
   return fmt.format(-Math.round(diff / (365 * 86400)), "year");
 };
 
-const Avatar = (props: { url: string | null; size: number }) => (
-  props.url
-    ? <img src={props.url} width={props.size} height={props.size} style="border-radius:50%" />
-    : <i class="fa-solid fa-circle-user" style={`font-size:${props.size}px`} />
-);
 
 export const MapCard = (props: { map: MapData } & DateDisplayProps) => {
   const map = props.map;

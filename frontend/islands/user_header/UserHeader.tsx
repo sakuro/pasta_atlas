@@ -1,4 +1,5 @@
-import { createSignal, For, onMount, Show } from "solid-js";
+import { createSignal, For, onMount } from "solid-js";
+import { Avatar } from "../../components/Avatar";
 import "../../l10n";
 
 type Props = {
@@ -56,9 +57,7 @@ export const UserHeader = (props: Props) => {
       <div class="container">
         <div class="level">
           <div class="level-left">
-            <Show when={props.avatarUrl} fallback={<i class="fa-solid fa-circle-user" style="font-size:64px" />}>
-              <img src={props.avatarUrl} width={64} height={64} style="border-radius:50%" />
-            </Show>
+            <Avatar url={props.avatarUrl || null} size={64} />
             <h1 class="title ml-3">{props.displayName || props.userName}</h1>
           </div>
         </div>

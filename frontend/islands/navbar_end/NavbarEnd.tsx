@@ -1,4 +1,5 @@
 import { Show } from "solid-js";
+import { Avatar } from "../../components/Avatar";
 import "../../l10n";
 
 type Props = {
@@ -16,9 +17,7 @@ type UserMenuProps = Omit<Props, "omniauthToken">;
 const UserMenu = (props: UserMenuProps) => (
   <div class="navbar-item has-dropdown is-hoverable">
     <a class="navbar-link">
-      <Show when={props.avatarUrl} fallback={<i class="fa-solid fa-circle-user" style="font-size:24px" />}>
-        <img src={props.avatarUrl} width={24} height={24} style="border-radius:50%" />
-      </Show>
+      <Avatar url={props.avatarUrl || null} size={24} />
       <span class="ml-2">{props.displayName}</span>
     </a>
     <div class="navbar-dropdown is-right">

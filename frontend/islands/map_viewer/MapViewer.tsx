@@ -3,6 +3,7 @@ import { createResource, createSignal, createMemo, Show, Suspense, For, onMount,
 const csrfToken = (): string =>
   document.querySelector<HTMLMetaElement>('meta[name="csrf-token"]')?.content ?? "";
 import L from "leaflet";
+import { Avatar } from "../../components/Avatar";
 import { MapInfoModal, formatTicks, type Mapshot as MapInfoMapshot } from "../../components/MapInfoModal";
 import { ShareButtons } from "../share_buttons/ShareButtons";
 import { l10n } from "../../l10n";
@@ -260,17 +261,13 @@ export const MapViewer = (props: MapViewerProps) => {
           when={props.authorName !== "guest"}
           fallback={
             <span class="is-flex is-align-items-center" style={{ "flex-shrink": 0, gap: "0.4rem" }}>
-              <Show when={props.authorAvatarUrl} fallback={<i class="fa-solid fa-circle-user" style={{ "font-size": "24px" }} />}>
-                {(url) => <img src={url()} width="24" height="24" style={{ "border-radius": "50%" }} />}
-              </Show>
+              <Avatar url={props.authorAvatarUrl} size={24} />
               <span class="is-size-7">{props.authorDisplayName}</span>
             </span>
           }
         >
           <a href={`/@${props.authorName}`} class="is-flex is-align-items-center" style={{ "flex-shrink": 0, gap: "0.4rem" }}>
-            <Show when={props.authorAvatarUrl} fallback={<i class="fa-solid fa-circle-user" style={{ "font-size": "24px" }} />}>
-              {(url) => <img src={url()} width="24" height="24" style={{ "border-radius": "50%" }} />}
-            </Show>
+            <Avatar url={props.authorAvatarUrl} size={24} />
             <span class="is-size-7">{props.authorDisplayName}</span>
           </a>
         </Show>
