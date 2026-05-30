@@ -6,7 +6,7 @@
 pasta-atlas/
   environments/
     production/   # production infrastructure root
-    local/        # mapshots only — web app runs locally
+    local/        # S3 and SQS only — web app runs locally
 ```
 
 ### environments/production
@@ -15,32 +15,35 @@ pasta-atlas/
 |---|---|
 | `main.tf` | Terraform backend and providers |
 | `variables.tf` | Production configuration inputs |
-| `mapshots-*.tf` | S3, CloudFront, ACM, and DNS for uploaded map assets |
-| `app-*.tf` | ECS, ALB, CloudFront, RDS, IAM, scheduler, DNS, and SSM |
-| `outputs.tf` | `ecr_repository_url`, `rds_endpoint`, `session_secret_ssm_path` |
+| `s3.tf` | S3 bucket for map assets |
+| `cloudfront.tf` | CloudFront distributions |
+| `acm.tf` | ACM certificates |
+| `dns.tf` | DNS records |
+| `alb.tf` | Application Load Balancer |
+| `ecs.tf` | ECS cluster, task definitions, and services |
+| `rds.tf` | RDS PostgreSQL instance |
+| `iam.tf` | IAM roles and policies |
+| `ssm.tf` | SSM parameters (secrets) |
+| `sqs.tf` | SQS queue for S3 cleanup |
+| `scheduler.tf` | EventBridge scheduler |
+| `outputs.tf` | `ecr_repository_url`, `rds_endpoint`, and other outputs |
 
 ## Before First Use
 
-### 1. Create `terraform.tfvars` (production only)
+### 1. Initialize and apply
 
-Local has no required variables. Production requires the database password:
-
-```
-db_password = "your-secure-password"
-```
-
-### 2. Initialize and apply
+No `terraform.tfvars` is required; all variables have defaults.
 
 ```bash
 cd environments/production   # or local
 terraform init
-scripts/tf plan
-scripts/tf apply
+terraform plan
+terraform apply
 ```
 
-### 3. Set the session secret (production only)
+### 2. Set secrets in SSM (production only)
 
-After the first apply, set the actual value in SSM:
+After the first apply, set the actual values:
 
 ```bash
 aws ssm put-parameter \
@@ -48,7 +51,34 @@ aws ssm put-parameter \
   --value "$(openssl rand -hex 64)" \
   --type SecureString \
   --overwrite
+
+aws ssm put-parameter \
+  --name /pasta-atlas/production/github_client_secret \
+  --value "YOUR_GITHUB_CLIENT_SECRET" \
+  --type SecureString \
+  --overwrite
+
+aws ssm put-parameter \
+  --name /pasta-atlas/production/discord_client_secret \
+  --value "YOUR_DISCORD_CLIENT_SECRET" \
+  --type SecureString \
+  --overwrite
+
+aws ssm put-parameter \
+  --name /pasta-atlas/production/steam_web_api_key \
+  --value "YOUR_STEAM_WEB_API_KEY" \
+  --type SecureString \
+  --overwrite
+
+# Retrieve the RDS master password from AWS Secrets Manager first
+aws ssm put-parameter \
+  --name /pasta-atlas/production/database_url \
+  --value "postgres://pasta_atlas:<pass>@<rds_endpoint>/pasta_atlas" \
+  --type SecureString \
+  --overwrite
 ```
+
+The RDS master password is managed automatically by AWS Secrets Manager (`manage_master_user_password = true`).
 
 ## Deploying a New Application Version
 
@@ -68,19 +98,26 @@ aws ecs update-service \
 
 ## Application Environment Variables
 
-### Production (from `terraform output`)
+ECS task definitions wire env vars automatically. The table below lists the source for each variable.
 
-| Output | App env var |
+### Production
+
+| App env var | Source |
 |---|---|
-| `s3_bucket_name` | `S3_BUCKET` |
-| `cloudfront_domain_name` | `CLOUDFRONT_BASE_URL` |
-| `rds_endpoint` | `DATABASE_URL` (format: `postgres://pasta_atlas:<pass>@<endpoint>/pasta_atlas`) |
-| `session_secret_ssm_path` | — fetch at startup via SSM |
+| `S3_BUCKET` | `s3_bucket_name` output |
+| `CLOUDFRONT_BASE_URL` | `cloudfront_domain_name` output |
+| `SQS_S3_CLEANUP_QUEUE_URL` | `sqs_s3_cleanup_queue_url` output |
+| `SESSION_SECRET` | SSM: `/pasta-atlas/production/session_secret` |
+| `GITHUB_CLIENT_SECRET` | SSM: `/pasta-atlas/production/github_client_secret` |
+| `DISCORD_CLIENT_SECRET` | SSM: `/pasta-atlas/production/discord_client_secret` |
+| `STEAM_WEB_API_KEY` | SSM: `/pasta-atlas/production/steam_web_api_key` |
+| `DATABASE_URL` | SSM: `/pasta-atlas/production/database_url` |
 
 ### Local (from `terraform output`)
 
 | Output | App env var |
 |---|---|
 | `s3_bucket_name` | `S3_BUCKET` |
+| `sqs_s3_cleanup_queue_url` | `SQS_S3_CLEANUP_QUEUE_URL` |
 
 Database and session secret are managed locally in the local environment.
