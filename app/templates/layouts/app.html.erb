@@ -126,32 +126,10 @@
       </div>
     <% end %>
     <%= yield %>
-    <footer class="footer">
-      <div class="content has-text-centered">
-        <p>
-          &copy; 2026 <%= image_tag "layer8.png", alt: "", class: "footer-logo" %> <span class="footer-brand">layer<span class="footer-brand-accent">8</span>.works</span>
-          |
-          <a href="<%= path(:about) %>"><%= t("nav-about") %></a>
-          |
-          <a href="<%= path(:privacy_policy) %>"><%= t("nav-privacy-policy") %></a>
-          |
-          <a href="<%= path(:terms_of_service) %>"><%= t("nav-terms-of-service") %></a>
-          |
-          <span class="icon-text">
-            <span class="icon"><i class="fa-brands fa-github"></i></span>
-            <span>
-              <a href="https://github.com/sakuro/pasta_atlas" target="_blank" rel="noopener">Code</a>
-              |
-              <a href="https://github.com/sakuro/pasta_atlas/issues" target="_blank" rel="noopener">Issues</a>
-              |
-              <a href="https://github.com/sakuro/pasta_atlas/discussions" target="_blank" rel="noopener">Discussions</a>
-            </span>
-          </span>
-        </p>
-      </div>
-    </footer>
+    <%= render "shared/footer" %>
     <script src="<%= island_src("upload_modal") %>" type="module"></script>
     <script src="<%= island_src("avatar_upload") %>" type="module"></script>
+    <script src="<%= island_src("footer") %>" type="module"></script>
     <%= javascript_tag "app" %>
   </body>
 </html>
