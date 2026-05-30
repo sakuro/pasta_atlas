@@ -36,7 +36,7 @@ module PastaAtlas
                     author_avatar_url: m.user_info.avatar_url,
                     thumbnail_url: m.thumbnail_url,
                     metadata_url: m.metadata_url,
-                    updated_at: m.updated_at
+                    updated_at: m.updated_at&.iso8601
                   }
                 }
               })

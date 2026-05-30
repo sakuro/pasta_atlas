@@ -17,6 +17,10 @@ export default defineConfig({
         avatar_upload: "frontend/islands/avatar_upload/index.tsx",
         map_info_button: "frontend/islands/map_info_button/index.tsx",
         share_buttons: "frontend/islands/share_buttons/index.tsx",
+        user_maps_tab: "frontend/islands/user_maps_tab/index.tsx",
+        user_profile_tab: "frontend/islands/user_profile_tab/index.tsx",
+        user_preferences_tab: "frontend/islands/user_preferences_tab/index.tsx",
+        user_credentials_tab: "frontend/islands/user_credentials_tab/index.tsx",
       },
       output: {
         entryFileNames: "[name]-[hash].js",

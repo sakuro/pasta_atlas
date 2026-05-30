@@ -83,8 +83,10 @@ edit-save-profile = Uložit profil
 edit-timezone-label = Časové pásmo
 edit-locale = Jazyk
     .use-browser = (Podle prohlížeče)
+edit-locale-use-browser = (Podle prohlížeče)
 edit-time-display = Zobrazení času
     .relative = Zobrazovat relativní čas (např. „před 3 dny")
+edit-time-display-relative = Zobrazovat relativní čas (např. „před 3 dny")
 edit-save-preferences = Uložit nastavení
 edit-cancel = Zrušit
 

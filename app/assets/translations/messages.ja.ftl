@@ -66,8 +66,10 @@ edit-save-profile = プロフィールを保存
 edit-timezone-label = タイムゾーン
 edit-locale = 言語
     .use-browser = (ブラウザに従う)
+edit-locale-use-browser = (ブラウザに従う)
 edit-time-display = 時刻表示
     .relative = 相対時刻で表示する（例：「3日前」）
+edit-time-display-relative = 相対時刻で表示する（例：「3日前」）
 edit-save-preferences = 設定を保存
 edit-cancel = キャンセル
 
