@@ -51,7 +51,6 @@ module PastaAtlas
       def delete_expired
         generations.dataset.where(Sequel.lit("expires_at IS NOT NULL AND expires_at <= NOW()")).delete
       end
-
     end
   end
 end
