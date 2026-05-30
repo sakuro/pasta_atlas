@@ -27,6 +27,15 @@ RSpec.describe PastaAtlas::Operations::Uploads::UpdateStatus, :db do
       end
     end
 
+    context "when the status is invalid" do
+      it "returns a bad_request failure" do
+        result = operation.call(upload_ulid: upload.ulid, status: "pending")
+
+        expect(result).to be_failure
+        expect(result.failure).to eq(:bad_request)
+      end
+    end
+
     context "when the upload does not exist" do
       it "returns a not_found failure" do
         result = operation.call(upload_ulid: "nonexistent", status: "complete")
