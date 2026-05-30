@@ -135,6 +135,7 @@ upload-dismiss = 关闭
 upload-error-not-found = 在选择的文件夹中未找到 mapshot.json。
 upload-error-parse = 无法解析 mapshot.json。
 upload-error-conflict = 此世代已上传过。
+upload-error-expired = 此地图已过期，无法再上传。
 upload-error-http = 上传失败（HTTP { $status }）。
 upload-error-network = 网络错误，请检查连接后重试。
 upload-error-urls-http = 无法获取上传地址（HTTP { $status }）。

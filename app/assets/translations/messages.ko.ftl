@@ -135,6 +135,7 @@ upload-dismiss = 닫기
 upload-error-not-found = 선택한 폴더에서 mapshot.json을 찾을 수 없습니다.
 upload-error-parse = mapshot.json을 파싱하는 데 실패했습니다.
 upload-error-conflict = 이 세대는 이미 업로드되었습니다.
+upload-error-expired = 이 맵은 만료되어 더 이상 업로드할 수 없습니다.
 upload-error-http = 업로드에 실패했습니다(HTTP { $status }).
 upload-error-network = 네트워크 오류가 발생했습니다. 연결을 확인하고 다시 시도해 주세요.
 upload-error-urls-http = 업로드 URL을 가져오는 데 실패했습니다(HTTP { $status }).

@@ -172,6 +172,10 @@ export const UploadModal = (props: { isGuest: boolean }) => {
         setState({ type: "error", error: { msgId: "upload-error-conflict" } });
         return;
       }
+      if (resp.status === 410) {
+        setState({ type: "error", error: { msgId: "upload-error-expired" } });
+        return;
+      }
       if (!resp.ok) {
         setState({ type: "error", error: { msgId: "upload-error-http", msgArgs: { status: resp.status } } });
         return;

@@ -94,6 +94,21 @@ RSpec.describe PastaAtlas::Operations::Uploads::Create, :db do
       end
     end
 
+    context "when all generations for the map are expired" do
+      let(:map) { Factory[:map, user:, mapshot_map_id: "ae8ec3ab"] }
+
+      before do
+        Factory[:generation, :expired, map:, mapshot_unique_id: "prev_gen"]
+      end
+
+      it "returns a gone failure" do
+        result = operation.call(user_id: user.id, metadata:, total_image_count: 5)
+
+        expect(result).to be_failure
+        expect(result.failure).to eq(:gone)
+      end
+    end
+
     context "when S3 write fails" do
       before do
         allow(s3_client).to receive(:put_object)

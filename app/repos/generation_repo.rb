@@ -48,6 +48,11 @@ module PastaAtlas
         generations.changeset(:create, attrs).commit
       end
 
+      def all_expired_for_map?(map_id:)
+        dataset = generations.dataset.where(map_id:)
+        dataset.any? && dataset.where(NOT_EXPIRED).none?
+      end
+
       def delete_expired
         generations.dataset.where(Sequel.lit("expires_at IS NOT NULL AND expires_at <= NOW()")).delete
       end

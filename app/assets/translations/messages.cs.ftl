@@ -152,6 +152,7 @@ upload-dismiss = Zavřít
 upload-error-not-found = Soubor mapshot.json nebyl ve vybrané složce nalezen.
 upload-error-parse = Nepodařilo se načíst mapshot.json.
 upload-error-conflict = Tato generace již byla nahrána.
+upload-error-expired = Tato mapa vypršela a nelze ji již nahrávat.
 upload-error-http = Nahrávání selhalo (HTTP { $status }).
 upload-error-network = Chyba sítě. Zkontrolujte prosím připojení a zkuste to znovu.
 upload-error-urls-http = Nepodařilo se získat URL pro nahrávání (HTTP { $status }).

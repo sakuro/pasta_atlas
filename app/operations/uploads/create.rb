@@ -48,6 +48,11 @@ module PastaAtlas
         private def within_transaction(map:, user:, mapshot_map_id:, mapshot_unique_id:, tick:, metadata:, total_image_count:)
           result = nil
           generation_repo.transaction do
+            if generation_repo.all_expired_for_map?(map_id: map.id)
+              result = Failure(:gone)
+              next
+            end
+
             generation = generation_repo.find_with_upload(
               map_id: map.id, mapshot_unique_id:
             )
