@@ -380,15 +380,20 @@ export const UploadModal = (props: { isGuest: boolean }) => {
                       <tr>
                         <th><span class="icon-text"><span class="icon"><i class="fa-solid fa-map" /></span><span data-l10n-id="upload-map-title" /></span></th>
                         <td>
-                          <input
-                            ref={(el) => { if (!props.isGuest || !isExistingMap()) setTimeout(() => { el.focus(); el.select(); }, 0); }}
-                            class="input"
-                            type="text"
-                            value={displayName()}
-                            placeholder={s.mapName}
-                            disabled={props.isGuest && isExistingMap()}
-                            onInput={(e) => setDisplayName(e.currentTarget.value)}
-                          />
+                          <span
+                            data-l10n-id={props.isGuest && isExistingMap() ? "upload-map-name-locked" : undefined}
+                            style={{ display: "block" }}
+                          >
+                            <input
+                              ref={(el) => { if (!props.isGuest || !isExistingMap()) setTimeout(() => { el.focus(); el.select(); }, 0); }}
+                              class="input"
+                              type="text"
+                              value={displayName()}
+                              placeholder={s.mapName}
+                              disabled={props.isGuest && isExistingMap()}
+                              onInput={(e) => setDisplayName(e.currentTarget.value)}
+                            />
+                          </span>
                         </td>
                       </tr>
                       <tr>
