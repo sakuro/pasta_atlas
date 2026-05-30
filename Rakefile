@@ -6,8 +6,8 @@ require "hanami/rake_tasks"
 Rake.add_rakelib "lib/tasks"
 
 require "rake/clean"
-CLEAN.include("coverage", ".rspec_status", ".yardoc")
-CLOBBER.include("doc/api")
+CLEAN.include("coverage", ".rspec_status", ".yardoc", "log/*.log*", "spec/examples.txt")
+CLOBBER.include("doc/api", "public/assets", "public/assets.json")
 
 begin
   require "rubocop/rake_task"
