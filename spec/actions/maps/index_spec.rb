@@ -15,16 +15,11 @@ RSpec.describe PastaAtlas::Actions::Maps::Index, :action_env do
   end
 
   context "when requesting HTML" do
-    it "returns 200" do
+    it "returns 200 without calling the operation" do
       response = action.call(locale_env)
 
       expect(response.status).to eq(200)
-    end
-
-    it "calls the operation with the requested page" do
-      action.call(locale_env.merge(page: "2"))
-
-      expect(list_maps).to have_received(:call).with(page: 2)
+      expect(list_maps).not_to have_received(:call)
     end
   end
 
