@@ -38,7 +38,9 @@ jobs:
           bundler-cache: true
 
       - name: Prepare test database
-        run: bundle exec hanami db prepare
+        run: |
+          bundle exec hanami db structure load
+          bundle exec hanami db seed
         env:
           HANAMI_ENV: test
 
