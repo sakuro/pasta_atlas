@@ -21,7 +21,7 @@ RSpec.describe PastaAtlas::Actions::Uploads::Update, :db do
       response = action.call({"rack.session" => {}}.merge(action_params))
 
       expect(response.status).to eq(200)
-      expect(update_status).to have_received(:call).with(upload_ulid: "01UPLOAD", status: "complete")
+      expect(update_status).to have_received(:call).with(upload_ulid: "01UPLOAD", status: "complete", user_id: 99)
     end
   end
 
@@ -58,6 +58,16 @@ RSpec.describe PastaAtlas::Actions::Uploads::Update, :db do
         response = action.call(session.merge(action_params))
 
         expect(response.status).to eq(400)
+      end
+    end
+
+    context "when the upload belongs to another user" do
+      before { allow(update_status).to receive(:call).and_return(Failure(:forbidden)) }
+
+      it "returns 403" do
+        response = action.call(session.merge(action_params))
+
+        expect(response.status).to eq(403)
       end
     end
   end

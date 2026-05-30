@@ -10,7 +10,8 @@ module PastaAtlas
           def handle(request, response)
             result = issue_presigned_urls.call(
               upload_ulid: request.params[:ulid],
-              filenames: request.params[:filenames]
+              filenames: request.params[:filenames],
+              user_id: current_user_or_guest_id(request)
             )
 
             case result

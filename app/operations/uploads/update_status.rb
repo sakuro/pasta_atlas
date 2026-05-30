@@ -8,18 +8,27 @@ module PastaAtlas
         private_constant :ALLOWED_STATUSES
 
         include Deps[
+          "repos.generation_repo",
+          "repos.map_repo",
           "repos.upload_event_repo",
           "repos.upload_repo"
         ]
 
-        def call(upload_ulid:, status:)
+        def call(upload_ulid:, status:, user_id:)
           step validate_status(status)
           upload = step find_upload(upload_ulid)
+          step validate_ownership(upload, user_id)
           step append_event(upload, status)
           step find_upload(upload_ulid)
         end
 
         private def validate_status(status) = ALLOWED_STATUSES.include?(status) ? Success() : Failure(:bad_request)
+
+        private def validate_ownership(upload, user_id)
+          generation = generation_repo.find_by_id(upload.generation_id)
+          map = map_repo.find_by_id(generation.map_id)
+          map.user_id == user_id ? Success() : Failure(:forbidden)
+        end
 
         private def find_upload(ulid)
           upload = upload_repo.find_by_ulid(ulid)

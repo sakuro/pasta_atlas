@@ -21,7 +21,7 @@ RSpec.describe PastaAtlas::Actions::Uploads::PresignedUrls::Create, :db do
       response = action.call({"rack.session" => {}}.merge(action_params))
 
       expect(response.status).to eq(200)
-      expect(issue_presigned_urls).to have_received(:call).with(upload_ulid: "01UPLOAD", filenames:)
+      expect(issue_presigned_urls).to have_received(:call).with(upload_ulid: "01UPLOAD", filenames:, user_id: 99)
     end
   end
 
@@ -57,6 +57,16 @@ RSpec.describe PastaAtlas::Actions::Uploads::PresignedUrls::Create, :db do
         response = action.call(session.merge(action_params))
 
         expect(response.status).to eq(422)
+      end
+    end
+
+    context "when the upload belongs to another user" do
+      before { allow(issue_presigned_urls).to receive(:call).and_return(Failure(:forbidden)) }
+
+      it "returns 403" do
+        response = action.call(session.merge(action_params))
+
+        expect(response.status).to eq(403)
       end
     end
   end

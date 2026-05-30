@@ -9,7 +9,8 @@ module PastaAtlas
         def handle(request, response)
           result = update_status.call(
             upload_ulid: request.params[:ulid],
-            status: request.params[:status]
+            status: request.params[:status],
+            user_id: current_user_or_guest_id(request)
           )
 
           case result

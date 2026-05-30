@@ -24,7 +24,7 @@ RSpec.describe PastaAtlas::Operations::Uploads::IssuePresignedUrls, :db do
 
     context "when no files exist in S3" do
       it "returns presigned URLs for all requested files" do
-        result = operation.call(upload_ulid: upload.ulid, filenames:)
+        result = operation.call(upload_ulid: upload.ulid, filenames:, user_id: user.id)
 
         expect(result).to be_success
         urls = result.value!
@@ -41,7 +41,7 @@ RSpec.describe PastaAtlas::Operations::Uploads::IssuePresignedUrls, :db do
       end
 
       it "excludes already-uploaded files from presigned URLs" do
-        result = operation.call(upload_ulid: upload.ulid, filenames:)
+        result = operation.call(upload_ulid: upload.ulid, filenames:, user_id: user.id)
 
         expect(result).to be_success
         expect(result.value!.keys).to contain_exactly("s1zoom_4/tile_0_1.jpg")
@@ -50,34 +50,45 @@ RSpec.describe PastaAtlas::Operations::Uploads::IssuePresignedUrls, :db do
 
     context "when the upload does not exist" do
       it "returns a not_found failure" do
-        result = operation.call(upload_ulid: "nonexistent", filenames:)
+        result = operation.call(upload_ulid: "nonexistent", filenames:, user_id: user.id)
 
         expect(result).to be_failure
         expect(result.failure).to eq(:not_found)
       end
     end
 
+    context "when the upload belongs to another user" do
+      let(:other_user) { Factory[:user, name: "otheruser"] }
+
+      it "returns a forbidden failure" do
+        result = operation.call(upload_ulid: upload.ulid, filenames:, user_id: other_user.id)
+
+        expect(result).to be_failure
+        expect(result.failure).to eq(:forbidden)
+      end
+    end
+
     context "when filenames contain invalid entries" do
       it "returns an unprocessable_entity failure for a path traversal attempt" do
-        result = operation.call(upload_ulid: upload.ulid, filenames: ["../../other/file.jpg"])
+        result = operation.call(upload_ulid: upload.ulid, filenames: ["../../other/file.jpg"], user_id: user.id)
         expect(result).to be_failure
         expect(result.failure).to eq(:unprocessable_entity)
       end
 
       it "returns an unprocessable_entity failure for a filename without the zoom directory" do
-        result = operation.call(upload_ulid: upload.ulid, filenames: ["tile_0_0.jpg"])
+        result = operation.call(upload_ulid: upload.ulid, filenames: ["tile_0_0.jpg"], user_id: user.id)
         expect(result).to be_failure
         expect(result.failure).to eq(:unprocessable_entity)
       end
 
       it "returns an unprocessable_entity failure for mapshot.json" do
-        result = operation.call(upload_ulid: upload.ulid, filenames: ["mapshot.json"])
+        result = operation.call(upload_ulid: upload.ulid, filenames: ["mapshot.json"], user_id: user.id)
         expect(result).to be_failure
         expect(result.failure).to eq(:unprocessable_entity)
       end
 
       it "returns an unprocessable_entity failure when filenames is not an array" do
-        result = operation.call(upload_ulid: upload.ulid, filenames: "s1zoom_4/tile_0_0.jpg")
+        result = operation.call(upload_ulid: upload.ulid, filenames: "s1zoom_4/tile_0_0.jpg", user_id: user.id)
         expect(result).to be_failure
         expect(result.failure).to eq(:unprocessable_entity)
       end
@@ -89,7 +100,7 @@ RSpec.describe PastaAtlas::Operations::Uploads::IssuePresignedUrls, :db do
       before { upload_event_repo.create(upload_id: upload.id, event_type: "complete", occurred_at: Time.now + 1) }
 
       it "returns an unprocessable failure" do
-        result = operation.call(upload_ulid: upload.ulid, filenames:)
+        result = operation.call(upload_ulid: upload.ulid, filenames:, user_id: user.id)
 
         expect(result).to be_failure
         expect(result.failure).to eq(:unprocessable_entity)

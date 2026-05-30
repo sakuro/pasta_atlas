@@ -20,13 +20,14 @@ module PastaAtlas
         TILE_FILENAME_PATTERN = %r{\As\d+zoom_\d+/tile_-?\d+_-?\d+\.jpg\z}
         private_constant :TILE_FILENAME_PATTERN
 
-        def call(upload_ulid:, filenames:)
+        def call(upload_ulid:, filenames:, user_id:)
           upload = step find_upload(upload_ulid)
           step validate_pending(upload)
           step validate_filenames(filenames)
 
           generation = generation_repo.find_by_id(upload.generation_id)
           map = map_repo.find_by_id(generation.map_id)
+          step validate_ownership(map, user_id)
           user = user_repo.find_by_id(map.user_id)
 
           prefix = "#{user.name}/#{map.mapshot_map_id}/#{generation.mapshot_unique_id}/"
@@ -34,6 +35,8 @@ module PastaAtlas
 
           presigned_urls_for(filenames:, prefix:, existing_keys:)
         end
+
+        private def validate_ownership(map, user_id) = map.user_id == user_id ? Success() : Failure(:forbidden)
 
         private def validate_filenames(filenames)
           return Failure(:unprocessable_entity) unless filenames.is_a?(Array)
