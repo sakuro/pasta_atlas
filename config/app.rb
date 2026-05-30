@@ -18,7 +18,8 @@ module PastaAtlas
     config.actions.sessions = :cookie, {
       key: "pasta_atlas.session",
       secret: settings.session_secret,
-      expire_after: 60 * 60 * 24 * 365
+      expire_after: 60 * 60 * 24 * 365,
+      secure: Hanami.env?(:production)
     }
 
     config.middleware.use Rack::ICU4X::Locale,
