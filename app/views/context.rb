@@ -17,11 +17,11 @@ module PastaAtlas
 
       attr_reader :i18n
 
-      def flash_notice = request.flash[:notice]
-      def flash_error = request.flash[:error]
-
       def path(...) = routes.path(...)
       def url(...) = routes.url(...)
+
+      def flash_notice = request.flash[:notice]
+      def flash_error = request.flash[:error]
 
       def locale_tag = locale.to_s
 
@@ -29,6 +29,13 @@ module PastaAtlas
         target = ICU4X::DisplayNames.new(ICU4X::Locale.parse(locale_code.to_s), type: :locale).of(locale_code.to_s)
         current = ICU4X::DisplayNames.new(locale, type: :locale).of(locale_code.to_s)
         target == current ? target : "#{target} (#{current})"
+      end
+
+      def t(key, **args)
+        return key.to_s unless i18n
+
+        id, attr = key.to_s.split(".", 2)
+        attr ? i18n.format_attribute(id, attr, **args) : i18n.format(id, **args)
       end
 
       def localize_datetime(time)
@@ -54,13 +61,6 @@ module PastaAtlas
           end
         divisor = {second: 1, minute: 60, hour: 3600, day: 86_400, week: 7 * 86_400, month: 30 * 86_400, year: 365 * 86_400}[unit]
         formatter.format(-(diff / divisor), unit)
-      end
-
-      def t(key, **args)
-        return key.to_s unless i18n
-
-        id, attr = key.to_s.split(".", 2)
-        attr ? i18n.format_attribute(id, attr, **args) : i18n.format(id, **args)
       end
 
       def current_user_name
