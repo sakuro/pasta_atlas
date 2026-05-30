@@ -42,7 +42,7 @@ const Pagination = (props: {
   );
 };
 
-export const MapsIndex = () => {
+export const MapsIndex = (props: { heroSrc: string }) => {
   const [page, setPage] = createSignal(1);
   const [data] = createResource(page, fetchMaps);
 
@@ -53,35 +53,44 @@ export const MapsIndex = () => {
 
   return (
     <>
-      <Show when={data.loading}>
-        <div class="has-text-centered py-5">
-          <span class="icon"><i class="fa-solid fa-spinner fa-spin" /></span>
+      <section class="hero">
+        <div class="hero-body p-0">
+          <img src={props.heroSrc} data-l10n-id="hero-image" style="width:100%;height:360px;object-fit:cover;object-position:bottom;display:block" />
         </div>
-      </Show>
-      <Show when={data.error}>
-        <div class="notification is-danger is-light" />
-      </Show>
-      <Show when={data()} keyed>
-        {(response) => (
-          <>
-            <div class="columns is-multiline">
-              <For each={response.maps}>
-                {(map) => (
-                  <div class="column is-half-tablet is-one-quarter-desktop">
-                    <MapCard map={map} />
-                  </div>
-                )}
-              </For>
+      </section>
+      <section class="section">
+        <div class="container">
+          <Show when={data.loading}>
+            <div class="has-text-centered py-5">
+              <span class="icon"><i class="fa-solid fa-spinner fa-spin" /></span>
             </div>
-            <Pagination
-              page={response.page}
-              perPage={response.per_page}
-              total={response.total}
-              onPageChange={handlePageChange}
-            />
-          </>
-        )}
-      </Show>
+          </Show>
+          <Show when={data.error}>
+            <div class="notification is-danger is-light" />
+          </Show>
+          <Show when={data()} keyed>
+            {(response) => (
+              <>
+                <div class="columns is-multiline">
+                  <For each={response.maps}>
+                    {(map) => (
+                      <div class="column is-half-tablet is-one-quarter-desktop">
+                        <MapCard map={map} />
+                      </div>
+                    )}
+                  </For>
+                </div>
+                <Pagination
+                  page={response.page}
+                  perPage={response.per_page}
+                  total={response.total}
+                  onPageChange={handlePageChange}
+                />
+              </>
+            )}
+          </Show>
+        </div>
+      </section>
     </>
   );
 };

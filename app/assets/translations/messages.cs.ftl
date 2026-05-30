@@ -29,6 +29,8 @@ factorio-name = { -factorio }
 github-name = { -github }
 mapshot-name = { -mapshot }
 steam-name = { -steam }
+hero-image =
+    .alt = { -app-name }
 
 ## Surfaces
 surface-nauvis = Nauvis
