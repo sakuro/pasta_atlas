@@ -1,23 +1,11 @@
 # frozen_string_literal: true
 
-require "tzinfo"
-
 module PastaAtlas
   module Actions
     module User
       module Profile
         class Update < PastaAtlas::Action
-          include Deps[
-            list_recent_maps: "operations.maps.list_recent_by_user",
-            load_credentials: "operations.user.credentials.load",
-            load_preferences: "operations.user.preferences.load",
-            load_profile: "operations.user.profile.load",
-            update_profile: "operations.user.profile.update",
-            show_view: "views.user.show"
-          ]
-
-          OAUTH_PROVIDERS = %w[discord github steam].freeze
-          private_constant :OAUTH_PROVIDERS
+          include Deps[update_profile: "operations.user.profile.update"]
 
           params do
             required(:user_name).filled(:string)
@@ -34,29 +22,8 @@ module PastaAtlas
             )
             case result
             in Failure(:invalid, error)
-              user_id = current_user_id(request)
-              user_name = request.params[:user_name]
-              profile_data = load_profile.call(user_id:).value!
-              avatar_url = profile_data[:avatar_url]
-              preference = load_preferences.call(user_id:, viewer_id: user_id).value!
-              connected_providers = load_credentials.call(user_id:, viewer_id: user_id).value!
-              user_info = Values::UserInfo[name: user_name, display_name: profile_data[:display_name] || user_name, avatar_url:]
-              recent_map_infos = list_recent_maps.call(user_id:, user_info:).value!
-              response.render(
-                show_view,
-                user_name:,
-                display_name: request.params[:display_name].to_s,
-                avatar_url:,
-                recent_map_infos:,
-                is_owner: true,
-                error:,
-                timezone: preference.timezone,
-                timezone_identifiers: TZInfo::Timezone.all_identifiers,
-                locale: preference.locale,
-                supported_locales: PastaAtlas::I18n::SUPPORTED_LOCALES,
-                providers: OAUTH_PROVIDERS,
-                connected_providers:
-              )
+              response.flash[:error] = error
+              response.redirect_to "#{routes.path(:user, user_name: request.params[:user_name])}#tab-profile"
             in Failure(Symbol => status)
               halt status
             in Success(user)
