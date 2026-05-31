@@ -1,11 +1,11 @@
 import { createResource, createSignal, For, onMount, Show } from "solid-js";
 import { useParams } from "@solidjs/router";
 import { Avatar } from "../../components/Avatar";
-import { UserMapsTab } from "./user_maps_tab/UserMapsTab";
-import { UserProfileTab } from "./user_profile_tab/UserProfileTab";
-import { UserPreferencesTab } from "./user_preferences_tab/UserPreferencesTab";
-import { UserCredentialsTab } from "./user_credentials_tab/UserCredentialsTab";
-import { UserDangerTab } from "./user_danger_tab/UserDangerTab";
+import { UserMapsTab } from "./UserMapsTab";
+import { UserProfileTab } from "./UserProfileTab";
+import { UserPreferencesTab } from "./UserPreferencesTab";
+import { UserCredentialsTab } from "./UserCredentialsTab";
+import { UserDangerTab } from "./UserDangerTab";
 import { useAuth } from "../../contexts/AuthContext";
 import { useToast } from "../../contexts/ToastContext";
 

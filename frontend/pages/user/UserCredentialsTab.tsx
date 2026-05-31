@@ -1,5 +1,5 @@
 import { createResource, createSignal, For, Show } from "solid-js";
-import "../../../lib/l10n";
+import "../../lib/l10n";
 
 type CredentialsData = {
   providers: string[];

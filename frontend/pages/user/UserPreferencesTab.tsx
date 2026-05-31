@@ -1,6 +1,6 @@
 import { createResource, createSignal, For, onCleanup, onMount, Show } from "solid-js";
-import { l10n } from "../../../lib/l10n";
-import { applyPreferences, lang } from "../../../lib/display-settings";
+import { l10n } from "../../lib/l10n";
+import { applyPreferences, lang } from "../../lib/display-settings";
 
 type PreferencesData = {
   timezone: string;
