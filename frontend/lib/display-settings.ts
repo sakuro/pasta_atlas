@@ -1,6 +1,5 @@
 import { createSignal } from "solid-js";
-
-const SUPPORTED_LOCALES = ["cs", "en", "ja", "ko", "zh-CN", "zh-TW"];
+import { SUPPORTED_LOCALES } from "./l10n";
 
 const resolveLocale = (locale: string | null): string => {
   if (locale && SUPPORTED_LOCALES.includes(locale)) return locale;
