@@ -1,0 +1,41 @@
+# frozen_string_literal: true
+
+module PastaAtlas
+  module Actions
+    module API
+      module Users
+        module Credentials
+          class Destroy < PastaAtlas::Action
+            include Deps[
+              "operations.user.credentials.unlink",
+              "operations.user.verify_ownership"
+            ]
+
+            ALLOWED_PROVIDERS = %w[discord github steam].freeze
+            private_constant :ALLOWED_PROVIDERS
+
+            def handle(request, response)
+              result = verify_ownership.call(
+                user_id: current_user_id(request),
+                user_name: request.params[:user_name]
+              )
+              case result
+              in Failure(Symbol => status)
+                halt status
+              in Success(user)
+                halt :not_found unless ALLOWED_PROVIDERS.include?(request.params[:provider])
+
+                unlink_result = unlink.call(user_id: user.id, provider: request.params[:provider])
+                if unlink_result.failure?
+                  json_response(response, {error: "error-credential-last"}, status: 422)
+                else
+                  response.status = :no_content
+                end
+              end
+            end
+          end
+        end
+      end
+    end
+  end
+end
