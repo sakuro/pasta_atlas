@@ -3,9 +3,23 @@ import { FluentBundle, FluentResource } from "@fluent/bundle";
 
 export const SUPPORTED_LOCALES = ["cs", "en", "ja", "ko", "zh-CN", "zh-TW"];
 
+let currentLocale: string | null = null;
+let rootConnected = false;
+
+export function setLocale(locale: string): void {
+  currentLocale = locale;
+}
+
+export function connectRoot(): void {
+  if (rootConnected) return;
+  rootConnected = true;
+  l10n.connectRoot(document.documentElement);
+}
+
 function buildLocaleChain(): string[] {
-  const preferred = document.documentElement.lang;
-  const candidates = [preferred, ...navigator.languages];
+  const candidates = currentLocale
+    ? [currentLocale, ...navigator.languages]
+    : [...navigator.languages];
   const seen = new Set<string>();
   return candidates.filter(loc => {
     if (!SUPPORTED_LOCALES.includes(loc) || seen.has(loc)) return false;
@@ -37,5 +51,3 @@ async function* generateBundles(resourceIds: ReadonlyArray<string>) {
 }
 
 export const l10n = new DOMLocalization(["messages"], generateBundles);
-
-l10n.connectRoot(document.documentElement);

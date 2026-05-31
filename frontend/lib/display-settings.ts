@@ -1,5 +1,5 @@
 import { createSignal } from "solid-js";
-import { SUPPORTED_LOCALES } from "./l10n";
+import { SUPPORTED_LOCALES, setLocale } from "./l10n";
 
 const resolveLocale = (locale: string | null): string => {
   if (locale && SUPPORTED_LOCALES.includes(locale)) return locale;
@@ -12,7 +12,7 @@ export const [relativeTimestamps, setRelativeTimestamps] = createSignal(false);
 
 export const applyPreferences = (locale: string | null, tz: string, relative: boolean): void => {
   const resolved = resolveLocale(locale);
-  document.documentElement.lang = resolved;
+  setLocale(resolved);
   setLang(resolved);
   setTimezone(tz);
   setRelativeTimestamps(relative);
