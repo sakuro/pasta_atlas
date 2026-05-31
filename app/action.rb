@@ -2,32 +2,19 @@
 # frozen_string_literal: true
 
 require "dry/monads"
-require "foxtail"
 require "hanami/action"
 require "json"
 require "rack/icu4x/locale"
 
 module PastaAtlas
   class Action < Hanami::Action
-    include Deps["repos.user_repo", "routes", i18n_bundles: "i18n.bundles"]
+    include Deps["repos.user_repo", "routes"]
     include Dry::Monads[:result]
 
     private def json_response(response, data, status: :ok)
       response.status = status
       response.headers["Content-Type"] = "application/json"
       response.body = JSON.generate(data)
-    end
-
-    private def i18n(request) = request.env["pasta_atlas.i18n"] ||= build_i18n_sequence(request)
-
-    private def view_context_options(request, response)
-      super.merge(i18n: i18n(request))
-    end
-
-    private def build_i18n_sequence(request)
-      locales = request.env[::Rack::ICU4X::Locale::ENV_KEY] || [ICU4X::Locale.parse("en")]
-      bundles = locales.filter_map {|locale| i18n_bundles[locale.to_s] }
-      Foxtail::Sequence.new(*bundles)
     end
 
     private def current_user_id(request) = request.session[:user_id]
