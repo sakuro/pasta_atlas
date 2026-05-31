@@ -1,5 +1,6 @@
 import { createSignal, Show } from "solid-js";
 import { Portal } from "solid-js/web";
+import { useNavigate } from "@solidjs/router";
 import { adjectives, animals, colors, uniqueNamesGenerator } from "unique-names-generator";
 import "../../lib/l10n";
 import { HowToUploadModal } from "./HowToUploadModal";
@@ -90,6 +91,7 @@ const CopyButton = (props: { text: string; l10nId: string }) => {
 };
 
 export const UploadModal = (props: { isGuest: boolean }) => {
+  const navigate = useNavigate();
   const [state, setState] = createSignal<State>({ type: "idle" });
   const [displayName, setDisplayName] = createSignal("");
   const [isExistingMap, setIsExistingMap] = createSignal(false);
@@ -435,7 +437,7 @@ export const UploadModal = (props: { isGuest: boolean }) => {
                 {(s) => (
                   <div class="has-text-centered">
                     <p class="mb-4" data-l10n-id="upload-complete" />
-                    <a href={s().viewerUrl} class="button is-primary" data-l10n-id="upload-view-map" />
+                    <button class="button is-primary" data-l10n-id="upload-view-map" onClick={() => { dismiss(); navigate(s().viewerUrl); }} />
                   </div>
                 )}
               </Show>
