@@ -84,7 +84,7 @@ const LoginMenu = (props: { omniauthToken: string }) => (
   </div>
 );
 
-export const NavbarEnd = (props: Props) => (
+export const NavAuthMenu = (props: Props) => (
   <Show
     when={props.userName}
     fallback={<LoginMenu omniauthToken={props.omniauthToken} />}

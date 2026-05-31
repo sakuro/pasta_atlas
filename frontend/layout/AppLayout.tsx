@@ -1,6 +1,6 @@
 import { createSignal, Show } from "solid-js";
 import { A, RouteSectionProps } from "@solidjs/router";
-import { NavbarEnd } from "../components/navbar_end/NavbarEnd";
+import { NavAuthMenu } from "../components/nav_auth_menu/NavAuthMenu";
 import { Footer } from "../components/footer/Footer";
 import { UploadModal } from "../components/upload_modal/UploadModal";
 import { useAuth } from "../contexts/AuthContext";
@@ -39,7 +39,7 @@ export const AppLayout = (props: RouteSectionProps) => {
         <div class={`navbar-menu${menuActive() ? " is-active" : ""}`}>
           <div class="navbar-end">
             <Show when={user() !== undefined}>
-              <NavbarEnd
+              <NavAuthMenu
                 userName={user()?.name ?? ""}
                 displayName={user()?.display_name ?? ""}
                 avatarUrl={user()?.avatar_url ?? ""}
