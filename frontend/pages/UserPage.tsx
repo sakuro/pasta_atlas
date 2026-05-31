@@ -1,5 +1,5 @@
-import { createResource, createSignal, For, onMount, Show } from "solid-js";
-import { useParams } from "@solidjs/router";
+import { createEffect, createResource, createSignal, For, Show } from "solid-js";
+import { useLocation, useParams } from "@solidjs/router";
 import { Avatar } from "../components/Avatar";
 import { UserMapsTab } from "./user/UserMapsTab";
 import { UserProfileTab } from "./user/UserProfileTab";
@@ -53,6 +53,7 @@ export const UserPage = () => {
     return !!user && user.name === userName();
   };
 
+  const location = useLocation();
   const tabs = () => (isOwner() ? OWNER_TABS : GUEST_TABS);
   const [activeTab, setActiveTab] = createSignal("tab-recent-maps");
 
@@ -61,12 +62,12 @@ export const UserPage = () => {
     setActiveTab(tabId);
   };
 
-  onMount(() => {
+  // Tracks both location.hash and tabs() (which depends on isOwner()/currentUser()).
+  // When auth resolves and tabs() changes to OWNER_TABS, this effect re-runs and
+  // can activate the owner-only tab that was initially rejected.
+  createEffect(() => {
     const hash = location.hash.slice(1);
-    if (hash) {
-      history.replaceState(null, document.title, location.pathname + location.search);
-      activateTab(hash);
-    }
+    if (hash) activateTab(hash);
   });
 
   return (
