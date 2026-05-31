@@ -52,6 +52,7 @@ module PastaAtlas
 
     config.actions.content_security_policy[:form_action] += " https://discord.com https://github.com https://steamcommunity.com"
     config.actions.content_security_policy[:img_src] += " blob: https://avatars.steamstatic.com"
+    config.actions.content_security_policy[:font_src] += " https://fonts.gstatic.com"
 
     if Hanami.env?(:development)
       config.actions.content_security_policy[:connect_src] += " http://localhost:4566"
