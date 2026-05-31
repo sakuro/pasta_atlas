@@ -1,5 +1,6 @@
 import { createSignal, Show, For } from "solid-js";
 import { Portal } from "solid-js/web";
+import { lang } from "../lib/display-settings";
 
 export interface Mapshot {
   surfaces?: unknown[];
@@ -12,10 +13,10 @@ export interface Mapshot {
   map_exchange?: string;
 }
 
-export const formatNumber = (n: number): string =>
-  new Intl.NumberFormat(document.documentElement.lang || "en").format(n);
+export const formatNumber = (n: number, locale: string): string =>
+  new Intl.NumberFormat(locale).format(n);
 
-export const formatTicks = (tick: number, style: "narrow" | "long" | "short" = "short"): string => {
+export const formatTicks = (tick: number, locale: string, style: "narrow" | "long" | "short" = "short"): string => {
   const totalSeconds = Math.floor(tick / 60);
   const seconds = totalSeconds % 60;
   const totalMinutes = Math.floor(totalSeconds / 60);
@@ -23,7 +24,6 @@ export const formatTicks = (tick: number, style: "narrow" | "long" | "short" = "
   const totalHours = Math.floor(totalMinutes / 60);
   const hours = totalHours % 24;
   const days = Math.floor(totalHours / 24);
-  const locale = document.documentElement.lang || "en";
   return new Intl.DurationFormat(locale, { style }).format({ days, hours, minutes, seconds });
 };
 
@@ -107,13 +107,13 @@ export const MapInfoModal = (props: { mapshot: Mapshot; onClose: () => void }) =
                 <Show when={props.mapshot.tick != null}>
                   <tr>
                     <th class="map-info-label"><span class="icon-text"><span class="icon"><i class="fa-solid fa-hourglass" /></span><span data-l10n-id="map-info-tick" /><span class="icon is-small has-text-grey-light" data-l10n-id="map-info-tick-help"><i class="fa-regular fa-circle-question" /></span></span></th>
-                    <td>{formatNumber(props.mapshot.tick!)} ({formatTicks(props.mapshot.tick!, "long")})</td>
+                    <td>{formatNumber(props.mapshot.tick!, lang())} ({formatTicks(props.mapshot.tick!, lang(), "long")})</td>
                   </tr>
                 </Show>
                 <Show when={props.mapshot.ticks_played != null}>
                   <tr>
                     <th class="map-info-label"><span class="icon-text"><span class="icon"><i class="fa-solid fa-hourglass-half" /></span><span data-l10n-id="map-info-ticks-played" /><span class="icon is-small has-text-grey-light" data-l10n-id="map-info-ticks-played-help"><i class="fa-regular fa-circle-question" /></span></span></th>
-                    <td>{formatNumber(props.mapshot.ticks_played!)} ({formatTicks(props.mapshot.ticks_played!, "long")})</td>
+                    <td>{formatNumber(props.mapshot.ticks_played!, lang())} ({formatTicks(props.mapshot.ticks_played!, lang(), "long")})</td>
                   </tr>
                 </Show>
                 <Show when={props.mapshot.game_version}>

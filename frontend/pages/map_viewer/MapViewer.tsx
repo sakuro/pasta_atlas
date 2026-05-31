@@ -8,6 +8,7 @@ import L from "leaflet";
 import { Avatar } from "../../components/Avatar";
 import { FormattedDateTime } from "../../components/FormattedDateTime";
 import { MapInfoModal, formatTicks, type Mapshot as MapInfoMapshot } from "../../components/MapInfoModal";
+import { lang } from "../../lib/display-settings";
 import { ShareButtons } from "../../components/ShareButtons";
 import { l10n } from "../../lib/l10n";
 import { renderRichText } from "./richtext";
@@ -272,7 +273,7 @@ export const MapViewer = (props: MapViewerProps) => {
                 >
                   <For each={data().generations}>
                     {(gen) => (
-                      <option value={gen.ulid}>{formatTicks(gen.tick)}</option>
+                      <option value={gen.ulid}>{formatTicks(gen.tick, lang())}</option>
                     )}
                   </For>
                 </select>
