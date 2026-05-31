@@ -1,4 +1,6 @@
 import { createResource, createSignal, createMemo, Show, Suspense, For, onMount, onCleanup, untrack } from "solid-js";
+import { useNavigate } from "@solidjs/router";
+import { useToast } from "../../contexts/ToastContext";
 
 const csrfToken = (): string =>
   document.querySelector<HTMLMetaElement>('meta[name="csrf-token"]')?.content ?? "";
@@ -109,6 +111,9 @@ interface MapViewerProps {
 }
 
 export const MapViewer = (props: MapViewerProps) => {
+  const navigate = useNavigate();
+  const { showToast } = useToast();
+
   const [mapData] = createResource(() =>
     fetch(`/api/v1/maps/${props.ulid}`).then((r) => r.json() as Promise<MapData>)
   );
@@ -145,7 +150,10 @@ export const MapViewer = (props: MapViewerProps) => {
       headers: { "X-CSRF-Token": csrfToken() },
       redirect: "manual",
     });
-    if (res.type === "opaqueredirect") window.location.href = "/";
+    if (res.type === "opaqueredirect") {
+      showToast("map-deletion-requested", "info");
+      navigate("/");
+    }
   };
 
   const [displayName, setDisplayName] = createSignal(untrack(() => props.displayName));
