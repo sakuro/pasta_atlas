@@ -17,9 +17,7 @@ module PastaAtlas
 
     get "/api/v1/pages/:slug",                             to: "api.pages.show"
 
-    post "/api/v1/profile/avatar_presigned_url",            to: "api.profile.avatar_presigned_url.create"
-
-    post "/api/v1/uploads",                                 to: "api.uploads.create"
+    post "/api/v1/uploads", to: "api.uploads.create"
     patch "/api/v1/uploads/:ulid", to: "api.uploads.update"
     post "/api/v1/uploads/:ulid/presigned_urls", to: "api.uploads.presigned_urls.create"
 
@@ -32,6 +30,7 @@ module PastaAtlas
     get "/api/v1/users/:user_name/maps",                  to: "api.users.maps.index"
     get "/api/v1/users/:user_name/preferences",           to: "api.users.preferences.show"
     patch "/api/v1/users/:user_name/preferences", to: "api.users.preferences.update"
+    post "/api/v1/users/:user_name/profile/avatar_presigned_url", to: "api.users.profile.avatar_presigned_url.create"
     get "/api/v1/users/:user_name/profile", to: "api.users.profile.show"
     patch "/api/v1/users/:user_name/profile", to: "api.users.profile.update"
 

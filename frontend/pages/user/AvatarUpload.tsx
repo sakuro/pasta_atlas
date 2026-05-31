@@ -110,7 +110,7 @@ export const AvatarUpload = (props: Props) => {
     setState({ type: "uploading" });
     let presignedUrl: string, s3Key: string;
     try {
-      const resp = await fetch("/api/v1/profile/avatar_presigned_url", {
+      const resp = await fetch(`/api/v1/users/${props.userName}/profile/avatar_presigned_url`, {
         method: "POST",
         headers: jsonHeaders(),
         body: JSON.stringify({ content_type: file.type }),
