@@ -3,7 +3,7 @@ import "@fortawesome/fontawesome-free/css/fontawesome.css";
 import "@fortawesome/fontawesome-free/css/solid.css";
 import "@fortawesome/fontawesome-free/css/brands.css";
 import "../app/assets/css/app.css";
-import "./l10n";
+import "./lib/l10n";
 
 import { render } from "solid-js/web";
 import { Router, Route } from "@solidjs/router";
@@ -11,8 +11,8 @@ import { AuthProvider } from "./contexts/AuthContext";
 import { ToastProvider } from "./contexts/ToastContext";
 import { AppLayout } from "./layout/AppLayout";
 import { MapsIndexPage } from "./pages/MapsIndexPage";
-import { MapViewerPage } from "./pages/MapViewerPage";
-import { UserPage } from "./pages/UserPage";
+import { MapViewerPage } from "./pages/map_viewer/MapViewerPage";
+import { UserPage } from "./pages/user/UserPage";
 import { RegistrationPage } from "./pages/RegistrationPage";
 import { StaticPage } from "./pages/StaticPage";
 

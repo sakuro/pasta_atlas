@@ -1,6 +1,6 @@
 import { createResource, For, Show } from "solid-js";
-import { MapCard, type MapData } from "../../components/MapCard";
-import "../../l10n";
+import { MapCard, type MapData } from "../../../components/MapCard";
+import "../../../lib/l10n";
 
 type MapsResponse = { maps: MapData[] };
 

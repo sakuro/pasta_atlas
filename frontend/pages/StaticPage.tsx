@@ -1,5 +1,5 @@
 import { createResource, Show } from "solid-js";
-import { lang } from "../display-settings";
+import { lang } from "../lib/display-settings";
 
 export const StaticPage = (props: { slug: string }) => {
   const [content] = createResource(

@@ -1,4 +1,4 @@
-import { lang, timezone, relativeTimestamps } from "../display-settings";
+import { lang, timezone, relativeTimestamps } from "../lib/display-settings";
 
 const formatAbsolute = (dateTime: string): string =>
   new Intl.DateTimeFormat(lang(), {

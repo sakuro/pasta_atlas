@@ -1,6 +1,6 @@
 import { Show } from "solid-js";
 import { Avatar } from "../../components/Avatar";
-import "../../l10n";
+import "../../lib/l10n";
 
 type Props = {
   userName: string;

@@ -1,6 +1,6 @@
 import { createResource, createSignal, Show } from "solid-js";
 import { AvatarUpload } from "../avatar_upload/AvatarUpload";
-import "../../l10n";
+import "../../../lib/l10n";
 
 type ProfileData = {
   user_name: string;

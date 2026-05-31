@@ -1,7 +1,7 @@
 import { createSignal, Show } from "solid-js";
 import { Portal } from "solid-js/web";
 import { adjectives, animals, colors, uniqueNamesGenerator } from "unique-names-generator";
-import "../../l10n";
+import "../../lib/l10n";
 import { HowToUploadModal } from "./HowToUploadModal";
 
 const csrfToken = (): string =>

@@ -1,6 +1,6 @@
 import { createContext, createResource, createMemo, createEffect, useContext, ParentComponent, Accessor } from "solid-js";
-import { applyPreferences } from "../display-settings";
-import { l10n } from "../l10n";
+import { applyPreferences } from "../lib/display-settings";
+import { l10n } from "../lib/l10n";
 
 export type CurrentUser = {
   name: string;

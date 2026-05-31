@@ -1,13 +1,13 @@
 import { createResource, createSignal, For, onMount, Show } from "solid-js";
 import { useParams } from "@solidjs/router";
-import { Avatar } from "../components/Avatar";
-import { UserMapsTab } from "../components/user_maps_tab/UserMapsTab";
-import { UserProfileTab } from "../components/user_profile_tab/UserProfileTab";
-import { UserPreferencesTab } from "../components/user_preferences_tab/UserPreferencesTab";
-import { UserCredentialsTab } from "../components/user_credentials_tab/UserCredentialsTab";
-import { UserDangerTab } from "../components/user_danger_tab/UserDangerTab";
-import { useAuth } from "../contexts/AuthContext";
-import { useToast } from "../contexts/ToastContext";
+import { Avatar } from "../../components/Avatar";
+import { UserMapsTab } from "./user_maps_tab/UserMapsTab";
+import { UserProfileTab } from "./user_profile_tab/UserProfileTab";
+import { UserPreferencesTab } from "./user_preferences_tab/UserPreferencesTab";
+import { UserCredentialsTab } from "./user_credentials_tab/UserCredentialsTab";
+import { UserDangerTab } from "./user_danger_tab/UserDangerTab";
+import { useAuth } from "../../contexts/AuthContext";
+import { useToast } from "../../contexts/ToastContext";
 
 type UserData = {
   name: string;

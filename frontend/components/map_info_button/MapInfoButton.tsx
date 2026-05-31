@@ -1,6 +1,6 @@
 import { createSignal, Show } from "solid-js";
 import { MapInfoModal, type Mapshot } from "../../components/MapInfoModal";
-import "../../l10n";
+import "../../lib/l10n";
 
 export const MapInfoButton = (props: { metadataUrl: string }) => {
   const [mapshot, setMapshot] = createSignal<Mapshot | null>(null);

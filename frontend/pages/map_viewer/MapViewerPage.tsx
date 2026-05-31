@@ -1,7 +1,7 @@
 import { createResource, Show } from "solid-js";
 import { useParams } from "@solidjs/router";
-import { useAuth } from "../contexts/AuthContext";
-import { MapViewer } from "../components/map_viewer/MapViewer";
+import { useAuth } from "../../contexts/AuthContext";
+import { MapViewer } from "./MapViewer";
 
 interface MapViewerData {
   ulid: string;
