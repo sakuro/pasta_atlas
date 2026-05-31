@@ -17,15 +17,15 @@ module PastaAtlas
             halt :not_found unless template_dir
 
             locale = resolve_locale(request, template_dir)
-            partial_path = Hanami.app.root.join("app/templates/pages/#{template_dir}/_#{locale}.html.erb")
+            content_path = Hanami.app.root.join("app/templates/pages/#{template_dir}/#{locale}.html")
 
-            json_response(response, {content: partial_path.read})
+            json_response(response, {content: content_path.read})
           end
 
           private def resolve_locale(request, template_dir)
             tags = (request.env[::Rack::ICU4X::Locale::ENV_KEY] || []).map(&:to_s)
             tags.find {|tag|
-              Hanami.app.root.join("app/templates/pages/#{template_dir}/_#{tag}.html.erb").exist?
+              Hanami.app.root.join("app/templates/pages/#{template_dir}/#{tag}.html").exist?
             } || "en"
           end
         end
