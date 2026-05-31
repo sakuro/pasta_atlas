@@ -159,11 +159,6 @@ GEM
     ffi (1.17.4-x86_64-linux-musl)
     formatador (1.2.3)
       reline
-    foxtail-runtime (0.6.1)
-      bigdecimal (>= 3.1)
-      dry-core (~> 1.1)
-      icu4x (~> 0.9)
-      zeitwerk (~> 2.7)
     foxtail-tools (0.6.1)
       dry-cli (~> 1.4)
       dry-inflector (~> 1.0)
@@ -571,7 +566,6 @@ DEPENDENCIES
   dotenv
   dry-operation (>= 1.0.1)
   dry-types (~> 1.7)
-  foxtail-runtime
   foxtail-tools
   hanami (~> 2.3.0)
   hanami-assets (~> 2.3.0)
@@ -677,7 +671,6 @@ CHECKSUMS
   ffi (1.17.4-x86_64-linux-gnu) sha256=9d3db14c2eae074b382fa9c083fe95aec6e0a1451da249eab096c34002bc752d
   ffi (1.17.4-x86_64-linux-musl) sha256=3fdf9888483de005f8ef8d1cf2d3b20d86626af206cbf780f6a6a12439a9c49e
   formatador (1.2.3) sha256=19fa898133c2c26cdbb5d09f6998c1e137ad9427a046663e55adfe18b950d894
-  foxtail-runtime (0.6.1) sha256=0c4efb7f9e7913ee290dbdd1857566a22ee25a44bb20b9b49ef2514a959b8cf4
   foxtail-tools (0.6.1) sha256=d7db73e8ecaf2e0d00ca79ca6ec27731a03160b1b8393e7b6ad0229b6d0ce20f
   guard (2.20.1) sha256=ab9cd7873854e6b76080c0589f781ff3e390e441bdda20165804df54f977015a
   guard-compat (1.2.1) sha256=3ad21ab0070107f92edfd82610b5cdc2fb8e368851e72362ada9703443d646fe
