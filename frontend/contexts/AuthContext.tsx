@@ -1,5 +1,5 @@
 import { createContext, createResource, createMemo, createEffect, useContext, ParentComponent, Accessor } from "solid-js";
-import { applyPreferences, lang } from "../lib/display-settings";
+import { applyPreferences } from "../lib/display-settings";
 import { l10n, connectRoot } from "../lib/l10n";
 
 export type CurrentUser = {
@@ -28,8 +28,6 @@ type AuthContextValue = {
 const AuthContext = createContext<AuthContextValue>();
 
 export const AuthProvider: ParentComponent = (props) => {
-  createEffect(() => { document.documentElement.lang = lang(); });
-
   const [authData, { refetch, mutate }] = createResource<AuthResponse>(async () => {
     const res = await fetch("/api/v1/auth/current");
     if (!res.ok) return { user: null, preferences: { locale: null, timezone: "UTC", relative_timestamps: false } };
