@@ -7,13 +7,9 @@ const resolveLocale = (locale: string | null): string => {
   return navigator.languages.find((l) => SUPPORTED_LOCALES.includes(l)) ?? "en";
 };
 
-export const [lang, setLang] = createSignal(document.documentElement.lang || "en");
-export const [timezone, setTimezone] = createSignal(
-  document.documentElement.dataset.timezone ?? "UTC"
-);
-export const [relativeTimestamps, setRelativeTimestamps] = createSignal(
-  document.documentElement.dataset.relativeTimestamps === "true"
-);
+export const [lang, setLang] = createSignal("en");
+export const [timezone, setTimezone] = createSignal("UTC");
+export const [relativeTimestamps, setRelativeTimestamps] = createSignal(false);
 
 export const applyPreferences = (locale: string | null, tz: string, relative: boolean): void => {
   const resolved = resolveLocale(locale);

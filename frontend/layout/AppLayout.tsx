@@ -52,7 +52,13 @@ export const AppLayout = (props: RouteSectionProps) => {
           </div>
         </div>
       </nav>
-      {props.children}
+      <Show when={user() !== undefined} fallback={
+        <div class="has-text-centered py-6">
+          <span class="icon is-large"><i class="fa-solid fa-spinner fa-spin fa-2x" /></span>
+        </div>
+      }>
+        {props.children}
+      </Show>
       <footer class="footer">
         <Footer
           logoSrc={logoSrc}

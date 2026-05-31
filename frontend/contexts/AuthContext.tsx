@@ -1,4 +1,6 @@
-import { createContext, createResource, useContext, ParentComponent, Resource } from "solid-js";
+import { createContext, createResource, createMemo, createEffect, useContext, ParentComponent, Accessor } from "solid-js";
+import { applyPreferences } from "../display-settings";
+import { l10n } from "../l10n";
 
 export type CurrentUser = {
   name: string;
@@ -6,8 +8,19 @@ export type CurrentUser = {
   avatar_url: string | null;
 };
 
+type Preferences = {
+  locale: string | null;
+  timezone: string;
+  relative_timestamps: boolean;
+};
+
+type AuthResponse = {
+  user: CurrentUser | null;
+  preferences: Preferences;
+};
+
 type AuthContextValue = {
-  currentUser: Resource<CurrentUser | null>;
+  currentUser: Accessor<CurrentUser | null | undefined>;
   refetch: () => void;
   updateCurrentUser: (patch: Partial<CurrentUser>) => void;
 };
@@ -15,16 +28,29 @@ type AuthContextValue = {
 const AuthContext = createContext<AuthContextValue>();
 
 export const AuthProvider: ParentComponent = (props) => {
-  const [currentUser, { refetch, mutate }] = createResource<CurrentUser | null>(async () => {
+  const [authData, { refetch, mutate }] = createResource<AuthResponse>(async () => {
     const res = await fetch("/api/v1/auth/current");
-    if (!res.ok) return null;
-    const data = await res.json() as { user: CurrentUser | null };
+    if (!res.ok) return { user: null, preferences: { locale: null, timezone: "UTC", relative_timestamps: false } };
+    return await res.json() as AuthResponse;
+  });
+
+  createEffect(() => {
+    const data = authData();
+    if (data === undefined) return;
+    applyPreferences(data.preferences.locale, data.preferences.timezone, data.preferences.relative_timestamps);
+    l10n.onChange();
+  });
+
+  const currentUser = createMemo<CurrentUser | null | undefined>(() => {
+    const data = authData();
+    if (data === undefined) return undefined;
     return data.user;
   });
 
   const updateCurrentUser = (patch: Partial<CurrentUser>) => {
-    const current = currentUser();
-    if (current) mutate({ ...current, ...patch });
+    const data = authData();
+    if (!data?.user) return;
+    mutate({ ...data, user: { ...data.user, ...patch } });
   };
 
   return (
