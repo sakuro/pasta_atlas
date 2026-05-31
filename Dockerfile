@@ -43,7 +43,8 @@ RUN SESSION_SECRET=dummy \
     SQS_S3_CLEANUP_QUEUE_URL=https://dummy.example.com/dummy \
     HANAMI_ENV=production \
     bundle exec hanami assets compile && \
-    npm run build:islands
+    npm run build:frontend && \
+    rm -f public/assets/vite-entries.json
 
 # ---- Runtime: minimal image with pre-built artifacts ----
 FROM ruby:4.0.5-slim AS runtime
