@@ -11,8 +11,8 @@ import { AuthProvider } from "./contexts/AuthContext";
 import { ToastProvider } from "./contexts/ToastContext";
 import { AppLayout } from "./layout/AppLayout";
 import { MapsIndexPage } from "./pages/MapsIndexPage";
-import { MapViewerPage } from "./pages/map_viewer/MapViewerPage";
-import { UserPage } from "./pages/user/UserPage";
+import { MapViewerPage } from "./pages/MapViewerPage";
+import { UserPage } from "./pages/UserPage";
 import { RegistrationPage } from "./pages/RegistrationPage";
 import { StaticPage } from "./pages/StaticPage";
 
