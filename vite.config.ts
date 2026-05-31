@@ -9,7 +9,7 @@ export default defineConfig({
     assetsInlineLimit: 0,
     manifest: true,
     outDir: "public/assets",
-    emptyOutDir: true,
+    emptyOutDir: false,
     rollupOptions: {
       input: {
         app: "frontend/app.tsx",
