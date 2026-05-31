@@ -28,7 +28,9 @@ const groupTimezones = (identifiers: string[]): { region: string; timezones: str
 
 const localeDisplayName = (locale: string): string => {
   try {
-    return new Intl.DisplayNames([lang()], { type: "language" }).of(locale) ?? locale;
+    const inCurrentLang = new Intl.DisplayNames([lang()], { type: "language" }).of(locale) ?? locale;
+    const inOwnLang = new Intl.DisplayNames([locale], { type: "language" }).of(locale) ?? locale;
+    return inCurrentLang === inOwnLang ? inCurrentLang : `${inCurrentLang} (${inOwnLang})`;
   } catch {
     return locale;
   }
@@ -49,6 +51,7 @@ export const UserPreferencesTab = (props: {
 
   const [selectedTz, setSelectedTz] = createSignal("");
   const [tzTime, setTzTime] = createSignal("");
+  const [relativeTimestamps, setRelativeTimestamps] = createSignal(false);
   const [submitting, setSubmitting] = createSignal(false);
 
   const updateTzTime = () => setTzTime(currentTimeInTz(selectedTz()));
@@ -69,9 +72,10 @@ export const UserPreferencesTab = (props: {
     setTzTime(currentTimeInTz(tz));
   };
 
-  const initTz = (pref: PreferencesData) => {
+  const initPref = (pref: PreferencesData) => {
     setSelectedTz(pref.timezone);
     setTzTime(currentTimeInTz(pref.timezone));
+    setRelativeTimestamps(pref.relative_timestamps);
   };
 
   const handleSubmit = async (e: SubmitEvent) => {
@@ -79,6 +83,7 @@ export const UserPreferencesTab = (props: {
     setSubmitting(true);
     const form = e.currentTarget as HTMLFormElement;
     const formData = new FormData(form);
+    const relTs = relativeTimestamps();
     try {
       const res = await fetch(`/api/v1/users/${props.userName}/preferences`, {
         method: "PATCH",
@@ -87,7 +92,7 @@ export const UserPreferencesTab = (props: {
           user_name: props.userName,
           timezone: formData.get("timezone") as string,
           locale: formData.get("locale") as string,
-          relative_timestamps: formData.get("relative_timestamps") as string,
+          relative_timestamps: String(relTs),
         }),
       });
       if (res.ok) {
@@ -95,7 +100,7 @@ export const UserPreferencesTab = (props: {
         applyPreferences(
           json.locale,
           formData.get("timezone") as string,
-          formData.get("relative_timestamps") === "true",
+          relTs,
         );
         l10n.onChange();
         props.onSuccess?.();
@@ -119,7 +124,7 @@ export const UserPreferencesTab = (props: {
       </Show>
       <Show when={!data.loading && data()} keyed>
         {(pref) => {
-          initTz(pref);
+          initPref(pref);
           return (
             <form onSubmit={(e) => void handleSubmit(e)}>
               <div class="field">
@@ -156,13 +161,11 @@ export const UserPreferencesTab = (props: {
                   </div>
                   <div class="field">
                     <div class="control">
-                      <input type="hidden" name="relative_timestamps" value="false" />
                       <label class="checkbox">
                         <input
                           type="checkbox"
-                          name="relative_timestamps"
-                          value="true"
-                          checked={pref.relative_timestamps}
+                          checked={relativeTimestamps()}
+                          onChange={(e) => setRelativeTimestamps(e.currentTarget.checked)}
                         />
                         {" "}
                         <span data-l10n-id="edit-time-display-relative" />
