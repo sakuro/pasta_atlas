@@ -13,6 +13,7 @@ module PastaAtlas
               ]
 
               params do
+                required(:user_name).filled(:string)
                 required(:content_type).filled(:string, included_in?: %w[image/jpeg image/png image/webp])
               end
 

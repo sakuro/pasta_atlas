@@ -1,5 +1,5 @@
 import { createResource, createSignal, Show } from "solid-js";
-import { AvatarUpload } from "./AvatarUpload";
+import { AvatarUpload, type AvatarUploadRef } from "./AvatarUpload";
 import "../../lib/l10n";
 
 type ProfileData = {
@@ -27,19 +27,21 @@ export const UserProfileTab = (props: {
   });
 
   const [displayName, setDisplayName] = createSignal("");
-  const [pendingAvatarS3Key, setPendingAvatarS3Key] = createSignal<string | null | undefined>(undefined);
   const [submitting, setSubmitting] = createSignal(false);
+  let avatarRef: AvatarUploadRef | undefined;
 
   const handleSubmit = async (e: SubmitEvent) => {
     e.preventDefault();
     setSubmitting(true);
     try {
+      const avatarResult = avatarRef ? await avatarRef.prepareForSubmit() : null;
+      if (avatarResult === false) return;
+
       const body: Record<string, string | null> = {
         user_name: props.userName,
         display_name: displayName(),
       };
-      const pending = pendingAvatarS3Key();
-      if (pending !== undefined) body.avatar_s3_key = pending ?? "";
+      if (typeof avatarResult === "string") body.avatar_s3_key = avatarResult;
 
       const res = await fetch(`/api/v1/users/${props.userName}/profile`, {
         method: "PATCH",
@@ -84,7 +86,7 @@ export const UserProfileTab = (props: {
                   <AvatarUpload
                     userName={props.userName}
                     currentAvatarUrl={profile.avatar_url}
-                    onAvatarChanged={setPendingAvatarS3Key}
+                    onRef={(ref) => { avatarRef = ref; }}
                   />
                 </div>
               </div>

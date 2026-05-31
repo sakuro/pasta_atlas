@@ -47,11 +47,16 @@ const validateImage = (file: File): Promise<I18nError | null> =>
     img.src = url;
   });
 
+export type AvatarUploadRef = {
+  prepareForSubmit: () => Promise<string | null | false>;
+};
+
 interface Props {
   currentAvatarUrl: string | null;
   userName: string;
   form?: HTMLFormElement | null;
   onAvatarChanged?: (s3Key: string | null) => void;
+  onRef?: (ref: AvatarUploadRef) => void;
 }
 
 export const AvatarUpload = (props: Props) => {
@@ -82,10 +87,31 @@ export const AvatarUpload = (props: Props) => {
   };
 
   onMount(() => {
-    if (!props.form) return;
-    const handler = (e: SubmitEvent) => { void handleFormSubmit(e); };
-    props.form.addEventListener("submit", handler);
-    onCleanup(() => props.form?.removeEventListener("submit", handler));
+    if (props.form) {
+      const handler = (e: SubmitEvent) => { void handleFormSubmit(e); };
+      props.form.addEventListener("submit", handler);
+      onCleanup(() => props.form?.removeEventListener("submit", handler));
+    }
+    props.onRef?.({
+      prepareForSubmit: async () => {
+        const s = state();
+        if (s.type === "removing") {
+          const ok = await removeAvatar();
+          if (!ok) return false;
+          setState({ type: "idle" });
+          return null;
+        }
+        if (s.type === "selected") {
+          const { file, previewUrl } = s;
+          const s3Key = await uploadAvatar(file);
+          if (!s3Key) return false;
+          URL.revokeObjectURL(previewUrl);
+          setState({ type: "idle" });
+          return s3Key;
+        }
+        return null;
+      },
+    });
   });
 
   const removeAvatar = async (): Promise<boolean> => {
