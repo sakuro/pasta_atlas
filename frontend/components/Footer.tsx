@@ -1,4 +1,4 @@
-import "../../lib/l10n";
+import "../lib/l10n";
 
 type Props = {
   logoSrc: string;

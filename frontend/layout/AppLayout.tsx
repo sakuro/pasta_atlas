@@ -1,7 +1,7 @@
 import { createSignal, Show } from "solid-js";
 import { A, RouteSectionProps } from "@solidjs/router";
-import { NavAuthMenu } from "../components/nav_auth_menu/NavAuthMenu";
-import { Footer } from "../components/footer/Footer";
+import { NavAuthMenu } from "../components/NavAuthMenu";
+import { Footer } from "../components/Footer";
 import { UploadModal } from "../components/upload_modal/UploadModal";
 import { useAuth } from "../contexts/AuthContext";
 import logoSrc from "../../app/assets/images/layer8.png";

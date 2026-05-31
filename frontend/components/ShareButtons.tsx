@@ -1,5 +1,5 @@
 import { createSignal } from "solid-js";
-import "../../lib/l10n";
+import "../lib/l10n";
 
 type Props = {
   mapPath: string;

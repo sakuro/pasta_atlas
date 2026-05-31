@@ -6,7 +6,7 @@ import L from "leaflet";
 import { Avatar } from "../../components/Avatar";
 import { FormattedDateTime } from "../../components/FormattedDateTime";
 import { MapInfoModal, formatTicks, type Mapshot as MapInfoMapshot } from "../../components/MapInfoModal";
-import { ShareButtons } from "../../components/share_buttons/ShareButtons";
+import { ShareButtons } from "../../components/ShareButtons";
 import { l10n } from "../../lib/l10n";
 import { renderRichText } from "./richtext";
 import "leaflet/dist/leaflet.css";
