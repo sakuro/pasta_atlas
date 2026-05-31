@@ -3,8 +3,8 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build:islands": "vite build",
-    "dev:islands": "vite build --watch",
+    "build:frontend": "vite build",
+    "dev:frontend": "vite build --watch",
     "type-check": "tsc --noEmit",
     "lint:frontend": "find frontend \\( -name '*.ts' -o -name '*.tsx' \\) | xargs -r eslint",
     "test:frontend": "vitest"

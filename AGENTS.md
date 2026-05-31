@@ -21,8 +21,8 @@ bundle exec rake rubocop:autocorrect    # Auto-fix safe offenses
 ### Frontend (TypeScript/SolidJS)
 
 ```bash
-npm run build:islands     # Production build
-npm run dev:islands       # Watch mode for development
+npm run build:frontend    # Production build
+npm run dev:frontend      # Watch mode for development
 npm run type-check        # TypeScript type checking
 npm run lint:frontend     # ESLint on .ts/.tsx files
 npm run test:frontend     # Run Vitest tests
@@ -65,7 +65,7 @@ The server issues presigned URLs; the frontend uploads tile images directly to S
 
 ### Frontend
 
-SolidJS islands live in `frontend/islands/`. They are bundled by Vite into `public/assets/islands/` and loaded via `<script>` tags in ERB templates. Bulma CSS + FontAwesome for styling.
+The frontend is a SolidJS SPA. It is bundled by Vite into `public/assets/` and served as a single entry point. Bulma CSS + FontAwesome for styling.
 
 ## Design documents
 

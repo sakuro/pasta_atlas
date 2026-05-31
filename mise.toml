@@ -14,7 +14,7 @@ tflint = "0.62"
 depends = ["dev"]
 
 [tasks.dev]
-depends = ["web", "assets", "islands", "floci", "s3-cleanup-queue-worker"]
+depends = ["web", "assets", "frontend", "floci", "s3-cleanup-queue-worker"]
 
 [tasks.web]
 run = "bundle exec hanami server"
@@ -22,8 +22,8 @@ run = "bundle exec hanami server"
 [tasks.assets]
 run = "bundle exec hanami assets watch"
 
-[tasks.islands]
-run = "npm run dev:islands"
+[tasks.frontend]
+run = "npm run dev:frontend"
 
 [tasks.floci]
 run = "docker compose up"
