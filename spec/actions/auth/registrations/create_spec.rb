@@ -17,15 +17,29 @@ RSpec.describe PastaAtlas::Actions::Auth::Registrations::Create, :action_env do
     end
   end
 
+  context "when terms are not agreed" do
+    let(:env) { locale_env.merge("rack.session" => {"pending_auth" => pending_auth}, :name => "alice") }
+
+    it "returns 422 with error" do
+      response = action.call(env)
+
+      expect(response.status).to eq(422)
+      body = JSON.parse(response.body.join)
+      expect(body["error"]).to eq("error-terms-required")
+    end
+  end
+
   context "when registration fails with validation error" do
     before do
       allow(create_registration).to receive(:call).and_return(Failure([:invalid, "error-username-taken"]))
     end
 
-    it "renders the form with an error" do
+    it "returns 422 with error" do
       response = action.call(base_env)
 
-      expect(response.status).to eq(200)
+      expect(response.status).to eq(422)
+      body = JSON.parse(response.body.join)
+      expect(body["error"]).to eq("error-username-taken")
     end
   end
 
@@ -36,11 +50,12 @@ RSpec.describe PastaAtlas::Actions::Auth::Registrations::Create, :action_env do
       allow(create_registration).to receive(:call).and_return(Success(user))
     end
 
-    it "redirects to root" do
+    it "returns 200 with redirect_to" do
       response = action.call(base_env)
 
-      expect(response.status).to eq(302)
-      expect(response.headers["Location"]).to eq("/")
+      expect(response.status).to eq(200)
+      body = JSON.parse(response.body.join)
+      expect(body["redirect_to"]).to eq("/")
     end
   end
 end

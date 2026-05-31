@@ -7,10 +7,6 @@ module PastaAtlas
         include Deps[list_maps: "operations.maps.list"]
 
         def handle(request, response)
-          unless request.env["HTTP_ACCEPT"]&.include?("application/json")
-            return response.render(view)
-          end
-
           page = [Integer(request.params[:page] || 1, exception: false) || 1, 1].max
           case list_maps.call(page:)
           in Success(payload)

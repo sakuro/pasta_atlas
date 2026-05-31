@@ -50,7 +50,8 @@ const validateImage = (file: File): Promise<I18nError | null> =>
 interface Props {
   currentAvatarUrl: string | null;
   userName: string;
-  form: HTMLFormElement | null;
+  form?: HTMLFormElement | null;
+  onAvatarChanged?: (s3Key: string | null) => void;
 }
 
 export const AvatarUpload = (props: Props) => {
@@ -87,35 +88,26 @@ export const AvatarUpload = (props: Props) => {
     onCleanup(() => props.form?.removeEventListener("submit", handler));
   });
 
-  const handleFormSubmit = async (e: SubmitEvent) => {
-    const s = state();
-
-    if (s.type === "removing") {
-      e.preventDefault();
-      setState({ type: "uploading" });
-      try {
-        const resp = await fetch(`/@${props.userName}/avatar`, {
-          method: "DELETE",
-          headers: { "X-CSRF-Token": csrfToken() },
-        });
-        if (!resp.ok) {
-          setState({ type: "error", error: { msgId: "avatar-error-remove-http", msgArgs: { status: resp.status } } });
-          return;
-        }
-      } catch {
-        setState({ type: "error", error: { msgId: "avatar-error-network" } });
-        return;
-      }
-      props.form!.submit();
-      return;
-    }
-
-    if (s.type !== "selected") return;
-
-    e.preventDefault();
-    const { file, previewUrl } = s;
+  const removeAvatar = async (): Promise<boolean> => {
     setState({ type: "uploading" });
+    try {
+      const resp = await fetch(`/@${props.userName}/avatar`, {
+        method: "DELETE",
+        headers: { "X-CSRF-Token": csrfToken() },
+      });
+      if (!resp.ok) {
+        setState({ type: "error", error: { msgId: "avatar-error-remove-http", msgArgs: { status: resp.status } } });
+        return false;
+      }
+      return true;
+    } catch {
+      setState({ type: "error", error: { msgId: "avatar-error-network" } });
+      return false;
+    }
+  };
 
+  const uploadAvatar = async (file: File): Promise<string | null> => {
+    setState({ type: "uploading" });
     let presignedUrl: string, s3Key: string;
     try {
       const resp = await fetch("/api/v1/profile/avatar_presigned_url", {
@@ -125,16 +117,15 @@ export const AvatarUpload = (props: Props) => {
       });
       if (!resp.ok) {
         setState({ type: "error", error: { msgId: "avatar-error-url-http", msgArgs: { status: resp.status } } });
-        return;
+        return null;
       }
       const data = await resp.json() as { presigned_url: string; s3_key: string };
       presignedUrl = data.presigned_url;
       s3Key = data.s3_key;
     } catch {
       setState({ type: "error", error: { msgId: "avatar-error-network" } });
-      return;
+      return null;
     }
-
     try {
       const resp = await fetch(presignedUrl, {
         method: "PUT",
@@ -143,24 +134,53 @@ export const AvatarUpload = (props: Props) => {
       });
       if (!resp.ok) {
         setState({ type: "error", error: { msgId: "avatar-error-upload-http", msgArgs: { status: resp.status } } });
-        return;
+        return null;
       }
     } catch {
       setState({ type: "error", error: { msgId: "avatar-error-upload-network" } });
+      return null;
+    }
+    return s3Key;
+  };
+
+  const handleFormSubmit = async (e: SubmitEvent) => {
+    const s = state();
+
+    if (s.type === "removing") {
+      e.preventDefault();
+      const ok = await removeAvatar();
+      if (!ok) return;
+      if (props.onAvatarChanged) {
+        setState({ type: "idle" });
+        props.onAvatarChanged(null);
+      } else {
+        props.form!.submit();
+      }
       return;
     }
 
+    if (s.type !== "selected") return;
+
+    e.preventDefault();
+    const { file, previewUrl } = s;
+    const s3Key = await uploadAvatar(file);
+    if (!s3Key) return;
+
     URL.revokeObjectURL(previewUrl);
 
-    const existing = props.form!.querySelector<HTMLInputElement>('input[name="avatar_s3_key"]');
-    if (existing) existing.remove();
-    const hidden = document.createElement("input");
-    hidden.type = "hidden";
-    hidden.name = "avatar_s3_key";
-    hidden.value = s3Key;
-    props.form!.appendChild(hidden);
-
-    props.form!.submit();
+    if (props.onAvatarChanged) {
+      setState({ type: "idle" });
+      props.onAvatarChanged(s3Key);
+    } else {
+      const existing = props.form!.querySelector<HTMLInputElement>('input[name="avatar_s3_key"]');
+      if (existing) existing.remove();
+      const hidden = document.createElement("input");
+      hidden.type = "hidden";
+      hidden.name = "avatar_s3_key";
+      hidden.value = s3Key;
+      props.form!.appendChild(hidden);
+      props.form!.submit();
+    }
   };
 
   const avatarStyle = "border-radius:50%;object-fit:cover";

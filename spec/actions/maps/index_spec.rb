@@ -14,40 +14,27 @@ RSpec.describe PastaAtlas::Actions::Maps::Index, :action_env do
     allow(list_maps).to receive(:call).and_return(Success(payload))
   end
 
-  context "when requesting HTML" do
-    it "returns 200 without calling the operation" do
-      response = action.call(locale_env)
+  it "returns 200 with JSON content type" do
+    response = action.call(locale_env)
 
-      expect(response.status).to eq(200)
-      expect(list_maps).not_to have_received(:call)
-    end
+    expect(response.status).to eq(200)
+    expect(response.headers["Content-Type"]).to eq("application/json")
   end
 
-  context "when requesting JSON" do
-    let(:json_env) { locale_env.merge("HTTP_ACCEPT" => "application/json") }
+  it "returns map data with pagination metadata" do
+    response = action.call(locale_env)
 
-    it "returns 200 with JSON content type" do
-      response = action.call(json_env)
+    body = JSON.parse(response.body.first, symbolize_names: true)
+    expect(body[:maps].length).to eq(1)
+    expect(body[:maps].first[:ulid]).to eq("01MAP")
+    expect(body[:page]).to eq(1)
+    expect(body[:per_page]).to eq(20)
+    expect(body[:total]).to eq(1)
+  end
 
-      expect(response.status).to eq(200)
-      expect(response.headers["Content-Type"]).to eq("application/json")
-    end
+  it "calls the operation with the requested page" do
+    action.call(locale_env.merge(page: "3"))
 
-    it "returns map data with pagination metadata" do
-      response = action.call(json_env)
-
-      body = JSON.parse(response.body.first, symbolize_names: true)
-      expect(body[:maps].length).to eq(1)
-      expect(body[:maps].first[:ulid]).to eq("01MAP")
-      expect(body[:page]).to eq(1)
-      expect(body[:per_page]).to eq(20)
-      expect(body[:total]).to eq(1)
-    end
-
-    it "calls the operation with the requested page" do
-      action.call(json_env.merge(page: "3"))
-
-      expect(list_maps).to have_received(:call).with(page: 3)
-    end
+    expect(list_maps).to have_received(:call).with(page: 3)
   end
 end

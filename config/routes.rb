@@ -2,17 +2,17 @@
 
 module PastaAtlas
   class Routes < Hanami::Routes
-    root to: "maps.index"
+    root to: "spa.shell"
 
     get "/up", to: ->(_env) { [200, {"content-type" => "text/plain"}, ["OK"]] }
 
-    get "/about", to: "pages.about", as: :about
-    get "/privacy", to: "pages.privacy_policy", as: :privacy_policy
-    get "/terms", to: "pages.terms_of_service", as: :terms_of_service
-    get "/@:user_name/maps/:ulid", to: "maps.viewer", as: :map_viewer
+    get "/about", to: "spa.shell", as: :about
+    get "/privacy", to: "spa.shell", as: :privacy_policy
+    get "/terms", to: "spa.shell", as: :terms_of_service
+    get "/@:user_name/maps/:ulid", to: "spa.shell", as: :map_viewer
     post "/maps/:ulid/deletion_requests", to: "maps.deletion_requests.create"
 
-    get "/@:user_name", to: "user.show", as: :user
+    get "/@:user_name", to: "spa.shell", as: :user
     get "/@:user_name/maps", to: "user.maps.index"
     get "/@:user_name/profile", to: "user.profile.show"
     patch "/@:user_name/profile", to: "user.profile.update", as: :user_profile
@@ -28,10 +28,16 @@ module PastaAtlas
     get "/auth/github/callback", to: "auth.github.callback"
     post "/auth/steam/callback", to: "auth.steam.callback"
     get "/auth/failure", to: "auth.failure"
-    get "/auth/register", to: "auth.registrations.new", as: :auth_registrations
+    get "/auth/register", to: "spa.shell", as: :auth_registrations
     post "/auth/register", to: "auth.registrations.create"
     delete "/auth/session", to: "auth.session.destroy", as: :auth_session
 
+    get "/api/v1/auth/current", to: "api.auth.current"
+    get "/api/v1/auth/registration", to: "api.auth.registration"
+    get "/api/v1/pages/:slug", to: "api.pages.show"
+
+    get "/api/v1/maps", to: "maps.index"
+    get "/api/v1/users/:name", to: "api.users.show"
     get "/api/v1/maps/lookup", to: "maps.lookup"
     get "/api/v1/maps/:ulid", to: "maps.show"
     patch "/api/v1/maps/:ulid/name", to: "maps.update_name"

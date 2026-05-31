@@ -47,43 +47,18 @@ RSpec.describe PastaAtlas::Actions::User::Preferences::Update do
         .and_return(Success({user:, locale: "ja"}))
     end
 
-    it "updates preferences and redirects to the user page" do
+    it "returns 200 with locale" do
       response = action.call(env)
 
-      expect(response.status).to eq(302)
-      expect(response.headers["Location"]).to eq("/@sakuro#tab-preferences")
+      expect(response.status).to eq(200)
+      body = JSON.parse(response.body.join)
+      expect(body["locale"]).to eq("ja")
     end
 
-    context "when timezone is invalid" do
-      let(:env) { {"rack.session" => {"user_id" => 1}, :user_name => "sakuro", :timezone => "Invalid/Zone", :locale => ""} }
+    it "keeps locale in session" do
+      action.call(env)
 
-      before do
-        allow(update_preferences).to receive(:call)
-          .with(hash_including(user_id: 1, user_name: "sakuro"))
-          .and_return(Success({user:, locale: nil}))
-      end
-
-      it "falls back to UTC and clears locale" do
-        response = action.call(env)
-
-        expect(response.status).to eq(302)
-      end
-    end
-
-    context "when locale is unsupported" do
-      let(:env) { {"rack.session" => {"user_id" => 1}, :user_name => "sakuro", :timezone => "UTC", :locale => "fr"} }
-
-      before do
-        allow(update_preferences).to receive(:call)
-          .with(hash_including(user_id: 1, user_name: "sakuro"))
-          .and_return(Success({user:, locale: nil}))
-      end
-
-      it "saves nil for locale" do
-        action.call(env)
-
-        expect(update_preferences).to have_received(:call)
-      end
+      expect(env["rack.session"]["locale"]).to eq("ja")
     end
   end
 end

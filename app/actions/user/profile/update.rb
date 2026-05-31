@@ -5,7 +5,11 @@ module PastaAtlas
     module User
       module Profile
         class Update < PastaAtlas::Action
-          include Deps[update_profile: "operations.user.profile.update"]
+          include Deps[
+            "settings",
+            load_profile: "operations.user.profile.load",
+            update_profile: "operations.user.profile.update"
+          ]
 
           params do
             required(:user_name).filled(:string)
@@ -22,12 +26,15 @@ module PastaAtlas
             )
             case result
             in Failure(:invalid, error)
-              response.flash[:error] = error
-              response.redirect_to "#{routes.path(:user, user_name: request.params[:user_name])}#tab-profile"
+              json_response(response, {error:}, status: 422)
             in Failure(Symbol => status)
               halt status
             in Success(user)
-              response.redirect_to "#{routes.path(:user, user_name: user.name)}#tab-profile"
+              profile_data = load_profile.call(user_id: user.id).value!
+              json_response(response, {
+                display_name: profile_data[:display_name] || user.name,
+                avatar_url: profile_data[:avatar_url]
+              })
             end
           end
         end

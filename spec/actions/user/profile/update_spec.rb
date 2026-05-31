@@ -2,9 +2,16 @@
 
 RSpec.describe PastaAtlas::Actions::User::Profile::Update do
   let(:update_profile) { instance_double(PastaAtlas::Operations::User::Profile::Update) }
-  let(:action) { PastaAtlas::Actions::User::Profile::Update.new(update_profile:) }
+  let(:load_profile) { instance_double(PastaAtlas::Operations::User::Profile::Load) }
+  let(:settings) { double("Settings", cloudfront_base_url: "https://cdn.example.com") }
+  let(:action) { PastaAtlas::Actions::User::Profile::Update.new(load_profile:, settings:, update_profile:) }
 
   let(:user) { double("User", id: 1, name: "sakuro") }
+
+  before do
+    allow(load_profile).to receive(:call).with(user_id: 1)
+      .and_return(Success({display_name: "Sakuro", avatar_url: nil}))
+  end
 
   context "when not logged in" do
     let(:env) { {"rack.session" => {}, :user_name => "sakuro", :display_name => "Sakuro"} }
@@ -47,11 +54,13 @@ RSpec.describe PastaAtlas::Actions::User::Profile::Update do
         .and_return(Success(user))
     end
 
-    it "updates the profile and redirects to the user page" do
+    it "returns 200 with updated profile data" do
       response = action.call(env)
 
-      expect(response.status).to eq(302)
-      expect(response.headers["Location"]).to eq("/@sakuro#tab-profile")
+      expect(response.status).to eq(200)
+      body = JSON.parse(response.body.join)
+      expect(body["display_name"]).to eq("Sakuro")
+      expect(body["avatar_url"]).to be_nil
     end
 
     context "when display_name is invalid" do
@@ -60,14 +69,15 @@ RSpec.describe PastaAtlas::Actions::User::Profile::Update do
       before do
         allow(update_profile).to receive(:call)
           .with(hash_including(user_id: 1, user_name: "sakuro"))
-          .and_return(Failure([:invalid, "Display name must be 64 characters or fewer."]))
+          .and_return(Failure([:invalid, "error-profile-display-name-too-long"]))
       end
 
-      it "redirects back to the profile tab with a flash error" do
+      it "returns 422 with error" do
         response = action.call(env)
 
-        expect(response.status).to eq(302)
-        expect(response.headers["Location"]).to eq("/@sakuro#tab-profile")
+        expect(response.status).to eq(422)
+        body = JSON.parse(response.body.join)
+        expect(body["error"]).to eq("error-profile-display-name-too-long")
       end
     end
   end

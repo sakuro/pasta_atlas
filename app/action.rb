@@ -2,6 +2,7 @@
 # frozen_string_literal: true
 
 require "dry/monads"
+require "foxtail"
 require "hanami/action"
 require "json"
 require "rack/icu4x/locale"

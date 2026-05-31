@@ -1,5 +1,6 @@
 import { createResource, createSignal, For, onCleanup, onMount, Show } from "solid-js";
-import "../../l10n";
+import { l10n } from "../../l10n";
+import { applyPreferences, lang } from "../../display-settings";
 
 type PreferencesData = {
   timezone: string;
@@ -27,13 +28,18 @@ const groupTimezones = (identifiers: string[]): { region: string; timezones: str
 
 const localeDisplayName = (locale: string): string => {
   try {
-    return new Intl.DisplayNames([document.documentElement.lang || "en"], { type: "language" }).of(locale) ?? locale;
+    return new Intl.DisplayNames([lang()], { type: "language" }).of(locale) ?? locale;
   } catch {
     return locale;
   }
 };
 
-export const UserPreferencesTab = (props: { userName: string; active: () => boolean }) => {
+export const UserPreferencesTab = (props: {
+  userName: string;
+  active: () => boolean;
+  onSuccess?: () => void;
+  onError?: (msgKey: string) => void;
+}) => {
   const [data] = createResource(props.active, async (isActive) => {
     if (!isActive) return undefined;
     const res = await fetch(`/@${props.userName}/preferences`);
@@ -43,6 +49,7 @@ export const UserPreferencesTab = (props: { userName: string; active: () => bool
 
   const [selectedTz, setSelectedTz] = createSignal("");
   const [tzTime, setTzTime] = createSignal("");
+  const [submitting, setSubmitting] = createSignal(false);
 
   const updateTzTime = () => setTzTime(currentTimeInTz(selectedTz()));
 
@@ -67,6 +74,39 @@ export const UserPreferencesTab = (props: { userName: string; active: () => bool
     setTzTime(currentTimeInTz(pref.timezone));
   };
 
+  const handleSubmit = async (e: SubmitEvent) => {
+    e.preventDefault();
+    setSubmitting(true);
+    const form = e.currentTarget as HTMLFormElement;
+    const formData = new FormData(form);
+    try {
+      const res = await fetch(`/@${props.userName}/preferences`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json", "X-CSRF-Token": csrfToken() },
+        body: JSON.stringify({
+          user_name: props.userName,
+          timezone: formData.get("timezone") as string,
+          locale: formData.get("locale") as string,
+          relative_timestamps: formData.get("relative_timestamps") as string,
+        }),
+      });
+      if (res.ok) {
+        const json = await res.json() as { locale: string | null };
+        applyPreferences(
+          json.locale,
+          formData.get("timezone") as string,
+          formData.get("relative_timestamps") === "true",
+        );
+        l10n.onChange();
+        props.onSuccess?.();
+      } else {
+        props.onError?.("error-unknown");
+      }
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
   return (
     <>
       <Show when={data.loading}>
@@ -81,10 +121,7 @@ export const UserPreferencesTab = (props: { userName: string; active: () => bool
         {(pref) => {
           initTz(pref);
           return (
-            <form action={`/@${props.userName}/preferences`} method="post">
-              <input type="hidden" name="_method" value="patch" />
-              <input type="hidden" name="_csrf_token" value={csrfToken()} />
-              <input type="hidden" name="user_name" value={props.userName} />
+            <form onSubmit={(e) => void handleSubmit(e)}>
               <div class="field">
                 <p class="label">
                   <span class="icon-text">
@@ -158,7 +195,7 @@ export const UserPreferencesTab = (props: { userName: string; active: () => bool
               </div>
               <div class="field">
                 <div class="control">
-                  <button class="button is-primary" type="submit">
+                  <button class="button is-primary" type="submit" disabled={submitting()}>
                     <span class="icon"><i class="fa-solid fa-floppy-disk" /></span>
                     <span data-l10n-id="edit-save-preferences" />
                   </button>

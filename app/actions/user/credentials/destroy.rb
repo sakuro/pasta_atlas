@@ -25,9 +25,11 @@ module PastaAtlas
               halt :not_found unless ALLOWED_PROVIDERS.include?(request.params[:provider])
 
               unlink_result = unlink.call(user_id: user.id, provider: request.params[:provider])
-              response.flash[:error] = "error-credential-last" if unlink_result.failure?
-
-              response.redirect_to "#{routes.path(:user, user_name: user.name)}#tab-credentials"
+              if unlink_result.failure?
+                json_response(response, {error: "error-credential-last"}, status: 422)
+              else
+                response.status = :no_content
+              end
             end
           end
         end

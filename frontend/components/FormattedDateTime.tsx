@@ -1,6 +1,4 @@
-const lang = () => document.documentElement.lang || "en";
-const timezone = () => document.documentElement.dataset.timezone ?? "UTC";
-const relativeTimestamps = () => document.documentElement.dataset.relativeTimestamps === "true";
+import { lang, timezone, relativeTimestamps } from "../display-settings";
 
 const formatAbsolute = (dateTime: string): string =>
   new Intl.DateTimeFormat(lang(), {

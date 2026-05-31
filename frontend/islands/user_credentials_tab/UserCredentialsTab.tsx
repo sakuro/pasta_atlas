@@ -1,4 +1,4 @@
-import { createResource, For, Show } from "solid-js";
+import { createResource, createSignal, For, Show } from "solid-js";
 import "../../l10n";
 
 type CredentialsData = {
@@ -13,13 +13,36 @@ export const UserCredentialsTab = (props: {
   userName: string;
   omniauthToken: string;
   active: () => boolean;
+  onSuccess?: () => void;
+  onError?: (msgKey: string) => void;
 }) => {
-  const [data] = createResource(props.active, async (isActive) => {
+  const [data, { refetch }] = createResource(props.active, async (isActive) => {
     if (!isActive) return undefined;
     const res = await fetch(`/@${props.userName}/credentials`);
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     return res.json() as Promise<CredentialsData>;
   });
+
+  const [disconnecting, setDisconnecting] = createSignal<string | null>(null);
+
+  const handleDisconnect = async (provider: string) => {
+    setDisconnecting(provider);
+    try {
+      const res = await fetch(`/@${props.userName}/credentials/${provider}`, {
+        method: "DELETE",
+        headers: { "X-CSRF-Token": csrfToken() },
+      });
+      if (res.ok) {
+        refetch();
+        props.onSuccess?.();
+      } else {
+        const json = await res.json() as { error?: string };
+        props.onError?.(json.error ?? "error-unknown");
+      }
+    } finally {
+      setDisconnecting(null);
+    }
+  };
 
   return (
     <>
@@ -53,18 +76,15 @@ export const UserCredentialsTab = (props: {
                             </form>
                           }
                         >
-                          <form action={`/@${props.userName}/credentials/${provider}`} method="post">
-                            <input type="hidden" name="_method" value="delete" />
-                            <input type="hidden" name="_csrf_token" value={csrfToken()} />
-                            <button
-                              class="button is-danger is-light"
-                              type="submit"
-                              disabled={onlyOne()}
-                            >
-                              <span class="icon"><i class={`fa-brands fa-${provider}`} /></span>
-                              <span data-l10n-id={`credential-disconnect-${provider}`} />
-                            </button>
-                          </form>
+                          <button
+                            class="button is-danger is-light"
+                            type="button"
+                            disabled={onlyOne() || disconnecting() === provider}
+                            onClick={() => void handleDisconnect(provider)}
+                          >
+                            <span class="icon"><i class={`fa-brands fa-${provider}`} /></span>
+                            <span data-l10n-id={`credential-disconnect-${provider}`} />
+                          </button>
                         </Show>
                       </div>
                     )}

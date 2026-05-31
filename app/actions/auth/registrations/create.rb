@@ -16,7 +16,10 @@ module PastaAtlas
           def handle(request, response)
             pending = request.session[:pending_auth]
             halt :forbidden unless pending
-            halt :unprocessable_entity unless request.params[:terms] == "1"
+
+            unless request.params[:terms] == "1"
+              return json_response(response, {error: "error-terms-required"}, status: 422)
+            end
 
             name = request.params[:name].to_s.downcase
             result = create_registration.call(
@@ -28,13 +31,13 @@ module PastaAtlas
             )
             case result
             in Dry::Monads::Result::Failure(:invalid, error_key)
-              response.render(view, suggested_name: name, error: i18n(request).format(error_key))
+              json_response(response, {error: error_key}, status: 422)
             in Dry::Monads::Result::Failure(Symbol => status)
               halt status
             in Success(user)
               request.session.delete(:pending_auth)
               request.session[:user_id] = user.id
-              response.redirect_to routes.path(:root)
+              json_response(response, {redirect_to: "/"})
             end
           end
         end
