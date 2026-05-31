@@ -13,19 +13,19 @@ module PastaAtlas
           private_constant :SLUG_MAP
 
           def handle(request, response)
-            template_dir = SLUG_MAP[request.params[:slug].to_s]
-            halt :not_found unless template_dir
+            page_dir = SLUG_MAP[request.params[:slug].to_s]
+            halt :not_found unless page_dir
 
-            locale = resolve_locale(request, template_dir)
-            content_path = Hanami.app.root.join("app/templates/pages/#{template_dir}/#{locale}.html")
+            locale = resolve_locale(request, page_dir)
+            content_path = Hanami.app.root.join("app/page_content/#{page_dir}/#{locale}.html")
 
             json_response(response, {content: content_path.read})
           end
 
-          private def resolve_locale(request, template_dir)
+          private def resolve_locale(request, page_dir)
             tags = (request.env[::Rack::ICU4X::Locale::ENV_KEY] || []).map(&:to_s)
             tags.find {|tag|
-              Hanami.app.root.join("app/templates/pages/#{template_dir}/#{tag}.html").exist?
+              Hanami.app.root.join("app/page_content/#{page_dir}/#{tag}.html").exist?
             } || "en"
           end
         end
