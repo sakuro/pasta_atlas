@@ -39,6 +39,7 @@ error-username-too-long = Username must be 39 characters or fewer.
 error-username-invalid-chars = Username may only contain letters, numbers, hyphens, and underscores, and must start and end with a letter or number.
 error-username-reserved = That username is reserved.
 error-username-taken = That username is already taken.
+error-load-failed = Failed to load data.
 
 ## User page
 user-tab-maps = Recent Maps

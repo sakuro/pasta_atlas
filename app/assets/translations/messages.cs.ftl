@@ -56,6 +56,7 @@ error-username-too-long = Uživatelské jméno musí mít nejvýše 39 znaků.
 error-username-invalid-chars = Uživatelské jméno smí obsahovat pouze písmena, číslice, pomlčky a podtržítka a musí začínat a končit písmenem nebo číslicí.
 error-username-reserved = Toto uživatelské jméno je rezervováno.
 error-username-taken = Toto uživatelské jméno je již obsazeno.
+error-load-failed = Nepodařilo se načíst data.
 
 ## User page
 user-tab-maps = Nedávné mapy

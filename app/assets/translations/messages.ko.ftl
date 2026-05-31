@@ -39,6 +39,7 @@ error-username-too-long = 사용자 이름은 39자 이하여야 합니다.
 error-username-invalid-chars = 사용자 이름에는 영문자, 숫자, 하이픈, 밑줄만 사용할 수 있으며, 첫 글자와 마지막 글자는 영문자 또는 숫자여야 합니다.
 error-username-reserved = 해당 사용자 이름은 사용할 수 없습니다.
 error-username-taken = 해당 사용자 이름은 이미 사용 중입니다.
+error-load-failed = 데이터를 불러오는 데 실패했습니다.
 
 ## User page
 user-tab-maps = 최근 맵

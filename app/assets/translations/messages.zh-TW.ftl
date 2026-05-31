@@ -39,6 +39,7 @@ error-username-too-long = 使用者名稱不得超過 39 個字元。
 error-username-invalid-chars = 使用者名稱只能包含英文字母、數字、連字號和底線，且開頭與結尾必須為英文字母或數字。
 error-username-reserved = 此使用者名稱已被保留。
 error-username-taken = 此使用者名稱已被使用。
+error-load-failed = 資料載入失敗。
 
 ## User page
 user-tab-maps = 最近的地圖
