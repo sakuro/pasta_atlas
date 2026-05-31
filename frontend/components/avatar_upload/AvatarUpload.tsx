@@ -91,7 +91,7 @@ export const AvatarUpload = (props: Props) => {
   const removeAvatar = async (): Promise<boolean> => {
     setState({ type: "uploading" });
     try {
-      const resp = await fetch(`/@${props.userName}/avatar`, {
+      const resp = await fetch(`/api/v1/users/${props.userName}/avatar`, {
         method: "DELETE",
         headers: { "X-CSRF-Token": csrfToken() },
       });

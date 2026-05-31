@@ -18,7 +18,7 @@ export const UserCredentialsTab = (props: {
 }) => {
   const [data, { refetch }] = createResource(props.active, async (isActive) => {
     if (!isActive) return undefined;
-    const res = await fetch(`/@${props.userName}/credentials`);
+    const res = await fetch(`/api/v1/users/${props.userName}/credentials`);
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     return res.json() as Promise<CredentialsData>;
   });
@@ -28,7 +28,7 @@ export const UserCredentialsTab = (props: {
   const handleDisconnect = async (provider: string) => {
     setDisconnecting(provider);
     try {
-      const res = await fetch(`/@${props.userName}/credentials/${provider}`, {
+      const res = await fetch(`/api/v1/users/${props.userName}/credentials/${provider}`, {
         method: "DELETE",
         headers: { "X-CSRF-Token": csrfToken() },
       });

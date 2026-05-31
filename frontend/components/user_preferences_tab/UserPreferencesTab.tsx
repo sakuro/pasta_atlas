@@ -42,7 +42,7 @@ export const UserPreferencesTab = (props: {
 }) => {
   const [data] = createResource(props.active, async (isActive) => {
     if (!isActive) return undefined;
-    const res = await fetch(`/@${props.userName}/preferences`);
+    const res = await fetch(`/api/v1/users/${props.userName}/preferences`);
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     return res.json() as Promise<PreferencesData>;
   });
@@ -80,7 +80,7 @@ export const UserPreferencesTab = (props: {
     const form = e.currentTarget as HTMLFormElement;
     const formData = new FormData(form);
     try {
-      const res = await fetch(`/@${props.userName}/preferences`, {
+      const res = await fetch(`/api/v1/users/${props.userName}/preferences`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json", "X-CSRF-Token": csrfToken() },
         body: JSON.stringify({

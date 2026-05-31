@@ -21,7 +21,7 @@ export const UserProfileTab = (props: {
 }) => {
   const [data] = createResource(props.active, async (isActive) => {
     if (!isActive) return undefined;
-    const res = await fetch(`/@${props.userName}/profile`);
+    const res = await fetch(`/api/v1/users/${props.userName}/profile`);
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     return res.json() as Promise<ProfileData>;
   });
@@ -41,7 +41,7 @@ export const UserProfileTab = (props: {
       const pending = pendingAvatarS3Key();
       if (pending !== undefined) body.avatar_s3_key = pending ?? "";
 
-      const res = await fetch(`/@${props.userName}/profile`, {
+      const res = await fetch(`/api/v1/users/${props.userName}/profile`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json", "X-CSRF-Token": csrfToken() },
         body: JSON.stringify(body),

@@ -140,7 +140,7 @@ export const MapViewer = (props: MapViewerProps) => {
   const [showDeleteConfirm, setShowDeleteConfirm] = createSignal(false);
 
   const handleDelete = async () => {
-    const res = await fetch(`/maps/${props.ulid}/deletion_requests`, {
+    const res = await fetch(`/api/v1/maps/${props.ulid}/deletion_requests`, {
       method: "POST",
       headers: { "X-CSRF-Token": csrfToken() },
       redirect: "manual",

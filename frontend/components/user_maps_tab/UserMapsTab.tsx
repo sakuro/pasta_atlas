@@ -7,7 +7,7 @@ type MapsResponse = { maps: MapData[] };
 export const UserMapsTab = (props: { userName: string; active: () => boolean }) => {
   const [data] = createResource(props.active, async (isActive) => {
     if (!isActive) return undefined;
-    const res = await fetch(`/@${props.userName}/maps`);
+    const res = await fetch(`/api/v1/users/${props.userName}/maps`);
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     return res.json() as Promise<MapsResponse>;
   });

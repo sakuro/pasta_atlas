@@ -18,7 +18,7 @@ export const UserDangerTab = (props: {
     if (confirmValue() !== props.userName) return;
     setSubmitting(true);
     try {
-      const res = await fetch(`/@${props.userName}`, {
+      const res = await fetch(`/api/v1/users/${props.userName}`, {
         method: "DELETE",
         headers: { "Content-Type": "application/json", "X-CSRF-Token": csrfToken() },
         body: JSON.stringify({ user_name: props.userName, confirm_user_name: confirmValue() }),
