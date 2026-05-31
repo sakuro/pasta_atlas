@@ -40,6 +40,7 @@
 
 body {
   padding-top: 3.25rem;
+  padding-bottom: 3.5rem;
 }
 
 .modal {
@@ -54,6 +55,11 @@ body {
 
 .footer {
   padding: 1rem 1.5rem;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 1050;
 }
 
 .footer-logo {
@@ -79,6 +85,7 @@ html:has(.map-viewer-page) {
 html:has(.map-viewer-page) body {
   height: 100%;
   overflow: hidden;
+  padding-bottom: 0;
   display: flex;
   flex-direction: column;
 }
