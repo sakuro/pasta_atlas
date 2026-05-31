@@ -20,14 +20,27 @@
         [instrumental] Steamem
        *[other] Steam
     }
--factorio = Factorio
+-factorio =
+    { $case ->
+        [genitive] Factoria
+       *[other] Factorio
+    }
 
 ## App
 app-name = { -app-name }
 discord-name = { -discord }
-factorio-name = { -factorio }
+factorio-name =
+    { $case ->
+        [genitive] { -factorio(case: "genitive") }
+       *[other] { -factorio }
+    }
 github-name = { -github }
-mapshot-name = { -mapshot }
+mapshot-name =
+    { $case ->
+        [genitive] { -mapshot(case: "genitive") }
+        [accusative] { -mapshot(case: "accusative") }
+       *[other] { -mapshot }
+    }
 steam-name = { -steam }
 
 ## Surfaces
