@@ -1,8 +1,8 @@
 import { Show } from "solid-js";
 import { Avatar } from "./Avatar";
 import { FormattedDateTime } from "./FormattedDateTime";
-import { MapInfoButton } from "../islands/map_info_button/MapInfoButton";
-import { ShareButtons } from "../islands/share_buttons/ShareButtons";
+import { MapInfoButton } from "./map_info_button/MapInfoButton";
+import { ShareButtons } from "./share_buttons/ShareButtons";
 
 export type MapData = {
   ulid: string;

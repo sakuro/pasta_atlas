@@ -1,8 +1,8 @@
 import { createSignal, Show } from "solid-js";
 import { A, RouteSectionProps } from "@solidjs/router";
-import { NavbarEnd } from "../islands/navbar_end/NavbarEnd";
-import { Footer } from "../islands/footer/Footer";
-import { UploadModal } from "../islands/upload_modal/UploadModal";
+import { NavbarEnd } from "../components/navbar_end/NavbarEnd";
+import { Footer } from "../components/footer/Footer";
+import { UploadModal } from "../components/upload_modal/UploadModal";
 import { useAuth } from "../contexts/AuthContext";
 import logoSrc from "../../app/assets/images/layer8.png";
 

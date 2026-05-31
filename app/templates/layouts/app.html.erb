@@ -10,10 +10,10 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Jost:wght@400;700;900&display=swap" rel="stylesheet">
-    <% island_css_srcs("app").each do |css_url| %>
+    <% app_css_srcs.each do |css_url| %>
       <link rel="stylesheet" href="<%= css_url %>">
     <% end %>
-    <script src="<%= island_src("app") %>" type="module"></script>
+    <script src="<%= app_src %>" type="module"></script>
   </head>
   <body>
     <%= yield %>
