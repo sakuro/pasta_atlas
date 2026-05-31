@@ -39,7 +39,7 @@ export const ToastProvider: ParentComponent = (props) => {
               style={{ "margin-bottom": "0.5rem", "pointer-events": "auto" }}
             >
               <button class="delete" onClick={() => dismiss(toast.id)} />
-              {toast.message}
+              <span data-l10n-id={toast.message} />
             </div>
           )}
         </For>

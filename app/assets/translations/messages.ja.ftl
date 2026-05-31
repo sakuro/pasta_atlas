@@ -88,6 +88,11 @@ credential-disconnect-github = { -github } の連携を解除
 credential-disconnect-steam = { -steam } の連携を解除
 credential-last-hint = 少なくとも1つの連携済アカウントが必要です。
 
+## Success notices
+profile-saved = プロフィールを保存しました。
+preferences-saved = 設定を保存しました。
+credential-disconnected = アカウントの連携を解除しました。
+
 ## Credential errors
 error-credential-conflict = そのアカウントはすでに別のユーザーに連携されています。
 error-credential-last = 少なくとも1つの連携済アカウントが必要です。

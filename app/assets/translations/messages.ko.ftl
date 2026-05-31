@@ -88,6 +88,11 @@ credential-disconnect-github = { -github } 연결 해제
 credential-disconnect-steam = { -steam } 연결 해제
 credential-last-hint = 최소 하나의 연결된 계정이 필요합니다.
 
+## Success notices
+profile-saved = 프로필이 저장되었습니다.
+preferences-saved = 설정이 저장되었습니다.
+credential-disconnected = 계정 연결이 해제되었습니다.
+
 ## Credential errors
 error-credential-conflict = 해당 계정은 이미 다른 사용자에게 연결되어 있습니다.
 error-credential-last = 최소 하나의 연결된 계정이 필요합니다.

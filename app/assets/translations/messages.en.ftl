@@ -88,6 +88,11 @@ credential-disconnect-github = Disconnect { -github }
 credential-disconnect-steam = Disconnect { -steam }
 credential-last-hint = At least one connected account is required.
 
+## Success notices
+profile-saved = Profile saved.
+preferences-saved = Preferences saved.
+credential-disconnected = Account disconnected.
+
 ## Credential errors
 error-credential-conflict = That account is already linked to another user.
 error-credential-last = At least one connected account is required.

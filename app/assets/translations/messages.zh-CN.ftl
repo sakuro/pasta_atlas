@@ -88,6 +88,11 @@ credential-disconnect-github = 取消关联 { -github }
 credential-disconnect-steam = 取消关联 { -steam }
 credential-last-hint = 至少需要一个已关联账号。
 
+## Success notices
+profile-saved = 个人资料已保存。
+preferences-saved = 设置已保存。
+credential-disconnected = 账号已解绑。
+
 ## Credential errors
 error-credential-conflict = 该账号已关联至其他用户。
 error-credential-last = 至少需要一个已关联账号。

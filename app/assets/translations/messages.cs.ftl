@@ -105,6 +105,11 @@ credential-disconnect-github = Odpojit { -github }
 credential-disconnect-steam = Odpojit { -steam }
 credential-last-hint = Je vyžadován alespoň jeden propojený účet.
 
+## Success notices
+profile-saved = Profil uložen.
+preferences-saved = Nastavení uložena.
+credential-disconnected = Účet odpojen.
+
 ## Credential errors
 error-credential-conflict = Tento účet je již propojen s jiným uživatelem.
 error-credential-last = Je vyžadován alespoň jeden propojený účet.
