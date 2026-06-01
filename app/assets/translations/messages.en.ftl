@@ -22,6 +22,12 @@ surface-gleba = Gleba
 surface-fulgora = Fulgora
 surface-aquilo = Aquilo
 
+## Errors
+error-load-failed = Failed to load data.
+error-user-not-found = User not found.
+error-user-forbidden = This page is not available.
+error-page-not-found = Page not found.
+
 ### Navigation
 nav-log-out = Log out
 nav-log-in = Log in
@@ -102,10 +108,6 @@ preferences-saved = Preferences saved.
 credential-disconnected = Account disconnected.
 
 ## Errors
-error-load-failed = Failed to load data.
-error-user-not-found = User not found.
-error-user-forbidden = This page is not available.
-error-page-not-found = Page not found.
 error-credential-conflict = That account is already linked to another user.
 error-credential-last = At least one connected account is required.
 error-profile-display-name-too-long = Display name must be 30 characters or fewer.

@@ -22,6 +22,12 @@ surface-gleba = 格莱巴
 surface-fulgora = 富尔格拉
 surface-aquilo = 阿奎罗
 
+## Errors
+error-load-failed = 数据加载失败。
+error-user-not-found = 找不到该用户。
+error-user-forbidden = 此页面无法显示。
+error-page-not-found = 找不到该页面。
+
 ### Navigation
 nav-log-out = 退出登录
 nav-log-in = 登录
@@ -102,10 +108,6 @@ preferences-saved = 设置已保存。
 credential-disconnected = 账号已解绑。
 
 ## Errors
-error-load-failed = 数据加载失败。
-error-user-not-found = 找不到该用户。
-error-user-forbidden = 此页面无法显示。
-error-page-not-found = 找不到该页面。
 error-credential-conflict = 该账号已关联至其他用户。
 error-credential-last = 至少需要一个已关联账号。
 error-profile-display-name-too-long = 显示名称不得超过 30 个字符。

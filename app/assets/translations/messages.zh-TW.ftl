@@ -22,6 +22,12 @@ surface-gleba = 葛萊芭星
 surface-fulgora = 弗戈拉星
 surface-aquilo = 阿魁洛星
 
+## Errors
+error-load-failed = 資料載入失敗。
+error-user-not-found = 找不到該使用者。
+error-user-forbidden = 此頁面無法顯示。
+error-page-not-found = 找不到該頁面。
+
 ### Navigation
 nav-log-out = 登出
 nav-log-in = 登入
@@ -102,10 +108,6 @@ preferences-saved = 設定已儲存。
 credential-disconnected = 帳號已解除連結。
 
 ## Errors
-error-load-failed = 資料載入失敗。
-error-user-not-found = 找不到該使用者。
-error-user-forbidden = 此頁面無法顯示。
-error-page-not-found = 找不到該頁面。
 error-credential-conflict = 此帳號已連結至其他使用者。
 error-credential-last = 至少需要一個已連結帳號。
 error-profile-display-name-too-long = 顯示名稱不得超過 30 個字元。

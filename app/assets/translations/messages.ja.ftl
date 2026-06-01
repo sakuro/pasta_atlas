@@ -22,6 +22,12 @@ surface-gleba = グレバ
 surface-fulgora = フルゴラ
 surface-aquilo = アクィロ
 
+## Errors
+error-load-failed = データの読み込みに失敗しました。
+error-user-not-found = ユーザーが見つかりません。
+error-user-forbidden = このページは表示できません。
+error-page-not-found = ページが見つかりません。
+
 ### Navigation
 nav-log-out = ログアウト
 nav-log-in = ログイン
@@ -102,10 +108,6 @@ preferences-saved = 設定を保存しました。
 credential-disconnected = アカウントの連携を解除しました。
 
 ## Errors
-error-load-failed = データの読み込みに失敗しました。
-error-user-not-found = ユーザーが見つかりません。
-error-user-forbidden = このページは表示できません。
-error-page-not-found = ページが見つかりません。
 error-credential-conflict = そのアカウントはすでに別のユーザーに連携されています。
 error-credential-last = 少なくとも1つの連携済アカウントが必要です。
 error-profile-display-name-too-long = 表示名は30文字以内にしてください。

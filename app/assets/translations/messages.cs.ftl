@@ -52,6 +52,12 @@ surface-gleba = Gleba
 surface-fulgora = Fulgora
 surface-aquilo = Aquilo
 
+## Errors
+error-load-failed = Nepodařilo se načíst data.
+error-user-not-found = Uživatel nebyl nalezen.
+error-user-forbidden = Tato stránka není k dispozici.
+error-page-not-found = Stránka nebyla nalezena.
+
 ### Navigation
 nav-log-out = Odhlásit se
 nav-log-in = Přihlásit se
@@ -132,10 +138,6 @@ preferences-saved = Nastavení uložena.
 credential-disconnected = Účet odpojen.
 
 ## Errors
-error-load-failed = Nepodařilo se načíst data.
-error-user-not-found = Uživatel nebyl nalezen.
-error-user-forbidden = Tato stránka není k dispozici.
-error-page-not-found = Stránka nebyla nalezena.
 error-credential-conflict = Tento účet je již propojen s jiným uživatelem.
 error-credential-last = Je vyžadován alespoň jeden propojený účet.
 error-profile-display-name-too-long = Zobrazované jméno musí mít nejvýše 30 znaků.
