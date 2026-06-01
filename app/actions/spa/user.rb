@@ -11,7 +11,7 @@ module PastaAtlas
           case result
           in Failure(:not_found)
             response.status = 404
-          in Success(user) if user.guest?
+          in Success(user) if user.guest? && request.params[:map_ulid].nil?
             response.status = 403
           in Success
             # 200 - default
