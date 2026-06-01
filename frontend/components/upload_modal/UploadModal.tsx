@@ -5,6 +5,8 @@ import { adjectives, animals, colors, uniqueNamesGenerator } from "unique-names-
 import "../../lib/l10n";
 import { HowToUploadModal } from "./HowToUploadModal";
 
+const segmenter = new Intl.Segmenter();
+
 const csrfToken = (): string =>
   document.querySelector<HTMLMetaElement>('meta[name="csrf-token"]')?.content ?? "";
 
@@ -94,6 +96,7 @@ export const UploadModal = (props: { isGuest: boolean }) => {
   const navigate = useNavigate();
   const [state, setState] = createSignal<State>({ type: "idle" });
   const [displayName, setDisplayName] = createSignal("");
+  const displayNameCount = () => [...segmenter.segment(displayName())].length;
   const [isExistingMap, setIsExistingMap] = createSignal(false);
   const [showHowTo, setShowHowTo] = createSignal(false);
   let inputRef!: HTMLInputElement;
@@ -399,6 +402,9 @@ export const UploadModal = (props: { isGuest: boolean }) => {
                               onInput={(e) => setDisplayName(e.currentTarget.value)}
                             />
                           </span>
+                          <p class={`help has-text-right ${displayNameCount() > 30 ? "has-text-danger" : ""}`}>
+                            {displayNameCount()} / 30
+                          </p>
                         </td>
                       </tr>
                       <tr>

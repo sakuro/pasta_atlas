@@ -4,6 +4,7 @@ import { useToast } from "../../contexts/ToastContext";
 
 const csrfToken = (): string =>
   document.querySelector<HTMLMetaElement>('meta[name="csrf-token"]')?.content ?? "";
+
 import L from "leaflet";
 import { Avatar } from "../../components/Avatar";
 import { FormattedDateTime } from "../../components/FormattedDateTime";
@@ -18,6 +19,8 @@ import "leaflet.zoomslider";
 import "leaflet-control-boxzoom";
 import zoomsliderCss from "leaflet.zoomslider/src/L.Control.Zoomslider.css?raw";
 import boxzoomCss from "leaflet-control-boxzoom/dist/leaflet-control-boxzoom.css?raw";
+
+const segmenter = new Intl.Segmenter();
 
 const pluginStyle = document.createElement("style");
 pluginStyle.textContent = zoomsliderCss + boxzoomCss +
@@ -160,6 +163,7 @@ export const MapViewer = (props: MapViewerProps) => {
   const [displayName, setDisplayName] = createSignal(untrack(() => props.displayName));
   const [isEditing, setIsEditing] = createSignal(false);
   const [editValue, setEditValue] = createSignal("");
+  const editGraphemeCount = () => [...segmenter.segment(editValue())].length;
   const isOwner = () => props.viewerName !== null && props.viewerName === props.authorName;
 
   const startEdit = () => {
@@ -230,6 +234,11 @@ export const MapViewer = (props: MapViewerProps) => {
                 ref={(el) => { el.focus(); el.select(); }}
                 style={{ "min-width": "8rem", "max-width": "20rem" }}
               />
+            </div>
+            <div class="control">
+              <span class={`button is-small is-static ${editGraphemeCount() > 30 ? "has-text-danger" : "has-text-grey-light"}`}>
+                {editGraphemeCount()} / 30
+              </span>
             </div>
             <div class="control">
               <button class="button is-small is-success" onClick={() => void saveEdit()} data-l10n-id="map-name-save-button">
