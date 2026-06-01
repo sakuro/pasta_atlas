@@ -183,18 +183,20 @@ export const UserPreferencesTab = (props: {
                     <span data-l10n-id="edit-locale" />
                   </span>
                 </label>
-                <div class="control">
-                  <div class="select">
-                    <select id="locale-select" name="locale">
-                      <option value="" selected={!pref.locale} data-l10n-id="edit-locale-use-browser" />
-                      <For each={pref.supported_locales}>
-                        {(loc) => (
-                          <option value={loc} selected={pref.locale === loc}>
-                            {localeDisplayName(loc)}
-                          </option>
-                        )}
-                      </For>
-                    </select>
+                <div class="pl-4">
+                  <div class="control">
+                    <div class="select">
+                      <select id="locale-select" name="locale">
+                        <option value="" selected={!pref.locale} data-l10n-id="edit-locale-use-browser" />
+                        <For each={pref.supported_locales}>
+                          {(loc) => (
+                            <option value={loc} selected={pref.locale === loc}>
+                              {localeDisplayName(loc)}
+                            </option>
+                          )}
+                        </For>
+                      </select>
+                    </div>
                   </div>
                 </div>
               </div>
