@@ -25,6 +25,7 @@ surface-aquilo = アクィロ
 ## Errors
 error-load-failed = データの読み込みに失敗しました。
 error-user-not-found = ユーザーが見つかりません。
+error-map-not-found = マップが見つかりません。
 error-user-forbidden = このページは表示できません。
 error-page-not-found = ページが見つかりません。
 

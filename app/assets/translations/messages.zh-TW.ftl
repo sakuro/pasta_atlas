@@ -25,6 +25,7 @@ surface-aquilo = 阿魁洛星
 ## Errors
 error-load-failed = 資料載入失敗。
 error-user-not-found = 找不到該使用者。
+error-map-not-found = 找不到該地圖。
 error-user-forbidden = 此頁面無法顯示。
 error-page-not-found = 找不到該頁面。
 

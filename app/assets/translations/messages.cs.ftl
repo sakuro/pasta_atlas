@@ -55,6 +55,7 @@ surface-aquilo = Aquilo
 ## Errors
 error-load-failed = Nepodařilo se načíst data.
 error-user-not-found = Uživatel nebyl nalezen.
+error-map-not-found = Mapa nebyla nalezena.
 error-user-forbidden = Tato stránka není k dispozici.
 error-page-not-found = Stránka nebyla nalezena.
 

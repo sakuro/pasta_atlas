@@ -25,6 +25,7 @@ surface-aquilo = Aquilo
 ## Errors
 error-load-failed = Failed to load data.
 error-user-not-found = User not found.
+error-map-not-found = Map not found.
 error-user-forbidden = This page is not available.
 error-page-not-found = Page not found.
 

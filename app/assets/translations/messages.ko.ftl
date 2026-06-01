@@ -25,6 +25,7 @@ surface-aquilo = 아퀼로
 ## Errors
 error-load-failed = 데이터를 불러오는 데 실패했습니다.
 error-user-not-found = 사용자를 찾을 수 없습니다.
+error-map-not-found = 지도를 찾을 수 없습니다.
 error-user-forbidden = 이 페이지는 표시할 수 없습니다.
 error-page-not-found = 페이지를 찾을 수 없습니다.
 
