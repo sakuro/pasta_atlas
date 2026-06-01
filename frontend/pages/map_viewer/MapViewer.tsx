@@ -182,6 +182,9 @@ export const MapViewer = (props: MapViewerProps) => {
       setDisplayName(data.display_name);
       document.title = document.title.replace(prev, data.display_name);
       setIsEditing(false);
+    } else if (res.status === 422) {
+      const data = await res.json() as { error: string };
+      showToast(data.error, "danger");
     }
   };
 
@@ -221,7 +224,6 @@ export const MapViewer = (props: MapViewerProps) => {
               <input
                 class="input is-small"
                 type="text"
-                maxLength={255}
                 value={editValue()}
                 onInput={(e) => setEditValue(e.currentTarget.value)}
                 onKeyDown={(e) => { if (e.key === "Enter") void saveEdit(); if (e.key === "Escape") cancelEdit(); }}

@@ -49,9 +49,9 @@ RSpec.describe PastaAtlas::Operations::User::Profile::Update do
       end
     end
 
-    context "when display_name exceeds 64 grapheme clusters" do
+    context "when display_name exceeds 30 grapheme clusters" do
       it "returns Failure([:invalid, message])" do
-        result = operation.call(user_id: 1, user_name: "sakuro", display_name: "あ" * 65, avatar_s3_key: "")
+        result = operation.call(user_id: 1, user_name: "sakuro", display_name: "あ" * 31, avatar_s3_key: "")
 
         expect(result).to be_failure
         code, message = result.failure

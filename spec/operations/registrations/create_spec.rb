@@ -26,7 +26,7 @@ RSpec.describe PastaAtlas::Operations::Registrations::Create do
 
     context "when the name is too long" do
       it "returns failure with :invalid and error key" do
-        result = operation.call(name: "a" * 40, timezone: "UTC", provider: "github", uid: "123", avatar_url: "")
+        result = operation.call(name: "a" * 16, timezone: "UTC", provider: "github", uid: "123", avatar_url: "")
 
         expect(result).to be_failure
         expect(result.failure).to eq([:invalid, "error-username-too-long"])

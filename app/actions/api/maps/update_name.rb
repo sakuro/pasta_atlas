@@ -16,6 +16,8 @@ module PastaAtlas
             case result
             in Success(map)
               json_response(response, {display_name: map.display_name})
+            in Failure(:invalid, error)
+              json_response(response, {error:}, status: 422)
             in Failure(Symbol => status)
               halt status
             end

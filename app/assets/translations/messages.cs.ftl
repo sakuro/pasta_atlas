@@ -60,12 +60,12 @@ nav-log-in-steam = Přihlásit se přes { -steam }
 ## Registration
 registration-title = Vytvořit účet
 registration-username = Uživatelské jméno
-registration-username-help = 1–39 znaků. Písmena, číslice, pomlčky a podtržítka. Musí začínat a končit písmenem nebo číslicí.
+registration-username-help = 1–15 znaků. Písmena, číslice, pomlčky a podtržítka. Musí začínat a končit písmenem nebo číslicí.
 registration-submit = Vytvořit účet
 
 ## Registration errors
 error-username-empty = Uživatelské jméno nesmí být prázdné.
-error-username-too-long = Uživatelské jméno musí mít nejvýše 39 znaků.
+error-username-too-long = Uživatelské jméno musí mít nejvýše 15 znaků.
 error-username-invalid-chars = Uživatelské jméno smí obsahovat pouze písmena, číslice, pomlčky a podtržítka a musí začínat a končit písmenem nebo číslicí.
 error-username-reserved = Toto uživatelské jméno je rezervováno.
 error-username-taken = Toto uživatelské jméno je již obsazeno.
@@ -95,7 +95,7 @@ user-locale-label = Jazyk
 edit-title = Upravit
 edit-avatar-label = Avatar
 edit-display-name = Zobrazované jméno
-    .help = Až 64 znaků. Ponechte prázdné pro použití uživatelského jména.
+    .help = Až 30 znaků. Ponechte prázdné pro použití uživatelského jména.
 edit-save-profile = Uložit profil
 edit-timezone-label = Časové pásmo
 edit-locale = Jazyk
@@ -128,7 +128,7 @@ credential-disconnected = Účet odpojen.
 ## Credential errors
 error-credential-conflict = Tento účet je již propojen s jiným uživatelem.
 error-credential-last = Je vyžadován alespoň jeden propojený účet.
-error-profile-display-name-too-long = Zobrazované jméno musí mít nejvýše 64 znaků.
+error-profile-display-name-too-long = Zobrazované jméno musí mít nejvýše 30 znaků.
 error-profile-display-name-invalid-chars = Zobrazované jméno obsahuje nepovoleé znaky.
 
 ## Map notices
@@ -229,6 +229,8 @@ map-name-save-button =
     .title = Uložit
 map-name-cancel-button =
     .title = Zrušit
+error-map-name-too-long = Název mapy musí mít nejvýše 30 znaků.
+error-map-name-invalid-chars = Název mapy obsahuje nepovolené znaky.
 map-delete-button =
     .title = Smazat mapu
 map-delete-confirm-title = Smazat mapu

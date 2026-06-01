@@ -30,12 +30,12 @@ nav-log-in-steam = { -steam } でログイン
 ## Registration
 registration-title = アカウントを作成
 registration-username = ユーザー名
-registration-username-help = 1〜39文字。英数字・ハイフン・アンダースコアが使用できます。先頭と末尾は英数字にしてください。
+registration-username-help = 1〜15文字。英数字・ハイフン・アンダースコアが使用できます。先頭と末尾は英数字にしてください。
 registration-submit = アカウントを作成する
 
 ## Registration errors
 error-username-empty = ユーザー名を入力してください。
-error-username-too-long = ユーザー名は39文字以内にしてください。
+error-username-too-long = ユーザー名は15文字以内にしてください。
 error-username-invalid-chars = ユーザー名には英数字・ハイフン・アンダースコアのみ使用でき、先頭と末尾は英数字にしてください。
 error-username-reserved = そのユーザー名は使用できません。
 error-username-taken = そのユーザー名はすでに使われています。
@@ -65,7 +65,7 @@ user-locale-label = 言語
 edit-title = 編集
 edit-avatar-label = アバター
 edit-display-name = 表示名
-    .help = 64文字以内。空白にするとユーザー名が表示されます。
+    .help = 30文字以内。空白にするとユーザー名が表示されます。
 edit-save-profile = プロフィールを保存
 edit-timezone-label = タイムゾーン
 edit-locale = 言語
@@ -98,7 +98,7 @@ credential-disconnected = アカウントの連携を解除しました。
 ## Credential errors
 error-credential-conflict = そのアカウントはすでに別のユーザーに連携されています。
 error-credential-last = 少なくとも1つの連携済アカウントが必要です。
-error-profile-display-name-too-long = 表示名は64文字以内にしてください。
+error-profile-display-name-too-long = 表示名は30文字以内にしてください。
 error-profile-display-name-invalid-chars = 表示名に使用できない文字が含まれています。
 
 ## Map notices
@@ -199,6 +199,8 @@ map-name-save-button =
     .title = 保存
 map-name-cancel-button =
     .title = キャンセル
+error-map-name-too-long = マップ名は30文字以内にしてください。
+error-map-name-invalid-chars = マップ名に使用できない文字が含まれています。
 map-delete-button =
     .title = マップを削除
 map-delete-confirm-title = マップを削除

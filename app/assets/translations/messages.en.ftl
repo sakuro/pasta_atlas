@@ -30,12 +30,12 @@ nav-log-in-steam = Log in with { -steam }
 ## Registration
 registration-title = Create your account
 registration-username = Username
-registration-username-help = 1–39 characters. Letters, numbers, hyphens, and underscores. Must start and end with a letter or number.
+registration-username-help = 1–15 characters. Letters, numbers, hyphens, and underscores. Must start and end with a letter or number.
 registration-submit = Create account
 
 ## Registration errors
 error-username-empty = Username must not be empty.
-error-username-too-long = Username must be 39 characters or fewer.
+error-username-too-long = Username must be 15 characters or fewer.
 error-username-invalid-chars = Username may only contain letters, numbers, hyphens, and underscores, and must start and end with a letter or number.
 error-username-reserved = That username is reserved.
 error-username-taken = That username is already taken.
@@ -65,7 +65,7 @@ user-locale-label = Locale
 edit-title = Edit
 edit-avatar-label = Avatar
 edit-display-name = Display name
-    .help = Up to 64 characters. Leave blank to use your username.
+    .help = Up to 30 characters. Leave blank to use your username.
 edit-save-profile = Save Profile
 edit-timezone-label = Timezone
 edit-locale = Locale
@@ -98,7 +98,7 @@ credential-disconnected = Account disconnected.
 ## Credential errors
 error-credential-conflict = That account is already linked to another user.
 error-credential-last = At least one connected account is required.
-error-profile-display-name-too-long = Display name must be 64 characters or fewer.
+error-profile-display-name-too-long = Display name must be 30 characters or fewer.
 error-profile-display-name-invalid-chars = Display name contains disallowed characters.
 
 ## Map notices
@@ -199,6 +199,8 @@ map-name-save-button =
     .title = Save
 map-name-cancel-button =
     .title = Cancel
+error-map-name-too-long = Map name must be 30 characters or fewer.
+error-map-name-invalid-chars = Map name contains disallowed characters.
 map-delete-button =
     .title = Delete map
 map-delete-confirm-title = Delete map

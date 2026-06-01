@@ -10,16 +10,8 @@ module PastaAtlas
             "repos.user_profile_repo"
           ]
 
-          DISPLAY_NAME_MAX_GRAPHEME_CLUSTERS = 64
+          DISPLAY_NAME_MAX_GRAPHEME_CLUSTERS = 30
           private_constant :DISPLAY_NAME_MAX_GRAPHEME_CLUSTERS
-
-          # Reject: Unicode whitespace (\p{Space}), C0/C1 control characters (\p{Cc}),
-          # and format characters (\p{Cf}) EXCEPT:
-          #   U+200D  ZWJ — joins multi-codepoint emoji sequences (e.g. 👨‍💻, 🏳️‍🌈)
-          #   U+FE00–U+FE0F  Variation Selectors 1–16 — emoji/text presentation (e.g. ❤️)
-          #   U+E0100–U+E01EF  Variation Selectors Supplement — CJK ideograph variants
-          DISALLOWED_CHARS = /[\p{Space}\p{Cc}]|[\p{Cf}&&[^\u{200D}\u{FE00}-\u{FE0F}\u{E0100}-\u{E01EF}]]/
-          private_constant :DISALLOWED_CHARS
 
           def call(user_id:, user_name:, display_name:, avatar_s3_key:)
             user = step verify_ownership.call(user_id:, user_name:)
@@ -33,7 +25,7 @@ module PastaAtlas
 
           private def validate_display_name(name)
             return Success() if name.empty?
-            return Failure([:invalid, "error-profile-display-name-too-long"]) if name.scan(/\X/).length > DISPLAY_NAME_MAX_GRAPHEME_CLUSTERS
+            return Failure([:invalid, "error-profile-display-name-too-long"]) if grapheme_clusters_exceed?(name, DISPLAY_NAME_MAX_GRAPHEME_CLUSTERS)
             return Failure([:invalid, "error-profile-display-name-invalid-chars"]) if name.match?(DISALLOWED_CHARS)
 
             Success()

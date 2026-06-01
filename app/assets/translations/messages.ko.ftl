@@ -30,12 +30,12 @@ nav-log-in-steam = { -steam }으로 로그인
 ## Registration
 registration-title = 계정 만들기
 registration-username = 사용자 이름
-registration-username-help = 1~39자. 영문자, 숫자, 하이픈, 밑줄을 사용할 수 있습니다. 첫 글자와 마지막 글자는 영문자 또는 숫자여야 합니다.
+registration-username-help = 1~15자. 영문자, 숫자, 하이픈, 밑줄을 사용할 수 있습니다. 첫 글자와 마지막 글자는 영문자 또는 숫자여야 합니다.
 registration-submit = 계정 만들기
 
 ## Registration errors
 error-username-empty = 사용자 이름을 입력해 주세요.
-error-username-too-long = 사용자 이름은 39자 이하여야 합니다.
+error-username-too-long = 사용자 이름은 15자 이하여야 합니다.
 error-username-invalid-chars = 사용자 이름에는 영문자, 숫자, 하이픈, 밑줄만 사용할 수 있으며, 첫 글자와 마지막 글자는 영문자 또는 숫자여야 합니다.
 error-username-reserved = 해당 사용자 이름은 사용할 수 없습니다.
 error-username-taken = 해당 사용자 이름은 이미 사용 중입니다.
@@ -65,7 +65,7 @@ user-locale-label = 언어
 edit-title = 편집
 edit-avatar-label = 아바타
 edit-display-name = 표시 이름
-    .help = 최대 64자. 비워 두면 사용자 이름이 표시됩니다.
+    .help = 최대 30자. 비워 두면 사용자 이름이 표시됩니다.
 edit-save-profile = 프로필 저장
 edit-timezone-label = 시간대
 edit-locale = 언어
@@ -98,7 +98,7 @@ credential-disconnected = 계정 연결이 해제되었습니다.
 ## Credential errors
 error-credential-conflict = 해당 계정은 이미 다른 사용자에게 연결되어 있습니다.
 error-credential-last = 최소 하나의 연결된 계정이 필요합니다.
-error-profile-display-name-too-long = 표시 이름은 64자 이하이어야 합니다.
+error-profile-display-name-too-long = 표시 이름은 30자 이하이어야 합니다.
 error-profile-display-name-invalid-chars = 표시 이름에 허용되지 않는 문자가 포함되어 있습니다.
 
 ## Map notices
@@ -199,6 +199,8 @@ map-name-save-button =
     .title = 저장
 map-name-cancel-button =
     .title = 취소
+error-map-name-too-long = 맵 이름은 30자 이하여야 합니다.
+error-map-name-invalid-chars = 맵 이름에 허용되지 않는 문자가 포함되어 있습니다.
 map-delete-button =
     .title = 맵 삭제
 map-delete-confirm-title = 맵 삭제

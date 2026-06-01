@@ -30,12 +30,12 @@ nav-log-in-steam = 通过 { -steam } 登录
 ## Registration
 registration-title = 创建账号
 registration-username = 用户名
-registration-username-help = 1–39 个字符，可使用英文字母、数字、连字符和下划线，首尾必须为英文字母或数字。
+registration-username-help = 1–15 个字符，可使用英文字母、数字、连字符和下划线，首尾必须为英文字母或数字。
 registration-submit = 创建账号
 
 ## Registration errors
 error-username-empty = 请输入用户名。
-error-username-too-long = 用户名不得超过 39 个字符。
+error-username-too-long = 用户名不得超过 15 个字符。
 error-username-invalid-chars = 用户名只能包含英文字母、数字、连字符和下划线，且首尾必须为英文字母或数字。
 error-username-reserved = 该用户名已被保留。
 error-username-taken = 该用户名已被占用。
@@ -65,7 +65,7 @@ user-locale-label = 语言
 edit-title = 编辑
 edit-avatar-label = 头像
 edit-display-name = 显示名称
-    .help = 最多 64 个字符，留空则显示用户名。
+    .help = 最多 30 个字符，留空则显示用户名。
 edit-save-profile = 保存个人资料
 edit-timezone-label = 时区
 edit-locale = 语言
@@ -98,7 +98,7 @@ credential-disconnected = 账号已解绑。
 ## Credential errors
 error-credential-conflict = 该账号已关联至其他用户。
 error-credential-last = 至少需要一个已关联账号。
-error-profile-display-name-too-long = 显示名称不得超过 64 个字符。
+error-profile-display-name-too-long = 显示名称不得超过 30 个字符。
 error-profile-display-name-invalid-chars = 显示名称包含不允许的字符。
 
 ## Map notices
@@ -199,6 +199,8 @@ map-name-save-button =
     .title = 保存
 map-name-cancel-button =
     .title = 取消
+error-map-name-too-long = 地图名称不得超过 30 个字符。
+error-map-name-invalid-chars = 地图名称包含不允许的字符。
 map-delete-button =
     .title = 删除地图
 map-delete-confirm-title = 删除地图

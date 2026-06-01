@@ -30,7 +30,7 @@ module PastaAtlas
 
         private def validate_name(name)
           return Failure([:invalid, "error-username-empty"]) if name.empty?
-          return Failure([:invalid, "error-username-too-long"]) if name.length > 39
+          return Failure([:invalid, "error-username-too-long"]) if name.length > 15
           return Failure([:invalid, "error-username-invalid-chars"]) unless name.match?(USERNAME_PATTERN)
           return Failure([:invalid, "error-username-reserved"]) if RESERVED_NAMES.include?(name)
 
