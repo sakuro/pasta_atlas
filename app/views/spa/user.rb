@@ -3,7 +3,7 @@
 module PastaAtlas
   module Views
     module Spa
-      class Forbidden < Hanami::View
+      class User < Hanami::View
       end
     end
   end

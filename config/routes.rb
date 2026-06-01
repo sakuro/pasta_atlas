@@ -10,9 +10,8 @@ module PastaAtlas
     get "/auth/register", to: "spa.shell"
     get "/privacy",       to: "spa.shell"
     get "/terms",         to: "spa.shell"
-    get "/@guest",        to: "spa.forbidden"
-    get "/@:user_name",                to: "spa.shell"
-    get "/@:user_name/maps/:map_ulid", to: "spa.shell"
+    get "/@:user_name",                to: "spa.user"
+    get "/@:user_name/maps/:map_ulid", to: "spa.user"
 
     get "/api/v1/auth/current",                            to: "api.auth.current"
     get "/api/v1/auth/registration",                       to: "api.auth.registration"
