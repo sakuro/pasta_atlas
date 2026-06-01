@@ -181,6 +181,11 @@ export const UploadModal = (props: { isGuest: boolean }) => {
         setState({ type: "error", error: { msgId: "upload-error-expired" } });
         return;
       }
+      if (resp.status === 422) {
+        const data = await resp.json() as { error?: string };
+        setState({ type: "error", error: { msgId: data.error ?? "error-unknown" } });
+        return;
+      }
       if (!resp.ok) {
         setState({ type: "error", error: { msgId: "upload-error-http", msgArgs: { status: resp.status } } });
         return;
@@ -473,7 +478,7 @@ export const UploadModal = (props: { isGuest: boolean }) => {
                     <span class="icon"><i class="fa-solid fa-folder-open" /></span>
                     <span data-l10n-id="upload-reselect-folder" />
                   </button>
-                  <button class="button is-primary" onClick={startUpload}>
+                  <button class="button is-primary" onClick={startUpload} disabled={displayNameCount() > 30}>
                     <span class="icon"><i class="fa-solid fa-upload" /></span>
                     <span data-l10n-id="upload-start" />
                   </button>

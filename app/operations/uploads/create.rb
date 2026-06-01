@@ -20,11 +20,16 @@ module PastaAtlas
           s3_client: "s3.client"
         ]
 
+        MAP_NAME_MAX_GRAPHEME_CLUSTERS = 30
+        private_constant :MAP_NAME_MAX_GRAPHEME_CLUSTERS
+
         def call(user_id:, metadata:, total_image_count:, name: nil)
           mapshot_map_id = metadata[:map_id]
           mapshot_unique_id = metadata[:unique_id]
           tick = Integer(metadata[:tick])
           user = user_repo.find_by_id(user_id)
+
+          step validate_name(name) if name
 
           map = step find_or_create_map.call(
             user_id:,
@@ -43,6 +48,13 @@ module PastaAtlas
             metadata:,
             total_image_count:
           )
+        end
+
+        private def validate_name(name)
+          return Failure([:invalid, "error-map-name-too-long"]) if grapheme_clusters_exceed?(name, MAP_NAME_MAX_GRAPHEME_CLUSTERS)
+          return Failure([:invalid, "error-map-name-invalid-chars"]) if name.match?(DISALLOWED_CHARS)
+
+          Success()
         end
 
         private def within_transaction(map:, user:, mapshot_map_id:, mapshot_unique_id:, tick:, metadata:, total_image_count:)

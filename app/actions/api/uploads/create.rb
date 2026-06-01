@@ -51,6 +51,8 @@ module PastaAtlas
                 },
                 status: :created
               )
+            in Failure(:invalid, error)
+              json_response(response, {error:}, status: 422)
             in Failure(:s3_error)
               halt :bad_gateway
             in Failure(Symbol => status)
