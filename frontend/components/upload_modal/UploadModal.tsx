@@ -254,19 +254,7 @@ export const UploadModal = (props: { isGuest: boolean }) => {
       return;
     }
 
-    let viewerUrl = `/maps/${mapUlid}?generation=${generationUlid}`;
-    try {
-      const resp = await fetch(`/api/v1/maps/${mapUlid}`);
-      if (resp.ok) {
-        const data = await resp.json() as { owner?: { name?: string } };
-        if (data.owner?.name) {
-          viewerUrl = `/@${data.owner.name}/maps/${mapUlid}?generation=${generationUlid}`;
-        }
-      }
-    } catch {
-      // Use fallback URL without owner path
-    }
-
+    const viewerUrl = `/maps/${mapUlid}?generation=${generationUlid}`;
     setState({ type: "done", viewerUrl });
   };
 

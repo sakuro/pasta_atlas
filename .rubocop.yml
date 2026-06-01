@@ -42,10 +42,6 @@ inherit_gem:
 
 inherit_from: .rubocop_todo.yml
 
-Lint/DuplicateBranch:
-  Exclude:
-    - app/actions/spa/map_viewer.rb
-
 Metrics/BlockLength:
   Max: 30
   Exclude:

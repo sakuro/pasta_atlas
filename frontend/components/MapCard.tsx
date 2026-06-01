@@ -17,7 +17,7 @@ export type MapData = {
 
 export const MapCard = (props: { map: MapData }) => {
   const isGuest = () => props.map.user_name === "guest";
-  const mapHref = () => `/@${props.map.user_name}/maps/${props.map.ulid}`;
+  const mapHref = () => `/maps/${props.map.ulid}`;
   const userHref = () => `/@${props.map.user_name}`;
 
   return (

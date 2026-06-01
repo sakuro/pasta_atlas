@@ -10,8 +10,8 @@ module PastaAtlas
     get "/auth/register", to: "spa.shell"
     get "/privacy",       to: "spa.shell"
     get "/terms",         to: "spa.shell"
-    get "/@:user_name",                to: "spa.user"
-    get "/@:user_name/maps/:map_ulid", to: "spa.map_viewer"
+    get "/@:user_name",    to: "spa.user"
+    get "/maps/:map_ulid", to: "spa.map_viewer"
 
     get "/api/v1/auth/current",                            to: "api.auth.current"
     get "/api/v1/auth/registration",                       to: "api.auth.registration"
@@ -35,7 +35,6 @@ module PastaAtlas
     get "/api/v1/users/:user_name/credentials", to: "api.users.credentials.index"
     delete "/api/v1/users/:user_name/credentials/:provider", to: "api.users.credentials.destroy"
     get "/api/v1/users/:user_name/maps",                  to: "api.users.maps.index"
-    get "/api/v1/users/:user_name/maps/:ulid",            to: "api.users.maps.show"
     get "/api/v1/users/:user_name/preferences",           to: "api.users.preferences.show"
     patch "/api/v1/users/:user_name/preferences", to: "api.users.preferences.update"
     post "/api/v1/users/:user_name/profile/avatar_presigned_url", to: "api.users.profile.avatar_presigned_url.create"

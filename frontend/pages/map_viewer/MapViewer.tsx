@@ -308,7 +308,7 @@ export const MapViewer = (props: MapViewerProps) => {
         <Show when={mapData()}>
           {(data) => (
             <ShareButtons
-              mapPath={`/@${data().owner.name}/maps/${data().ulid}`}
+              mapPath={`/maps/${data().ulid}`}
               mapName={data().display_name}
             />
           )}
