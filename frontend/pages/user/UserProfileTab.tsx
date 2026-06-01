@@ -2,6 +2,8 @@ import { createResource, createSignal, Show } from "solid-js";
 import { AvatarUpload, type AvatarUploadRef } from "./AvatarUpload";
 import "../../lib/l10n";
 
+const segmenter = new Intl.Segmenter();
+
 type ProfileData = {
   user_name: string;
   display_name: string | null;
@@ -29,6 +31,7 @@ export const UserProfileTab = (props: {
   );
 
   const [displayName, setDisplayName] = createSignal("");
+  const graphemeCount = () => [...segmenter.segment(displayName())].length;
   const [submitting, setSubmitting] = createSignal(false);
   let avatarRef: AvatarUploadRef | undefined;
 
@@ -107,9 +110,11 @@ export const UserProfileTab = (props: {
                     name="display_name"
                     value={displayName()}
                     onInput={(e) => setDisplayName(e.currentTarget.value)}
-                    maxlength="64"
                   />
                 </div>
+                <p class={`help has-text-right ${graphemeCount() > 30 ? "has-text-danger" : ""}`}>
+                  {graphemeCount()} / 30
+                </p>
               </div>
               <div class="field">
                 <div class="control">

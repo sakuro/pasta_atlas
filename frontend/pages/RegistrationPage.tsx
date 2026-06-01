@@ -67,7 +67,9 @@ export const RegistrationPage = () => {
         <div class="notification is-danger is-light" data-l10n-id="error-load-failed" />
       </Show>
       <Show when={pending()} keyed>
-        {(auth) => (
+        {(auth) => {
+          const [nameValue, setNameValue] = createSignal(auth.login_name);
+          return (
           <div class="container is-max-tablet">
             <h1 class="title" data-l10n-id="registration-title" />
             <Show when={error()}>
@@ -87,14 +89,20 @@ export const RegistrationPage = () => {
                     type="text"
                     id="name"
                     name="name"
-                    value={auth.login_name}
-                    pattern="[a-zA-Z0-9][a-zA-Z0-9_\-]{0,37}[a-zA-Z0-9]|[a-zA-Z0-9]"
-                    maxlength="39"
+                    value={nameValue()}
+                    onInput={(e) => setNameValue(e.currentTarget.value)}
+                    pattern="[a-zA-Z0-9][a-zA-Z0-9_\-]{0,13}[a-zA-Z0-9]|[a-zA-Z0-9]"
+                    maxlength="15"
                     required
                     autofocus
                   />
                 </div>
-                <p class="help" data-l10n-id="registration-username-help" />
+                <div class="is-flex is-justify-content-space-between">
+                  <p class="help" data-l10n-id="registration-username-help" />
+                  <p class={`help ${nameValue().length >= 15 ? "has-text-danger" : ""}`}>
+                    {nameValue().length} / 15
+                  </p>
+                </div>
               </div>
               <div class="field">
                 <p>
@@ -125,7 +133,8 @@ export const RegistrationPage = () => {
               </div>
             </form>
           </div>
-        )}
+          );
+        }}
       </Show>
     </section>
   );
