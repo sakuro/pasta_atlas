@@ -43,6 +43,7 @@ export const UserPage = () => {
 
   const [userData, { mutate: mutateUser }] = createResource(userName, async (name) => {
     const res = await fetch(`/api/v1/users/${name}`);
+    if (res.status === 404) return null;
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const json = await res.json() as { user: UserData };
     return json.user;
@@ -79,6 +80,9 @@ export const UserPage = () => {
       </Show>
       <Show when={userData.error}>
         <div class="notification is-danger is-light" data-l10n-id="error-load-failed" />
+      </Show>
+      <Show when={userData.state === "ready" && userData() === null}>
+        <div class="notification is-warning is-light" data-l10n-id="error-user-not-found" />
       </Show>
       <Show when={!userData.error && userData()} keyed>
         {(user) => (
