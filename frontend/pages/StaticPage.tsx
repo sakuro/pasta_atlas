@@ -23,6 +23,7 @@ export const StaticPage = (props: { slug: string }) => {
         <div class="notification is-danger is-light" data-l10n-id="error-load-failed" />
       </Show>
       <Show when={content()} keyed>
+        {/* eslint-disable-next-line solid/no-innerhtml -- content is admin-authored static pages only */}
         {(html) => <div innerHTML={html} />}
       </Show>
     </>
