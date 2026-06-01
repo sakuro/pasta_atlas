@@ -15,8 +15,14 @@ module PastaAtlas
           in Failure(:not_found)
             response.status = 404
           in Success(user)
-            map_result = find_map.call(ulid: request.params[:map_ulid], user_id: user.id)
-            response.status = 404 if map_result.failure?
+            case find_map.call(ulid: request.params[:map_ulid])
+            in Failure(:not_found)
+              response.status = 404
+            in Success(map) if map.user_id != user.id
+              response.status = 404
+            in Success
+              # 200 - default
+            end
           end
         end
       end

@@ -18,11 +18,14 @@ export const MapViewerPage = () => {
   const params = useParams();
   const { currentUser } = useAuth();
 
-  const [data] = createResource(() => params.ulid, async (ulid) => {
-    const res = await fetch(`/api/v1/maps/${ulid}`);
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    return res.json() as Promise<MapViewerData>;
-  });
+  const [data] = createResource(
+    () => ({ userName: (params.at_user_name ?? "").slice(1), ulid: params.ulid }),
+    async ({ userName, ulid }) => {
+      const res = await fetch(`/api/v1/users/${userName}/maps/${ulid}`);
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      return res.json() as Promise<MapViewerData>;
+    }
+  );
 
   const viewerName = () => {
     const user = currentUser();

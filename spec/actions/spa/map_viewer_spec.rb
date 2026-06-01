@@ -23,9 +23,9 @@ RSpec.describe PastaAtlas::Actions::Spa::MapViewer do
     before { allow(find_by_name).to receive(:call).with(user_name: "sakuro").and_return(Success(user)) }
 
     context "when the map exists and belongs to the user" do
-      let(:map) { double("Map") }
+      let(:map) { double("Map", user_id: 1) }
 
-      before { allow(find_map).to receive(:call).with(ulid:, user_id: 1).and_return(Success(map)) }
+      before { allow(find_map).to receive(:call).with(ulid:).and_return(Success(map)) }
 
       it "returns 200" do
         response = action.call({user_name: "sakuro", map_ulid: ulid})
@@ -35,7 +35,19 @@ RSpec.describe PastaAtlas::Actions::Spa::MapViewer do
     end
 
     context "when the map is not found" do
-      before { allow(find_map).to receive(:call).with(ulid:, user_id: 1).and_return(Failure(:not_found)) }
+      before { allow(find_map).to receive(:call).with(ulid:).and_return(Failure(:not_found)) }
+
+      it "returns 404" do
+        response = action.call({user_name: "sakuro", map_ulid: ulid})
+
+        expect(response.status).to eq(404)
+      end
+    end
+
+    context "when the map belongs to a different user" do
+      let(:map) { double("Map", user_id: 99) }
+
+      before { allow(find_map).to receive(:call).with(ulid:).and_return(Success(map)) }
 
       it "returns 404" do
         response = action.call({user_name: "sakuro", map_ulid: ulid})
