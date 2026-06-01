@@ -24,7 +24,7 @@ export const UserMapsTab = (props: { userName: string; active: () => boolean }) 
       <Show when={data.error}>
         <div class="notification is-danger is-light" data-l10n-id="error-load-failed" />
       </Show>
-      <Show when={data()} keyed>
+      <Show when={!data.error && data()} keyed>
         {(response) => (
           <div class="columns is-multiline">
             <For each={response.maps}>

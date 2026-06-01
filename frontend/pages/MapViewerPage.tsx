@@ -39,7 +39,7 @@ export const MapViewerPage = () => {
       <Show when={data.error}>
         <div class="notification is-danger is-light" data-l10n-id="error-load-failed" />
       </Show>
-      <Show when={data()} keyed>
+      <Show when={!data.error && data()} keyed>
         {(mapData) => (
           <div id="map-viewer">
             <MapViewer

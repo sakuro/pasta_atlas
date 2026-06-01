@@ -67,7 +67,7 @@ export const MapsIndexPage = () => {
           <Show when={data.error}>
             <div class="notification is-danger is-light" data-l10n-id="error-load-failed" />
           </Show>
-          <Show when={data()} keyed>
+          <Show when={!data.error && data()} keyed>
             {(response) => (
               <>
                 <div class="columns is-multiline">

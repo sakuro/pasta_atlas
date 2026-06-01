@@ -78,9 +78,9 @@ export const UserPage = () => {
         </div>
       </Show>
       <Show when={userData.error}>
-        <div class="notification is-danger is-light" />
+        <div class="notification is-danger is-light" data-l10n-id="error-load-failed" />
       </Show>
-      <Show when={userData()} keyed>
+      <Show when={!userData.error && userData()} keyed>
         {(user) => (
           <>
             <div class="container">

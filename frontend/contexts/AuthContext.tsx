@@ -28,10 +28,16 @@ type AuthContextValue = {
 const AuthContext = createContext<AuthContextValue>();
 
 export const AuthProvider: ParentComponent = (props) => {
+  const guestAuth: AuthResponse = { user: null, preferences: { locale: null, timezone: "UTC", relative_timestamps: false } };
+
   const [authData, { refetch, mutate }] = createResource<AuthResponse>(async () => {
-    const res = await fetch("/api/v1/auth/current");
-    if (!res.ok) return { user: null, preferences: { locale: null, timezone: "UTC", relative_timestamps: false } };
-    return await res.json() as AuthResponse;
+    try {
+      const res = await fetch("/api/v1/auth/current");
+      if (!res.ok) return guestAuth;
+      return await res.json() as AuthResponse;
+    } catch {
+      return guestAuth;
+    }
   });
 
   createEffect(() => {
