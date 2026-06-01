@@ -14,6 +14,7 @@ import { AppLayout } from "./layout/AppLayout";
 import { lang } from "./lib/display-settings";
 import { MapsIndexPage } from "./pages/MapsIndexPage";
 import { MapViewerPage } from "./pages/MapViewerPage";
+import { NotFoundPage } from "./pages/NotFoundPage";
 import { UserPage } from "./pages/UserPage";
 import { RegistrationPage } from "./pages/RegistrationPage";
 import { StaticPage } from "./pages/StaticPage";
@@ -32,6 +33,7 @@ const App = () => {
           <Route path="/privacy" component={() => <StaticPage slug="privacy" />} />
           <Route path="/terms" component={() => <StaticPage slug="terms" />} />
           <Route path="/:at_user_name" component={UserPage} />
+          <Route path="*" component={NotFoundPage} />
         </Router>
       </ToastProvider>
     </AuthProvider>

@@ -42,6 +42,7 @@ error-username-taken = 해당 사용자 이름은 이미 사용 중입니다.
 error-load-failed = 데이터를 불러오는 데 실패했습니다.
 error-user-not-found = 사용자를 찾을 수 없습니다.
 error-user-forbidden = 이 페이지는 표시할 수 없습니다.
+error-page-not-found = 페이지를 찾을 수 없습니다.
 
 ## User page
 user-tab-maps = 최근 맵

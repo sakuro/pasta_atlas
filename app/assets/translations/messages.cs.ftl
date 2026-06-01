@@ -72,6 +72,7 @@ error-username-taken = Toto uživatelské jméno je již obsazeno.
 error-load-failed = Nepodařilo se načíst data.
 error-user-not-found = Uživatel nebyl nalezen.
 error-user-forbidden = Tato stránka není k dispozici.
+error-page-not-found = Stránka nebyla nalezena.
 
 ## User page
 user-tab-maps = Nedávné mapy

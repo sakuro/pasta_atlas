@@ -47,5 +47,7 @@ module PastaAtlas
     post "/auth/register", to: "auth.registrations.create"
     delete "/auth/session", to: "auth.session.destroy"
     post "/auth/steam/callback", to: "auth.steam.callback"
+
+    get "/*path", to: "spa.not_found"
   end
 end

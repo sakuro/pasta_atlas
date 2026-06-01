@@ -42,6 +42,7 @@ error-username-taken = That username is already taken.
 error-load-failed = Failed to load data.
 error-user-not-found = User not found.
 error-user-forbidden = This page is not available.
+error-page-not-found = Page not found.
 
 ## User page
 user-tab-maps = Recent Maps
