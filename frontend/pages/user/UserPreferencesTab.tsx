@@ -139,7 +139,7 @@ export const UserPreferencesTab = (props: {
                 <div class="pl-4">
                   <div class="field">
                     <label class="label is-small" for="timezone-select" data-l10n-id="edit-timezone-label" />
-                    <div style="display: inline-block">
+                    <div style={{"display": "inline-block"}}>
                       <div class="control">
                         <div class="select">
                           <select
