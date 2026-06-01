@@ -19,12 +19,14 @@ export const UserProfileTab = (props: {
   onSuccess?: (data: ProfileUpdate) => void;
   onError?: (msgKey: string) => void;
 }) => {
-  const [data] = createResource(props.active, async (isActive) => {
-    if (!isActive) return undefined;
-    const res = await fetch(`/api/v1/users/${props.userName}/profile`);
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    return res.json() as Promise<ProfileData>;
-  });
+  const [data] = createResource(
+    () => props.active() && props.userName,
+    async (userName) => {
+      const res = await fetch(`/api/v1/users/${userName}/profile`);
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      return res.json() as Promise<ProfileData>;
+    }
+  );
 
   const [displayName, setDisplayName] = createSignal("");
   const [submitting, setSubmitting] = createSignal(false);

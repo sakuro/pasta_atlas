@@ -16,12 +16,14 @@ export const UserCredentialsTab = (props: {
   onSuccess?: () => void;
   onError?: (msgKey: string) => void;
 }) => {
-  const [data, { refetch }] = createResource(props.active, async (isActive) => {
-    if (!isActive) return undefined;
-    const res = await fetch(`/api/v1/users/${props.userName}/credentials`);
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    return res.json() as Promise<CredentialsData>;
-  });
+  const [data, { refetch }] = createResource(
+    () => props.active() && props.userName,
+    async (userName) => {
+      const res = await fetch(`/api/v1/users/${userName}/credentials`);
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      return res.json() as Promise<CredentialsData>;
+    }
+  );
 
   const [disconnecting, setDisconnecting] = createSignal<string | null>(null);
 

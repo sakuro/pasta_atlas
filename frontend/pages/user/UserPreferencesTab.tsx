@@ -42,12 +42,14 @@ export const UserPreferencesTab = (props: {
   onSuccess?: () => void;
   onError?: (msgKey: string) => void;
 }) => {
-  const [data] = createResource(props.active, async (isActive) => {
-    if (!isActive) return undefined;
-    const res = await fetch(`/api/v1/users/${props.userName}/preferences`);
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    return res.json() as Promise<PreferencesData>;
-  });
+  const [data] = createResource(
+    () => props.active() && props.userName,
+    async (userName) => {
+      const res = await fetch(`/api/v1/users/${userName}/preferences`);
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      return res.json() as Promise<PreferencesData>;
+    }
+  );
 
   const [selectedTz, setSelectedTz] = createSignal("");
   const [tzTime, setTzTime] = createSignal("");

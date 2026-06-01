@@ -5,12 +5,14 @@ import "../../lib/l10n";
 type MapsResponse = { maps: MapData[] };
 
 export const UserMapsTab = (props: { userName: string; active: () => boolean }) => {
-  const [data] = createResource(props.active, async (isActive) => {
-    if (!isActive) return undefined;
-    const res = await fetch(`/api/v1/users/${props.userName}/maps`);
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    return res.json() as Promise<MapsResponse>;
-  });
+  const [data] = createResource(
+    () => props.active() && props.userName,
+    async (userName) => {
+      const res = await fetch(`/api/v1/users/${userName}/maps`);
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      return res.json() as Promise<MapsResponse>;
+    }
+  );
 
   return (
     <>

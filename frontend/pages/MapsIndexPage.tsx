@@ -54,7 +54,7 @@ export const MapsIndexPage = () => {
     <>
       <section class="hero">
         <div class="hero-body p-0">
-          <img src={heroSrc} alt="" style="width:100%;height:360px;object-fit:cover;object-position:bottom;display:block" />
+          <img src={heroSrc} alt="" style={{ width: "100%", height: "360px", "object-fit": "cover", "object-position": "bottom", display: "block" }} />
         </div>
       </section>
       <section class="section">
