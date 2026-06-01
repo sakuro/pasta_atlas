@@ -386,8 +386,8 @@ export const UploadModal = (props: { isGuest: boolean }) => {
                         <th><span class="icon-text"><span class="icon"><i class="fa-solid fa-map" /></span><span data-l10n-id="upload-map-title" /></span></th>
                         <td>
                           <span
+                            class="control"
                             data-l10n-id={props.isGuest && isExistingMap() ? "upload-map-name-locked" : undefined}
-                            style={{ display: "block" }}
                           >
                             <input
                               ref={(el) => { if (!props.isGuest || !isExistingMap()) setTimeout(() => { el.focus(); el.select(); }, 0); }}
