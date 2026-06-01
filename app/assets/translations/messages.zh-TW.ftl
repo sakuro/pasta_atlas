@@ -41,6 +41,7 @@ error-username-reserved = 此使用者名稱已被保留。
 error-username-taken = 此使用者名稱已被使用。
 error-load-failed = 資料載入失敗。
 error-user-not-found = 找不到該使用者。
+error-user-forbidden = 此頁面無法顯示。
 
 ## User page
 user-tab-maps = 最近的地圖

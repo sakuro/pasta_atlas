@@ -41,6 +41,7 @@ error-username-reserved = That username is reserved.
 error-username-taken = That username is already taken.
 error-load-failed = Failed to load data.
 error-user-not-found = User not found.
+error-user-forbidden = This page is not available.
 
 ## User page
 user-tab-maps = Recent Maps

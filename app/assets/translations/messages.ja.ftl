@@ -41,6 +41,7 @@ error-username-reserved = そのユーザー名は使用できません。
 error-username-taken = そのユーザー名はすでに使われています。
 error-load-failed = データの読み込みに失敗しました。
 error-user-not-found = ユーザーが見つかりません。
+error-user-forbidden = このページは表示できません。
 
 ## User page
 user-tab-maps = 最近のマップ

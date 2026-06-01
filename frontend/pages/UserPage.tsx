@@ -15,6 +15,11 @@ type UserData = {
   avatar_url: string | null;
 };
 
+type UserFetchResult =
+  | { status: "ok"; user: UserData }
+  | { status: "not_found" }
+  | { status: "forbidden" };
+
 type TabDef = {
   id: string;
   icon: string;
@@ -41,17 +46,24 @@ export const UserPage = () => {
   const { currentUser, updateCurrentUser } = useAuth();
   const { showToast } = useToast();
 
-  const [userData, { mutate: mutateUser }] = createResource(userName, async (name) => {
+  const [userData, { mutate: mutateUser }] = createResource(userName, async (name): Promise<UserFetchResult> => {
     const res = await fetch(`/api/v1/users/${name}`);
-    if (res.status === 404) return null;
+    if (res.status === 404) return { status: "not_found" };
+    if (res.status === 403) return { status: "forbidden" };
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const json = await res.json() as { user: UserData };
-    return json.user;
+    return { status: "ok", user: json.user };
   });
 
+  const user = () => {
+    if (userData.error) return undefined;
+    const d = userData();
+    return d?.status === "ok" ? d.user : undefined;
+  };
+
   const isOwner = () => {
-    const user = currentUser();
-    return !!user && user.name === userName();
+    const u = currentUser();
+    return !!u && u.name === userName();
   };
 
   const location = useLocation();
@@ -81,20 +93,23 @@ export const UserPage = () => {
       <Show when={userData.error}>
         <div class="notification is-danger is-light" data-l10n-id="error-load-failed" />
       </Show>
-      <Show when={userData.state === "ready" && userData() === null}>
+      <Show when={userData.state === "ready" && userData()?.status === "not_found"}>
         <div class="notification is-warning is-light" data-l10n-id="error-user-not-found" />
       </Show>
-      <Show when={!userData.error && userData()} keyed>
-        {(user) => (
+      <Show when={userData.state === "ready" && userData()?.status === "forbidden"}>
+        <div class="notification is-warning is-light" data-l10n-id="error-user-forbidden" />
+      </Show>
+      <Show when={user()} keyed>
+        {(u) => (
           <>
             <div class="container">
               <div class="level">
                 <div class="level-left">
-                  <Avatar url={user.avatar_url} size={64} />
-                  <h1 class="title ml-3">{user.display_name}</h1>
+                  <Avatar url={u.avatar_url} size={64} />
+                  <h1 class="title ml-3">{u.display_name}</h1>
                 </div>
               </div>
-              <p class="subtitle">@{user.name}</p>
+              <p class="subtitle">@{u.name}</p>
             </div>
             <div class="container mt-5">
               <div class="tabs mb-5">
@@ -121,15 +136,15 @@ export const UserPage = () => {
             </div>
             <div class="container">
               <Show when={activeTab() === "tab-recent-maps"}>
-                <UserMapsTab userName={user.name} active={() => activeTab() === "tab-recent-maps"} />
+                <UserMapsTab userName={u.name} active={() => activeTab() === "tab-recent-maps"} />
               </Show>
               <Show when={isOwner() && activeTab() === "tab-profile"}>
                 <UserProfileTab
-                  userName={user.name}
+                  userName={u.name}
                   active={() => activeTab() === "tab-profile"}
                   onSuccess={({ displayName, avatarUrl }) => {
                     showToast("profile-saved");
-                    mutateUser(u => u ? { ...u, display_name: displayName, avatar_url: avatarUrl } : u);
+                    mutateUser(prev => prev?.status === "ok" ? { ...prev, user: { ...prev.user, display_name: displayName, avatar_url: avatarUrl } } : prev);
                     updateCurrentUser({ display_name: displayName, avatar_url: avatarUrl });
                   }}
                   onError={(key) => showToast(key, "danger")}
@@ -137,7 +152,7 @@ export const UserPage = () => {
               </Show>
               <Show when={isOwner() && activeTab() === "tab-preferences"}>
                 <UserPreferencesTab
-                  userName={user.name}
+                  userName={u.name}
                   active={() => activeTab() === "tab-preferences"}
                   onSuccess={() => showToast("preferences-saved")}
                   onError={(key) => showToast(key, "danger")}
@@ -145,7 +160,7 @@ export const UserPage = () => {
               </Show>
               <Show when={isOwner() && activeTab() === "tab-credentials"}>
                 <UserCredentialsTab
-                  userName={user.name}
+                  userName={u.name}
                   omniauthToken={omniauthToken()}
                   active={() => activeTab() === "tab-credentials"}
                   onSuccess={() => showToast("credential-disconnected")}
@@ -154,7 +169,7 @@ export const UserPage = () => {
               </Show>
               <Show when={isOwner() && activeTab() === "tab-danger"}>
                 <UserDangerTab
-                  userName={user.name}
+                  userName={u.name}
                   onError={(key) => showToast(key, "danger")}
                 />
               </Show>

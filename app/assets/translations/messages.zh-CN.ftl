@@ -41,6 +41,7 @@ error-username-reserved = 该用户名已被保留。
 error-username-taken = 该用户名已被占用。
 error-load-failed = 数据加载失败。
 error-user-not-found = 找不到该用户。
+error-user-forbidden = 此页面无法显示。
 
 ## User page
 user-tab-maps = 最近的地图

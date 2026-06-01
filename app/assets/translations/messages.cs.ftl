@@ -71,6 +71,7 @@ error-username-reserved = Toto uživatelské jméno je rezervováno.
 error-username-taken = Toto uživatelské jméno je již obsazeno.
 error-load-failed = Nepodařilo se načíst data.
 error-user-not-found = Uživatel nebyl nalezen.
+error-user-forbidden = Tato stránka není k dispozici.
 
 ## User page
 user-tab-maps = Nedávné mapy
