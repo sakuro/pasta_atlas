@@ -139,26 +139,28 @@ export const UserPreferencesTab = (props: {
                 <div class="pl-4">
                   <div class="field">
                     <label class="label is-small" for="timezone-select" data-l10n-id="edit-timezone-label" />
-                    <div class="control is-flex is-align-items-center">
-                      <div class="select">
-                        <select
-                          id="timezone-select"
-                          name="timezone"
-                          value={selectedTz()}
-                          onChange={(e) => onTzChange(e.currentTarget.value)}
-                        >
-                          <For each={groupTimezones(pref.timezone_identifiers)}>
-                            {(group) => (
-                              <optgroup label={group.region}>
-                                <For each={group.timezones}>
-                                  {(tz) => <option value={tz} selected={tz === selectedTz()}>{tz}</option>}
-                                </For>
-                              </optgroup>
-                            )}
-                          </For>
-                        </select>
+                    <div style="display: inline-block">
+                      <div class="control">
+                        <div class="select">
+                          <select
+                            id="timezone-select"
+                            name="timezone"
+                            value={selectedTz()}
+                            onChange={(e) => onTzChange(e.currentTarget.value)}
+                          >
+                            <For each={groupTimezones(pref.timezone_identifiers)}>
+                              {(group) => (
+                                <optgroup label={group.region}>
+                                  <For each={group.timezones}>
+                                    {(tz) => <option value={tz} selected={tz === selectedTz()}>{tz}</option>}
+                                  </For>
+                                </optgroup>
+                              )}
+                            </For>
+                          </select>
+                        </div>
                       </div>
-                      <span class="ml-3">{tzTime()}</span>
+                      <p class="help has-text-right">{tzTime()}</p>
                     </div>
                   </div>
                   <div class="field">
