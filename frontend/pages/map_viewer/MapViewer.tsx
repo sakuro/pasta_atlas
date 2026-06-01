@@ -305,11 +305,11 @@ export const MapViewer = (props: MapViewerProps) => {
             </Show>
           </div>
         </Show>
-        <Show when={mapData()}>
-          {(data) => (
+        <Show when={activeGeneration()}>
+          {(gen) => (
             <ShareButtons
-              mapPath={`/maps/${data().ulid}`}
-              mapName={data().display_name}
+              mapPath={`/maps/${props.ulid}?generation=${gen().ulid}`}
+              mapName={mapData()!.display_name}
             />
           )}
         </Show>
