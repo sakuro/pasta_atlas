@@ -27,12 +27,12 @@ const App = () => {
       <ToastProvider>
         <Router root={AppLayout}>
           <Route path="/" component={MapsIndexPage} />
-          <Route path="/:at_user_name/maps/:ulid" component={MapViewerPage} />
+          <Route path="/:at_user_name/maps/:ulid" component={MapViewerPage} matchFilters={{ at_user_name: /^@/ }} />
           <Route path="/auth/register" component={RegistrationPage} />
           <Route path="/about" component={() => <StaticPage slug="about" />} />
           <Route path="/privacy" component={() => <StaticPage slug="privacy" />} />
           <Route path="/terms" component={() => <StaticPage slug="terms" />} />
-          <Route path="/:at_user_name" component={UserPage} />
+          <Route path="/:at_user_name" component={UserPage} matchFilters={{ at_user_name: /^@/ }} />
           <Route path="*" component={NotFoundPage} />
         </Router>
       </ToastProvider>
