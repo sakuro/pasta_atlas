@@ -26,6 +26,8 @@
        *[other] Factorio
     }
 
+### Global
+
 ## App
 app-name = { -app-name }
 discord-name = { -discord }
@@ -50,17 +52,23 @@ surface-gleba = Gleba
 surface-fulgora = Fulgora
 surface-aquilo = Aquilo
 
-## Nav
+### Navigation
 nav-log-out = Odhlásit se
 nav-log-in = Přihlásit se
 nav-log-in-discord = Přihlásit se přes { -discord }
 nav-log-in-github = Přihlásit se přes { -github }
 nav-log-in-steam = Přihlásit se přes { -steam }
+nav-about = O službě
+nav-privacy-policy = Zásady ochrany osobních údajů
+nav-terms-of-service = Podmínky služby
+
+### Authentication
 
 ## Registration
 registration-title = Vytvořit účet
 registration-username = Uživatelské jméno
 registration-username-help = 1–15 znaků. Písmena, číslice, pomlčky a podtržítka. Musí začínat a končit písmenem nebo číslicí.
+registration-terms-agree = Souhlasím s výše uvedeným.
 registration-submit = Vytvořit účet
 
 ## Registration errors
@@ -69,10 +77,8 @@ error-username-too-long = Uživatelské jméno musí mít nejvýše 15 znaků.
 error-username-invalid-chars = Uživatelské jméno smí obsahovat pouze písmena, číslice, pomlčky a podtržítka a musí začínat a končit písmenem nebo číslicí.
 error-username-reserved = Toto uživatelské jméno je rezervováno.
 error-username-taken = Toto uživatelské jméno je již obsazeno.
-error-load-failed = Nepodařilo se načíst data.
-error-user-not-found = Uživatel nebyl nalezen.
-error-user-forbidden = Tato stránka není k dispozici.
-error-page-not-found = Stránka nebyla nalezena.
+
+### User Account
 
 ## User page
 user-tab-maps = Nedávné mapy
@@ -125,22 +131,29 @@ profile-saved = Profil uložen.
 preferences-saved = Nastavení uložena.
 credential-disconnected = Účet odpojen.
 
-## Credential errors
+## Errors
+error-load-failed = Nepodařilo se načíst data.
+error-user-not-found = Uživatel nebyl nalezen.
+error-user-forbidden = Tato stránka není k dispozici.
+error-page-not-found = Stránka nebyla nalezena.
 error-credential-conflict = Tento účet je již propojen s jiným uživatelem.
 error-credential-last = Je vyžadován alespoň jeden propojený účet.
 error-profile-display-name-too-long = Zobrazované jméno musí mít nejvýše 30 znaků.
 error-profile-display-name-invalid-chars = Zobrazované jméno obsahuje nepovoleé znaky.
 
-## Map notices
-map-deletion-requested = Vaše mapa byla zařazena do fronty k odstranění. Může být ještě chvíli viditelná.
+### Maps
 
 ## Map card
 map-card-updated-at = { $date }
+
+## Map notices
+map-deletion-requested = Vaše mapa byla zařazena do fronty k odstranění. Může být ještě chvíli viditelná.
 
 ## Pagination
 pagination-previous = Předchozí
 pagination-next = Další
 
+### Upload
 
 ## Upload modal
 upload-button = Nahrát
@@ -185,7 +198,7 @@ upload-error-file = Nahrávání selhalo: { $details }
 upload-error-finalize = Obrázky byly nahrány, ale dokončení selhalo.
 upload-error-finalize-network = Obrázky byly nahrány, ale při dokončení došlo k chybě sítě.
 
-## Modální okno – jak nahrát
+## How to upload
 how-to-upload-button =
     .title = Jak nahrát
 how-to-upload-title = Jak nahrát
@@ -203,20 +216,7 @@ how-to-upload-step3-confirm = Potvrďte název mapy a detaily, poté klikněte n
 how-to-upload-step3-view = Po dokončení nahrávání klikněte na „Zobrazit mapu".
 how-to-upload-tip = Stejnou mapu můžete nahrát při různých herních ticích — každé nahrání vytvoří samostatnou generaci, mezi nimiž lze přepínat v prohlížeči map.
 
-## Avatar upload
-avatar-change = Změnit
-avatar-remove = Odebrat
-avatar-cancel = Zrušit
-avatar-dismiss = Zavřít
-avatar-error-too-large-file-size = Soubor musí být menší nebo roven 5 MiB.
-avatar-error-too-small-pixel-size = Obrázek musí být alespoň { $min }×{ $min } pixelů.
-avatar-error-too-large-pixel-size = Obrázek musí být nejvýše { $max }×{ $max } pixelů.
-avatar-error-read = Nepodařilo se načíst obrázek.
-avatar-error-remove-http = Nepodařilo se odebrat avatar (HTTP { $status }).
-avatar-error-network = Chyba sítě. Zkuste to prosím znovu.
-avatar-error-url-http = Nepodařilo se získat URL pro nahrávání (HTTP { $status }).
-avatar-error-upload-http = Nahrávání selhalo (HTTP { $status }).
-avatar-error-upload-network = Při nahrávání došlo k chybě sítě.
+### Map Viewer
 
 ## Map viewer
 map-layer-train-stations = Železniční zastávky
@@ -229,14 +229,16 @@ map-name-save-button =
     .title = Uložit
 map-name-cancel-button =
     .title = Zrušit
-error-map-name-too-long = Název mapy musí mít nejvýše 30 znaků.
-error-map-name-invalid-chars = Název mapy obsahuje nepovolené znaky.
 map-delete-button =
     .title = Smazat mapu
 map-delete-confirm-title = Smazat mapu
 map-delete-confirm-message = Tato mapa a všechna její data budou trvale smazána. Jste si jisti?
 map-delete-confirm-button = Smazat
 map-delete-cancel-button = Zrušit
+
+## Map errors
+error-map-name-too-long = Název mapy musí mít nejvýše 30 znaků.
+error-map-name-invalid-chars = Název mapy obsahuje nepovolené znaky.
 
 ## Map info modal
 map-info-title = Informace o mapě
@@ -264,7 +266,7 @@ map-info-mods-count =
     }
 map-info-close = Zavřít
 
-## Share buttons
+## Share
 share-x =
     .title = Sdílet na X
 share-bluesky =
@@ -273,9 +275,18 @@ share-reddit =
     .title = Sdílet na Reddit
 share-copy-link =
     .title = Kopírovat odkaz
-nav-about = O službě
-nav-privacy-policy = Zásady ochrany osobních údajů
-nav-terms-of-service = Podmínky služby
 
-## Registration: terms agreement
-registration-terms-agree = Souhlasím s výše uvedeným.
+### Avatar
+avatar-change = Změnit
+avatar-remove = Odebrat
+avatar-cancel = Zrušit
+avatar-dismiss = Zavřít
+avatar-error-too-large-file-size = Soubor musí být menší nebo roven 5 MiB.
+avatar-error-too-small-pixel-size = Obrázek musí být alespoň { $min }×{ $min } pixelů.
+avatar-error-too-large-pixel-size = Obrázek musí být nejvýše { $max }×{ $max } pixelů.
+avatar-error-read = Nepodařilo se načíst obrázek.
+avatar-error-remove-http = Nepodařilo se odebrat avatar (HTTP { $status }).
+avatar-error-network = Chyba sítě. Zkuste to prosím znovu.
+avatar-error-url-http = Nepodařilo se získat URL pro nahrávání (HTTP { $status }).
+avatar-error-upload-http = Nahrávání selhalo (HTTP { $status }).
+avatar-error-upload-network = Při nahrávání došlo k chybě sítě.

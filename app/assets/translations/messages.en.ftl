@@ -5,6 +5,8 @@
 -steam = Steam
 -factorio = Factorio
 
+### Global
+
 ## App
 app-name = { -app-name }
 discord-name = { -discord }
@@ -20,17 +22,23 @@ surface-gleba = Gleba
 surface-fulgora = Fulgora
 surface-aquilo = Aquilo
 
-## Nav
+### Navigation
 nav-log-out = Log out
 nav-log-in = Log in
 nav-log-in-discord = Log in with { -discord }
 nav-log-in-github = Log in with { -github }
 nav-log-in-steam = Log in with { -steam }
+nav-about = About
+nav-privacy-policy = Privacy Policy
+nav-terms-of-service = Terms of Service
+
+### Authentication
 
 ## Registration
 registration-title = Create your account
 registration-username = Username
 registration-username-help = 1–15 characters. Letters, numbers, hyphens, and underscores. Must start and end with a letter or number.
+registration-terms-agree = I agree to the above.
 registration-submit = Create account
 
 ## Registration errors
@@ -39,10 +47,8 @@ error-username-too-long = Username must be 15 characters or fewer.
 error-username-invalid-chars = Username may only contain letters, numbers, hyphens, and underscores, and must start and end with a letter or number.
 error-username-reserved = That username is reserved.
 error-username-taken = That username is already taken.
-error-load-failed = Failed to load data.
-error-user-not-found = User not found.
-error-user-forbidden = This page is not available.
-error-page-not-found = Page not found.
+
+### User Account
 
 ## User page
 user-tab-maps = Recent Maps
@@ -95,22 +101,29 @@ profile-saved = Profile saved.
 preferences-saved = Preferences saved.
 credential-disconnected = Account disconnected.
 
-## Credential errors
+## Errors
+error-load-failed = Failed to load data.
+error-user-not-found = User not found.
+error-user-forbidden = This page is not available.
+error-page-not-found = Page not found.
 error-credential-conflict = That account is already linked to another user.
 error-credential-last = At least one connected account is required.
 error-profile-display-name-too-long = Display name must be 30 characters or fewer.
 error-profile-display-name-invalid-chars = Display name contains disallowed characters.
 
-## Map notices
-map-deletion-requested = Your map has been queued for deletion. It may remain visible for a short time.
+### Maps
 
 ## Map card
 map-card-updated-at = { $date }
+
+## Map notices
+map-deletion-requested = Your map has been queued for deletion. It may remain visible for a short time.
 
 ## Pagination
 pagination-previous = Previous
 pagination-next = Next
 
+### Upload
 
 ## Upload modal
 upload-button = Upload
@@ -155,7 +168,7 @@ upload-error-file = Failed to upload: { $details }
 upload-error-finalize = Images uploaded, but finalization failed.
 upload-error-finalize-network = Images uploaded, but network error during finalization.
 
-## How to upload modal
+## How to upload
 how-to-upload-button =
     .title = How to upload
 how-to-upload-title = How to upload
@@ -173,20 +186,7 @@ how-to-upload-step3-confirm = Confirm the map title and details, then click "Sta
 how-to-upload-step3-view = When the upload completes, click "View Map".
 how-to-upload-tip = You can upload the same map at different game ticks — each upload becomes a separate generation you can switch between in the map viewer.
 
-## Avatar upload
-avatar-change = Change
-avatar-remove = Remove
-avatar-cancel = Cancel
-avatar-dismiss = Dismiss
-avatar-error-too-large-file-size = File must be 5 MiB or smaller.
-avatar-error-too-small-pixel-size = Image must be { $min }×{ $min } or larger.
-avatar-error-too-large-pixel-size = Image must be { $max }×{ $max } or smaller.
-avatar-error-read = Failed to read image.
-avatar-error-remove-http = Failed to remove avatar (HTTP { $status }).
-avatar-error-network = Network error. Please try again.
-avatar-error-url-http = Failed to get upload URL (HTTP { $status }).
-avatar-error-upload-http = Upload failed (HTTP { $status }).
-avatar-error-upload-network = Network error during upload.
+### Map Viewer
 
 ## Map viewer
 map-layer-train-stations = Train stations
@@ -199,14 +199,16 @@ map-name-save-button =
     .title = Save
 map-name-cancel-button =
     .title = Cancel
-error-map-name-too-long = Map name must be 30 characters or fewer.
-error-map-name-invalid-chars = Map name contains disallowed characters.
 map-delete-button =
     .title = Delete map
 map-delete-confirm-title = Delete map
 map-delete-confirm-message = This map and all its data will be permanently deleted. Are you sure?
 map-delete-confirm-button = Delete
 map-delete-cancel-button = Cancel
+
+## Map errors
+error-map-name-too-long = Map name must be 30 characters or fewer.
+error-map-name-invalid-chars = Map name contains disallowed characters.
 
 ## Map info modal
 map-info-title = Map Info
@@ -233,7 +235,7 @@ map-info-mods-count =
     }
 map-info-close = Close
 
-## Share buttons
+## Share
 share-x =
     .title = Share on X
 share-bluesky =
@@ -242,9 +244,18 @@ share-reddit =
     .title = Share on Reddit
 share-copy-link =
     .title = Copy link
-nav-about = About
-nav-privacy-policy = Privacy Policy
-nav-terms-of-service = Terms of Service
 
-## Registration: terms agreement
-registration-terms-agree = I agree to the above.
+### Avatar
+avatar-change = Change
+avatar-remove = Remove
+avatar-cancel = Cancel
+avatar-dismiss = Dismiss
+avatar-error-too-large-file-size = File must be 5 MiB or smaller.
+avatar-error-too-small-pixel-size = Image must be { $min }×{ $min } or larger.
+avatar-error-too-large-pixel-size = Image must be { $max }×{ $max } or smaller.
+avatar-error-read = Failed to read image.
+avatar-error-remove-http = Failed to remove avatar (HTTP { $status }).
+avatar-error-network = Network error. Please try again.
+avatar-error-url-http = Failed to get upload URL (HTTP { $status }).
+avatar-error-upload-http = Upload failed (HTTP { $status }).
+avatar-error-upload-network = Network error during upload.
