@@ -1,7 +1,8 @@
 import { DOMLocalization } from "@fluent/dom";
 import { FluentBundle, FluentResource } from "@fluent/bundle";
 
-export const SUPPORTED_LOCALES = ["cs", "en", "ja", "ko", "zh-CN", "zh-TW"];
+import SUPPORTED_LOCALES_JSON from "../../config/supported_locales.json";
+export const SUPPORTED_LOCALES: string[] = SUPPORTED_LOCALES_JSON;
 
 let currentLocale: string | null = null;
 let rootConnected = false;
