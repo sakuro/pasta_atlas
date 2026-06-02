@@ -2,6 +2,7 @@ import { createSignal, Show, For } from "solid-js";
 import { Portal } from "solid-js/web";
 import { lang } from "../lib/display-settings";
 import { CopyButton } from "./CopyButton";
+import { formatTicks } from "../lib/format-ticks";
 
 export interface Mapshot {
   surfaces?: unknown[];
@@ -17,16 +18,6 @@ export interface Mapshot {
 export const formatNumber = (n: number, locale: string): string =>
   new Intl.NumberFormat(locale).format(n);
 
-export const formatTicks = (tick: number, locale: string, style: "narrow" | "long" | "short" = "short"): string => {
-  const totalSeconds = Math.floor(tick / 60);
-  const seconds = totalSeconds % 60;
-  const totalMinutes = Math.floor(totalSeconds / 60);
-  const minutes = totalMinutes % 60;
-  const totalHours = Math.floor(totalMinutes / 60);
-  const hours = totalHours % 24;
-  const days = Math.floor(totalHours / 24);
-  return new Intl.DurationFormat(locale, { style }).format({ days, hours, minutes, seconds });
-};
 
 const PINNED_MODS = ["elevated-rails", "quality", "space-age"];
 

@@ -1,4 +1,4 @@
-import { createResource, createSignal, createMemo, Show, Suspense, For, onMount, onCleanup, untrack } from "solid-js";
+import { createResource, createSignal, createMemo, Show, Suspense, onMount, onCleanup, untrack } from "solid-js";
 import { useNavigate } from "@solidjs/router";
 import { useToast } from "../../contexts/ToastContext";
 
@@ -8,8 +8,8 @@ const csrfToken = (): string =>
 import L from "leaflet";
 import { Avatar } from "../../components/Avatar";
 import { FormattedDateTime } from "../../components/FormattedDateTime";
-import { MapInfoModal, formatTicks, type Mapshot as MapInfoMapshot } from "../../components/MapInfoModal";
-import { lang } from "../../lib/display-settings";
+import { MapInfoModal, type Mapshot as MapInfoMapshot } from "../../components/MapInfoModal";
+import { GenerationSelect } from "./GenerationSelect";
 import { ShareButtons } from "../../components/ShareButtons";
 import { l10n } from "../../lib/l10n";
 import { renderRichText } from "./richtext";
@@ -276,21 +276,11 @@ export const MapViewer = (props: MapViewerProps) => {
         <div style={{ flex: 1 }} />
         <Show when={mapData()}>
           {(data) => (
-            <div class="control has-icons-left" style={{ "flex-shrink": 0 }}>
-              <div class="select is-small">
-                <select
-                  value={activeGeneration()?.ulid ?? ""}
-                  onChange={(e) => handleGenerationChange(e.currentTarget.value)}
-                >
-                  <For each={data().generations}>
-                    {(gen) => (
-                      <option value={gen.ulid}>{formatTicks(gen.tick, lang())}</option>
-                    )}
-                  </For>
-                </select>
-              </div>
-              <span class="icon is-small is-left"><i class="fa-solid fa-timeline" /></span>
-            </div>
+            <GenerationSelect
+              generations={data().generations}
+              value={activeGeneration()?.ulid ?? ""}
+              onChange={handleGenerationChange}
+            />
           )}
         </Show>
         <Show when={mapshot()}>
