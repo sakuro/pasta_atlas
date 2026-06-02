@@ -26,6 +26,7 @@ Dockerfile
 Guardfile
 LICENSE.txt
 README.md
+SECURITY.md
 TODO.md
 bin
 compose.yml
