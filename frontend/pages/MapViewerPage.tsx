@@ -2,7 +2,8 @@ import { createResource, Show } from "solid-js";
 import { useParams } from "@solidjs/router";
 import { useAuth } from "../contexts/AuthContext";
 import { MapViewer } from "./map_viewer/MapViewer";
-import { Spinner } from "../components/Spinner";
+import { SpinnerBlock } from "../components/SpinnerBlock";
+import { ErrorNotification } from "../components/ErrorNotification";
 
 interface MapViewerData {
   ulid: string;
@@ -36,15 +37,13 @@ export const MapViewerPage = () => {
   return (
     <div class="map-viewer-page">
       <Show when={data.loading}>
-        <div class="has-text-centered py-5">
-          <Spinner />
-        </div>
+        <SpinnerBlock />
       </Show>
       <Show when={data.error instanceof NotFoundError}>
-        <div class="notification is-danger is-light" data-l10n-id="error-map-not-found" />
+        <ErrorNotification l10nId="error-map-not-found" />
       </Show>
       <Show when={data.error && !(data.error instanceof NotFoundError)}>
-        <div class="notification is-danger is-light" data-l10n-id="error-load-failed" />
+        <ErrorNotification l10nId="error-load-failed" />
       </Show>
       <Show when={!data.error && data()} keyed>
         {(mapData) => (

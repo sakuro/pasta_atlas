@@ -1,7 +1,8 @@
 import { createResource, For, Show } from "solid-js";
 import { MapCard, type MapData } from "../../components/MapCard";
 import "../../lib/l10n";
-import { Spinner } from "../../components/Spinner";
+import { SpinnerBlock } from "../../components/SpinnerBlock";
+import { ErrorNotification } from "../../components/ErrorNotification";
 
 type MapsResponse = { maps: MapData[] };
 
@@ -18,12 +19,10 @@ export const UserMapsTab = (props: { userName: string; active: () => boolean }) 
   return (
     <>
       <Show when={data.loading}>
-        <div class="has-text-centered py-5">
-          <Spinner />
-        </div>
+        <SpinnerBlock />
       </Show>
       <Show when={data.error}>
-        <div class="notification is-danger is-light" data-l10n-id="error-load-failed" />
+        <ErrorNotification l10nId="error-load-failed" />
       </Show>
       <Show when={!data.error && data()} keyed>
         {(response) => (

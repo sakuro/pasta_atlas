@@ -1,7 +1,8 @@
 import { createEffect, createResource, createSignal, For, Show } from "solid-js";
 import { useLocation, useParams } from "@solidjs/router";
 import { Avatar } from "../components/Avatar";
-import { Spinner } from "../components/Spinner";
+import { SpinnerBlock } from "../components/SpinnerBlock";
+import { ErrorNotification } from "../components/ErrorNotification";
 import { UserMapsTab } from "./user/UserMapsTab";
 import { UserProfileTab } from "./user/UserProfileTab";
 import { UserPreferencesTab } from "./user/UserPreferencesTab";
@@ -87,18 +88,16 @@ export const UserPage = () => {
   return (
     <section class="section">
       <Show when={userData.loading}>
-        <div class="has-text-centered py-5">
-          <Spinner />
-        </div>
+        <SpinnerBlock />
       </Show>
       <Show when={userData.error}>
-        <div class="notification is-danger is-light" data-l10n-id="error-load-failed" />
+        <ErrorNotification l10nId="error-load-failed" />
       </Show>
       <Show when={userData.state === "ready" && userData()?.status === "not_found"}>
-        <div class="notification is-warning is-light" data-l10n-id="error-user-not-found" />
+        <ErrorNotification l10nId="error-user-not-found" type="warning" />
       </Show>
       <Show when={userData.state === "ready" && userData()?.status === "forbidden"}>
-        <div class="notification is-warning is-light" data-l10n-id="error-user-forbidden" />
+        <ErrorNotification l10nId="error-user-forbidden" type="warning" />
       </Show>
       <Show when={user()} keyed>
         {(u) => (

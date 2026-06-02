@@ -1,7 +1,8 @@
 import { createResource, createSignal, Show } from "solid-js";
 import { AvatarUpload, type AvatarUploadRef } from "./AvatarUpload";
 import "../../lib/l10n";
-import { Spinner } from "../../components/Spinner";
+import { SpinnerBlock } from "../../components/SpinnerBlock";
+import { ErrorNotification } from "../../components/ErrorNotification";
 
 const segmenter = new Intl.Segmenter();
 
@@ -69,12 +70,10 @@ export const UserProfileTab = (props: {
   return (
     <>
       <Show when={data.loading}>
-        <div class="has-text-centered py-5">
-          <Spinner />
-        </div>
+        <SpinnerBlock />
       </Show>
       <Show when={data.error}>
-        <div class="notification is-danger is-light" data-l10n-id="error-load-failed" />
+        <ErrorNotification l10nId="error-load-failed" />
       </Show>
       <Show when={!data.loading && data()} keyed>
         {(profile) => {

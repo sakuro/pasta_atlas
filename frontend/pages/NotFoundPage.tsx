@@ -1,7 +1,9 @@
+import { ErrorNotification } from "../components/ErrorNotification";
+
 export const NotFoundPage = () => (
   <section class="section">
     <div class="container">
-      <div class="notification is-warning is-light" data-l10n-id="error-page-not-found" />
+      <ErrorNotification l10nId="error-page-not-found" type="warning" />
     </div>
   </section>
 );

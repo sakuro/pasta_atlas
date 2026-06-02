@@ -1,7 +1,8 @@
 import { createResource, createSignal, Show } from "solid-js";
 import { useNavigate } from "@solidjs/router";
 import { useAuth } from "../contexts/AuthContext";
-import { Spinner } from "../components/Spinner";
+import { SpinnerBlock } from "../components/SpinnerBlock";
+import { ErrorNotification } from "../components/ErrorNotification";
 
 type PendingAuth = {
   provider: string;
@@ -60,12 +61,10 @@ export const RegistrationPage = () => {
   return (
     <section class="section">
       <Show when={pending.loading}>
-        <div class="has-text-centered py-5">
-          <Spinner />
-        </div>
+        <SpinnerBlock />
       </Show>
       <Show when={pending.error}>
-        <div class="notification is-danger is-light" data-l10n-id="error-load-failed" />
+        <ErrorNotification l10nId="error-load-failed" />
       </Show>
       <Show when={pending()} keyed>
         {(auth) => {
@@ -74,7 +73,7 @@ export const RegistrationPage = () => {
           <div class="container is-max-tablet">
             <h1 class="title" data-l10n-id="registration-title" />
             <Show when={error()}>
-              {(errKey) => <div class="notification is-danger is-light" data-l10n-id={errKey()} />}
+              {(errKey) => <ErrorNotification l10nId={errKey()} />}
             </Show>
             <form onSubmit={(e) => void handleSubmit(e)}>
               <div class="field">

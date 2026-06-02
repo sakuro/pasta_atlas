@@ -1,6 +1,7 @@
 import { createResource, Show } from "solid-js";
 import { lang } from "../lib/display-settings";
-import { Spinner } from "../components/Spinner";
+import { SpinnerBlock } from "../components/SpinnerBlock";
+import { ErrorNotification } from "../components/ErrorNotification";
 
 export const StaticPage = (props: { slug: string }) => {
   const [content] = createResource(
@@ -16,12 +17,10 @@ export const StaticPage = (props: { slug: string }) => {
   return (
     <>
       <Show when={content.loading}>
-        <div class="has-text-centered py-5">
-          <Spinner />
-        </div>
+        <SpinnerBlock />
       </Show>
       <Show when={content.error}>
-        <div class="notification is-danger is-light" data-l10n-id="error-load-failed" />
+        <ErrorNotification l10nId="error-load-failed" />
       </Show>
       <Show when={!content.error && content()} keyed>
         {/* eslint-disable-next-line solid/no-innerhtml -- content is admin-authored static pages only */}
