@@ -30,7 +30,7 @@ variable "allowed_origins" {
 
 variable "db_username" {
   type    = string
-  default = "pasta_atlas"
+  default = "master"
 }
 
 variable "db_instance_class" {

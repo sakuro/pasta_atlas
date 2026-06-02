@@ -1,0 +1,64 @@
+#!/usr/bin/env bash
+# Creates the pasta_atlas application DB user and stores its DATABASE_URL in SSM.
+# Requires: psql, jq, openssl, ruby
+# Run while RDS is publicly accessible and your IP is in the RDS security group.
+set -euo pipefail
+
+REGION=ap-northeast-1
+APP_NAME=pasta-atlas
+ENVIRONMENT=production
+DB_IDENTIFIER="${APP_NAME}-${ENVIRONMENT}"
+DB_NAME=pasta_atlas
+APP_DB_USER=pasta_atlas
+
+unset AWS_ENDPOINT_URL
+export AWS_PROFILE=terraform
+
+SECRET_ARN=$(aws rds describe-db-instances \
+  --db-instance-identifier "$DB_IDENTIFIER" \
+  --region "$REGION" \
+  --query 'DBInstances[0].MasterUserSecret.SecretArn' \
+  --output text)
+
+SECRET_JSON=$(aws secretsmanager get-secret-value \
+  --secret-id "$SECRET_ARN" \
+  --region "$REGION" \
+  --query 'SecretString' \
+  --output text)
+
+MASTER_USER=$(echo "$SECRET_JSON" | jq -r '.username')
+MASTER_PASSWORD=$(echo "$SECRET_JSON" | jq -r '.password')
+
+HOST=$(aws rds describe-db-instances \
+  --db-instance-identifier "$DB_IDENTIFIER" \
+  --region "$REGION" \
+  --query 'DBInstances[0].Endpoint.Address' \
+  --output text)
+
+PORT=$(aws rds describe-db-instances \
+  --db-instance-identifier "$DB_IDENTIFIER" \
+  --region "$REGION" \
+  --query 'DBInstances[0].Endpoint.Port' \
+  --output text)
+
+APP_PASSWORD=$(openssl rand -base64 32 | tr -d '/+=')
+
+PGPASSWORD="$MASTER_PASSWORD" psql \
+  -h "$HOST" -p "$PORT" -U "$MASTER_USER" -d "$DB_NAME" \
+  -c "CREATE USER ${APP_DB_USER} WITH PASSWORD '${APP_PASSWORD}';" \
+  -c "GRANT ALL PRIVILEGES ON DATABASE ${DB_NAME} TO ${APP_DB_USER};" \
+  -c "GRANT ALL ON SCHEMA public TO ${APP_DB_USER};"
+
+ENCODED_PASSWORD=$(ruby -e "require 'uri'; print URI.encode_www_form_component(ARGV[0])" -- "$APP_PASSWORD")
+
+DATABASE_URL="postgresql://${APP_DB_USER}:${ENCODED_PASSWORD}@${HOST}:${PORT}/${DB_NAME}"
+
+aws ssm put-parameter \
+  --name "/${APP_NAME}/${ENVIRONMENT}/database_url" \
+  --value "$DATABASE_URL" \
+  --type SecureString \
+  --overwrite \
+  --region "$REGION" \
+  --output text
+
+echo "Created user ${APP_DB_USER} and updated /${APP_NAME}/${ENVIRONMENT}/database_url"
