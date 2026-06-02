@@ -138,7 +138,7 @@ export const UserPreferencesTab = (props: {
                 <div class="pl-4">
                   <div class="field">
                     <label class="label is-small" for="timezone-select" data-l10n-id="edit-timezone-label" />
-                    <div style={{"display": "inline-block"}}>
+                    <div class="field has-addons mb-0">
                       <div class="control">
                         <div class="select">
                           <select
@@ -159,7 +159,9 @@ export const UserPreferencesTab = (props: {
                           </select>
                         </div>
                       </div>
-                      <p class="help has-text-right">{tzTime()}</p>
+                      <div class="control">
+                        <span class="button is-static">{tzTime()}</span>
+                      </div>
                     </div>
                   </div>
                   <div class="field">
