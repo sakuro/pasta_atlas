@@ -9,17 +9,18 @@
 ```
 app/
   actions/           # HTTP actions (parse request, call operation, render response)
-    auth/            # OmniAuth callbacks, registration, session management (namespace mirrors /auth/* paths by convention)
-    maps/
-      index.rb                    # GET   /
-      viewer.rb                   # GET   /@:user_name/maps/:ulid
-      show.rb                     # GET   /api/v1/maps/:ulid
-    user/            # Profile view/edit, preferences, avatar management, credential management
-    uploads/
-      create.rb                   # POST  /api/v1/uploads
-      update.rb                   # PATCH /api/v1/uploads/:ulid
-      presigned_urls/
-        create.rb                 # POST  /api/v1/uploads/:ulid/presigned_urls
+    auth/            # OmniAuth callbacks, registration, session management
+    spa/             # SPA shell delivery
+      shell.rb                      # GET / (and other client-routed pages)
+      map_viewer.rb                 # GET /maps/:map_ulid
+      user.rb                       # GET /@:user_name
+      not_found.rb                  # GET /*path (catch-all)
+    api/             # JSON API
+      auth/                         # Current user info, registration data
+      maps/                         # Map CRUD, lookup
+      uploads/                      # Upload lifecycle, presigned URLs
+      users/                        # User, profile, preferences, avatar, credentials
+      pages/                        # Static page content
   views/             # Hanami views (HTML rendering)
   templates/         # ERB templates
   relations/         # ROM relations (DB table mappings)
@@ -34,8 +35,8 @@ app/
 
 | Layer | Location | Examples |
 |---|---|---|
-| HTML delivery | `app/actions/` + `app/views/` | Parse request, call operation, render HTML |
-| JSON delivery | `app/actions/` | Parse request, call operation, render JSON |
+| SPA shell delivery | `app/actions/spa/` + `app/views/spa/` | Validate route, set 404 if needed, render `<div id="app"></div>` |
+| JSON delivery | `app/actions/api/` | Parse request, call operation, render JSON |
 | Use cases | `app/operations/` | Create map, start upload, issue presigned URLs, generate avatar URL |
 | Data access | `app/repos/` | Find/persist domain entities |
 | DB mapping | `app/relations/` | ROM relation definitions |

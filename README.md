@@ -93,7 +93,7 @@ This starts five concurrent processes via mise:
 |---------|---------|------|
 | `web` | `bundle exec hanami server` | Hanami app (port 2300) |
 | `assets` | `bundle exec hanami assets watch` | CSS/JS asset pipeline |
-| `islands` | `npm run dev:islands` | SolidJS island watcher (Vite HMR) |
+| `frontend` | `npm run dev:frontend` | SolidJS SPA (Vite watch) |
 | `floci` | `docker compose up` | S3 emulator + PostgreSQL |
 | `s3-cleanup-queue-worker` | `bundle exec rake s3:process_cleanup_queue` | S3 deletion queue worker |
 

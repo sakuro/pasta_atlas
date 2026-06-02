@@ -1,17 +1,21 @@
 # Frontend Component Design
 
-Framework: Solid.js (islands) + Bulma + Leaflet.js
+Framework: SolidJS + Bulma + Leaflet.js + `@solidjs/router`
 
-Regular page navigation uses server-rendered HTML. Client-side JavaScript is used only for interactive islands.
+The frontend is a SPA bundled by Vite from `frontend/app.tsx`. All page navigation is handled client-side by `@solidjs/router`. Hanami serves a minimal HTML shell (`<div id="app"></div>`) for every SPA route; the SPA mounts, fetches data from the JSON API, and renders the page.
 
 ## URL Structure
 
-| Page | URL | Rendered by |
+| Page | URL | Component |
 |---|---|---|
-| Top page | `/` | `web` slice (server) |
-| Map viewer | `/@:userProfileName/maps/:mapUlid` | `web` slice (shell) + Leaflet island |
+| Map listing | `/` | `MapsIndexPage` |
+| Map viewer | `/maps/:ulid` | `MapViewerPage` |
+| User profile | `/@:user_name` | `UserPage` |
+| Registration | `/auth/register` | `RegistrationPage` |
+| About / Privacy / Terms | `/about`, `/privacy`, `/terms` | `StaticPage` |
+| 404 | `*` | `NotFoundPage` |
 
-Map viewer query parameters (managed by the Leaflet island via `history.replaceState`):
+Map viewer query parameters (managed by Leaflet via `history.replaceState`):
 
 | Param | Description | Default |
 |---|---|---|
@@ -23,38 +27,73 @@ Map viewer query parameters (managed by the Leaflet island via `history.replaceS
 
 `s`, `x`, `y`, `z`, `lt`, `lg` follow the same conventions as the mapshot standalone viewer.
 
-## Server-Rendered Pages
+## Application Shell
 
-### Top page (`/`)
+`AppLayout` wraps all pages. It renders the navbar, upload button, and footer. Auth state is held in `AuthContext`; `AppLayout` waits for the initial `GET /api/v1/auth/current` response before rendering page content, showing a spinner in the meantime.
 
-Server-rendered. Fetches paginated map list from DB and renders MapCard list and Pagination. Full page reload on page change (`/maps?page=N`).
+## Pages
+
+### MapsIndexPage (`/`)
+
+Fetches `GET /api/v1/maps?page=N` and renders a paginated `MapCard` list. Page navigation is client-side (updates `?page=` search param without a full reload).
 
 Shows only maps with at least one `complete` generation, ordered by most recent generation upload.
 
-MapCard displays: `display_name`, owner name, latest generation tick, created_at. Links to `/@:userProfileName/maps/:ulid`.
+`MapCard` displays: `display_name`, owner name, latest generation tick, `created_at`. Links to `/maps/:ulid`.
 
-`display_name` is resolved server-side: `name` → `savename` (if not empty) → `mapshot_map_id`.
+### MapViewerPage (`/maps/:ulid`)
 
-### Map viewer page (`/@:userProfileName/maps/:mapUlid`)
+Fetches `GET /api/v1/maps/:ulid`, then mounts the `MapViewer` component with Leaflet.
 
-Server-rendered as an HTML shell. The shell embeds the map ULID as a `data-` attribute on the island mount point. The Leaflet island mounts on this element and fetches map data from the API.
+### UserPage (`/@:user_name`)
 
-```erb
-<div id="map-viewer" data-map-ulid="<%= map.ulid %>"></div>
-```
+Fetches `GET /api/v1/users/:name` and renders a tabbed profile page. The active tab is tracked via the URL hash.
 
-## Client-Side Islands
+Tabs:
 
-### LeafletMapViewer island
+| Tab | Visible to | Content |
+|---|---|---|
+| Maps | All | Recent maps by this user |
+| Profile | Own profile only | Edit display name and avatar |
+| Preferences | Own profile only | Timezone, locale, relative timestamps |
+| Credentials | Own profile only | Linked OAuth providers |
+| Danger | Own profile only | Account deletion |
 
-Mounted on `#map-viewer`. Reads `data-map-ulid` on mount.
+### RegistrationPage (`/auth/register`)
+
+Fetches `GET /api/v1/auth/registration` to get pending OAuth data (provider and suggested login name). Renders the username selection form. Submits `POST /auth/register`; on success the server returns `{"redirect_to": "/"}` and the SPA navigates there.
+
+### StaticPage (`/about`, `/privacy`, `/terms`)
+
+Fetches `GET /api/v1/pages/:slug` and renders the returned HTML content.
+
+## Contexts
+
+### AuthContext
+
+Fetches `GET /api/v1/auth/current` on mount. Exposes `currentUser()` signal:
+- `undefined` while loading
+- `null` if not logged in (guest)
+- user object `{ name, display_name, avatar_url }` if logged in
+
+Also applies locale and timezone preferences from the response.
+
+### ToastContext
+
+Provides `showToast(message, type)` for transient notifications.
+
+## Components
+
+### MapViewer
+
+Mounted inside `MapViewerPage`. Contains the Leaflet map.
 
 #### Data flow
 
 ```
-1. Read data-map-ulid from mount element
+1. Receive map ULID from MapViewerPage
 
-2. Fetch GET /api/v1/maps/:mapUlid
+2. Fetch GET /api/v1/maps/:ulid
      → generations list (ulid, tick, metadata_url)
 
 3. Resolve active generation from ?generation= or default to latest
@@ -73,9 +112,9 @@ Mounted on `#map-viewer`. Reads `data-map-ulid` on mount.
    overlay toggle    → update ?lt= / ?lg=
 ```
 
-#### GenerationSwitcher (internal, not a separate island)
+#### GenerationSwitcher (internal, not a separate component)
 
-Select input listing generations by tick value (descending). Rendered inside the Leaflet island.
+Select input listing generations by tick value (descending). Rendered inside `MapViewer`.
 
 On change: updates `?generation=` in URL → triggers mapshot.json re-fetch → rebuilds SurfaceLayers.
 
@@ -136,9 +175,9 @@ URL sync (via `history.replaceState`):
 
 ---
 
-### UploadModal island
+### UploadModal
 
-Mounted on a fixed element in the application layout. Triggered by the upload button in the server-rendered NavBar.
+Rendered in `AppLayout`. Triggered by the upload button in the navbar.
 
 #### States
 
@@ -174,6 +213,6 @@ From the `error` state, the user can dismiss the modal (returning to `idle`) or 
 
 ---
 
-### ShareButtons island
+### ShareButtons
 
-Mounted on the map viewer page. Renders share buttons for X, Bluesky, Reddit, and a copy-link button. Props: `mapPath` (URL path) and `mapName` (display name). The share URL is built from the current origin + `mapPath` + the active query string (preserving generation/surface/viewport state).
+Used inside `MapViewerPage`. Renders share buttons for X, Bluesky, Reddit, and a copy-link button. Props: `mapPath` (URL path) and `mapName` (display name). The share URL is built from the current origin + `mapPath` + the active query string (preserving generation/surface/viewport state).

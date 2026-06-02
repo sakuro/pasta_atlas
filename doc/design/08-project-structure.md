@@ -5,11 +5,15 @@
 ```
 pasta_atlas/
   app/                   # Application code (Hanami)
-    actions/             # HTTP actions (JSON API + HTML pages)
+    actions/             # HTTP actions (SPA shell + JSON API)
       auth/              # OAuth callbacks, registration, session
-      maps/
-      user/              # Profile view/edit, preferences, avatar, credential management
-      uploads/
+      spa/               # SPA shell delivery
+      api/               # JSON API
+        auth/
+        maps/
+        uploads/
+        users/
+        pages/
     views/               # Hanami views (HTML rendering)
     templates/           # ERB templates
     relations/           # ROM relations
@@ -18,14 +22,17 @@ pasta_atlas/
     values/              # Non-ROM value objects
     middleware/          # Rack middleware
     operations/          # Use cases (orchestrate repos, S3, etc.)
-  frontend/              # Vite source (island bundles only)
-    components/          # Shared SolidJS components (not mounted as islands)
-    islands/
-      avatar_upload/     # AvatarUpload island
-      map_info_button/   # MapInfoButton island
-      map_viewer/        # LeafletMapViewer island
-      share_buttons/     # ShareButtons island
-      upload_modal/      # UploadModal island
+  frontend/              # Vite source (SPA)
+    app.tsx              # Entry point (routing, providers)
+    pages/               # Page components (MapsIndexPage, MapViewerPage, UserPage, …)
+      map_viewer/        # MapViewer and Leaflet subcomponents
+      user/              # UserPage tab components
+    layout/
+      AppLayout.tsx      # Shared navbar, upload button, footer
+    components/          # Shared SolidJS components
+    contexts/            # AuthContext, ToastContext
+    lib/                 # l10n.ts, display-settings.ts
+    factorio-icons/      # Factorio icon assets
   vite.config.ts
   tsconfig.json
   package.json           # single package.json for both hanami-assets and Vite
@@ -33,16 +40,15 @@ pasta_atlas/
   spec/                  # RSpec tests
   doc/
     design/              # Design documents
-    api/                 # YARD-generated API documentation
 ```
 
 ## Asset Pipeline
 
-Two build pipelines are used with distinct responsibilities:
+Two build pipelines run in parallel:
 
 | Pipeline | Tool | Output | Handles |
 |---|---|---|---|
-| General assets | hanami-assets (esbuild) | `public/assets/` | Global CSS (Bulma), fonts, images |
-| Island bundles | Vite + vite-plugin-solid | `public/assets/islands/` | Solid.js islands (LeafletMapViewer, UploadModal, AvatarUpload, MapInfoButton, ShareButtons) |
+| General assets | hanami-assets (esbuild) | `public/assets/` | Global CSS, fonts, images (files under `app/assets/`) |
+| SPA bundle | Vite + vite-plugin-solid | `public/assets/` | Single SPA entry (`frontend/app.tsx`) |
 
-App templates load island bundles as `<script>` tags. Hanami serves both server-rendered pages and static assets from the same origin — no CORS configuration needed.
+Hanami serves both from the same origin — no CORS configuration needed. A custom `hanamiViteEntries` Vite plugin writes `vite-entries.json` after each build so hanami-assets can resolve the content-hashed filenames.
