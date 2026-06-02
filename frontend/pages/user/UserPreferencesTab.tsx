@@ -1,12 +1,11 @@
 import { createResource, createSignal, For, onCleanup, onMount, Show } from "solid-js";
-import { l10n } from "../../lib/l10n";
+import { l10n, SUPPORTED_LOCALES } from "../../lib/l10n";
 import { applyPreferences, lang } from "../../lib/display-settings";
 
 type PreferencesData = {
   timezone: string;
   timezone_identifiers: string[];
   locale: string | null;
-  supported_locales: string[];
   relative_timestamps: boolean;
 };
 
@@ -190,7 +189,7 @@ export const UserPreferencesTab = (props: {
                     <div class="select">
                       <select id="locale-select" name="locale">
                         <option value="" selected={!pref.locale} data-l10n-id="edit-locale-use-browser" />
-                        <For each={pref.supported_locales}>
+                        <For each={SUPPORTED_LOCALES}>
                           {(loc) => (
                             <option value={loc} selected={pref.locale === loc}>
                               {localeDisplayName(loc)}

@@ -190,7 +190,6 @@ Returns the user's preferences. Authenticated, own profile only.
   "timezone": "Asia/Tokyo",
   "timezone_identifiers": ["Africa/Abidjan", "..."],
   "locale": "ja",
-  "supported_locales": ["en", "ja", "..."],
   "relative_timestamps": false
 }
 ```

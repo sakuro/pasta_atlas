@@ -63,7 +63,6 @@ RSpec.describe PastaAtlas::Actions::API::Users::Preferences::Show do
         "relative_timestamps" => true
       )
       expect(body["timezone_identifiers"]).to be_an(Array).and include("UTC")
-      expect(body["supported_locales"]).to be_an(Array).and include("ja")
     end
   end
 end

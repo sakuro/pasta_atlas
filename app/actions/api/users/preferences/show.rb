@@ -27,7 +27,6 @@ module PastaAtlas
                   timezone: preference.timezone,
                   timezone_identifiers: TZInfo::Timezone.all_identifiers,
                   locale: preference.locale,
-                  supported_locales: PastaAtlas::I18n::SUPPORTED_LOCALES,
                   relative_timestamps: preference.relative_timestamps
                 })
               end
