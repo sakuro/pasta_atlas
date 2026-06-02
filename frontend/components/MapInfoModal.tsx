@@ -1,6 +1,7 @@
 import { createSignal, Show, For } from "solid-js";
 import { Portal } from "solid-js/web";
 import { lang } from "../lib/display-settings";
+import { CopyButton } from "./CopyButton";
 
 export interface Mapshot {
   surfaces?: unknown[];
@@ -41,24 +42,6 @@ const sortedMods = (mods: Record<string, string>): [string, string][] => {
   return [...pinned, ...rest];
 };
 
-const CopyButton = (props: { text: string }) => {
-  const [copied, setCopied] = createSignal(false);
-
-  const copy = () => {
-    navigator.clipboard.writeText(props.text).then(() => {
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
-    });
-  };
-
-  return (
-    <button class="button is-small ml-2" onClick={copy} data-l10n-id="map-info-copy">
-      <span class="icon is-small">
-        <i class={copied() ? "fa-solid fa-check" : "fa-solid fa-copy"} />
-      </span>
-    </button>
-  );
-};
 
 export const MapInfoModal = (props: { mapshot: Mapshot; onClose: () => void }) => {
   const [showMapExchange, setShowMapExchange] = createSignal(false);
@@ -83,7 +66,7 @@ export const MapInfoModal = (props: { mapshot: Mapshot; onClose: () => void }) =
                 <Show when={props.mapshot.seed != null}>
                   <tr>
                     <th class="map-info-label"><span class="icon-text"><span class="icon"><i class="fa-solid fa-seedling" /></span><span data-l10n-id="map-info-seed" /></span></th>
-                    <td>{props.mapshot.seed}<CopyButton text={String(props.mapshot.seed)} /></td>
+                    <td>{props.mapshot.seed}<CopyButton text={String(props.mapshot.seed)} l10nId="map-info-copy" class="ml-2" /></td>
                   </tr>
                 </Show>
                 <Show when={props.mapshot.map_exchange}>
@@ -92,12 +75,12 @@ export const MapInfoModal = (props: { mapshot: Mapshot; onClose: () => void }) =
                     <td>
                       <button
                         class="button is-small"
-                        onClick={() => setShowMapExchange((v) => !v)}
+                        onClick={() => setShowMapExchange((v: boolean) => !v)}
                         data-l10n-id={showMapExchange() ? "map-info-exchange-hide" : "map-info-exchange-show"}
                       >
                         <span class="icon is-small"><i class={showMapExchange() ? "fa-solid fa-eye-slash" : "fa-solid fa-eye"} /></span>
                       </button>
-                      <CopyButton text={props.mapshot.map_exchange!} />
+                      <CopyButton text={props.mapshot.map_exchange!} l10nId="map-info-copy" class="ml-2" />
                       <Show when={showMapExchange()}>
                         <pre style={{ "white-space": "pre-wrap", "word-break": "break-all" }}>{props.mapshot.map_exchange}</pre>
                       </Show>

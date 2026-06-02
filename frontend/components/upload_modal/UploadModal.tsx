@@ -3,6 +3,7 @@ import { Portal } from "solid-js/web";
 import { useNavigate } from "@solidjs/router";
 import { adjectives, animals, colors, uniqueNamesGenerator } from "unique-names-generator";
 import "../../lib/l10n";
+import { CopyButton } from "../CopyButton";
 import { HowToUploadModal } from "./HowToUploadModal";
 
 const segmenter = new Intl.Segmenter();
@@ -75,22 +76,6 @@ const runConcurrent = async (
 const relPath = (file: File): string =>
   file.webkitRelativePath.split("/").slice(1).join("/");
 
-const CopyButton = (props: { text: string; l10nId: string }) => {
-  const [copied, setCopied] = createSignal(false);
-  const handleCopy = () => {
-    navigator.clipboard.writeText(props.text).then(() => {
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
-    }).catch(() => {});
-  };
-  return (
-    <button class="button is-small is-ghost px-1" style={{ "vertical-align": "middle" }} onClick={handleCopy} data-l10n-id={props.l10nId}>
-      <span class="icon is-small">
-        <i class={copied() ? "fa-solid fa-check has-text-success" : "fa-regular fa-copy"} />
-      </span>
-    </button>
-  );
-};
 
 export const UploadModal = (props: { isGuest: boolean }) => {
   const navigate = useNavigate();
@@ -341,7 +326,7 @@ export const UploadModal = (props: { isGuest: boolean }) => {
                           <span class="icon"><i class="fa-brands fa-windows" /></span>
                           <span>
                             <code>%APPDATA%\Factorio\script-output\mapshot</code>
-                            <CopyButton text="%APPDATA%\Factorio\script-output\mapshot" l10nId="upload-copy-path-windows" />
+                            <CopyButton text="%APPDATA%\Factorio\script-output\mapshot" l10nId="upload-copy-path-windows" class="is-ghost px-1" style={{ "vertical-align": "middle" }} />
                           </span>
                         </span>
                       </li>
@@ -350,7 +335,7 @@ export const UploadModal = (props: { isGuest: boolean }) => {
                           <span class="icon"><i class="fa-brands fa-apple" /></span>
                           <span>
                             <code>~/Library/Application Support/factorio/script-output/mapshot</code>
-                            <CopyButton text="~/Library/Application Support/factorio/script-output/mapshot" l10nId="upload-copy-path-macos" />
+                            <CopyButton text="~/Library/Application Support/factorio/script-output/mapshot" l10nId="upload-copy-path-macos" class="is-ghost px-1" style={{ "vertical-align": "middle" }} />
                           </span>
                         </span>
                       </li>
@@ -359,7 +344,7 @@ export const UploadModal = (props: { isGuest: boolean }) => {
                           <span class="icon"><i class="fa-brands fa-linux" /></span>
                           <span>
                             <code>~/.factorio/script-output/mapshot</code>
-                            <CopyButton text="~/.factorio/script-output/mapshot" l10nId="upload-copy-path-linux" />
+                            <CopyButton text="~/.factorio/script-output/mapshot" l10nId="upload-copy-path-linux" class="is-ghost px-1" style={{ "vertical-align": "middle" }} />
                           </span>
                         </span>
                       </li>
