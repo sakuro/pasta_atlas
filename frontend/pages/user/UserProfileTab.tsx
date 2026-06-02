@@ -87,12 +87,14 @@ export const UserProfileTab = (props: {
                     <span data-l10n-id="edit-avatar-label" />
                   </span>
                 </p>
-                <div class="control">
-                  <AvatarUpload
-                    userName={props.userName}
-                    currentAvatarUrl={profile.avatar_url}
-                    onRef={(ref) => { avatarRef = ref; }}
-                  />
+                <div class="pl-4">
+                  <div class="control">
+                    <AvatarUpload
+                      userName={props.userName}
+                      currentAvatarUrl={profile.avatar_url}
+                      onRef={(ref) => { avatarRef = ref; }}
+                    />
+                  </div>
                 </div>
               </div>
               <div class="field">
@@ -102,24 +104,26 @@ export const UserProfileTab = (props: {
                     <span data-l10n-id="edit-display-name" />
                   </span>
                 </label>
-                <div class="field has-addons mb-0">
-                  <div class="control is-expanded">
-                    <input
-                      class="input"
-                      type="text"
-                      id="display_name"
-                      name="display_name"
-                      value={displayName()}
-                      onInput={(e) => setDisplayName(e.currentTarget.value)}
-                    />
+                <div class="pl-4">
+                  <div class="field has-addons mb-0">
+                    <div class="control is-expanded">
+                      <input
+                        class="input"
+                        type="text"
+                        id="display_name"
+                        name="display_name"
+                        value={displayName()}
+                        onInput={(e) => setDisplayName(e.currentTarget.value)}
+                      />
+                    </div>
+                    <div class="control">
+                      <span class={`button is-static ${graphemeCount() > 30 ? "has-text-danger" : "has-text-grey-light"}`}>
+                        {graphemeCount()} / 30
+                      </span>
+                    </div>
                   </div>
-                  <div class="control">
-                    <span class={`button is-static ${graphemeCount() > 30 ? "has-text-danger" : "has-text-grey-light"}`}>
-                      {graphemeCount()} / 30
-                    </span>
-                  </div>
+                  <p class="help" data-l10n-id="edit-display-name-help" />
                 </div>
-                <p class="help" data-l10n-id="edit-display-name-help" />
               </div>
               <div class="field">
                 <div class="control">
