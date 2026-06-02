@@ -1,6 +1,7 @@
 import { createResource, For, Show } from "solid-js";
 import { useSearchParams } from "@solidjs/router";
 import { MapCard, type MapData } from "../components/MapCard";
+import { Spinner } from "../components/Spinner";
 import heroSrc from "../../app/assets/images/hero.webp";
 
 type MapsResponse = {
@@ -61,7 +62,7 @@ export const MapsIndexPage = () => {
         <div class="container">
           <Show when={data.loading}>
             <div class="has-text-centered py-5">
-              <span class="icon"><i class="fa-solid fa-spinner fa-spin" /></span>
+              <Spinner />
             </div>
           </Show>
           <Show when={data.error}>

@@ -1,6 +1,7 @@
 import { createResource, createSignal, Show } from "solid-js";
 import { AvatarUpload, type AvatarUploadRef } from "./AvatarUpload";
 import "../../lib/l10n";
+import { Spinner } from "../../components/Spinner";
 
 const segmenter = new Intl.Segmenter();
 
@@ -69,7 +70,7 @@ export const UserProfileTab = (props: {
     <>
       <Show when={data.loading}>
         <div class="has-text-centered py-5">
-          <span class="icon"><i class="fa-solid fa-spinner fa-spin" /></span>
+          <Spinner />
         </div>
       </Show>
       <Show when={data.error}>

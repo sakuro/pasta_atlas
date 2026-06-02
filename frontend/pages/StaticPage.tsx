@@ -1,5 +1,6 @@
 import { createResource, Show } from "solid-js";
 import { lang } from "../lib/display-settings";
+import { Spinner } from "../components/Spinner";
 
 export const StaticPage = (props: { slug: string }) => {
   const [content] = createResource(
@@ -16,7 +17,7 @@ export const StaticPage = (props: { slug: string }) => {
     <>
       <Show when={content.loading}>
         <div class="has-text-centered py-5">
-          <span class="icon"><i class="fa-solid fa-spinner fa-spin" /></span>
+          <Spinner />
         </div>
       </Show>
       <Show when={content.error}>

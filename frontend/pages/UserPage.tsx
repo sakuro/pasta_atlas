@@ -1,6 +1,7 @@
 import { createEffect, createResource, createSignal, For, Show } from "solid-js";
 import { useLocation, useParams } from "@solidjs/router";
 import { Avatar } from "../components/Avatar";
+import { Spinner } from "../components/Spinner";
 import { UserMapsTab } from "./user/UserMapsTab";
 import { UserProfileTab } from "./user/UserProfileTab";
 import { UserPreferencesTab } from "./user/UserPreferencesTab";
@@ -87,7 +88,7 @@ export const UserPage = () => {
     <section class="section">
       <Show when={userData.loading}>
         <div class="has-text-centered py-5">
-          <span class="icon"><i class="fa-solid fa-spinner fa-spin" /></span>
+          <Spinner />
         </div>
       </Show>
       <Show when={userData.error}>

@@ -2,6 +2,7 @@ import { createResource, Show } from "solid-js";
 import { useParams } from "@solidjs/router";
 import { useAuth } from "../contexts/AuthContext";
 import { MapViewer } from "./map_viewer/MapViewer";
+import { Spinner } from "../components/Spinner";
 
 interface MapViewerData {
   ulid: string;
@@ -36,7 +37,7 @@ export const MapViewerPage = () => {
     <div class="map-viewer-page">
       <Show when={data.loading}>
         <div class="has-text-centered py-5">
-          <span class="icon"><i class="fa-solid fa-spinner fa-spin" /></span>
+          <Spinner />
         </div>
       </Show>
       <Show when={data.error instanceof NotFoundError}>

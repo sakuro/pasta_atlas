@@ -1,6 +1,7 @@
 import { createResource, createSignal, For, onCleanup, onMount, Show } from "solid-js";
 import { l10n, SUPPORTED_LOCALES } from "../../lib/l10n";
 import { applyPreferences, lang } from "../../lib/display-settings";
+import { Spinner } from "../../components/Spinner";
 
 type PreferencesData = {
   timezone: string;
@@ -117,7 +118,7 @@ export const UserPreferencesTab = (props: {
     <>
       <Show when={data.loading}>
         <div class="has-text-centered py-5">
-          <span class="icon"><i class="fa-solid fa-spinner fa-spin" /></span>
+          <Spinner />
         </div>
       </Show>
       <Show when={data.error}>

@@ -1,6 +1,7 @@
 import { createSignal, Show } from "solid-js";
 import { A, RouteSectionProps } from "@solidjs/router";
 import { NavAuthMenu } from "../components/NavAuthMenu";
+import { Spinner } from "../components/Spinner";
 import { Footer } from "../components/Footer";
 import { UploadModal } from "../components/upload_modal/UploadModal";
 import { useAuth } from "../contexts/AuthContext";
@@ -54,7 +55,7 @@ export const AppLayout = (props: RouteSectionProps) => {
       </nav>
       <Show when={user() !== undefined} fallback={
         <div class="has-text-centered py-6">
-          <span class="icon is-large"><i class="fa-solid fa-spinner fa-spin fa-2x" /></span>
+          <Spinner size="large" />
         </div>
       }>
         {props.children}

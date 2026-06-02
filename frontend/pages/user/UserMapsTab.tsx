@@ -1,6 +1,7 @@
 import { createResource, For, Show } from "solid-js";
 import { MapCard, type MapData } from "../../components/MapCard";
 import "../../lib/l10n";
+import { Spinner } from "../../components/Spinner";
 
 type MapsResponse = { maps: MapData[] };
 
@@ -18,7 +19,7 @@ export const UserMapsTab = (props: { userName: string; active: () => boolean }) 
     <>
       <Show when={data.loading}>
         <div class="has-text-centered py-5">
-          <span class="icon"><i class="fa-solid fa-spinner fa-spin" /></span>
+          <Spinner />
         </div>
       </Show>
       <Show when={data.error}>

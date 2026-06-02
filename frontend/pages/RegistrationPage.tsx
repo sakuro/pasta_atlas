@@ -1,6 +1,7 @@
 import { createResource, createSignal, Show } from "solid-js";
 import { useNavigate } from "@solidjs/router";
 import { useAuth } from "../contexts/AuthContext";
+import { Spinner } from "../components/Spinner";
 
 type PendingAuth = {
   provider: string;
@@ -60,7 +61,7 @@ export const RegistrationPage = () => {
     <section class="section">
       <Show when={pending.loading}>
         <div class="has-text-centered py-5">
-          <span class="icon"><i class="fa-solid fa-spinner fa-spin" /></span>
+          <Spinner />
         </div>
       </Show>
       <Show when={pending.error}>

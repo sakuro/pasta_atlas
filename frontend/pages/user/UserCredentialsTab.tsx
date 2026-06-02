@@ -1,5 +1,6 @@
 import { createResource, createSignal, For, Show } from "solid-js";
 import "../../lib/l10n";
+import { Spinner } from "../../components/Spinner";
 
 type CredentialsData = {
   providers: string[];
@@ -50,7 +51,7 @@ export const UserCredentialsTab = (props: {
     <>
       <Show when={data.loading}>
         <div class="has-text-centered py-5">
-          <span class="icon"><i class="fa-solid fa-spinner fa-spin" /></span>
+          <Spinner />
         </div>
       </Show>
       <Show when={data.error}>

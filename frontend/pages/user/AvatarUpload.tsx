@@ -1,5 +1,6 @@
 import { createSignal, onMount, onCleanup, Show } from "solid-js";
 import "../../lib/l10n";
+import { Spinner } from "../../components/Spinner";
 
 const csrfToken = (): string =>
   document.querySelector<HTMLMetaElement>('meta[name="csrf-token"]')?.content ?? "";
@@ -254,7 +255,7 @@ export const AvatarUpload = (props: Props) => {
             </button>
           </Show>
           <Show when={state().type === "uploading"}>
-            <span class="icon"><i class="fa-solid fa-spinner fa-spin" /></span>
+            <Spinner />
           </Show>
           <Show when={errorState()} keyed>
             {(s) => (
