@@ -102,19 +102,24 @@ export const UserProfileTab = (props: {
                     <span data-l10n-id="edit-display-name" />
                   </span>
                 </label>
-                <div class="control">
-                  <input
-                    class="input"
-                    type="text"
-                    id="display_name"
-                    name="display_name"
-                    value={displayName()}
-                    onInput={(e) => setDisplayName(e.currentTarget.value)}
-                  />
+                <div class="field has-addons mb-0">
+                  <div class="control is-expanded">
+                    <input
+                      class="input"
+                      type="text"
+                      id="display_name"
+                      name="display_name"
+                      value={displayName()}
+                      onInput={(e) => setDisplayName(e.currentTarget.value)}
+                    />
+                  </div>
+                  <div class="control">
+                    <span class={`button is-static ${graphemeCount() > 30 ? "has-text-danger" : "has-text-grey-light"}`}>
+                      {graphemeCount()} / 30
+                    </span>
+                  </div>
                 </div>
-                <p class={`help has-text-right ${graphemeCount() > 30 ? "has-text-danger" : ""}`}>
-                  {graphemeCount()} / 30
-                </p>
+                <p class="help" data-l10n-id="edit-display-name-help" />
               </div>
               <div class="field">
                 <div class="control">

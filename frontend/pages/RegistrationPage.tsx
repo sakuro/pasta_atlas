@@ -83,26 +83,28 @@ export const RegistrationPage = () => {
                     <span data-l10n-id="registration-username" />
                   </span>
                 </label>
-                <div class="control">
-                  <input
-                    class="input"
-                    type="text"
-                    id="name"
-                    name="name"
-                    value={nameValue()}
-                    onInput={(e) => setNameValue(e.currentTarget.value)}
-                    pattern="[a-zA-Z0-9][a-zA-Z0-9_\-]{0,13}[a-zA-Z0-9]|[a-zA-Z0-9]"
-                    maxlength="15"
-                    required
-                    autofocus
-                  />
+                <div class="field has-addons mb-0">
+                  <div class="control is-expanded">
+                    <input
+                      class="input"
+                      type="text"
+                      id="name"
+                      name="name"
+                      value={nameValue()}
+                      onInput={(e) => setNameValue(e.currentTarget.value)}
+                      pattern="[a-zA-Z0-9][a-zA-Z0-9_\-]{0,13}[a-zA-Z0-9]|[a-zA-Z0-9]"
+                      maxlength="15"
+                      required
+                      autofocus
+                    />
+                  </div>
+                  <div class="control">
+                    <span class={`button is-static ${nameValue().length >= 15 ? "has-text-danger" : "has-text-grey-light"}`}>
+                      {nameValue().length} / 15
+                    </span>
+                  </div>
                 </div>
-                <div class="is-flex is-justify-content-space-between">
-                  <p class="help" data-l10n-id="registration-username-help" />
-                  <p class={`help ${nameValue().length >= 15 ? "has-text-danger" : ""}`}>
-                    {nameValue().length} / 15
-                  </p>
-                </div>
+                <p class="help" data-l10n-id="registration-username-help" />
               </div>
               <div class="field">
                 <p>
