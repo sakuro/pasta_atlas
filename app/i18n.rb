@@ -2,7 +2,6 @@
 # frozen_string_literal: true
 
 require "json"
-require "pathname"
 
 module PastaAtlas
   module I18n
