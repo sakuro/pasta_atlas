@@ -1,0 +1,48 @@
+#!/usr/bin/env bash
+# Runs `hanami db seed` against the production RDS via a one-off ECS task.
+# Requires: aws CLI with AWS_PROFILE=terraform configured
+set -euo pipefail
+
+REGION=ap-northeast-1
+CLUSTER=pasta-atlas-production
+TASK_DEFINITION=pasta-atlas-production-migrate
+CONTAINER=pasta-atlas
+
+unset AWS_ENDPOINT_URL
+export AWS_PROFILE=terraform
+
+NETWORK_CONFIG=$(aws ecs describe-services \
+  --region "$REGION" \
+  --cluster "$CLUSTER" \
+  --services "$CLUSTER" \
+  --query 'services[0].networkConfiguration' \
+  --output json)
+
+TASK_ARN=$(aws ecs run-task \
+  --region "$REGION" \
+  --cluster "$CLUSTER" \
+  --task-definition "$TASK_DEFINITION" \
+  --launch-type FARGATE \
+  --network-configuration "$NETWORK_CONFIG" \
+  --overrides "{\"containerOverrides\":[{\"name\":\"$CONTAINER\",\"command\":[\"bundle\",\"exec\",\"hanami\",\"db\",\"seed\"]}]}" \
+  --no-cli-pager \
+  --query 'tasks[0].taskArn' \
+  --output text)
+
+echo "Task: $TASK_ARN"
+echo "Waiting for task to finish..."
+
+aws ecs wait tasks-stopped \
+  --region "$REGION" \
+  --cluster "$CLUSTER" \
+  --tasks "$TASK_ARN"
+
+EXIT_CODE=$(aws ecs describe-tasks \
+  --region "$REGION" \
+  --cluster "$CLUSTER" \
+  --tasks "$TASK_ARN" \
+  --query 'tasks[0].containers[0].exitCode' \
+  --output text)
+
+echo "Exit code: $EXIT_CODE"
+[ "$EXIT_CODE" = "0" ] || exit 1
