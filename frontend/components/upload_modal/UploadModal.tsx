@@ -366,23 +366,27 @@ export const UploadModal = (props: { isGuest: boolean }) => {
                       <tr>
                         <th><span class="icon-text"><span class="icon"><i class="fa-solid fa-map" /></span><span data-l10n-id="upload-map-title" /></span></th>
                         <td>
-                          <span
-                            class="control"
-                            data-l10n-id={props.isGuest && isExistingMap() ? "upload-map-name-locked" : undefined}
-                          >
-                            <input
-                              ref={(el) => { if (!props.isGuest || !isExistingMap()) setTimeout(() => { el.focus(); el.select(); }, 0); }}
-                              class="input"
-                              type="text"
-                              value={displayName()}
-                              placeholder={s.mapName}
-                              disabled={props.isGuest && isExistingMap()}
-                              onInput={(e) => setDisplayName(e.currentTarget.value)}
-                            />
-                          </span>
-                          <p class={`help has-text-right ${displayNameCount() > 30 ? "has-text-danger" : ""}`}>
-                            {displayNameCount()} / 30
-                          </p>
+                          <div class="field has-addons mb-0">
+                            <span
+                              class="control is-expanded"
+                              data-l10n-id={props.isGuest && isExistingMap() ? "upload-map-name-locked" : undefined}
+                            >
+                              <input
+                                ref={(el) => { if (!props.isGuest || !isExistingMap()) setTimeout(() => { el.focus(); el.select(); }, 0); }}
+                                class="input"
+                                type="text"
+                                value={displayName()}
+                                placeholder={s.mapName}
+                                disabled={props.isGuest && isExistingMap()}
+                                onInput={(e) => setDisplayName(e.currentTarget.value)}
+                              />
+                            </span>
+                            <div class="control">
+                              <span class={`button is-static ${displayNameCount() > 30 ? "has-text-danger" : "has-text-grey-light"}`}>
+                                {displayNameCount()} / 30
+                              </span>
+                            </div>
+                          </div>
                         </td>
                       </tr>
                       <tr>
