@@ -27,9 +27,10 @@ namespace :s3 do
       end
       break if stop
     rescue Seahorse::Client::NetworkingError, Aws::SQS::Errors::NonExistentQueue => e
+      break if stop
+
       warn "#{e.message}, retrying in 5 seconds..."
       sleep 5
-      break if stop
     end
   end
 end
