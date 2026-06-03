@@ -132,15 +132,15 @@ pagination-next = Next
 upload-button = Upload
 upload-modal-title = Upload { -mapshot }
 upload-modal-title-guest = Upload { -mapshot } (as Guest)
-upload-instructions-folder = Select the folder containing <code data-l10n-name="filename">mapshot.json</code>.
-upload-instructions-folder-path = { -mapshot } output folder:
+upload-instructions-folder = Select the <strong>folder</strong> containing <code data-l10n-name="filename">mapshot.json</code>.
+upload-instructions-folder-path = { -mapshot } output folder (for Steam):
 upload-copy-path-windows =
     .title = Copy path — paste in folder dialog (Ctrl+L)
 upload-copy-path-macos =
     .title = Copy path — paste in Finder dialog (⌘⇧G)
 upload-copy-path-linux =
     .title = Copy path — paste in folder dialog (Ctrl+L)
-upload-instructions-folder-subfolder = Then select the subfolder for your map and generation:
+upload-instructions-folder-subfolder = Then select the subfolder for your map and generation, e.g.:
 upload-instructions-generations = You can upload different generations of an existing map.
 upload-instructions-guest = For guest account uploads, the map name cannot be changed after uploading. They are not manually deletable and are automatically deleted after approximately one week.
 upload-select-folder = Select Folder

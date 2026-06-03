@@ -132,15 +132,15 @@ pagination-next = 다음
 upload-button = 업로드
 upload-modal-title = { -mapshot } 업로드
 upload-modal-title-guest = { -mapshot } 업로드 (게스트로)
-upload-instructions-folder = <code data-l10n-name="filename">mapshot.json</code>이 포함된 폴더를 선택해 주세요.
-upload-instructions-folder-path = { -mapshot } 출력 폴더:
+upload-instructions-folder = <code data-l10n-name="filename">mapshot.json</code>이 포함된 <strong>폴더</strong>를 선택해 주세요.
+upload-instructions-folder-path = { -mapshot } 출력 폴더 (Steam의 경우):
 upload-copy-path-windows =
     .title = 경로 복사 — 폴더 대화상자에서 Ctrl+L을 눌러 붙여넣기
 upload-copy-path-macos =
     .title = 경로 복사 — Finder 대화상자에서 ⌘⇧G를 눌러 붙여넣기
 upload-copy-path-linux =
     .title = 경로 복사 — 폴더 대화상자에서 Ctrl+L을 눌러 붙여넣기
-upload-instructions-folder-subfolder = 이어서 맵과 세대의 하위 폴더를 선택해 주세요:
+upload-instructions-folder-subfolder = 이어서 맵과 세대의 하위 폴더를 선택해 주세요. 예:
 upload-instructions-generations = 기존 맵의 다른 세대도 업로드할 수 있습니다.
 upload-instructions-guest = 게스트 계정의 업로드는 업로드 후 맵 이름을 변경할 수 없습니다. 수동으로 삭제할 수 없으며, 약 1주일 후에 자동으로 삭제됩니다.
 upload-select-folder = 폴더 선택

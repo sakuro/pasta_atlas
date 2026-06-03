@@ -132,15 +132,15 @@ pagination-next = 次へ
 upload-button = アップロード
 upload-modal-title = { -mapshot } をアップロード
 upload-modal-title-guest = { -mapshot } をアップロード（ゲストとして）
-upload-instructions-folder = <code data-l10n-name="filename">mapshot.json</code> を含むフォルダーを選択してください。
-upload-instructions-folder-path = { -mapshot } の出力フォルダー:
+upload-instructions-folder = <code data-l10n-name="filename">mapshot.json</code> を含む<strong>フォルダー</strong>を選択してください。
+upload-instructions-folder-path = { -mapshot } の出力フォルダー (Steam の場合):
 upload-copy-path-windows =
     .title = パスをコピー — フォルダーダイアログで Ctrl+L を押して貼り付け
 upload-copy-path-macos =
     .title = パスをコピー — Finder ダイアログで ⌘⇧G を押して貼り付け
 upload-copy-path-linux =
     .title = パスをコピー — フォルダーダイアログで Ctrl+L を押して貼り付け
-upload-instructions-folder-subfolder = 続いてマップと世代のサブフォルダーを選択してください:
+upload-instructions-folder-subfolder = 続いてマップと世代のサブフォルダーを選択してください。例:
 upload-instructions-generations = 既存マップの異なる世代もアップロードできます。
 upload-instructions-guest = ゲストアカウントのアップロードは、アップロード後にマップ名を変更できません。手動では削除できず、約 1 週間後に自動的に削除されます。
 upload-select-folder = フォルダーを選択
