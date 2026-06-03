@@ -40,7 +40,7 @@ export const MapViewerPage = () => {
         <SpinnerBlock />
       </Show>
       <Show when={data.error instanceof NotFoundError}>
-        <ErrorNotification l10nId="error-map-not-found" />
+        <ErrorNotification l10nId="error-map-not-found" type="warning" />
       </Show>
       <Show when={data.error && !(data.error instanceof NotFoundError)}>
         <ErrorNotification l10nId="error-load-failed" />
