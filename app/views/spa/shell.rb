@@ -3,7 +3,7 @@
 module PastaAtlas
   module Views
     module Spa
-      class Shell < Hanami::View
+      class Shell < PastaAtlas::View
       end
     end
   end

@@ -3,7 +3,8 @@
 module PastaAtlas
   module Views
     module Spa
-      class NotFound < Hanami::View
+      class NotFound < PastaAtlas::View
+        config.template = "spa/shell"
       end
     end
   end

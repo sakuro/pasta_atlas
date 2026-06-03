@@ -3,7 +3,8 @@
 module PastaAtlas
   module Views
     module Spa
-      class User < Hanami::View
+      class User < PastaAtlas::View
+        config.template = "spa/shell"
       end
     end
   end
