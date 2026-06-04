@@ -2,25 +2,20 @@
 
 RSpec.describe PastaAtlas::Actions::API::Maps::Show do
   let(:show_map) { instance_double(PastaAtlas::Operations::Maps::Show) }
-  let(:settings) { double("Settings", cloudfront_base_url: "https://cdn.example.com") }
-  let(:action) { PastaAtlas::Actions::API::Maps::Show.new(settings:, show_map:) }
+  let(:action) { PastaAtlas::Actions::API::Maps::Show.new(show_map:) }
 
   let(:action_params) { {ulid: "01MAP"} }
 
   context "when the map is found" do
     let(:map) { double("Map", ulid: "01MAP", display_name: "my-save") }
-    let(:user) { double("User", name: "sakuro") }
-    let(:profile) { double("UserProfile", display_name: "Sakuro", avatar_s3_key: nil) }
+    let(:owner) { {name: "sakuro", display_name: "Sakuro", avatar_url: nil} }
     let(:updated_at) { Time.new(2024, 1, 15, 12, 0, 0, "+00:00") }
-    let(:generation) do
-      double("Generation", ulid: "01GEN", tick: 1000)
-    end
+    let(:generations) { [{ulid: "01GEN", tick: 1000, metadata_url: "https://cdn.example.com/ae8ec3ab/550f41a9/mapshot.json"}] }
 
     before do
       allow(show_map).to receive(:call).and_return(
-        Success({map:, user:, profile:, updated_at:, generations: [generation]})
+        Success({map:, owner:, updated_at:, generations:})
       )
-      allow(generation).to receive(:metadata_url).with("https://cdn.example.com").and_return("https://cdn.example.com/ae8ec3ab/550f41a9/mapshot.json")
     end
 
     it "returns 200 with map data" do
