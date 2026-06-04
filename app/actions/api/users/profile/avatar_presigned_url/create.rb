@@ -21,15 +21,15 @@ module PastaAtlas
                 halt :bad_request unless request.params.valid?
 
                 result = verify_ownership.call(
-                  user_id: current_user_id(request),
+                  current_user: current_user(request),
                   user_name: request.params[:user_name]
                 )
                 case result
                 in Failure(Symbol => status)
                   halt status
-                in Success
+                in Success(user)
                   result = create_avatar_presigned_url.call(
-                    user_id: current_user_id(request),
+                    user_id: user.id,
                     content_type: request.params[:content_type]
                   )
                   case result

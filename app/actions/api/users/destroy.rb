@@ -5,21 +5,29 @@ module PastaAtlas
     module API
       module Users
         class Destroy < PastaAtlas::Action
-          include Deps[destroy_user: "operations.user.destroy"]
+          include Deps[
+            "operations.user.verify_ownership",
+            destroy_user: "operations.user.destroy"
+          ]
 
           def handle(request, response)
             halt :bad_request if request.params[:confirm_user_name] != request.params[:user_name]
 
-            result = destroy_user.call(
-              user_id: current_user_id(request),
+            result = verify_ownership.call(
+              current_user: current_user(request),
               user_name: request.params[:user_name]
             )
             case result
-            in Success
-              request.session.clear
-              json_response(response, {redirect_to: "/"})
             in Failure(Symbol => status)
               halt status
+            in Success(user)
+              case destroy_user.call(user:)
+              in Success
+                request.session.clear
+                json_response(response, {redirect_to: "/"})
+              in Failure(Symbol => status)
+                halt status
+              end
             end
           end
         end
