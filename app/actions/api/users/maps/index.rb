@@ -8,8 +8,7 @@ module PastaAtlas
           class Index < PastaAtlas::Action
             include Deps[
               "operations.user.find_by_name",
-              list_recent_maps: "operations.maps.list_recent_by_user",
-              load_profile: "operations.user.profile.load"
+              list_recent_maps: "operations.maps.list_recent_by_user"
             ]
 
             def handle(request, response)
@@ -20,13 +19,7 @@ module PastaAtlas
               in Success(user)
                 halt :not_found if user.guest?
 
-                profile_data = load_profile.call(user_id: user.id).value!
-                user_info = Values::UserInfo[
-                  name: user.name,
-                  display_name: profile_data[:display_name] || user.name,
-                  avatar_url: profile_data[:avatar_url]
-                ]
-                map_infos = list_recent_maps.call(user_id: user.id, user_info:).value!
+                map_infos = list_recent_maps.call(user_id: user.id).value!
                 json_response(response, {
                   maps: map_infos.map {|m|
                     {
