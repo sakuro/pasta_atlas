@@ -6,7 +6,6 @@ require_relative "../app/middleware/reverse_proxy_fix"
 require "omniauth-discord"
 require "omniauth-github"
 require "omniauth-steam"
-require "rack/icu4x/locale"
 require_relative "../app/i18n"
 
 module PastaAtlas
@@ -21,14 +20,6 @@ module PastaAtlas
       expire_after: 60 * 60 * 24 * 365,
       secure: Hanami.env?(:production)
     }
-
-    config.middleware.use Rack::ICU4X::Locale,
-      locales: PastaAtlas::I18n::SUPPORTED_LOCALES,
-      detectors: [
-        ->(env) { env.dig("rack.session", "locale") },
-        :header
-      ],
-      default: "en"
 
     OmniAuth.config.failure_raise_out_environments = []
 

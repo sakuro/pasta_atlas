@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe PastaAtlas::Actions::API::Maps::Index, :action_env do
+RSpec.describe PastaAtlas::Actions::API::Maps::Index do
   let(:list_maps) { instance_double(PastaAtlas::Operations::Maps::List) }
   let(:action) { PastaAtlas::Actions::API::Maps::Index.new(list_maps:) }
 
@@ -15,14 +15,14 @@ RSpec.describe PastaAtlas::Actions::API::Maps::Index, :action_env do
   end
 
   it "returns 200 with JSON content type" do
-    response = action.call(locale_env)
+    response = action.call({})
 
     expect(response.status).to eq(200)
     expect(response.headers["Content-Type"]).to eq("application/json")
   end
 
   it "returns map data with pagination metadata" do
-    response = action.call(locale_env)
+    response = action.call({})
 
     body = JSON.parse(response.body.first, symbolize_names: true)
     expect(body[:maps].length).to eq(1)
@@ -33,7 +33,7 @@ RSpec.describe PastaAtlas::Actions::API::Maps::Index, :action_env do
   end
 
   it "calls the operation with the requested page" do
-    action.call(locale_env.merge(page: "3"))
+    action.call({page: "3"})
 
     expect(list_maps).to have_received(:call).with(page: 3)
   end

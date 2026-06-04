@@ -8,8 +8,7 @@ module PastaAtlas
         include Deps[
           "operations.user.credentials.link",
           "operations.user.find_by_id",
-          find_credential: "operations.user.credentials.find_by_provider_and_uid",
-          load_preferences: "operations.user.preferences.load"
+          find_credential: "operations.user.credentials.find_by_provider_and_uid"
         ]
 
         def handle(request, response)
@@ -55,7 +54,6 @@ module PastaAtlas
 
         private def login(request, response, user_id)
           request.session[:user_id] = user_id
-          request.session[:locale] = load_preferences.call(user_id:).value!.locale
           response.redirect_to routes.path(:root)
         end
       end

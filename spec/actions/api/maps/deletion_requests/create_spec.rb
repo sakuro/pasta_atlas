@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
-RSpec.describe PastaAtlas::Actions::API::Maps::DeletionRequests::Create, :action_env do
+RSpec.describe PastaAtlas::Actions::API::Maps::DeletionRequests::Create do
   let(:request_deletion) { instance_double(PastaAtlas::Operations::Maps::RequestDeletion) }
   let(:action) { PastaAtlas::Actions::API::Maps::DeletionRequests::Create.new(request_deletion:) }
 
-  let(:action_params) { locale_env.merge("rack.session" => {"user_id" => 1}).merge(ulid: "01MAP") }
+  let(:action_params) { {"rack.session" => {"user_id" => 1}, :ulid => "01MAP"} }
 
   context "when the deletion request succeeds" do
     let(:map) { double("Map", ulid: "01MAP") }
@@ -31,7 +31,7 @@ RSpec.describe PastaAtlas::Actions::API::Maps::DeletionRequests::Create, :action
     end
 
     it "returns 401" do
-      response = action.call(locale_env.merge(ulid: "01MAP"))
+      response = action.call({ulid: "01MAP"})
 
       expect(response.status).to eq(401)
     end
