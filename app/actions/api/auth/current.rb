@@ -8,6 +8,7 @@ module PastaAtlas
           include Deps[
             "repos.user_preference_repo",
             "repos.user_profile_repo",
+            "repos.user_repo",
             "settings"
           ]
 

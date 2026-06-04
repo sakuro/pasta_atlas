@@ -2,8 +2,8 @@
 
 RSpec.describe PastaAtlas::Actions::API::Maps::Lookup do
   let(:find_map) { instance_double(PastaAtlas::Operations::Maps::FindByMapshotId) }
-  let(:user_repo) { instance_double(PastaAtlas::Repos::UserRepo) }
-  let(:action) { PastaAtlas::Actions::API::Maps::Lookup.new(find_map:, user_repo:) }
+  let(:guest) { double("User", id: 99) }
+  let(:action) { PastaAtlas::Actions::API::Maps::Lookup.new(find_map:, guest:) }
 
   let(:session) { {"rack.session" => {"user_id" => 1}} }
   let(:action_params) { {mapshot_map_id: "ae8ec3ab"} }
@@ -51,10 +51,7 @@ RSpec.describe PastaAtlas::Actions::API::Maps::Lookup do
   end
 
   context "when no session" do
-    let(:guest_user) { double("User", id: 99) }
-
     before do
-      allow(user_repo).to receive(:find_by_name).with("guest").and_return(guest_user)
       allow(find_map).to receive(:call).and_return(Failure(:not_found))
     end
 

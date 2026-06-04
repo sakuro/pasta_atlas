@@ -6,9 +6,15 @@ RSpec.describe PastaAtlas::Operations::Registrations::Create do
   let(:user_preference_repo) { instance_double(PastaAtlas::Repos::UserPreferenceRepo) }
   let(:credential_repo) { instance_double(PastaAtlas::Repos::CredentialRepo) }
   let(:import_avatar) { instance_double(PastaAtlas::Operations::Registrations::ImportAvatar) }
+  let(:system_user_names) { %w[guest api admin] }
   let(:operation) do
     PastaAtlas::Operations::Registrations::Create.new(
-      user_repo:, user_profile_repo:, user_preference_repo:, credential_repo:, import_avatar:
+      user_repo:,
+      user_profile_repo:,
+      user_preference_repo:,
+      credential_repo:,
+      import_avatar:,
+      system_user_names:
     )
   end
 
