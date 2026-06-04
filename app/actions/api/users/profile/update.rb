@@ -7,7 +7,6 @@ module PastaAtlas
         module Profile
           class Update < PastaAtlas::Action
             include Deps[
-              "settings",
               load_profile: "operations.user.profile.load",
               update_profile: "operations.user.profile.update"
             ]

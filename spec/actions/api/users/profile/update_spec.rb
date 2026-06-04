@@ -3,8 +3,7 @@
 RSpec.describe PastaAtlas::Actions::API::Users::Profile::Update do
   let(:update_profile) { instance_double(PastaAtlas::Operations::User::Profile::Update) }
   let(:load_profile) { instance_double(PastaAtlas::Operations::User::Profile::Load) }
-  let(:settings) { double("Settings", cloudfront_base_url: "https://cdn.example.com") }
-  let(:action) { PastaAtlas::Actions::API::Users::Profile::Update.new(load_profile:, settings:, update_profile:) }
+  let(:action) { PastaAtlas::Actions::API::Users::Profile::Update.new(load_profile:, update_profile:) }
 
   let(:user) { double("User", id: 1, name: "sakuro") }
 
