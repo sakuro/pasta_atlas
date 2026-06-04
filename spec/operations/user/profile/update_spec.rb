@@ -1,37 +1,17 @@
 # frozen_string_literal: true
 
 RSpec.describe PastaAtlas::Operations::User::Profile::Update do
-  let(:verify_ownership) { instance_double(PastaAtlas::Operations::User::VerifyOwnership) }
   let(:user_profile_repo) { instance_double(PastaAtlas::Repos::UserProfileRepo) }
-  let(:operation) { PastaAtlas::Operations::User::Profile::Update.new(verify_ownership:, user_profile_repo:) }
+  let(:operation) { PastaAtlas::Operations::User::Profile::Update.new(user_profile_repo:) }
 
   let(:user) { double("User", id: 1, name: "sakuro") }
 
-  before do
-    allow(verify_ownership).to receive(:call)
-      .with(user_id: 1, user_name: "sakuro").and_return(Success(user))
-  end
-
   describe "#call" do
-    context "when not authenticated" do
-      before do
-        allow(verify_ownership).to receive(:call)
-          .with(user_id: nil, user_name: "sakuro").and_return(Failure(:forbidden))
-      end
-
-      it "returns Failure(:forbidden)" do
-        result = operation.call(user_id: nil, user_name: "sakuro", display_name: "Sakuro", avatar_s3_key: "")
-
-        expect(result).to be_failure
-        expect(result.failure).to eq(:forbidden)
-      end
-    end
-
     context "when display_name is valid" do
       before { allow(user_profile_repo).to receive(:update_profile) }
 
       it "updates profile and returns the user" do
-        result = operation.call(user_id: 1, user_name: "sakuro", display_name: "Sakuro", avatar_s3_key: "")
+        result = operation.call(user:, display_name: "Sakuro", avatar_s3_key: "")
 
         expect(result).to be_success
         expect(result.value!).to eq(user)
@@ -43,7 +23,7 @@ RSpec.describe PastaAtlas::Operations::User::Profile::Update do
       before { allow(user_profile_repo).to receive(:update_profile) }
 
       it "clears display_name" do
-        operation.call(user_id: 1, user_name: "sakuro", display_name: "", avatar_s3_key: "")
+        operation.call(user:, display_name: "", avatar_s3_key: "")
 
         expect(user_profile_repo).to have_received(:update_profile).with(1, display_name: nil)
       end
@@ -51,7 +31,7 @@ RSpec.describe PastaAtlas::Operations::User::Profile::Update do
 
     context "when display_name exceeds 30 grapheme clusters" do
       it "returns Failure([:invalid, message])" do
-        result = operation.call(user_id: 1, user_name: "sakuro", display_name: "あ" * 31, avatar_s3_key: "")
+        result = operation.call(user:, display_name: "あ" * 31, avatar_s3_key: "")
 
         expect(result).to be_failure
         code, message = result.failure
@@ -62,7 +42,7 @@ RSpec.describe PastaAtlas::Operations::User::Profile::Update do
 
     context "when display_name contains disallowed characters" do
       it "returns Failure([:invalid, message])" do
-        result = operation.call(user_id: 1, user_name: "sakuro", display_name: "bad\tname", avatar_s3_key: "")
+        result = operation.call(user:, display_name: "bad\tname", avatar_s3_key: "")
 
         expect(result).to be_failure
         code, _message = result.failure
@@ -77,7 +57,7 @@ RSpec.describe PastaAtlas::Operations::User::Profile::Update do
       end
 
       it "updates the avatar" do
-        operation.call(user_id: 1, user_name: "sakuro", display_name: "Sakuro", avatar_s3_key: "sakuro/avatar/abc.jpg")
+        operation.call(user:, display_name: "Sakuro", avatar_s3_key: "sakuro/avatar/abc.jpg")
 
         expect(user_profile_repo).to have_received(:update_avatar).with(1, avatar_s3_key: "sakuro/avatar/abc.jpg")
       end

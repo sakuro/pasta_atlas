@@ -6,18 +6,26 @@ module PastaAtlas
       module Users
         module Avatar
           class Destroy < PastaAtlas::Action
-            include Deps[destroy_avatar: "operations.user.avatar.destroy"]
+            include Deps[
+              "operations.user.verify_ownership",
+              destroy_avatar: "operations.user.avatar.destroy"
+            ]
 
             def handle(request, response)
-              result = destroy_avatar.call(
-                user_id: current_user_id(request),
+              result = verify_ownership.call(
+                current_user: current_user(request),
                 user_name: request.params[:user_name]
               )
               case result
               in Failure(Symbol => status)
                 halt status
-              in Success
-                response.status = :no_content
+              in Success(user)
+                case destroy_avatar.call(user:)
+                in Failure(Symbol => status)
+                  halt status
+                in Success
+                  response.status = :no_content
+                end
               end
             end
           end

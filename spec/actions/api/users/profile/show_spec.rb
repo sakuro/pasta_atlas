@@ -3,16 +3,19 @@
 RSpec.describe PastaAtlas::Actions::API::Users::Profile::Show do
   let(:load_profile) { instance_double(PastaAtlas::Operations::User::Profile::Load) }
   let(:verify_ownership) { instance_double(PastaAtlas::Operations::User::VerifyOwnership) }
-  let(:action) { PastaAtlas::Actions::API::Users::Profile::Show.new(load_profile:, verify_ownership:) }
+  let(:user_resolver) { instance_double(PastaAtlas::Resolvers::UserResolver) }
+  let(:action) { PastaAtlas::Actions::API::Users::Profile::Show.new(load_profile:, verify_ownership:, user_resolver:) }
 
+  let(:guest) { double("User", id: 0, name: "guest") }
   let(:user) { double("User", id: 1, name: "sakuro") }
 
   context "when not logged in" do
     let(:env) { {"rack.session" => {}, :user_name => "sakuro"} }
 
     before do
+      allow(user_resolver).to receive(:call).with(nil).and_return(guest)
       allow(verify_ownership).to receive(:call)
-        .with(user_id: nil, user_name: "sakuro")
+        .with(current_user: guest, user_name: "sakuro")
         .and_return(Failure(:forbidden))
     end
 
@@ -24,11 +27,13 @@ RSpec.describe PastaAtlas::Actions::API::Users::Profile::Show do
   end
 
   context "when logged in as a different user" do
+    let(:other_user) { double("User", id: 2, name: "bob") }
     let(:env) { {"rack.session" => {"user_id" => 2}, :user_name => "sakuro"} }
 
     before do
+      allow(user_resolver).to receive(:call).with(2).and_return(other_user)
       allow(verify_ownership).to receive(:call)
-        .with(user_id: 2, user_name: "sakuro")
+        .with(current_user: other_user, user_name: "sakuro")
         .and_return(Failure(:forbidden))
     end
 
@@ -43,8 +48,9 @@ RSpec.describe PastaAtlas::Actions::API::Users::Profile::Show do
     let(:env) { {"rack.session" => {"user_id" => 1}, :user_name => "sakuro"} }
 
     before do
+      allow(user_resolver).to receive(:call).with(1).and_return(user)
       allow(verify_ownership).to receive(:call)
-        .with(user_id: 1, user_name: "sakuro")
+        .with(current_user: user, user_name: "sakuro")
         .and_return(Success(user))
       allow(load_profile).to receive(:call)
         .with(user_id: 1)

@@ -5,15 +5,13 @@ module PastaAtlas
     module User
       class Destroy < PastaAtlas::Operation
         include Deps[
-          "operations.user.verify_ownership",
           "repos.map_repo",
           "repos.user_repo",
           "settings",
           sqs_client: "sqs.client"
         ]
 
-        def call(user_id:, user_name:)
-          user = step verify_ownership.call(user_id:, user_name:)
+        def call(user:)
           s3_prefixes = map_s3_prefixes(user) + ["#{user.name}/avatar/"]
           user_repo.destroy(user.id)
           s3_prefixes.each {|prefix| schedule_s3_cleanup(prefix) }

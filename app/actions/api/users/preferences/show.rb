@@ -15,7 +15,7 @@ module PastaAtlas
 
             def handle(request, response)
               result = verify_ownership.call(
-                user_id: current_user_id(request),
+                current_user: current_user(request),
                 user_name: request.params[:user_name]
               )
               case result

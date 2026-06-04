@@ -6,14 +6,12 @@ module PastaAtlas
       module Avatar
         class Update < PastaAtlas::Operation
           include Deps[
-            "operations.user.verify_ownership",
             "repos.user_profile_repo",
             "settings",
             sqs_client: "sqs.client"
           ]
 
-          def call(user_id:, user_name:, s3_key:)
-            user = step verify_ownership.call(user_id:, user_name:)
+          def call(user:, s3_key:)
             step validate_s3_key(s3_key, user.name)
             old_s3_key = user_profile_repo.find_by_user_id(user.id).avatar_s3_key
             user_profile_repo.update_avatar(user.id, avatar_s3_key: s3_key)

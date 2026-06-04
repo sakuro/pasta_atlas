@@ -6,14 +6,12 @@ module PastaAtlas
       module Avatar
         class Destroy < PastaAtlas::Operation
           include Deps[
-            "operations.user.verify_ownership",
             "repos.user_profile_repo",
             "settings",
             sqs_client: "sqs.client"
           ]
 
-          def call(user_id:, user_name:)
-            user = step verify_ownership.call(user_id:, user_name:)
+          def call(user:)
             old_s3_key = user_profile_repo.find_by_user_id(user.id).avatar_s3_key
             user_profile_repo.clear_avatar(user.id)
             schedule_s3_cleanup(old_s3_key) if old_s3_key

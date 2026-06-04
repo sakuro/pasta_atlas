@@ -8,7 +8,7 @@ require "rack/icu4x/locale"
 
 module PastaAtlas
   class Action < Hanami::Action
-    include Deps["routes", "system_users.guest"]
+    include Deps["resolvers.user_resolver", "routes", "system_users.guest"]
     include Dry::Monads[:result]
 
     private def json_response(response, data, status: :ok)
@@ -16,6 +16,8 @@ module PastaAtlas
       response.headers["Content-Type"] = "application/json"
       response.body = JSON.generate(data)
     end
+
+    private def current_user(request) = user_resolver.call(request.session[:user_id])
 
     private def current_user_id(request) = request.session[:user_id]
 
