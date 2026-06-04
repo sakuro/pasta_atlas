@@ -29,8 +29,8 @@ module PastaAtlas
             user_info = Values::UserInfo[name: user.name, display_name: profile.display_name || user.name, avatar_url:]
 
             g = latest_generations[m.id]
-            thumbnail_url = g && "#{settings.cloudfront_base_url}/#{g.metadata_s3_key.sub("mapshot.json", "s1zoom_4/tile_0_0.jpg")}"
-            metadata_url = g && "#{settings.cloudfront_base_url}/#{g.metadata_s3_key}"
+            thumbnail_url = g&.thumbnail_url(settings.cloudfront_base_url)
+            metadata_url = g&.metadata_url(settings.cloudfront_base_url)
             updated_at = max_created_at_by_map_id[m.id]
 
             Values::MapInfo[ulid: m.ulid, display_name: m.display_name, user_info:, thumbnail_url:, metadata_url:, updated_at:]

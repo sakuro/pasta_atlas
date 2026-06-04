@@ -12,7 +12,8 @@ RSpec.describe PastaAtlas::Operations::Maps::Show do
   let(:user) { double("User", id: 1, name: "alice") }
   let(:profile) { double("UserProfile", display_name: "Alice", avatar_s3_key: nil) }
   let(:generation_time) { Time.now }
-  let(:generations) { [double("Generation", tick: 100, created_at: generation_time, metadata_s3_key: "alice/map1/gen1/mapshot.json")] }
+  let(:generation) { double("Generation", tick: 100, created_at: generation_time) }
+  let(:generations) { [generation] }
 
   describe "#call" do
     context "when map is found" do
@@ -21,6 +22,7 @@ RSpec.describe PastaAtlas::Operations::Maps::Show do
         allow(user_repo).to receive(:find_by_id).with(1).and_return(user)
         allow(user_profile_repo).to receive(:find_by_user_id).with(1).and_return(profile)
         allow(generation_repo).to receive(:find_complete_by_map_id).with(1).and_return(generations)
+        allow(generation).to receive(:thumbnail_url).with("https://cdn.example.com").and_return("https://cdn.example.com/alice/map1/gen1/s1zoom_4/tile_0_0.jpg")
       end
 
       it "returns success with map, user, profile, generations, updated_at, and thumbnail_url" do

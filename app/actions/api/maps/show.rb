@@ -24,7 +24,7 @@ module PastaAtlas
                   {
                     ulid: g.ulid,
                     tick: g.tick,
-                    metadata_url: "#{settings.cloudfront_base_url}/#{g.metadata_s3_key}"
+                    metadata_url: g.metadata_url(settings.cloudfront_base_url)
                   }
                 }
               })

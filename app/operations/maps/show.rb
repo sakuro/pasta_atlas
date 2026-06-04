@@ -20,7 +20,7 @@ module PastaAtlas
           step check_has_generations(generations)
           latest_generation = generations.max_by(&:created_at)
           updated_at = latest_generation.created_at
-          thumbnail_url = "#{settings.cloudfront_base_url}/#{latest_generation.metadata_s3_key.sub("mapshot.json", "s1zoom_4/tile_0_0.jpg")}"
+          thumbnail_url = latest_generation.thumbnail_url(settings.cloudfront_base_url)
           {map:, user:, profile:, generations:, updated_at:, thumbnail_url:}
         end
 

@@ -19,13 +19,15 @@ RSpec.describe PastaAtlas::Operations::Maps::ListRecentByUser do
   describe "#call" do
     context "when the user has maps" do
       let(:map) { double("Map", id: 1, ulid: "01MAP1", display_name: "Map 1") }
-      let(:generation) { double("Generation", metadata_s3_key: "user/1/map1/gen1/mapshot.json") }
+      let(:generation) { double("Generation") }
       let(:updated_at) { Time.new(2025, 1, 15, 12, 0, 0, "+00:00") }
 
       before do
         allow(map_repo).to receive(:list_with_complete_generation_by_user).with(user_id: 1, limit: 3).and_return([map])
         allow(generation_repo).to receive(:find_latest_complete_by_map_ids).with([1]).and_return({1 => generation})
         allow(generation_repo).to receive(:find_max_created_at_by_map_ids).with([1]).and_return({1 => updated_at})
+        allow(generation).to receive(:thumbnail_url).with("http://cdn.example.com").and_return("http://cdn.example.com/user/1/map1/gen1/s1zoom_4/tile_0_0.jpg")
+        allow(generation).to receive(:metadata_url).with("http://cdn.example.com").and_return("http://cdn.example.com/user/1/map1/gen1/mapshot.json")
       end
 
       it "returns success with map infos" do

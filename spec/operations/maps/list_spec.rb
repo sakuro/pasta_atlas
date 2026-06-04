@@ -9,7 +9,7 @@ RSpec.describe PastaAtlas::Operations::Maps::List do
   let(:operation) { PastaAtlas::Operations::Maps::List.new(map_repo:, user_repo:, user_profile_repo:, generation_repo:, settings:) }
 
   describe "#call" do
-    let(:generation) { double("Generation", metadata_s3_key: "guest/map1/gen1/mapshot.json", tick: 100) }
+    let(:generation) { double("Generation", tick: 100) }
     let(:map) { double("Map", id: 1, ulid: "01MAP1", user_id: 1, display_name: "Map 1") }
     let(:user) { double("User", id: 1, name: "alice") }
     let(:profile) { double("UserProfile", user_id: 1, display_name: "Alice", avatar_s3_key: nil) }
@@ -22,6 +22,8 @@ RSpec.describe PastaAtlas::Operations::Maps::List do
       allow(user_profile_repo).to receive(:find_by_user_ids).with([1]).and_return([profile])
       allow(generation_repo).to receive(:find_latest_complete_by_map_ids).with([1]).and_return({1 => generation})
       allow(generation_repo).to receive(:find_max_created_at_by_map_ids).with([1]).and_return({1 => updated_at})
+      allow(generation).to receive(:thumbnail_url).with("http://cdn.example.com").and_return("http://cdn.example.com/guest/map1/gen1/s1zoom_4/tile_0_0.jpg")
+      allow(generation).to receive(:metadata_url).with("http://cdn.example.com").and_return("http://cdn.example.com/guest/map1/gen1/mapshot.json")
     end
 
     it "returns success with maps and their owners" do

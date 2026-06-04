@@ -13,13 +13,14 @@ RSpec.describe PastaAtlas::Actions::API::Maps::Show do
     let(:profile) { double("UserProfile", display_name: "Sakuro", avatar_s3_key: nil) }
     let(:updated_at) { Time.new(2024, 1, 15, 12, 0, 0, "+00:00") }
     let(:generation) do
-      double("Generation", ulid: "01GEN", tick: 1000, metadata_s3_key: "ae8ec3ab/550f41a9/mapshot.json")
+      double("Generation", ulid: "01GEN", tick: 1000)
     end
 
     before do
       allow(show_map).to receive(:call).and_return(
         Success({map:, user:, profile:, updated_at:, generations: [generation]})
       )
+      allow(generation).to receive(:metadata_url).with("https://cdn.example.com").and_return("https://cdn.example.com/ae8ec3ab/550f41a9/mapshot.json")
     end
 
     it "returns 200 with map data" do
