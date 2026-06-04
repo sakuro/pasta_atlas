@@ -6,26 +6,23 @@ module PastaAtlas
       module Auth
         class Current < PastaAtlas::Action
           include Deps[
-            "repos.user_preference_repo",
-            "repos.user_profile_repo",
-            "repos.user_repo",
-            "settings"
+            find_user: "operations.user.find_by_id",
+            load_preferences: "operations.user.preferences.load",
+            load_profile: "operations.user.profile.load"
           ]
 
           def handle(request, response)
             user_id = current_user_id(request)
             return json_response(response, {user: nil, preferences: guest_preferences}) unless user_id
 
-            user = user_repo.find_by_id(user_id)
-            profile = user_profile_repo.find_by_user_id(user_id)
-            preference = user_preference_repo.find_by_user_id(user_id)
-            avatar_url = profile.avatar_s3_key ? "#{settings.cloudfront_base_url}/#{profile.avatar_s3_key}" : nil
-
+            user = find_user.call(user_id:).value!
+            profile_data = load_profile.call(user_id:).value!
+            preference = load_preferences.call(user_id:).value!
             json_response(response, {
               user: {
                 name: user.name,
-                display_name: profile.display_name || user.name,
-                avatar_url:
+                display_name: profile_data[:display_name] || user.name,
+                avatar_url: profile_data[:avatar_url]
               },
               preferences: {
                 locale: preference.locale,

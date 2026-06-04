@@ -40,7 +40,7 @@ RSpec.describe PastaAtlas::Actions::Auth::OAuthCallback, :action_env do
 
     before do
       allow(find_credential).to receive(:call).with(provider: "github", uid: "12345").and_return(Success(credential))
-      allow(load_preferences).to receive(:call).with(user_id: 1, viewer_id: 1).and_return(Success(preference))
+      allow(load_preferences).to receive(:call).with(user_id: 1).and_return(Success(preference))
     end
 
     it "logs in and redirects to root" do

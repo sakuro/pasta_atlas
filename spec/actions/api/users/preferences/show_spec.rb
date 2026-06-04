@@ -48,7 +48,7 @@ RSpec.describe PastaAtlas::Actions::API::Users::Preferences::Show do
         .with(user_id: 1, user_name: "sakuro")
         .and_return(Success(user))
       allow(load_preferences).to receive(:call)
-        .with(user_id: 1, viewer_id: 1)
+        .with(user_id: 1)
         .and_return(Success(preference))
     end
 

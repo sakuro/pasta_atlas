@@ -2,18 +2,11 @@
 
 RSpec.describe PastaAtlas::Actions::API::Auth::Current, :action_env do
   let(:guest) { double("User", id: 0) }
-  let(:user_repo) { instance_double(PastaAtlas::Repos::UserRepo) }
-  let(:user_profile_repo) { instance_double(PastaAtlas::Repos::UserProfileRepo) }
-  let(:user_preference_repo) { instance_double(PastaAtlas::Repos::UserPreferenceRepo) }
-  let(:settings) { double("Settings", cloudfront_base_url: "https://cdn.example.com") }
+  let(:find_user) { instance_double(PastaAtlas::Operations::User::FindById) }
+  let(:load_profile) { instance_double(PastaAtlas::Operations::User::Profile::Load) }
+  let(:load_preferences) { instance_double(PastaAtlas::Operations::User::Preferences::Load) }
   let(:action) do
-    PastaAtlas::Actions::API::Auth::Current.new(
-      guest:,
-      user_repo:,
-      user_profile_repo:,
-      user_preference_repo:,
-      settings:
-    )
+    PastaAtlas::Actions::API::Auth::Current.new(guest:, find_user:, load_profile:, load_preferences:)
   end
 
   context "when no user is in session" do
@@ -34,17 +27,14 @@ RSpec.describe PastaAtlas::Actions::API::Auth::Current, :action_env do
   context "when a user is in session" do
     let(:env) { locale_env.merge("rack.session" => {"user_id" => 42}) }
     let(:user) { double("User", name: "sakuro") }
-    let(:profile) do
-      double("UserProfile", display_name: "Sakuro Ozawa", avatar_s3_key: "avatars/42/abc.jpg")
-    end
     let(:preference) do
       double("UserPreference", locale: "ja", timezone: "Asia/Tokyo", relative_timestamps: true)
     end
 
     before do
-      allow(user_repo).to receive(:find_by_id).with(42).and_return(user)
-      allow(user_profile_repo).to receive(:find_by_user_id).with(42).and_return(profile)
-      allow(user_preference_repo).to receive(:find_by_user_id).with(42).and_return(preference)
+      allow(find_user).to receive(:call).with(user_id: 42).and_return(Success(user))
+      allow(load_profile).to receive(:call).with(user_id: 42).and_return(Success({display_name: "Sakuro Ozawa", avatar_url: "https://cdn.example.com/avatars/42/abc.jpg"}))
+      allow(load_preferences).to receive(:call).with(user_id: 42).and_return(Success(preference))
     end
 
     it "returns 200 with user data and preferences" do
@@ -65,7 +55,9 @@ RSpec.describe PastaAtlas::Actions::API::Auth::Current, :action_env do
     end
 
     context "when the profile has no display name" do
-      let(:profile) { double("UserProfile", display_name: nil, avatar_s3_key: nil) }
+      before do
+        allow(load_profile).to receive(:call).with(user_id: 42).and_return(Success({display_name: nil, avatar_url: nil}))
+      end
 
       it "falls back to the username" do
         response = action.call(env)
@@ -76,7 +68,9 @@ RSpec.describe PastaAtlas::Actions::API::Auth::Current, :action_env do
     end
 
     context "when the profile has no avatar" do
-      let(:profile) { double("UserProfile", display_name: "Sakuro", avatar_s3_key: nil) }
+      before do
+        allow(load_profile).to receive(:call).with(user_id: 42).and_return(Success({display_name: "Sakuro", avatar_url: nil}))
+      end
 
       it "returns null avatar_url" do
         response = action.call(env)
@@ -91,7 +85,7 @@ RSpec.describe PastaAtlas::Actions::API::Auth::Current, :action_env do
     let(:env) { locale_env.merge("rack.session" => {"user_id" => 999}) }
 
     before do
-      allow(user_repo).to receive(:find_by_id).with(999).and_raise(ROM::TupleCountMismatchError)
+      allow(find_user).to receive(:call).with(user_id: 999).and_raise(ROM::TupleCountMismatchError)
     end
 
     it "returns 200 with null user and guest preferences" do

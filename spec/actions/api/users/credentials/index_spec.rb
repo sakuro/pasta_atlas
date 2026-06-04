@@ -47,7 +47,7 @@ RSpec.describe PastaAtlas::Actions::API::Users::Credentials::Index do
         .with(user_id: 1, user_name: "sakuro")
         .and_return(Success(user))
       allow(load_credentials).to receive(:call)
-        .with(user_id: 1, viewer_id: 1)
+        .with(user_id: 1)
         .and_return(Success(["github"]))
     end
 
@@ -63,7 +63,7 @@ RSpec.describe PastaAtlas::Actions::API::Users::Credentials::Index do
     context "when no providers are connected" do
       before do
         allow(load_credentials).to receive(:call)
-          .with(user_id: 1, viewer_id: 1)
+          .with(user_id: 1)
           .and_return(Success([]))
       end
 
