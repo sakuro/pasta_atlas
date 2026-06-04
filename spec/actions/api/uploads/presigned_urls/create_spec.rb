@@ -2,18 +2,15 @@
 
 RSpec.describe PastaAtlas::Actions::API::Uploads::PresignedUrls::Create, :db do
   let(:issue_presigned_urls) { instance_double(PastaAtlas::Operations::Uploads::IssuePresignedUrls) }
-  let(:user_repo) { instance_double(PastaAtlas::Repos::UserRepo) }
-  let(:action) { PastaAtlas::Actions::API::Uploads::PresignedUrls::Create.new(issue_presigned_urls:, user_repo:) }
+  let(:guest) { double("User", id: 99) }
+  let(:action) { PastaAtlas::Actions::API::Uploads::PresignedUrls::Create.new(issue_presigned_urls:, guest:) }
 
   let(:filenames) { ["s1zoom_4/tile_0_0.jpg", "s1zoom_4/tile_0_1.jpg"] }
   let(:session) { {"rack.session" => {"user_id" => 1}} }
   let(:action_params) { {ulid: "01UPLOAD", filenames:} }
 
   context "when no session" do
-    let(:guest_user) { double("User", id: 99) }
-
     before do
-      allow(user_repo).to receive(:find_by_name).with("guest").and_return(guest_user)
       allow(issue_presigned_urls).to receive(:call).and_return(Success({}))
     end
 

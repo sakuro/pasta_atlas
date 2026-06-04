@@ -1,12 +1,14 @@
 # frozen_string_literal: true
 
 RSpec.describe PastaAtlas::Actions::API::Auth::Current, :action_env do
+  let(:guest) { double("User", id: 0) }
   let(:user_repo) { instance_double(PastaAtlas::Repos::UserRepo) }
   let(:user_profile_repo) { instance_double(PastaAtlas::Repos::UserProfileRepo) }
   let(:user_preference_repo) { instance_double(PastaAtlas::Repos::UserPreferenceRepo) }
   let(:settings) { double("Settings", cloudfront_base_url: "https://cdn.example.com") }
   let(:action) do
     PastaAtlas::Actions::API::Auth::Current.new(
+      guest:,
       user_repo:,
       user_profile_repo:,
       user_preference_repo:,

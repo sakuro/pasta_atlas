@@ -2,9 +2,9 @@
 
 RSpec.describe PastaAtlas::Actions::API::Uploads::Create, :db do
   let(:create_upload) { instance_double(PastaAtlas::Operations::Uploads::Create) }
-  let(:user_repo) { instance_double(PastaAtlas::Repos::UserRepo) }
+  let(:guest) { double("User", id: 99) }
   let(:action) do
-    PastaAtlas::Actions::API::Uploads::Create.new(create_upload:, user_repo:)
+    PastaAtlas::Actions::API::Uploads::Create.new(create_upload:, guest:)
   end
 
   let(:session) { {"rack.session" => {"user_id" => 1}} }
@@ -17,10 +17,7 @@ RSpec.describe PastaAtlas::Actions::API::Uploads::Create, :db do
   let(:map) { double("Map", ulid: "01MAP") }
 
   context "when no session" do
-    let(:guest_user) { double("User", id: 99) }
-
     before do
-      allow(user_repo).to receive(:find_by_name).with("guest").and_return(guest_user)
       allow(create_upload).to receive(:call).and_return(Success({upload:, generation:, map:}))
     end
 

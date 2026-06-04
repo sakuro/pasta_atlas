@@ -11,13 +11,12 @@ module PastaAtlas
           "repos.credential_repo",
           "repos.user_preference_repo",
           "repos.user_profile_repo",
-          "repos.user_repo"
+          "repos.user_repo",
+          system_user_names: "system_users.names"
         ]
 
         USERNAME_PATTERN = /\A[a-zA-Z0-9][a-zA-Z0-9_-]*[a-zA-Z0-9]\z|\A[a-zA-Z0-9]\z/
         private_constant :USERNAME_PATTERN
-        RESERVED_NAMES = %w[guest api admin].freeze
-        private_constant :RESERVED_NAMES
 
         def call(name:, timezone:, provider:, uid:, avatar_url:)
           step validate_name(name)
@@ -32,7 +31,7 @@ module PastaAtlas
           return Failure([:invalid, "error-username-empty"]) if name.empty?
           return Failure([:invalid, "error-username-too-long"]) if name.length > 15
           return Failure([:invalid, "error-username-invalid-chars"]) unless name.match?(USERNAME_PATTERN)
-          return Failure([:invalid, "error-username-reserved"]) if RESERVED_NAMES.include?(name)
+          return Failure([:invalid, "error-username-reserved"]) if system_user_names.include?(name)
 
           Success()
         end
