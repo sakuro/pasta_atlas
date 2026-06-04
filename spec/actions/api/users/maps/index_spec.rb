@@ -3,8 +3,7 @@
 RSpec.describe PastaAtlas::Actions::API::Users::Maps::Index do
   let(:find_by_name) { instance_double(PastaAtlas::Operations::User::FindByName) }
   let(:list_recent_maps) { instance_double(PastaAtlas::Operations::Maps::ListRecentByUser) }
-  let(:load_profile) { instance_double(PastaAtlas::Operations::User::Profile::Load) }
-  let(:action) { PastaAtlas::Actions::API::Users::Maps::Index.new(find_by_name:, list_recent_maps:, load_profile:) }
+  let(:action) { PastaAtlas::Actions::API::Users::Maps::Index.new(find_by_name:, list_recent_maps:) }
 
   let(:user) { double("User", id: 1, name: "sakuro", guest?: false) }
   let(:user_info) { PastaAtlas::Values::UserInfo[name: "sakuro", display_name: "Sakuro", avatar_url: nil] }
@@ -50,8 +49,7 @@ RSpec.describe PastaAtlas::Actions::API::Users::Maps::Index do
 
     before do
       allow(find_by_name).to receive(:call).with(user_name: "sakuro").and_return(Success(user))
-      allow(load_profile).to receive(:call).with(user_id: 1).and_return(Success({display_name: "Sakuro", avatar_url: nil}))
-      allow(list_recent_maps).to receive(:call).with(user_id: 1, user_info: anything).and_return(Success([map_info]))
+      allow(list_recent_maps).to receive(:call).with(user_id: 1).and_return(Success([map_info]))
     end
 
     it "returns 200 with maps JSON" do
@@ -69,7 +67,7 @@ RSpec.describe PastaAtlas::Actions::API::Users::Maps::Index do
     end
 
     context "when the user has no maps" do
-      before { allow(list_recent_maps).to receive(:call).with(user_id: 1, user_info: anything).and_return(Success([])) }
+      before { allow(list_recent_maps).to receive(:call).with(user_id: 1).and_return(Success([])) }
 
       it "returns an empty maps array" do
         response = action.call(env)
