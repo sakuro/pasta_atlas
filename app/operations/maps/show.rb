@@ -21,7 +21,10 @@ module PastaAtlas
           latest_generation = generations.max_by(&:created_at)
           updated_at = latest_generation.created_at
           thumbnail_url = latest_generation.thumbnail_url(settings.cloudfront_base_url)
-          {map:, user:, profile:, generations:, updated_at:, thumbnail_url:}
+          avatar_url = profile.avatar_s3_key ? "#{settings.cloudfront_base_url}/#{profile.avatar_s3_key}" : nil
+          owner = {name: user.name, display_name: profile.display_name || user.name, avatar_url:}
+          generation_list = generations.map {|g| {ulid: g.ulid, tick: g.tick, metadata_url: g.metadata_url(settings.cloudfront_base_url)} }
+          {map:, owner:, generations: generation_list, updated_at:, thumbnail_url:}
         end
 
         private def find_map(ulid)

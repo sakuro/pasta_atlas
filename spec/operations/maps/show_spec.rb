@@ -12,7 +12,7 @@ RSpec.describe PastaAtlas::Operations::Maps::Show do
   let(:user) { double("User", id: 1, name: "alice") }
   let(:profile) { double("UserProfile", display_name: "Alice", avatar_s3_key: nil) }
   let(:generation_time) { Time.now }
-  let(:generation) { double("Generation", tick: 100, created_at: generation_time) }
+  let(:generation) { double("Generation", ulid: "01GEN1", tick: 100, created_at: generation_time) }
   let(:generations) { [generation] }
 
   describe "#call" do
@@ -23,19 +23,39 @@ RSpec.describe PastaAtlas::Operations::Maps::Show do
         allow(user_profile_repo).to receive(:find_by_user_id).with(1).and_return(profile)
         allow(generation_repo).to receive(:find_complete_by_map_id).with(1).and_return(generations)
         allow(generation).to receive(:thumbnail_url).with("https://cdn.example.com").and_return("https://cdn.example.com/alice/map1/gen1/s1zoom_4/tile_0_0.jpg")
+        allow(generation).to receive(:metadata_url).with("https://cdn.example.com").and_return("https://cdn.example.com/alice/map1/gen1/mapshot.json")
       end
 
-      it "returns success with map, user, profile, generations, updated_at, and thumbnail_url" do
+      it "returns success with map, owner, generations, updated_at, and thumbnail_url" do
         result = operation.call(ulid: "01MAP1")
 
         expect(result).to be_success
         payload = result.value!
         expect(payload[:map]).to eq(map)
-        expect(payload[:user]).to eq(user)
-        expect(payload[:profile]).to eq(profile)
-        expect(payload[:generations]).to eq(generations)
+        expect(payload[:owner]).to eq({name: "alice", display_name: "Alice", avatar_url: nil})
+        expect(payload[:generations]).to eq([{ulid: "01GEN1", tick: 100, metadata_url: "https://cdn.example.com/alice/map1/gen1/mapshot.json"}])
         expect(payload[:updated_at]).to eq(generation_time)
         expect(payload[:thumbnail_url]).to eq("https://cdn.example.com/alice/map1/gen1/s1zoom_4/tile_0_0.jpg")
+      end
+
+      context "when profile has no display name" do
+        let(:profile) { double("UserProfile", display_name: nil, avatar_s3_key: nil) }
+
+        it "falls back to user name in owner" do
+          result = operation.call(ulid: "01MAP1")
+
+          expect(result.value![:owner]).to include(display_name: "alice")
+        end
+      end
+
+      context "when profile has an avatar" do
+        let(:profile) { double("UserProfile", display_name: "Alice", avatar_s3_key: "avatars/42/abc.jpg") }
+
+        it "resolves avatar_url in owner" do
+          result = operation.call(ulid: "01MAP1")
+
+          expect(result.value![:owner]).to include(avatar_url: "https://cdn.example.com/avatars/42/abc.jpg")
+        end
       end
     end
 
