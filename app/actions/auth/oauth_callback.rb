@@ -55,7 +55,7 @@ module PastaAtlas
 
         private def login(request, response, user_id)
           request.session[:user_id] = user_id
-          request.session[:locale] = load_preferences.call(user_id:, viewer_id: user_id).value!.locale
+          request.session[:locale] = load_preferences.call(user_id:).value!.locale
           response.redirect_to routes.path(:root)
         end
       end

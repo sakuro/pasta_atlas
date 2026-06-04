@@ -23,7 +23,7 @@ module PastaAtlas
               in Failure(Symbol => status)
                 halt status
               in Success(user)
-                connected_providers = load_credentials.call(user_id: user.id, viewer_id: user.id).value!
+                connected_providers = load_credentials.call(user_id: user.id).value!
                 json_response(response, {
                   providers: PROVIDERS,
                   connected_providers:

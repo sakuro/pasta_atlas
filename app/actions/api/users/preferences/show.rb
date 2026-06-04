@@ -22,7 +22,7 @@ module PastaAtlas
               in Failure(Symbol => status)
                 halt status
               in Success(user)
-                preference = load_preferences.call(user_id: user.id, viewer_id: user.id).value!
+                preference = load_preferences.call(user_id: user.id).value!
                 json_response(response, {
                   timezone: preference.timezone,
                   timezone_identifiers: TZInfo::Timezone.all_identifiers,

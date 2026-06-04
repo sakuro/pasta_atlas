@@ -7,12 +7,9 @@ module PastaAtlas
         class Load < PastaAtlas::Operation
           include Deps["repos.credential_repo"]
 
-          def call(user_id:, viewer_id:)
-            step same_user?(user_id, viewer_id)
+          def call(user_id:)
             credential_repo.find_by_user_id(user_id).map(&:provider).sort!
           end
-
-          private def same_user?(user_id, viewer_id) = viewer_id == user_id ? Success() : Failure(:not_viewable)
         end
       end
     end
