@@ -66,7 +66,7 @@ RSpec/VerifiedDoubles:
   Exclude:
     - spec/actions/**/*.rb
     - spec/operations/**/*.rb
-    - spec/providers/**/*.rb
+    - spec/resolvers/**/*.rb
     - spec/views/**/*.rb
 
 Style/Documentation:

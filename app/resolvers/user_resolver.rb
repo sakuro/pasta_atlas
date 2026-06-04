@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module PastaAtlas
-  module Providers
+  module Resolvers
     class UserResolver
       include Deps["repos.user_repo", "system_users.guest"]
 

@@ -3,7 +3,7 @@
 RSpec.describe PastaAtlas::Actions::API::Users::Credentials::Index do
   let(:load_credentials) { instance_double(PastaAtlas::Operations::User::Credentials::Load) }
   let(:verify_ownership) { instance_double(PastaAtlas::Operations::User::VerifyOwnership) }
-  let(:user_resolver) { instance_double(PastaAtlas::Providers::UserResolver) }
+  let(:user_resolver) { instance_double(PastaAtlas::Resolvers::UserResolver) }
   let(:action) { PastaAtlas::Actions::API::Users::Credentials::Index.new(load_credentials:, verify_ownership:, user_resolver:) }
 
   let(:guest) { double("User", id: 0, name: "guest") }

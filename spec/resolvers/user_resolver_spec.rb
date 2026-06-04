@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
-RSpec.describe PastaAtlas::Providers::UserResolver do
+RSpec.describe PastaAtlas::Resolvers::UserResolver do
   let(:user_repo) { instance_double(PastaAtlas::Repos::UserRepo) }
   let(:guest) { double("User", id: 0, name: "guest") }
-  let(:resolver) { PastaAtlas::Providers::UserResolver.new(user_repo:, guest:) }
+  let(:resolver) { PastaAtlas::Resolvers::UserResolver.new(user_repo:, guest:) }
 
   describe "#call" do
     context "when user_id is nil" do

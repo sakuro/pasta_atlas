@@ -3,7 +3,7 @@
 RSpec.describe PastaAtlas::Actions::API::Users::Preferences::Update do
   let(:verify_ownership) { instance_double(PastaAtlas::Operations::User::VerifyOwnership) }
   let(:update_preferences) { instance_double(PastaAtlas::Operations::User::Preferences::Update) }
-  let(:user_resolver) { instance_double(PastaAtlas::Providers::UserResolver) }
+  let(:user_resolver) { instance_double(PastaAtlas::Resolvers::UserResolver) }
   let(:action) { PastaAtlas::Actions::API::Users::Preferences::Update.new(verify_ownership:, update_preferences:, user_resolver:) }
 
   let(:guest) { double("User", id: 0, name: "guest") }

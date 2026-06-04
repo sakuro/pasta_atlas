@@ -4,7 +4,7 @@ RSpec.describe PastaAtlas::Actions::API::Users::Profile::Update do
   let(:verify_ownership) { instance_double(PastaAtlas::Operations::User::VerifyOwnership) }
   let(:update_profile) { instance_double(PastaAtlas::Operations::User::Profile::Update) }
   let(:load_profile) { instance_double(PastaAtlas::Operations::User::Profile::Load) }
-  let(:user_resolver) { instance_double(PastaAtlas::Providers::UserResolver) }
+  let(:user_resolver) { instance_double(PastaAtlas::Resolvers::UserResolver) }
   let(:action) { PastaAtlas::Actions::API::Users::Profile::Update.new(verify_ownership:, load_profile:, update_profile:, user_resolver:) }
 
   let(:guest) { double("User", id: 0, name: "guest") }

@@ -3,7 +3,7 @@
 RSpec.describe PastaAtlas::Actions::API::Users::Profile::Show do
   let(:load_profile) { instance_double(PastaAtlas::Operations::User::Profile::Load) }
   let(:verify_ownership) { instance_double(PastaAtlas::Operations::User::VerifyOwnership) }
-  let(:user_resolver) { instance_double(PastaAtlas::Providers::UserResolver) }
+  let(:user_resolver) { instance_double(PastaAtlas::Resolvers::UserResolver) }
   let(:action) { PastaAtlas::Actions::API::Users::Profile::Show.new(load_profile:, verify_ownership:, user_resolver:) }
 
   let(:guest) { double("User", id: 0, name: "guest") }
