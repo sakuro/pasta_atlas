@@ -1,0 +1,47 @@
+.pa-zoomslider-in,
+.pa-zoomslider-out {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.pa-zoomslider-track {
+  position: relative;
+  width: 100%;
+  background: var(--leaflet-ctrl-bg);
+  border-bottom: 1px solid var(--leaflet-ctrl-border);
+  box-sizing: border-box;
+  cursor: pointer;
+}
+
+.pa-zoomslider-track::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 4px;
+  transform: translateX(-50%);
+  background: var(--leaflet-ctrl-slider-track);
+  border: 1px solid var(--leaflet-ctrl-slider-knob-border);
+  box-sizing: border-box;
+  pointer-events: none;
+}
+
+.pa-zoomslider-knob {
+  position: absolute;
+  left: 3px;
+  right: 3px;
+  height: 8px;
+  background: var(--leaflet-ctrl-slider-knob);
+  border: 1px solid var(--leaflet-ctrl-slider-knob-border);
+  box-sizing: border-box;
+  cursor: grab;
+  z-index: 1;
+}
+
+.pa-zoomslider-knob:active {
+  cursor: grabbing;
+}

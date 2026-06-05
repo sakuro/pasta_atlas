@@ -6,22 +6,17 @@ import { renderRichText } from "../richtext";
 import { getParam, setParams } from "../url_params";
 import { LayerControl } from "./LayerControl";
 import { BoxZoomControl } from "./BoxZoom";
+import { ZoomSliderControl } from "./ZoomSlider";
 import "leaflet/dist/leaflet.css";
 import "../richtext.css";
-import "leaflet.zoomslider";
-import zoomsliderCss from "leaflet.zoomslider/src/L.Control.Zoomslider.css?raw";
 import markerIcon from "leaflet/dist/images/marker-icon.png";
 import markerIcon2x from "leaflet/dist/images/marker-icon-2x.png";
 import markerShadow from "leaflet/dist/images/marker-shadow.png";
 
 const pluginStyle = document.createElement("style");
-pluginStyle.textContent = zoomsliderCss +
-  `.leaflet-control-zoomslider-body,.leaflet-control-zoomslider-knob{box-sizing:content-box!important}` +
+pluginStyle.textContent =
   `.leaflet-bar a{background:var(--leaflet-ctrl-bg)!important;border-bottom-color:var(--leaflet-ctrl-border)!important;color:var(--leaflet-ctrl-text)!important}` +
-  `.leaflet-bar a:hover{background:var(--leaflet-ctrl-bg-hover)!important}` +
-  `.leaflet-control-zoomslider-wrap{background:var(--leaflet-ctrl-bg)!important}` +
-  `.leaflet-control-zoomslider-body{background:var(--leaflet-ctrl-slider-track)!important}` +
-  `.leaflet-control-zoomslider-knob{background:var(--leaflet-ctrl-slider-knob)!important;border-color:var(--leaflet-ctrl-slider-knob-border)!important}`;
+  `.leaflet-bar a:hover{background:var(--leaflet-ctrl-bg-hover)!important}`;
 document.head.appendChild(pluginStyle);
 
 // Vite breaks Leaflet's runtime URL resolution for default marker images
@@ -244,8 +239,8 @@ export const LeafletMap = (props: { mapshot: Mapshot; assetBase: string }) => {
       map.fitBounds(bounds);
     }
 
-    // Add after zoom bounds and initial view are set so Zoomslider computes correct track height
-    new (L as unknown as { Control: { Zoomslider: new (opts: object) => L.Control } }).Control.Zoomslider({ position: "topleft", stepHeight: 20 }).addTo(map);
+    // Add after zoom bounds and initial view are set so track height is computed correctly
+    new ZoomSliderControl(20).addTo(map);
     new BoxZoomControl().addTo(map);
 
     let currentSurface = initSurface;
