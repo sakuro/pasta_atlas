@@ -9,6 +9,7 @@ export interface LayerControlGroup {
 
 export interface LayerControlOverlay {
   label: string;
+  icon?: { faClasses: string; color: string };
   group: L.LayerGroup;
   visible: boolean;
 }
@@ -81,7 +82,13 @@ export class LayerControl extends L.Control {
       checkbox.type = "checkbox";
       checkbox.checked = overlay.visible;
       const span = document.createElement("span");
-      span.textContent = overlay.label;
+      if (overlay.icon) {
+        const i = document.createElement("i");
+        i.className = `${overlay.icon.faClasses} pa-layer-control__overlay-icon`;
+        i.style.color = overlay.icon.color;
+        span.appendChild(i);
+      }
+      span.appendChild(document.createTextNode(overlay.label));
       lbl.appendChild(checkbox);
       lbl.appendChild(span);
       L.DomEvent.on(checkbox, "change", () => {

@@ -43,6 +43,11 @@
   background: var(--leaflet-ctrl-bg-hover);
 }
 
+.pa-layer-control__overlay-icon {
+  font-size: 0.85em;
+  margin-right: 0.25rem;
+}
+
 .pa-layer-control__divider {
   margin: 0.25rem 0;
   border: none;
