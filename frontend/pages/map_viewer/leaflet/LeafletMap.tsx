@@ -9,13 +9,6 @@ import { StationMarker, TagMarker } from "./markers";
 import { BoxZoomControl } from "./box_zoom";
 import { ZoomSliderControl } from "./zoom_slider";
 import "leaflet/dist/leaflet.css";
-import markerIcon from "leaflet/dist/images/marker-icon.png";
-import markerIcon2x from "leaflet/dist/images/marker-icon-2x.png";
-import markerShadow from "leaflet/dist/images/marker-shadow.png";
-
-// Vite breaks Leaflet's runtime URL resolution for default marker images
-delete (L.Icon.Default.prototype as unknown as Record<string, unknown>)["_getIconUrl"];
-L.Icon.Default.mergeOptions({ iconUrl: markerIcon, iconRetinaUrl: markerIcon2x, shadowUrl: markerShadow });
 
 interface Station {
   backer_name: string;
