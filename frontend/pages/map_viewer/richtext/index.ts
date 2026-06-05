@@ -1,3 +1,5 @@
+import "./richtext.css";
+
 const ICON_TAGS = new Set([
   "item", "entity", "fluid", "technology", "recipe", "item-group",
   "virtual-signal", "achievement", "tile", "quality", "planet", "space-location",

@@ -8,7 +8,6 @@ import { LayerControl } from "./LayerControl";
 import { BoxZoomControl } from "./box_zoom";
 import { ZoomSliderControl } from "./zoom_slider";
 import "leaflet/dist/leaflet.css";
-import "../richtext.css";
 import markerIcon from "leaflet/dist/images/marker-icon.png";
 import markerIcon2x from "leaflet/dist/images/marker-icon-2x.png";
 import markerShadow from "leaflet/dist/images/marker-shadow.png";

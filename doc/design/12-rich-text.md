@@ -9,7 +9,7 @@ Factorio allows train stop names (`backer_name`) and map tags (`text`) to contai
 | Station marker popup | `Surface.stations[].backer_name` | Leaflet `bindPopup` |
 | Layer switcher label | `Surface.surface_localised_name` / `surface_name` | Leaflet `control.layers` key |
 
-Both are processed by `renderRichText()` in `frontend/islands/map_viewer/richtext.ts`.
+Both are processed by `renderRichText()` in `frontend/pages/map_viewer/richtext/index.ts`.
 
 ## Tag Reference
 
@@ -96,9 +96,9 @@ Sprites are tracked in `frontend/factorio-icons/{type}/{name}.png` and processed
 `richtext-icons.css` (imported by `richtext.css`) maps each sprite to its CSS class using relative paths:
 
 ```css
-.factorio-item--iron-ore        { background-image: url('../../factorio-icons/item/iron-ore.png'); }
-.factorio-img--item-iron-ore    { background-image: url('../../factorio-icons/item/iron-ore.png'); }
-.factorio-planet--nauvis        { background-image: url('../../factorio-icons/space-location/nauvis.png'); }
+.factorio-item--iron-ore        { background-image: url('../../../factorio-icons/item/iron-ore.png'); }
+.factorio-img--item-iron-ore    { background-image: url('../../../factorio-icons/item/iron-ore.png'); }
+.factorio-planet--nauvis        { background-image: url('../../../factorio-icons/space-location/nauvis.png'); }
 ```
 
 Vite rewrites these relative paths during bundling and emits the PNG files alongside the built CSS. `vite.config.ts` sets `assetsInlineLimit: 0` to prevent small sprites from being base64-inlined.
@@ -115,23 +115,23 @@ Run from the project root after adding or removing sprites:
     for file in "$dir"*.png; do
       [ -f "$file" ] || continue
       name="${file%.png}"; name="${name##*/}"
-      echo ".factorio-${type}--${name}{background-image:url('../../factorio-icons/${type}/${name}.png')}"
-      echo ".factorio-img--${type}-${name}{background-image:url('../../factorio-icons/${type}/${name}.png')}"
+      echo ".factorio-${type}--${name}{background-image:url('../../../factorio-icons/${type}/${name}.png')}"
+      echo ".factorio-img--${type}-${name}{background-image:url('../../../factorio-icons/${type}/${name}.png')}"
       if [ "$type" = "space-location" ]; then
-        echo ".factorio-planet--${name}{background-image:url('../../factorio-icons/space-location/${name}.png')}"
-        echo ".factorio-img--planet-${name}{background-image:url('../../factorio-icons/space-location/${name}.png')}"
+        echo ".factorio-planet--${name}{background-image:url('../../../factorio-icons/space-location/${name}.png')}"
+        echo ".factorio-img--planet-${name}{background-image:url('../../../factorio-icons/space-location/${name}.png')}"
       fi
     done
   done
-} > frontend/islands/map_viewer/richtext-icons.css
+} > frontend/pages/map_viewer/richtext/richtext-icons.css
 ```
 
 ## Implementation Files
 
 | File | Role |
 |---|---|
-| `frontend/islands/map_viewer/richtext.ts` | Parser: `renderRichText(input: string): string` |
-| `frontend/islands/map_viewer/richtext.test.ts` | Vitest unit tests |
-| `frontend/islands/map_viewer/richtext.css` | Base `.factorio-icon` styles; imports `richtext-icons.css` |
-| `frontend/islands/map_viewer/richtext-icons.css` | Generated `background-image` mappings (do not edit manually) |
+| `frontend/pages/map_viewer/richtext.ts` | Parser: `renderRichText(input: string): string` |
+| `frontend/pages/map_viewer/richtext.test.ts` | Vitest unit tests |
+| `frontend/pages/map_viewer/richtext.css` | Base `.factorio-icon` styles; imports `richtext-icons.css` |
+| `frontend/pages/map_viewer/richtext-icons.css` | Generated `background-image` mappings (do not edit manually) |
 | `frontend/factorio-icons/` | Sprite PNG source files (git-tracked; Vite processes at build time) |

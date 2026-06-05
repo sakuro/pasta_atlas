@@ -1,6 +1,6 @@
 // @vitest-environment node
 import { describe, it, expect } from "vitest";
-import { renderRichText } from "./richtext";
+import { renderRichText } from ".";
 
 describe("renderRichText", () => {
   describe("plain text", () => {
