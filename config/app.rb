@@ -6,7 +6,6 @@ require_relative "../app/middleware/reverse_proxy_fix"
 require "omniauth-discord"
 require "omniauth-github"
 require "omniauth-steam"
-require_relative "../app/i18n"
 
 module PastaAtlas
   class App < Hanami::App
