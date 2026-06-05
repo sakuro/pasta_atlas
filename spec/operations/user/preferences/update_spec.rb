@@ -12,6 +12,28 @@ RSpec.describe PastaAtlas::Operations::User::Preferences::Update do
   end
 
   describe "#call" do
+    context "when normalizing timezone" do
+      it "stores nil as-is" do
+        operation.call(user:, timezone: nil, locale: nil, relative_timestamps: false)
+        expect(user_preference_repo).to have_received(:update_preferences).with(1, hash_including(timezone: nil))
+      end
+
+      it "normalizes empty string to nil" do
+        operation.call(user:, timezone: "", locale: nil, relative_timestamps: false)
+        expect(user_preference_repo).to have_received(:update_preferences).with(1, hash_including(timezone: nil))
+      end
+
+      it "stores a valid timezone as-is" do
+        operation.call(user:, timezone: "Asia/Tokyo", locale: nil, relative_timestamps: false)
+        expect(user_preference_repo).to have_received(:update_preferences).with(1, hash_including(timezone: "Asia/Tokyo"))
+      end
+
+      it "normalizes an invalid timezone to nil" do
+        operation.call(user:, timezone: "Not/ATimezone", locale: nil, relative_timestamps: false)
+        expect(user_preference_repo).to have_received(:update_preferences).with(1, hash_including(timezone: nil))
+      end
+    end
+
     context "when normalizing locale" do
       it "stores nil as-is" do
         operation.call(user:, timezone: "Asia/Tokyo", locale: nil, relative_timestamps: false)

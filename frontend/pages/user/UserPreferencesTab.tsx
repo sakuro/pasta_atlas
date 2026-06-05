@@ -5,7 +5,7 @@ import { SpinnerBlock } from "../../components/SpinnerBlock";
 import { ErrorNotification } from "../../components/ErrorNotification";
 
 type PreferencesData = {
-  timezone: string;
+  timezone: string | null;
   timezone_identifiers: string[];
   locale: string | null;
   relative_timestamps: boolean;
@@ -14,8 +14,10 @@ type PreferencesData = {
 const csrfToken = (): string =>
   document.querySelector<HTMLMetaElement>('meta[name="csrf-token"]')?.content ?? "";
 
-const currentTimeInTz = (tz: string): string =>
-  new Intl.DateTimeFormat("en", { timeZone: tz, hour: "2-digit", minute: "2-digit", hour12: false }).format(new Date());
+const browserTimezone = (): string => Intl.DateTimeFormat().resolvedOptions().timeZone;
+
+const currentTimeInTz = (tz: string | null): string =>
+  new Intl.DateTimeFormat("en", { timeZone: tz ?? browserTimezone(), hour: "2-digit", minute: "2-digit", hour12: false }).format(new Date());
 
 const groupTimezones = (identifiers: string[]): { region: string; timezones: string[] }[] => {
   const groups = new Map<string, string[]>();
@@ -52,7 +54,7 @@ export const UserPreferencesTab = (props: {
     }
   );
 
-  const [selectedTz, setSelectedTz] = createSignal("");
+  const [selectedTz, setSelectedTz] = createSignal<string | null>(null);
   const [tzTime, setTzTime] = createSignal("");
   const [relativeTimestamps, setRelativeTimestamps] = createSignal(false);
   const [submitting, setSubmitting] = createSignal(false);
@@ -71,8 +73,9 @@ export const UserPreferencesTab = (props: {
   });
 
   const onTzChange = (tz: string) => {
-    setSelectedTz(tz);
-    setTzTime(currentTimeInTz(tz));
+    const value = tz === "" ? null : tz;
+    setSelectedTz(value);
+    setTzTime(currentTimeInTz(value));
   };
 
   const initPref = (pref: PreferencesData) => {
@@ -93,18 +96,15 @@ export const UserPreferencesTab = (props: {
         headers: { "Content-Type": "application/json", "X-CSRF-Token": csrfToken() },
         body: JSON.stringify({
           user_name: props.userName,
-          timezone: formData.get("timezone") as string,
-          locale: formData.get("locale") as string,
+          timezone: formData.get("timezone") as string || null,
+          locale: formData.get("locale") as string || null,
           relative_timestamps: String(relTs),
         }),
       });
       if (res.ok) {
         const json = await res.json() as { locale: string | null };
-        applyPreferences(
-          json.locale,
-          formData.get("timezone") as string,
-          relTs,
-        );
+        const tz = formData.get("timezone") as string || null;
+        applyPreferences(json.locale, tz, relTs);
         l10n.onChange();
         props.onSuccess?.();
       } else {
@@ -144,9 +144,10 @@ export const UserPreferencesTab = (props: {
                           <select
                             id="timezone-select"
                             name="timezone"
-                            value={selectedTz()}
+                            value={selectedTz() ?? ""}
                             onChange={(e) => onTzChange(e.currentTarget.value)}
                           >
+                            <option value="" selected={selectedTz() === null} data-l10n-id="edit-timezone-use-browser" />
                             <For each={groupTimezones(pref.timezone_identifiers)}>
                               {(group) => (
                                 <optgroup label={group.region}>

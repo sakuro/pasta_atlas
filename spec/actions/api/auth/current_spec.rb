@@ -18,7 +18,7 @@ RSpec.describe PastaAtlas::Actions::API::Auth::Current do
       expect(body["user"]).to be_nil
       expect(body["preferences"]).to include(
         "locale" => nil,
-        "timezone" => "UTC",
+        "timezone" => nil,
         "relative_timestamps" => false
       )
     end
@@ -94,7 +94,7 @@ RSpec.describe PastaAtlas::Actions::API::Auth::Current do
       expect(response.status).to eq(200)
       body = JSON.parse(response.body.join)
       expect(body["user"]).to be_nil
-      expect(body["preferences"]).to include("locale" => nil, "timezone" => "UTC")
+      expect(body["preferences"]).to include("locale" => nil, "timezone" => nil)
     end
   end
 end

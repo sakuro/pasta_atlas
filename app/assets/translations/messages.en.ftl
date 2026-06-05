@@ -81,6 +81,7 @@ edit-display-name = Display name
 edit-display-name-help = Up to 30 characters. Leave blank to use your username.
 edit-save-profile = Save Profile
 edit-timezone-label = Timezone
+edit-timezone-use-browser = (Use browser)
 edit-locale = Locale
 edit-locale-use-browser = (Use browser)
 edit-time-display = Time display

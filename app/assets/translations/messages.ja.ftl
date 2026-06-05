@@ -81,6 +81,7 @@ edit-display-name = 表示名
 edit-display-name-help = 30文字以内。空欄にするとユーザー名が表示されます。
 edit-save-profile = プロフィールを保存
 edit-timezone-label = タイムゾーン
+edit-timezone-use-browser = (ブラウザに従う)
 edit-locale = 言語
 edit-locale-use-browser = (ブラウザに従う)
 edit-time-display = 時刻表示

@@ -34,7 +34,7 @@ module PastaAtlas
             json_response(response, {user: nil, preferences: guest_preferences})
           end
 
-          private def guest_preferences = {locale: nil, timezone: "UTC", relative_timestamps: false}
+          private def guest_preferences = {locale: nil, timezone: nil, relative_timestamps: false}
         end
       end
     end

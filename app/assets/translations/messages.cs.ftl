@@ -111,6 +111,7 @@ edit-display-name = Zobrazované jméno
 edit-display-name-help = Až 30 znaků. Ponechte prázdné pro použití uživatelského jména.
 edit-save-profile = Uložit profil
 edit-timezone-label = Časové pásmo
+edit-timezone-use-browser = (Podle prohlížeče)
 edit-locale = Jazyk
 edit-locale-use-browser = (Podle prohlížeče)
 edit-time-display = Zobrazení času
