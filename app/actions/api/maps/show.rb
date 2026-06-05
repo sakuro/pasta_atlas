@@ -10,12 +10,12 @@ module PastaAtlas
           def handle(request, response)
             result = show_map.call(ulid: request.params[:ulid])
             case result
-            in Success({map:, owner:, updated_at:, generations:})
+            in Success({map_info:, generations:})
               json_response(response, {
-                ulid: map.ulid,
-                display_name: map.display_name,
-                owner:,
-                updated_at: updated_at&.iso8601,
+                ulid: map_info.ulid,
+                display_name: map_info.display_name,
+                owner: map_info.user_info.to_h,
+                updated_at: map_info.updated_at&.iso8601,
                 generations:
               })
             in Failure(Symbol => status)
