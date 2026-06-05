@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe PastaAtlas::Actions::API::Auth::Current, :action_env do
+RSpec.describe PastaAtlas::Actions::API::Auth::Current do
   let(:guest) { double("User", id: 0) }
   let(:find_user) { instance_double(PastaAtlas::Operations::User::FindById) }
   let(:load_profile) { instance_double(PastaAtlas::Operations::User::Profile::Load) }
@@ -11,7 +11,7 @@ RSpec.describe PastaAtlas::Actions::API::Auth::Current, :action_env do
 
   context "when no user is in session" do
     it "returns 200 with null user and guest preferences" do
-      response = action.call(locale_env)
+      response = action.call({})
 
       expect(response.status).to eq(200)
       body = JSON.parse(response.body.join)
@@ -25,7 +25,7 @@ RSpec.describe PastaAtlas::Actions::API::Auth::Current, :action_env do
   end
 
   context "when a user is in session" do
-    let(:env) { locale_env.merge("rack.session" => {"user_id" => 42}) }
+    let(:env) { {"rack.session" => {"user_id" => 42}} }
     let(:user) { double("User", name: "sakuro") }
     let(:preference) do
       double("UserPreference", locale: "ja", timezone: "Asia/Tokyo", relative_timestamps: true)
@@ -82,7 +82,7 @@ RSpec.describe PastaAtlas::Actions::API::Auth::Current, :action_env do
   end
 
   context "when the user record is missing" do
-    let(:env) { locale_env.merge("rack.session" => {"user_id" => 999}) }
+    let(:env) { {"rack.session" => {"user_id" => 999}} }
 
     before do
       allow(find_user).to receive(:call).with(user_id: 999).and_raise(ROM::TupleCountMismatchError)

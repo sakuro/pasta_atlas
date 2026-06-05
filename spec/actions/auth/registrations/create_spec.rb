@@ -1,14 +1,14 @@
 # frozen_string_literal: true
 
-RSpec.describe PastaAtlas::Actions::Auth::Registrations::Create, :action_env do
+RSpec.describe PastaAtlas::Actions::Auth::Registrations::Create do
   let(:create_registration) { instance_double(PastaAtlas::Operations::Registrations::Create) }
   let(:action) { PastaAtlas::Actions::Auth::Registrations::Create.new(create_registration:) }
 
   let(:pending_auth) { {"provider" => "github", "uid" => "12345", "avatar_url" => ""} }
-  let(:base_env) { locale_env.merge("rack.session" => {"pending_auth" => pending_auth}, :name => "alice", :terms => "1") }
+  let(:base_env) { {"rack.session" => {"pending_auth" => pending_auth}, :name => "alice", :terms => "1"} }
 
   context "when pending_auth is missing from session" do
-    let(:env) { locale_env.merge("rack.session" => {}) }
+    let(:env) { {"rack.session" => {}} }
 
     it "returns 403" do
       response = action.call(env)
@@ -18,7 +18,7 @@ RSpec.describe PastaAtlas::Actions::Auth::Registrations::Create, :action_env do
   end
 
   context "when terms are not agreed" do
-    let(:env) { locale_env.merge("rack.session" => {"pending_auth" => pending_auth}, :name => "alice") }
+    let(:env) { {"rack.session" => {"pending_auth" => pending_auth}, :name => "alice"} }
 
     it "returns 422 with error" do
       response = action.call(env)

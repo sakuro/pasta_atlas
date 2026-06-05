@@ -64,11 +64,5 @@ RSpec.describe PastaAtlas::Actions::API::Users::Preferences::Update do
       body = JSON.parse(response.body.join)
       expect(body["locale"]).to eq("ja")
     end
-
-    it "keeps locale in session" do
-      action.call(env)
-
-      expect(env["rack.session"]["locale"]).to eq("ja")
-    end
   end
 end

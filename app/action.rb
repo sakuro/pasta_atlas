@@ -4,7 +4,6 @@
 require "dry/monads"
 require "hanami/action"
 require "json"
-require "rack/icu4x/locale"
 
 module PastaAtlas
   class Action < Hanami::Action
