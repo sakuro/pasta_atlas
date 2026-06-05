@@ -195,6 +195,9 @@ how-to-upload-tip = 您可以在不同游戏刻上传同一张地图，每次上
 ## Map viewer
 map-layer-train-stations = 火车站
 map-layer-tags = 标签
+map-layer-group-planets = 星球
+map-layer-group-space-platforms = 太空平台
+map-layer-group-other = 其他
 map-info-button =
     .title = 地图信息
 map-name-edit-button =

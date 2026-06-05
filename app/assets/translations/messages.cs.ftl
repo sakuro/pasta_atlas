@@ -225,6 +225,9 @@ how-to-upload-tip = Stejnou mapu můžete nahrát při různých herních ticíc
 ## Map viewer
 map-layer-train-stations = Železniční zastávky
 map-layer-tags = Štítky
+map-layer-group-planets = Planety
+map-layer-group-space-platforms = Vesmírné platformy
+map-layer-group-other = Ostatní
 map-info-button =
     .title = Informace o mapě
 map-name-edit-button =

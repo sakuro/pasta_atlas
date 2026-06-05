@@ -195,6 +195,10 @@ how-to-upload-tip = You can upload the same map at different game ticks — each
 ## Map viewer
 map-layer-train-stations = Train stations
 map-layer-tags = Tags
+map-layer-group-planets = Planets
+map-layer-group-space-platforms = Space platforms
+map-layer-group-other = Other
+subsurface-name = [entity=huge-rock] { $planet } subsurface level { $level }
 map-info-button =
     .title = Map info
 map-name-edit-button =
