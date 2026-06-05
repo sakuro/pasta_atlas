@@ -1,0 +1,61 @@
+.pa-layer-control {
+  position: relative;
+}
+
+.pa-layer-control__toggle {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 26px !important;
+  height: 26px !important;
+  background: var(--leaflet-ctrl-bg) !important;
+  color: var(--leaflet-ctrl-text) !important;
+  border: 2px solid rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
+  text-decoration: none !important;
+}
+
+.pa-layer-control__toggle:hover {
+  background: var(--leaflet-ctrl-bg-hover) !important;
+}
+
+.pa-layer-control__panel {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 4px);
+  background: var(--leaflet-ctrl-bg);
+  color: var(--leaflet-ctrl-text);
+  border: 2px solid rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
+  min-width: 160px;
+  padding: 0.25rem 0;
+  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.4);
+  z-index: 1000;
+}
+
+.pa-layer-control__heading {
+  padding: 0.2rem 0.5rem;
+  font-size: 0.7rem;
+  font-weight: bold;
+  opacity: 0.7;
+}
+
+.pa-layer-control__item {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.2rem 0.5rem;
+  font-size: 0.75rem;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.pa-layer-control__item:hover {
+  background: var(--leaflet-ctrl-bg-hover);
+}
+
+.pa-layer-control__divider {
+  margin: 0.25rem 0;
+  border: none;
+  border-top: 1px solid var(--leaflet-ctrl-border);
+}
