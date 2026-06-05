@@ -34,7 +34,15 @@ pluginStyle.textContent = zoomsliderCss + boxzoomCss +
   `.leaflet-control-zoomslider-body{background:var(--leaflet-ctrl-slider-track)!important}` +
   `.leaflet-control-zoomslider-knob{background:var(--leaflet-ctrl-slider-knob)!important;border-color:var(--leaflet-ctrl-slider-knob-border)!important}` +
   `.leaflet-control-boxzoom{background:var(--leaflet-ctrl-bg)!important;color:var(--leaflet-ctrl-text)!important}` +
-  `.leaflet-control-boxzoom:hover{background:var(--leaflet-ctrl-bg-hover)!important}`;
+  `.leaflet-control-boxzoom:hover{background:var(--leaflet-ctrl-bg-hover)!important}` +
+  `.pa-layer-control{position:relative}` +
+  `.pa-layer-control__toggle{display:flex!important;align-items:center!important;justify-content:center!important;width:26px!important;height:26px!important;background:var(--leaflet-ctrl-bg)!important;color:var(--leaflet-ctrl-text)!important;border:2px solid rgba(0,0,0,.2);border-radius:4px;text-decoration:none!important}` +
+  `.pa-layer-control__toggle:hover{background:var(--leaflet-ctrl-bg-hover)!important}` +
+  `.pa-layer-control__panel{position:absolute;right:0;top:calc(100% + 4px);background:var(--leaflet-ctrl-bg);color:var(--leaflet-ctrl-text);border:2px solid rgba(0,0,0,.2);border-radius:4px;min-width:160px;padding:.25rem 0;box-shadow:0 1px 5px rgba(0,0,0,.4);z-index:1000}` +
+  `.pa-layer-control__heading{padding:.2rem .5rem;font-size:.7rem;font-weight:bold;opacity:.7}` +
+  `.pa-layer-control__item{display:flex;align-items:center;gap:.4rem;padding:.2rem .5rem;font-size:.75rem;cursor:pointer;white-space:nowrap}` +
+  `.pa-layer-control__item:hover{background:var(--leaflet-ctrl-bg-hover)}` +
+  `.pa-layer-control__divider{margin:.25rem 0;border:none;border-top:1px solid var(--leaflet-ctrl-border)}`;
 document.head.appendChild(pluginStyle);
 import markerIcon from "leaflet/dist/images/marker-icon.png";
 import markerIcon2x from "leaflet/dist/images/marker-icon-2x.png";
@@ -65,7 +73,7 @@ interface Tag {
 
 interface Surface {
   surface_idx: number;
-  surface_localised_name: string;
+  surface_localised_name: string | string[];
   surface_name: string;
   is_planet: boolean;
   is_space_platform: boolean;
@@ -277,6 +285,110 @@ const latLngToWorld = (surface: Surface, latlng: L.LatLng): { x: number; y: numb
   return { x: latlng.lng / ratio, y: -latlng.lat / ratio };
 };
 
+interface LayerControlGroup {
+  heading: string;
+  entries: Array<{ label: string; layer: L.TileLayer }>;
+}
+
+interface LayerControlOverlay {
+  label: string;
+  group: L.LayerGroup;
+  visible: boolean;
+}
+
+class LayerControl extends L.Control {
+  private _activeLayer: L.TileLayer;
+  private _groups: LayerControlGroup[];
+  private _overlays: LayerControlOverlay[];
+  private _initLabel: string;
+
+  constructor(
+    groups: LayerControlGroup[],
+    overlays: LayerControlOverlay[],
+    initLabel: string,
+    initLayer: L.TileLayer
+  ) {
+    super({ position: "topright" });
+    this._groups = groups;
+    this._overlays = overlays;
+    this._initLabel = initLabel;
+    this._activeLayer = initLayer;
+  }
+
+  onAdd(map: L.Map): HTMLElement {
+    const container = L.DomUtil.create("div", "leaflet-control pa-layer-control");
+    L.DomEvent.disableClickPropagation(container);
+    L.DomEvent.disableScrollPropagation(container);
+
+    const btn = L.DomUtil.create("a", "pa-layer-control__toggle", container);
+    btn.href = "#";
+    btn.setAttribute("role", "button");
+    btn.setAttribute("aria-label", "Layers");
+    btn.innerHTML = `<i class="fa-solid fa-layer-group"></i>`;
+
+    const panel = L.DomUtil.create("div", "pa-layer-control__panel", container);
+    panel.style.display = "none";
+
+    const visibleGroups = this._groups.filter((g) => g.entries.length > 0);
+    const showHeadings = visibleGroups.length > 1;
+
+    for (const group of visibleGroups) {
+      if (showHeadings) {
+        const h = L.DomUtil.create("p", "pa-layer-control__heading", panel);
+        h.textContent = group.heading;
+      }
+      for (const entry of group.entries) {
+        const lbl = L.DomUtil.create("label", "pa-layer-control__item", panel);
+        const radio = document.createElement("input");
+        radio.type = "radio";
+        radio.name = "pa-base-layer";
+        radio.checked = entry.label === this._initLabel;
+        const span = document.createElement("span");
+        span.innerHTML = entry.label;
+        lbl.appendChild(radio);
+        lbl.appendChild(span);
+        L.DomEvent.on(radio, "change", () => {
+          map.removeLayer(this._activeLayer);
+          this._activeLayer = entry.layer;
+          this._activeLayer.addTo(map);
+          map.fire("baselayerchange", { layer: entry.layer, name: entry.label });
+        });
+      }
+    }
+
+    L.DomUtil.create("hr", "pa-layer-control__divider", panel);
+
+    for (const overlay of this._overlays) {
+      const lbl = L.DomUtil.create("label", "pa-layer-control__item", panel);
+      const checkbox = document.createElement("input");
+      checkbox.type = "checkbox";
+      checkbox.checked = overlay.visible;
+      const span = document.createElement("span");
+      span.textContent = overlay.label;
+      lbl.appendChild(checkbox);
+      lbl.appendChild(span);
+      L.DomEvent.on(checkbox, "change", () => {
+        if (checkbox.checked) {
+          overlay.group.addTo(map);
+          map.fire("overlayadd", { layer: overlay.group, name: overlay.label });
+        } else {
+          map.removeLayer(overlay.group);
+          map.fire("overlayremove", { layer: overlay.group, name: overlay.label });
+        }
+      });
+    }
+
+    L.DomEvent.on(btn, "click", (e) => {
+      L.DomEvent.preventDefault(e);
+      panel.style.display = panel.style.display === "none" ? "block" : "none";
+    });
+
+    return container;
+  }
+
+  onRemove(_map: L.Map): void {}
+}
+
 const LeafletMap = (props: { mapshot: Mapshot; assetBase: string }) => {
   let mapEl!: HTMLDivElement;
 
@@ -285,20 +397,46 @@ const LeafletMap = (props: { mapshot: Mapshot; assetBase: string }) => {
     if (!surfaces.length) return;
 
     const planetSurfaces = surfaces.filter((s) => s.is_planet);
-    const [trainStationsLabel, tagsLabel, ...ftlPlanetNames] = await l10n.formatValues([
+    const [trainStationsLabel, tagsLabel, planetsHeading, spacePlatformsHeading, otherHeading, ...ftlPlanetNames] = await l10n.formatValues([
       { id: "map-layer-train-stations" },
       { id: "map-layer-tags" },
+      { id: "map-layer-group-planets" },
+      { id: "map-layer-group-space-platforms" },
+      { id: "map-layer-group-other" },
       ...planetSurfaces.map((s) => ({ id: `surface-${s.surface_name}` })),
     ]);
     const ftlNameBySurfaceName: Record<string, string> = {};
     planetSurfaces.forEach((s, i) => { ftlNameBySurfaceName[s.surface_name] = ftlPlanetNames[i]; });
-    const labels = surfaces.map((s) => {
-      const name = ftlNameBySurfaceName[s.surface_name] ?? (s.surface_localised_name || s.surface_name);
-      const prefix = s.is_planet
-        ? `[planet=${s.surface_name}] `
-        : s.is_space_platform
-        ? "[img=surface/space-platform] "
-        : "";
+
+    type SubsurfaceName = [string, [string], string];
+    const isSubsurfaceName = (v: unknown): v is SubsurfaceName =>
+      Array.isArray(v) && v[0] === "subsurface.subsurface-name" &&
+      Array.isArray(v[1]) && typeof v[2] === "string";
+
+    const subsurfaceEntries = surfaces.map((s, i) => {
+      if (!isSubsurfaceName(s.surface_localised_name)) return null;
+      const planetKey = s.surface_localised_name[1][0];
+      const planetName = planetKey.slice(planetKey.lastIndexOf(".") + 1);
+      const planet = ftlNameBySurfaceName[planetName] ?? planetName;
+      return { idx: i, planet, level: s.surface_localised_name[2] };
+    });
+    const subsurfaceToResolve = subsurfaceEntries.filter((e): e is NonNullable<typeof e> => e !== null);
+    const subsurfaceFormatted = new Map<number, string>();
+    if (subsurfaceToResolve.length > 0) {
+      const results = await l10n.formatValues(
+        subsurfaceToResolve.map(({ planet, level }) => ({ id: "subsurface-name", args: { planet, level } }))
+      );
+      subsurfaceToResolve.forEach(({ idx }, i) => {
+        if (results[i] !== null) subsurfaceFormatted.set(idx, results[i]!);
+      });
+    }
+
+    const labels = surfaces.map((s, i) => {
+      const subsurface = subsurfaceFormatted.get(i);
+      if (subsurface !== undefined) return renderRichText(subsurface);
+      const rawName = ftlNameBySurfaceName[s.surface_name] ?? s.surface_localised_name ?? s.surface_name;
+      const name = Array.isArray(rawName) ? String(rawName) : rawName;
+      const prefix = s.is_planet ? `[planet=${s.surface_name}] ` : "";
       return renderRichText(prefix + name);
     });
 
@@ -382,9 +520,32 @@ const LeafletMap = (props: { mapshot: Mapshot; assetBase: string }) => {
     if (showTrains) trainLayerGroup.addTo(map);
     if (showTags) tagLayerGroup.addTo(map);
 
-    L.control
-      .layers(baseLayers, { [trainStationsLabel]: trainLayerGroup, [tagsLabel]: tagLayerGroup })
-      .addTo(map);
+    const groupedEntries: Record<"planets" | "spacePlatforms" | "other", Array<{ label: string; layer: L.TileLayer }>> = {
+      planets: [],
+      spacePlatforms: [],
+      other: [],
+    };
+    for (const i of sortedIndices) {
+      const s = surfaces[i];
+      const entry = { label: labels[i], layer: baseLayers[labels[i]] };
+      if (s.is_planet) groupedEntries.planets.push(entry);
+      else if (s.is_space_platform) groupedEntries.spacePlatforms.push(entry);
+      else groupedEntries.other.push(entry);
+    }
+
+    new LayerControl(
+      [
+        { heading: planetsHeading, entries: groupedEntries.planets },
+        { heading: spacePlatformsHeading, entries: groupedEntries.spacePlatforms },
+        { heading: otherHeading, entries: groupedEntries.other },
+      ],
+      [
+        { label: trainStationsLabel, group: trainLayerGroup, visible: showTrains },
+        { label: tagsLabel, group: tagLayerGroup, visible: showTags },
+      ],
+      initLabel,
+      baseLayers[initLabel]
+    ).addTo(map);
 
     map.setMinZoom(initSurface.zoom_min);
     map.setMaxZoom(initSurface.zoom_max);

@@ -195,6 +195,9 @@ how-to-upload-tip = 同じマップを異なるゲームティックでアップ
 ## Map viewer
 map-layer-train-stations = 列車の駅
 map-layer-tags = タグ
+map-layer-group-planets = 惑星
+map-layer-group-space-platforms = 宇宙プラットフォーム
+map-layer-group-other = その他
 map-info-button =
     .title = マップ情報
 map-name-edit-button =
