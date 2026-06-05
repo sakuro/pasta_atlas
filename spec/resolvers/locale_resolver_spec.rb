@@ -46,6 +46,20 @@ RSpec.describe PastaAtlas::Resolvers::LocaleResolver do
       it "returns the stored locale" do
         expect(resolver.call(user_id: 42)).to eq("ja")
       end
+
+      context "when locale is nil (follow browser)" do
+        let(:preference) { double("UserPreference", locale: nil) }
+
+        it "negotiates from Accept-Language" do
+          expect(resolver.call(user_id: 42, accept_language: "ja")).to eq("ja")
+        end
+
+        context "with no Accept-Language header" do
+          it "returns 'en'" do
+            expect(resolver.call(user_id: 42)).to eq("en")
+          end
+        end
+      end
     end
   end
 end
