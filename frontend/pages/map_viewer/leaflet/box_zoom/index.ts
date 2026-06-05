@@ -1,5 +1,5 @@
 import L from "leaflet";
-import "./theme.css";
+import "../theme.css";
 import "./BoxZoom.css";
 
 export class BoxZoomControl extends L.Control {

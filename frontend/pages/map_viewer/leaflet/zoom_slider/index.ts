@@ -1,5 +1,5 @@
 import L from "leaflet";
-import "./theme.css";
+import "../theme.css";
 import "./ZoomSlider.css";
 
 const KNOB_HEIGHT = 8;
