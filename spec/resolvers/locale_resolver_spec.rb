@@ -2,7 +2,8 @@
 
 RSpec.describe PastaAtlas::Resolvers::LocaleResolver do
   let(:load_preferences) { instance_double(PastaAtlas::Operations::User::Preferences::Load) }
-  let(:resolver) { PastaAtlas::Resolvers::LocaleResolver.new(load_preferences:) }
+  let(:supported_locales) { %w[cs en ja ko zh-CN zh-TW] }
+  let(:resolver) { PastaAtlas::Resolvers::LocaleResolver.new(load_preferences:, supported_locales:) }
 
   describe "#call" do
     context "when user_id is nil" do

@@ -7,10 +7,8 @@ module PastaAtlas
     module User
       module Preferences
         class Update < PastaAtlas::Operation
-          SUPPORTED_LOCALES = PastaAtlas::I18n::SUPPORTED_LOCALES
-          private_constant :SUPPORTED_LOCALES
-
           include Deps[
+            "locale.supported_locales",
             "repos.user_preference_repo"
           ]
 
@@ -30,7 +28,7 @@ module PastaAtlas
           private def valid_locale(value)
             return nil if value.nil? || value.empty?
 
-            SUPPORTED_LOCALES.include?(value) ? value : nil
+            supported_locales.include?(value) ? value : nil
           end
         end
       end

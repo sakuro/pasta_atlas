@@ -3,7 +3,10 @@
 module PastaAtlas
   module Resolvers
     class LocaleResolver
-      include Deps[load_preferences: "operations.user.preferences.load"]
+      include Deps[
+        "locale.supported_locales",
+        load_preferences: "operations.user.preferences.load"
+      ]
 
       def call(user_id:, accept_language: nil)
         if user_id
@@ -22,10 +25,10 @@ module PastaAtlas
         }.sort_by {|_, q| -q }.map(&:first)
 
         tags.each do |tag|
-          return tag if PastaAtlas::I18n::SUPPORTED_LOCALES.include?(tag)
+          return tag if supported_locales.include?(tag)
 
           lang = tag.split("-").first
-          return lang if PastaAtlas::I18n::SUPPORTED_LOCALES.include?(lang)
+          return lang if supported_locales.include?(lang)
         end
         "en"
       end
