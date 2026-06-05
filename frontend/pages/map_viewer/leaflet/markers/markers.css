@@ -1,0 +1,18 @@
+.pa-station-marker,
+.pa-tag-marker {
+  background: none !important;
+  border: none !important;
+  font-size: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.5));
+}
+
+.pa-station-marker {
+  color: var(--bulma-link);
+}
+
+.pa-tag-marker {
+  color: var(--bulma-success);
+}

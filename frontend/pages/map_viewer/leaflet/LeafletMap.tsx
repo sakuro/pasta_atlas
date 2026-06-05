@@ -5,6 +5,7 @@ import { l10n } from "../../../lib/l10n";
 import { renderRichText } from "../richtext";
 import { getParam, setParams } from "../url_params";
 import { LayerControl } from "./LayerControl";
+import { StationMarker, TagMarker } from "./markers";
 import { BoxZoomControl } from "./box_zoom";
 import { ZoomSliderControl } from "./zoom_slider";
 import "leaflet/dist/leaflet.css";
@@ -167,11 +168,11 @@ export const LeafletMap = (props: { mapshot: Mapshot; assetBase: string }) => {
       stationMarkers[label] = stationsArray.map((s) => {
         const cx = (s.bounding_box.left_top.x + s.bounding_box.right_bottom.x) / 2;
         const cy = (s.bounding_box.left_top.y + s.bounding_box.right_bottom.y) / 2;
-        return L.marker(toLL(cx, cy)).bindPopup(renderRichText(s.backer_name));
+        return new StationMarker(toLL(cx, cy), s.backer_name);
       });
       tagMarkers[label] = Object.values(surface.tags ?? {})
         .filter((t) => t?.position != null)
-        .map((t) => L.marker(toLL(t.position.x, t.position.y)).bindPopup(renderRichText(t.text ?? "")));
+        .map((t) => new TagMarker(toLL(t.position.x, t.position.y), t.text ?? ""));
     }
 
     const populateOverlays = (label: string) => {
