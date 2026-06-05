@@ -81,6 +81,7 @@ edit-display-name = 顯示名稱
 edit-display-name-help = 最多 30 個字元，留空則顯示使用者名稱。
 edit-save-profile = 儲存個人資料
 edit-timezone-label = 時區
+edit-timezone-use-browser = （依瀏覽器設定）
 edit-locale = 語言
 edit-locale-use-browser = （依瀏覽器設定）
 edit-time-display = 時間顯示

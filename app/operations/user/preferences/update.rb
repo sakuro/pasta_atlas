@@ -20,9 +20,11 @@ module PastaAtlas
           end
 
           private def valid_timezone(name)
-            TZInfo::Timezone.get(name.to_s).name
+            return nil if name.nil? || name.empty?
+
+            TZInfo::Timezone.get(name).name
           rescue TZInfo::InvalidTimezoneIdentifier, TZInfo::InvalidDataFile
-            "UTC"
+            nil
           end
 
           private def valid_locale(value)

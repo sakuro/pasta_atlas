@@ -6,14 +6,17 @@ const resolveLocale = (locale: string | null): string => {
   return navigator.languages.find((l) => SUPPORTED_LOCALES.includes(l)) ?? "en";
 };
 
+const resolveTimezone = (tz: string | null): string =>
+  tz ?? Intl.DateTimeFormat().resolvedOptions().timeZone;
+
 export const [lang, setLang] = createSignal("en");
-export const [timezone, setTimezone] = createSignal("UTC");
+export const [timezone, setTimezone] = createSignal(resolveTimezone(null));
 export const [relativeTimestamps, setRelativeTimestamps] = createSignal(false);
 
-export const applyPreferences = (locale: string | null, tz: string, relative: boolean): void => {
+export const applyPreferences = (locale: string | null, tz: string | null, relative: boolean): void => {
   const resolved = resolveLocale(locale);
   setLocale(resolved);
   setLang(resolved);
-  setTimezone(tz);
+  setTimezone(resolveTimezone(tz));
   setRelativeTimestamps(relative);
 };

@@ -81,6 +81,7 @@ edit-display-name = 표시 이름
 edit-display-name-help = 최대 30자. 비워 두면 사용자 이름이 표시됩니다.
 edit-save-profile = 프로필 저장
 edit-timezone-label = 시간대
+edit-timezone-use-browser = (브라우저 설정 사용)
 edit-locale = 언어
 edit-locale-use-browser = (브라우저 설정 사용)
 edit-time-display = 시간 표시
