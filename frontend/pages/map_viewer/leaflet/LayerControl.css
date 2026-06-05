@@ -6,17 +6,6 @@
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
-  width: 26px !important;
-  height: 26px !important;
-  background: var(--leaflet-ctrl-bg) !important;
-  color: var(--leaflet-ctrl-text) !important;
-  border: 2px solid rgba(0, 0, 0, 0.2);
-  border-radius: 4px;
-  text-decoration: none !important;
-}
-
-.pa-layer-control__toggle:hover {
-  background: var(--leaflet-ctrl-bg-hover) !important;
 }
 
 .pa-layer-control__panel {

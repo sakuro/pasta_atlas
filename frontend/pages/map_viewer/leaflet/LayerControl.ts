@@ -32,7 +32,7 @@ export class LayerControl extends L.Control {
   }
 
   onAdd(map: L.Map): HTMLElement {
-    const container = L.DomUtil.create("div", "leaflet-control pa-layer-control");
+    const container = L.DomUtil.create("div", "leaflet-bar leaflet-control pa-layer-control");
     L.DomEvent.disableClickPropagation(container);
     L.DomEvent.disableScrollPropagation(container);
 
