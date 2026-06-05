@@ -1,4 +1,5 @@
 import L from "leaflet";
+import "./theme.css";
 import "./LayerControl.css";
 
 export interface LayerControlGroup {

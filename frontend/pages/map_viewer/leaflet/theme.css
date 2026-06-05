@@ -1,0 +1,9 @@
+.leaflet-bar a {
+  background: var(--leaflet-ctrl-bg) !important;
+  border-bottom-color: var(--leaflet-ctrl-border) !important;
+  color: var(--leaflet-ctrl-text) !important;
+}
+
+.leaflet-bar a:hover {
+  background: var(--leaflet-ctrl-bg-hover) !important;
+}
