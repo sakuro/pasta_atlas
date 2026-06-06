@@ -131,6 +131,8 @@ pagination-next = 下一页
 
 ## Upload modal
 upload-button = 上传
+upload-button-guest =
+    .title = 登录后即可上传地图
 upload-modal-title = 上传 { -mapshot }
 upload-modal-title-guest = 上传 { -mapshot }（访客）
 upload-instructions-folder = 请选择包含 <code data-l10n-name="filename">mapshot.json</code> 的<strong>文件夹</strong>。

@@ -288,7 +288,12 @@ export const UploadModal = (props: { isGuest: boolean }) => {
         }}
       />
       <div class="buttons has-addons">
-        <button class="button is-primary" onClick={openModal}>
+        <button
+          class="button is-primary"
+          onClick={props.isGuest ? undefined : openModal}
+          disabled={props.isGuest}
+          data-l10n-id={props.isGuest ? "upload-button-guest" : undefined}
+        >
           <span class="icon"><i class="fa-solid fa-upload" /></span>
           <span data-l10n-id="upload-button" />
         </button>

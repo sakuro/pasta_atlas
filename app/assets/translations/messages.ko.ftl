@@ -131,6 +131,8 @@ pagination-next = 다음
 
 ## Upload modal
 upload-button = 업로드
+upload-button-guest =
+    .title = 로그인하면 지도를 업로드할 수 있습니다
 upload-modal-title = { -mapshot } 업로드
 upload-modal-title-guest = { -mapshot } 업로드 (게스트로)
 upload-instructions-folder = <code data-l10n-name="filename">mapshot.json</code>이 포함된 <strong>폴더</strong>를 선택해 주세요.

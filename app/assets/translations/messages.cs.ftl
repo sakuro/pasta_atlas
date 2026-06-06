@@ -161,6 +161,8 @@ pagination-next = Další
 
 ## Upload modal
 upload-button = Nahrát
+upload-button-guest =
+    .title = Pro nahrávání map se přihlaste
 upload-modal-title = Nahrát { -mapshot(case: "accusative") }
 upload-modal-title-guest = Nahrát { -mapshot(case: "accusative") } (jako host)
 upload-instructions-folder = Vyberte <strong>složku</strong> obsahující <code data-l10n-name="filename">mapshot.json</code>.

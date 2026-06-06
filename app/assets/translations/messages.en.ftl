@@ -131,6 +131,8 @@ pagination-next = Next
 
 ## Upload modal
 upload-button = Upload
+upload-button-guest =
+    .title = Sign in to upload maps
 upload-modal-title = Upload { -mapshot }
 upload-modal-title-guest = Upload { -mapshot } (as Guest)
 upload-instructions-folder = Select the <strong>folder</strong> containing <code data-l10n-name="filename">mapshot.json</code>.

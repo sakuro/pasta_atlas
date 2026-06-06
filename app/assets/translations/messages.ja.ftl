@@ -131,6 +131,8 @@ pagination-next = 次へ
 
 ## Upload modal
 upload-button = アップロード
+upload-button-guest =
+    .title = ログインすると地図をアップロードできます
 upload-modal-title = { -mapshot } をアップロード
 upload-modal-title-guest = { -mapshot } をアップロード（ゲストとして）
 upload-instructions-folder = <code data-l10n-name="filename">mapshot.json</code> を含む<strong>フォルダー</strong>を選択してください。

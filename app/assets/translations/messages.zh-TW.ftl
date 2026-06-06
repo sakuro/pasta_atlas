@@ -131,6 +131,8 @@ pagination-next = 下一頁
 
 ## Upload modal
 upload-button = 上傳
+upload-button-guest =
+    .title = 登入後即可上傳地圖
 upload-modal-title = 上傳 { -mapshot }
 upload-modal-title-guest = 上傳 { -mapshot }（訪客）
 upload-instructions-folder = 請選取包含 <code data-l10n-name="filename">mapshot.json</code> 的<strong>資料夾</strong>。
