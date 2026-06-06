@@ -1,6 +1,20 @@
 # frozen_string_literal: true
 
 namespace :s3 do
+  desc "Enqueue generations with unknown storage bytes for recalculation"
+  task enqueue_storage_calculation: :environment do
+    sqs_client = Hanami.app["sqs.client"]
+    settings = Hanami.app["settings"]
+    generation_repo = Hanami.app["repos.generation_repo"]
+
+    ids = generation_repo.ids_without_storage_bytes
+    puts "Enqueueing #{ids.size} generation(s)..."
+    ids.each do |id|
+      sqs_client.send_message(queue_url: settings.sqs_storage_calculation_queue_url, message_body: id.to_s)
+      puts "Enqueued generation #{id}"
+    end
+  end
+
   desc "Poll SQS queues and process messages"
   task process_queues: :environment do
     require "concurrent-ruby"
