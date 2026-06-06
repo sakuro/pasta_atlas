@@ -69,6 +69,10 @@ RSpec/VerifiedDoubles:
     - spec/resolvers/**/*.rb
     - spec/views/**/*.rb
 
+ThreadSafety/NewThread:
+  Exclude:
+    - lib/workers/sqs_queue_worker.rb
+
 Style/Documentation:
   Enabled: false
 

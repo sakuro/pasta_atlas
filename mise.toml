@@ -14,7 +14,7 @@ tflint = "0.62"
 depends = ["dev"]
 
 [tasks.dev]
-depends = ["web", "assets", "frontend", "floci", "s3-cleanup-queue-worker"]
+depends = ["web", "assets", "frontend", "floci", "s3-queue-worker"]
 
 [tasks.web]
 run = "bundle exec hanami server"
@@ -28,5 +28,5 @@ run = "npm run dev:frontend"
 [tasks.floci]
 run = "docker compose up"
 
-[tasks.s3-cleanup-queue-worker]
-run = "bundle exec rake s3:process_cleanup_queue"
+[tasks.s3-queue-worker]
+run = "bundle exec rake s3:process_queues"

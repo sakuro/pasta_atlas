@@ -8,13 +8,16 @@ module PastaAtlas
           "repos.generation_repo",
           "repos.map_repo",
           "repos.upload_event_repo",
-          "repos.upload_repo"
+          "repos.upload_repo",
+          "settings",
+          sqs_client: "sqs.client"
         ]
 
         def call(upload_ulid:, status:, user_id:)
           upload = step find_upload(upload_ulid)
           step validate_ownership(upload, user_id)
           step append_event(upload, status)
+          enqueue_storage_calculation(upload) if status == "complete"
           step find_upload(upload_ulid)
         end
 
@@ -32,6 +35,15 @@ module PastaAtlas
         private def append_event(upload, status)
           upload_event_repo.create(upload_id: upload.id, event_type: status)
           Success()
+        end
+
+        private def enqueue_storage_calculation(upload)
+          sqs_client.send_message(
+            queue_url: settings.sqs_storage_calculation_queue_url,
+            message_body: upload.generation_id.to_s
+          )
+        rescue Aws::SQS::Errors::ServiceError
+          # Storage will remain NULL until backfill
         end
       end
     end

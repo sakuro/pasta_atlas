@@ -90,6 +90,7 @@ resource "aws_ecs_task_definition" "app" {
         { name = "S3_BUCKET", value = aws_s3_bucket.mapshots.bucket },
         { name = "CLOUDFRONT_BASE_URL", value = "https://${aws_cloudfront_distribution.mapshots.domain_name}" },
         { name = "SQS_S3_CLEANUP_QUEUE_URL", value = aws_sqs_queue.s3_cleanup.url },
+        { name = "SQS_STORAGE_CALCULATION_QUEUE_URL", value = aws_sqs_queue.storage_calculation.url },
         { name = "PRESIGNED_URL_EXPIRY", value = tostring(var.presigned_url_expiry) },
         { name = "GITHUB_CLIENT_ID", value = var.github_client_id },
         { name = "DISCORD_CLIENT_ID", value = var.discord_client_id },
@@ -161,6 +162,7 @@ resource "aws_ecs_task_definition" "migrate" {
         { name = "S3_BUCKET", value = aws_s3_bucket.mapshots.bucket },
         { name = "CLOUDFRONT_BASE_URL", value = "https://${aws_cloudfront_distribution.mapshots.domain_name}" },
         { name = "SQS_S3_CLEANUP_QUEUE_URL", value = aws_sqs_queue.s3_cleanup.url },
+        { name = "SQS_STORAGE_CALCULATION_QUEUE_URL", value = aws_sqs_queue.storage_calculation.url },
         { name = "PRESIGNED_URL_EXPIRY", value = tostring(var.presigned_url_expiry) },
         { name = "GITHUB_CLIENT_ID", value = var.github_client_id },
         { name = "DISCORD_CLIENT_ID", value = var.discord_client_id },
@@ -185,7 +187,7 @@ resource "aws_ecs_task_definition" "migrate" {
 }
 
 resource "aws_ecs_task_definition" "s3_cleanup_queue_worker" {
-  family                   = "${var.app_name}-${var.environment}-s3-cleanup-queue-worker"
+  family                   = "${var.app_name}-${var.environment}-s3-queue-worker"
   requires_compatibilities = ["FARGATE"]
   network_mode             = "awsvpc"
   cpu                      = 256
@@ -202,7 +204,7 @@ resource "aws_ecs_task_definition" "s3_cleanup_queue_worker" {
     {
       name        = var.app_name
       image       = local.container_image
-      command     = ["bundle", "exec", "rake", "s3:process_cleanup_queue"]
+      command     = ["bundle", "exec", "rake", "s3:process_queues"]
       stopTimeout = 60
       environment = [
         { name = "HANAMI_ENV", value = var.environment },
@@ -211,6 +213,7 @@ resource "aws_ecs_task_definition" "s3_cleanup_queue_worker" {
         { name = "S3_BUCKET", value = aws_s3_bucket.mapshots.bucket },
         { name = "CLOUDFRONT_BASE_URL", value = "https://${aws_cloudfront_distribution.mapshots.domain_name}" },
         { name = "SQS_S3_CLEANUP_QUEUE_URL", value = aws_sqs_queue.s3_cleanup.url },
+        { name = "SQS_STORAGE_CALCULATION_QUEUE_URL", value = aws_sqs_queue.storage_calculation.url },
         { name = "PRESIGNED_URL_EXPIRY", value = tostring(var.presigned_url_expiry) },
         { name = "GITHUB_CLIENT_ID", value = var.github_client_id },
         { name = "DISCORD_CLIENT_ID", value = var.discord_client_id },
@@ -227,7 +230,7 @@ resource "aws_ecs_task_definition" "s3_cleanup_queue_worker" {
         options = {
           "awslogs-group"         = aws_cloudwatch_log_group.app.name
           "awslogs-region"        = var.aws_region
-          "awslogs-stream-prefix" = "s3-cleanup-queue-worker"
+          "awslogs-stream-prefix" = "s3-queue-worker"
         }
       }
     }
@@ -235,7 +238,7 @@ resource "aws_ecs_task_definition" "s3_cleanup_queue_worker" {
 }
 
 resource "aws_ecs_service" "s3_cleanup_queue_worker" {
-  name            = "${var.app_name}-${var.environment}-s3-cleanup-queue-worker"
+  name            = "${var.app_name}-${var.environment}-s3-queue-worker"
   cluster         = aws_ecs_cluster.main.id
   task_definition = aws_ecs_task_definition.s3_cleanup_queue_worker.arn
   desired_count   = 1

@@ -1,36 +1,26 @@
 # frozen_string_literal: true
 
 namespace :s3 do
-  desc "Poll SQS S3 cleanup queue and process messages"
-  task process_cleanup_queue: :environment do
+  desc "Poll SQS queues and process messages"
+  task process_queues: :environment do
+    require "concurrent-ruby"
+    require_relative "../workers/s3_cleanup_queue_worker"
+    require_relative "../workers/storage_calculation_queue_worker"
+
     $stdout.sync = true
+    stop = Concurrent::Event.new
+
+    trap("SIGTERM") { stop.set }
+    trap("SIGINT")  { stop.set }
+
     sqs_client = Hanami.app["sqs.client"]
-    queue_url = Hanami.app["settings"].sqs_s3_cleanup_queue_url
-    stop = false
-    trap("SIGTERM") { stop = true }
-    trap("SIGINT") { stop = true }
+    settings = Hanami.app["settings"]
+    wait_time_seconds = Hanami.env?(:development) ? 1 : 20
 
-    loop do
-      resp = sqs_client.receive_message(
-        queue_url:,
-        max_number_of_messages: 1,
-        wait_time_seconds: 20
-      )
-      resp.messages.each do |msg|
-        result = Hanami.app["operations.maps.delete"].call(s3_prefix: msg.body)
-        if result.success?
-          sqs_client.delete_message(queue_url:, receipt_handle: msg.receipt_handle)
-          puts "Deleted S3 objects under #{msg.body}"
-        else
-          warn "Failed to delete S3 objects under #{msg.body}: #{result.failure}"
-        end
-      end
-      break if stop
-    rescue Seahorse::Client::NetworkingError, Aws::SQS::Errors::NonExistentQueue => e
-      break if stop
-
-      warn "#{e.message}, retrying in 5 seconds..."
-      sleep 5
-    end
+    threads = [
+      S3CleanupQueueWorker.new(sqs_client:, settings:, stop:, wait_time_seconds:).thread,
+      StorageCalculationQueueWorker.new(sqs_client:, settings:, stop:, wait_time_seconds:).thread
+    ]
+    threads.each(&:join)
   end
 end
