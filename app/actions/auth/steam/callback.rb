@@ -5,8 +5,13 @@ module PastaAtlas
     module Auth
       module Steam
         class Callback < PastaAtlas::Actions::Auth::OAuthCallback
-          # Steam's OpenID 2.0 callback arrives as a POST from Steam's servers
-          # and does not carry our session CSRF token.
+          def handle(request, response)
+            # Reject callbacks not initiated through our own /auth/steam to prevent login CSRF.
+            halt :bad_request unless request.session.delete(:steam_pending)
+            super
+          end
+
+          # Steam's OpenID 2.0 GET callback does not carry our session CSRF token.
           private def verify_csrf_token(*); end
         end
       end
