@@ -49,8 +49,8 @@ Avatar images use a separate prefix: `avatars/{user_id}/{ulid}.{ext}`
     → Receive: { ulid, map_ulid, generation_ulid }
 
   Step 2: POST /api/v1/uploads/:ulid/presigned_urls
-    Body: { filenames: ["s1zoom_4/tile_0_0.jpg", ...] }  ← all filenames (server filters existing ones)
-    → Receive: { presigned_urls: { filename: url, ... } }  ← only files that need uploading
+    Body: { filenames: ["s1zoom_4/tile_0_0.jpg", ...] }
+    → Receive: { presigned_urls: { filename: url, ... } }
 
   Step 3: Upload each image file returned in presigned_urls (parallel, concurrency limit 5)
     → S3 PUT is atomic so success/failure per file is definitive
@@ -67,8 +67,7 @@ Avatar images use a separate prefix: `avatars/{user_id}/{ulid}.{ext}`
 
 - `mapshot.json` is sent in Step 1 body; the server writes it to S3 directly. The client does not request a presigned URL for it.
 - File paths sent in Step 2 are relative paths within the selected directory (e.g. `s1zoom_4/tile_0_0.jpg`).
-- Step 2 always receives the full filename list; the server filters out already-existing S3 keys via ListObjectsV2 (1 API call per request) and returns presigned URLs only for missing files.
-- This makes both within-session retry and cross-session resume efficient — the client never needs to track which files were uploaded.
+- Step 2 always receives the full filename list; the server returns presigned PUT URLs for all requested files. S3 PUT is idempotent — re-uploading an existing file overwrites it safely.
 - S3 PUT is atomic: each file either fully succeeds or fully fails. Partial writes do not occur.
 
 ---
@@ -92,16 +91,16 @@ Avatar images use a separate prefix: `avatars/{user_id}/{ulid}.{ext}`
 8. Create `Upload` record (`status: pending`, `total_image_count` from request)
 9. Return `{ ulid, map_ulid, generation_ulid }`
 
+For guest uploads, `expires_at` is set to 2 days from creation on the Generation record. S3 objects under the `guest/maps/` prefix are removed by a lifecycle rule after 8 days (providing a safety margin over the DB TTL).
+
 Steps 5–8 run inside a single transaction to ensure Generation, S3 write, and Upload are created atomically. Step 4 (map upsert) runs before this transaction; if the transaction rolls back (e.g. S3 failure), the Map record is retained — this is safe since Map creation is idempotent.
 
 ### POST /api/v1/uploads/:ulid/presigned_urls
 
 1. Find `Upload` by ULID; return `404` if not found
 2. Validate `status` is `pending`; return `422` if `complete` or `failed`
-3. Call S3 ListObjectsV2 with prefix `{user_name}/{mapshot_map_id}/{mapshot_unique_id}/` to get existing keys (1 API call)
-4. For each requested filename, skip if the corresponding S3 key already exists
-5. Generate presigned PUT URL for each remaining (missing) key (expiry: configurable, default 1 hour)
-6. Return `{ presigned_urls: { filename: url, ... } }` — contains only files that need uploading
+3. Generate presigned PUT URL for each requested filename (expiry: configurable, default 1 hour)
+4. Return `{ presigned_urls: { filename: url, ... } }`
 
 ### PATCH /api/v1/uploads/:ulid
 
@@ -177,9 +176,7 @@ sequenceDiagram
     else pending
         DB-->>IPU: upload
         IPU->>DB: find generation + map
-        IPU->>S3: ListObjectsV2(prefix)
-        S3-->>IPU: existing keys
-        Note over IPU: filter out existing keys,<br>generate presigned PUT URLs
+        Note over IPU: generate presigned PUT URLs
         IPU-->>Action: Success({filename => url, ...})
         Action-->>Client: 200 OK
     end
@@ -228,9 +225,9 @@ sequenceDiagram
 
 ### Resume design
 
-Resume is handled server-side via S3 key filtering:
+Resume is handled via S3 idempotency:
 
-- The client always sends the full filename list to Step 2. The server calls S3 ListObjectsV2 and returns presigned URLs only for files not yet in S3.
-- The client does not need to track which files were uploaded across sessions.
-- On error, the Upload remains `pending` in the DB. On retry (same or different session), the client re-calls Step 2 with all filenames; the server automatically skips already-uploaded files.
+- The client always sends the full filename list to Step 2. The server returns presigned PUT URLs for all requested files.
+- Re-uploading an already-uploaded file is safe — S3 PUT is idempotent and simply overwrites the object.
+- On error, the Upload remains `pending` in the DB. On retry (same or different session), the client re-calls Step 2 with all filenames and re-uploads; already-uploaded files are overwritten harmlessly.
 - `failed` status is set only when the user explicitly abandons the upload (future: admin tooling). It is not required for the retry flow.

@@ -6,8 +6,8 @@ module PastaAtlas
   module Operations
     module Uploads
       class Create < PastaAtlas::Operation
-        # One day shorter than the S3 lifecycle (8 days) so DB records are cleaned up before S3 objects disappear.
-        GUEST_TTL_DAYS = 7
+        # Shorter than the S3 lifecycle (8 days) so DB records are cleaned up before S3 objects disappear.
+        GUEST_TTL_DAYS = 2
         private_constant :GUEST_TTL_DAYS
 
         include Deps[

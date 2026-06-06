@@ -36,7 +36,7 @@ RSpec.describe PastaAtlas::Operations::Uploads::Create, :db do
     context "when uploading as a guest user" do
       let(:user) { Hanami.app["repos.user_repo"].find_by_name("guest") }
 
-      it "sets expires_at approximately 8 days from now" do
+      it "sets expires_at approximately 2 days from now" do
         operation.call(user_id: user.id, metadata:, total_image_count: 5)
 
         generation = generation_repo.find_with_upload(
@@ -45,7 +45,7 @@ RSpec.describe PastaAtlas::Operations::Uploads::Create, :db do
           ).id,
           mapshot_unique_id: metadata[:unique_id]
         )
-        expect(generation.expires_at).to be_within(60).of(Time.now + (7 * 86400))
+        expect(generation.expires_at).to be_within(60).of(Time.now + (2 * 86400))
       end
     end
 

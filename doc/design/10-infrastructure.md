@@ -114,7 +114,7 @@ Condition: AWS:SourceArn == <mapshots distribution ARN>
 
 The application ECS task role holds `s3:GetObject`, `s3:PutObject`, `s3:DeleteObject`, and `s3:ListBucket` for generating presigned URLs and managing objects.
 
-A lifecycle rule expires objects under the `guest/` prefix after 8 days.
+A lifecycle rule expires objects under the `guest/maps/` prefix after 8 days. The app-level DB TTL for guest generations is 2 days, keeping DB cleanup ahead of S3 expiry.
 
 CORS is configured for `PUT` requests from allowed origins (for presigned URL uploads), exposing the `ETag` header.
 
