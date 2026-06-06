@@ -7,3 +7,25 @@
 .leaflet-bar a:hover {
   background: var(--leaflet-ctrl-bg-hover) !important;
 }
+
+.leaflet-tooltip {
+  background-color: var(--leaflet-ctrl-bg) !important;
+  border-color: var(--leaflet-ctrl-bg) !important;
+  color: var(--leaflet-ctrl-text) !important;
+}
+
+.leaflet-tooltip-top:before {
+  border-top-color: var(--leaflet-ctrl-bg) !important;
+}
+
+.leaflet-tooltip-bottom:before {
+  border-bottom-color: var(--leaflet-ctrl-bg) !important;
+}
+
+.leaflet-tooltip-left:before {
+  border-left-color: var(--leaflet-ctrl-bg) !important;
+}
+
+.leaflet-tooltip-right:before {
+  border-right-color: var(--leaflet-ctrl-bg) !important;
+}

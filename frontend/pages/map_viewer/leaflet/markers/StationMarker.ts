@@ -12,6 +12,6 @@ const icon = L.divIcon({
 export class StationMarker extends L.Marker {
   constructor(latlng: L.LatLng, name: string) {
     super(latlng, { icon });
-    this.bindPopup(renderRichText(name));
+    this.bindTooltip(renderRichText(name), { permanent: true, direction: "auto" });
   }
 }

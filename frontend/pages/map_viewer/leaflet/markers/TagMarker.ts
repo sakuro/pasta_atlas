@@ -12,6 +12,6 @@ const icon = L.divIcon({
 export class TagMarker extends L.Marker {
   constructor(latlng: L.LatLng, text: string) {
     super(latlng, { icon });
-    this.bindPopup(renderRichText(text));
+    this.bindTooltip(renderRichText(text), { permanent: true, direction: "auto" });
   }
 }
