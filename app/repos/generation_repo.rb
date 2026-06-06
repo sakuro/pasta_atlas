@@ -55,7 +55,8 @@ module PastaAtlas
 
       def ids_without_storage_bytes
         generations.dataset
-          .join(:current_upload_statuses, generation_id: :id)
+          .join(:uploads, generation_id: :id)
+          .join(:current_upload_statuses, upload_id: Sequel[:uploads][:id])
           .where(storage_bytes: nil)
           .where(Sequel[:current_upload_statuses][:status] => "complete")
           .select_map(Sequel[:generations][:id])
