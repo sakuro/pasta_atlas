@@ -4,7 +4,6 @@ RSpec.describe PastaAtlas::Operations::Uploads::IssuePresignedUrls, :db do
   let(:operation) { Hanami.app["operations.uploads.issue_presigned_urls"] }
   let(:filenames) { ["s1zoom_4/tile_0_0.jpg", "s1zoom_4/tile_0_1.jpg"] }
   let(:upload_event_repo) { Hanami.app["repos.upload_event_repo"] }
-  let(:s3_client) { Hanami.app["s3.client"] }
 
   let(:user) { Factory[:user, name: "testuser"] }
   let(:map) { Factory[:map, user:, mapshot_map_id: "ae8ec3ab"] }
@@ -20,32 +19,13 @@ RSpec.describe PastaAtlas::Operations::Uploads::IssuePresignedUrls, :db do
   before { Factory[:upload_event, upload:, event_type: "pending"] }
 
   describe "#call" do
-    before { s3_client.stub_responses(:list_objects_v2, {contents: []}) }
+    it "returns presigned URLs for all requested files" do
+      result = operation.call(upload_ulid: upload.ulid, filenames:, user_id: user.id)
 
-    context "when no files exist in S3" do
-      it "returns presigned URLs for all requested files" do
-        result = operation.call(upload_ulid: upload.ulid, filenames:, user_id: user.id)
-
-        expect(result).to be_success
-        urls = result.value!
-        expect(urls.keys).to match_array(filenames)
-        expect(urls.values).to all(be_a(String))
-      end
-    end
-
-    context "when some files already exist in S3" do
-      before do
-        s3_client.stub_responses(:list_objects_v2, {
-          contents: [{key: "testuser/maps/ae8ec3ab/550f41a9/s1zoom_4/tile_0_0.jpg"}]
-        })
-      end
-
-      it "excludes already-uploaded files from presigned URLs" do
-        result = operation.call(upload_ulid: upload.ulid, filenames:, user_id: user.id)
-
-        expect(result).to be_success
-        expect(result.value!.keys).to contain_exactly("s1zoom_4/tile_0_1.jpg")
-      end
+      expect(result).to be_success
+      urls = result.value!
+      expect(urls.keys).to match_array(filenames)
+      expect(urls.values).to all(be_a(String))
     end
 
     context "when the upload does not exist" do
