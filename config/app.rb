@@ -21,9 +21,9 @@ module PastaAtlas
     }
 
     OmniAuth.config.failure_raise_out_environments = []
-    OmniAuth.config.before_request_phase = lambda do |env|
+    OmniAuth.config.before_request_phase = ->(env) {
       env["rack.session"][:steam_pending] = true if env["PATH_INFO"] == "/auth/steam"
-    end
+    }
 
     if (base_url = ENV.fetch("APP_BASE_URL", nil))
       OmniAuth.config.full_host = base_url
