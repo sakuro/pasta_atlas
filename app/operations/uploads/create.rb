@@ -83,7 +83,7 @@ module PastaAtlas
         end
 
         private def create_generation_and_upload(map:, user:, mapshot_map_id:, mapshot_unique_id:, tick:, metadata:, total_image_count:)
-          metadata_s3_key = "#{user.name}/#{mapshot_map_id}/#{mapshot_unique_id}/mapshot.json"
+          metadata_s3_key = "#{user.name}/maps/#{mapshot_map_id}/#{mapshot_unique_id}/mapshot.json"
           generation = generation_repo.create(
             ulid: ULID.generate,
             map_id: map.id,

@@ -10,7 +10,7 @@ module PastaAtlas
           user = step find_user(current_user_id)
           map = step find_map(ulid)
           step check_owner(map, user)
-          s3_prefix = "#{user.name}/#{map.mapshot_map_id}/"
+          s3_prefix = "#{user.name}/maps/#{map.mapshot_map_id}/"
           map_repo.delete_by_id(map.id)
           schedule_s3_cleanup(s3_prefix)
           map
