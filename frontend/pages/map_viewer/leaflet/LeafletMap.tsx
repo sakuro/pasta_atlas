@@ -62,12 +62,13 @@ export const LeafletMap = (props: { mapshot: Mapshot; assetBase: string }) => {
     if (!surfaces.length) return;
 
     const planetSurfaces = surfaces.filter((s) => s.is_planet);
-    const [trainStationsLabel, tagsLabel, planetsHeading, spacePlatformsHeading, otherHeading, ...ftlPlanetNames] = await l10n.formatValues([
+    const [trainStationsLabel, tagsLabel, planetsHeading, spacePlatformsHeading, otherHeading, boxZoomTitle, ...ftlPlanetNames] = await l10n.formatValues([
       { id: "map-layer-train-stations" },
       { id: "map-layer-tags" },
       { id: "map-layer-group-planets" },
       { id: "map-layer-group-space-platforms" },
       { id: "map-layer-group-other" },
+      { id: "map-control-box-zoom" },
       ...planetSurfaces.map((s) => ({ id: `surface-${s.surface_name}` })),
     ]);
     const ftlNameBySurfaceName: Record<string, string> = {};
@@ -228,7 +229,7 @@ export const LeafletMap = (props: { mapshot: Mapshot; assetBase: string }) => {
 
     // Add after zoom bounds and initial view are set so track height is computed correctly
     new ZoomSliderControl(20).addTo(map);
-    new BoxZoomControl().addTo(map);
+    new BoxZoomControl(boxZoomTitle ?? "Box zoom").addTo(map);
 
     let currentSurface = initSurface;
 

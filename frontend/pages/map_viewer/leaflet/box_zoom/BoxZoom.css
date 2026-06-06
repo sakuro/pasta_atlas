@@ -1,8 +1,30 @@
 .pa-boxzoom-btn {
+  position: relative;
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
   font-size: 16px;
+}
+
+.pa-boxzoom-btn::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  left: calc(100% + 8px);
+  top: 50%;
+  transform: translateY(-50%);
+  background: var(--leaflet-ctrl-text);
+  color: var(--leaflet-ctrl-bg);
+  font-size: 0.75rem;
+  white-space: nowrap;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+
+.pa-boxzoom-btn:hover::after {
+  opacity: 1;
 }
 
 .pa-boxzoom-overlay {

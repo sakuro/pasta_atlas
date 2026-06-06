@@ -198,6 +198,7 @@ map-layer-tags = タグ
 map-layer-group-planets = 惑星
 map-layer-group-space-platforms = 宇宙プラットフォーム
 map-layer-group-other = その他
+map-control-box-zoom = クリックして地図上に矩形を描くとズームします
 map-info-button =
     .title = マップ情報
 map-name-edit-button =

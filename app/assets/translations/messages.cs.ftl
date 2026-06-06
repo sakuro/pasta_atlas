@@ -228,6 +228,7 @@ map-layer-tags = Štítky
 map-layer-group-planets = Planety
 map-layer-group-space-platforms = Vesmírné platformy
 map-layer-group-other = Ostatní
+map-control-box-zoom = Klikněte a nakreslete obdélník na mapě pro přiblížení
 map-info-button =
     .title = Informace o mapě
 map-name-edit-button =

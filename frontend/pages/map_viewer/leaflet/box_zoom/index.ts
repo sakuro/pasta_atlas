@@ -3,8 +3,11 @@ import "../theme.css";
 import "./BoxZoom.css";
 
 export class BoxZoomControl extends L.Control {
-  constructor() {
+  private _title: string;
+
+  constructor(title: string) {
     super({ position: "topleft" });
+    this._title = title;
   }
 
   onAdd(map: L.Map): HTMLElement {
@@ -15,7 +18,8 @@ export class BoxZoomControl extends L.Control {
     const btn = L.DomUtil.create("a", "pa-boxzoom-btn", container);
     btn.href = "#";
     btn.setAttribute("role", "button");
-    btn.title = "Box zoom";
+    btn.setAttribute("aria-label", this._title);
+    btn.dataset.tooltip = this._title;
     btn.innerHTML = `<i class="fa-solid fa-magnifying-glass"></i>`;
 
     L.DomEvent.on(btn, "click", (e) => {

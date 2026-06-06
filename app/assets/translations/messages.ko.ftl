@@ -198,6 +198,7 @@ map-layer-tags = 태그
 map-layer-group-planets = 행성
 map-layer-group-space-platforms = 우주 플랫폼
 map-layer-group-other = 기타
+map-control-box-zoom = 클릭 후 지도에 사각형을 그려 확대하세요
 map-info-button =
     .title = 맵 정보
 map-name-edit-button =

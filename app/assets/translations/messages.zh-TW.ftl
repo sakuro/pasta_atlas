@@ -198,6 +198,7 @@ map-layer-tags = 標籤
 map-layer-group-planets = 星球
 map-layer-group-space-platforms = 太空平台
 map-layer-group-other = 其他
+map-control-box-zoom = 點擊後在地圖上繪製矩形以放大
 map-info-button =
     .title = 地圖資訊
 map-name-edit-button =
