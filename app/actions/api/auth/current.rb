@@ -13,7 +13,7 @@ module PastaAtlas
 
           def handle(request, response)
             user_id = current_user_id(request)
-            return json_response(response, {user: nil, preferences: guest_preferences}) unless user_id
+            return json_response(response, {user: nil, preferences: guest_preferences}) if user_id == guest_user_id
 
             user = find_user.call(user_id:).value!
             profile_data = load_profile.call(user_id:).value!

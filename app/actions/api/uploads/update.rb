@@ -18,7 +18,7 @@ module PastaAtlas
             result = update_status.call(
               upload_ulid: request.params[:ulid],
               status: request.params[:status],
-              user_id: current_user_or_guest_id(request)
+              user_id: current_user_id(request)
             )
 
             case result

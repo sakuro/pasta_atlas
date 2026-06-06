@@ -30,7 +30,7 @@ module PastaAtlas
               result = issue_presigned_urls.call(
                 upload_ulid: request.params[:ulid],
                 filenames: request.params[:filenames],
-                user_id: current_user_or_guest_id(request)
+                user_id: current_user_id(request)
               )
 
               case result

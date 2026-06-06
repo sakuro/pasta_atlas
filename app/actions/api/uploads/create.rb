@@ -32,10 +32,10 @@ module PastaAtlas
 
           def handle(request, response)
             halt :bad_request unless request.params.valid?
-            halt :forbidden unless current_user_id(request)
+            halt :forbidden if current_user_id(request) == guest_user_id
 
             result = create_upload.call(
-              user_id: current_user_or_guest_id(request),
+              user_id: current_user_id(request),
               metadata: request.params[:metadata].to_h,
               total_image_count: request.params[:total_image_count],
               name: request.params[:name]
