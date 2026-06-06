@@ -5,7 +5,7 @@ RSpec.describe PastaAtlas::Actions::API::Users::Maps::Index do
   let(:list_recent_maps) { instance_double(PastaAtlas::Operations::Maps::ListRecentByUser) }
   let(:action) { PastaAtlas::Actions::API::Users::Maps::Index.new(find_by_name:, list_recent_maps:) }
 
-  let(:user) { double("User", id: 1, name: "sakuro", has_public_profile?: true) }
+  let(:user) { double("User", id: 1, name: "sakuro", public_profile?: true) }
   let(:user_info) { PastaAtlas::Values::UserInfo[name: "sakuro", display_name: "Sakuro", avatar_url: nil] }
   let(:map_info) do
     double(
@@ -32,7 +32,7 @@ RSpec.describe PastaAtlas::Actions::API::Users::Maps::Index do
   end
 
   context "when the requested user is the guest account" do
-    let(:guest) { double("User", id: 999, name: "guest", has_public_profile?: false) }
+    let(:guest) { double("User", id: 999, name: "guest", public_profile?: false) }
     let(:env) { {"rack.session" => {}, :user_name => "guest"} }
 
     before { allow(find_by_name).to receive(:call).with(user_name: "guest").and_return(Success(guest)) }

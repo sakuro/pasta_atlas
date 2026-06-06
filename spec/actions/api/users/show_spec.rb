@@ -5,7 +5,7 @@ RSpec.describe PastaAtlas::Actions::API::Users::Show do
   let(:load_profile) { instance_double(PastaAtlas::Operations::User::Profile::Load) }
   let(:action) { PastaAtlas::Actions::API::Users::Show.new(find_by_name:, load_profile:) }
 
-  let(:user) { double("User", id: 1, name: "sakuro", has_public_profile?: true) }
+  let(:user) { double("User", id: 1, name: "sakuro", public_profile?: true) }
 
   before do
     allow(load_profile).to receive(:call).with(user_id: 1).and_return(Success({display_name: "Sakuro", avatar_url: nil}))
@@ -26,7 +26,7 @@ RSpec.describe PastaAtlas::Actions::API::Users::Show do
   end
 
   context "when the user is the guest account" do
-    let(:guest) { double("User", id: 999, name: "guest", has_public_profile?: false) }
+    let(:guest) { double("User", id: 999, name: "guest", public_profile?: false) }
 
     before { allow(find_by_name).to receive(:call).with(user_name: "guest").and_return(Success(guest)) }
 
