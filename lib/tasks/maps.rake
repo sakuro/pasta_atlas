@@ -17,7 +17,7 @@ namespace :maps do
     end
 
     user = Hanami.app["repos.user_repo"].find_by_id(map.user_id)
-    s3_prefix = "#{user.name}/#{map.mapshot_map_id}/"
+    s3_prefix = "#{user.name}/maps/#{map.mapshot_map_id}/"
 
     map_repo.delete_by_id(map.id)
     puts "Deleted map record: #{ulid}"
