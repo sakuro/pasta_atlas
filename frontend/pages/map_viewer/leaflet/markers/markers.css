@@ -12,9 +12,9 @@
 }
 
 .pa-station-marker {
-  color: var(--bulma-link);
+  color: #4285F4;
 }
 
 .pa-tag-marker {
-  color: var(--bulma-success);
+  color: #34A853;
 }

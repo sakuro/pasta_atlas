@@ -205,8 +205,8 @@ export const LeafletMap = (props: { mapshot: Mapshot; assetBase: string }) => {
         { heading: otherHeading, entries: groupedEntries.other },
       ],
       [
-        { label: trainStationsLabel, icon: { faClasses: "fa-solid fa-location-dot", color: "var(--bulma-link)" }, group: trainLayerGroup, visible: showTrains },
-        { label: tagsLabel, icon: { faClasses: "fa-solid fa-tag", color: "var(--bulma-success)" }, group: tagLayerGroup, visible: showTags },
+        { label: trainStationsLabel, icon: { faClasses: "fa-solid fa-location-dot", color: "#4285F4" }, group: trainLayerGroup, visible: showTrains },
+        { label: tagsLabel, icon: { faClasses: "fa-solid fa-tag", color: "#34A853" }, group: tagLayerGroup, visible: showTags },
       ],
       initLabel,
       baseLayers[initLabel]
