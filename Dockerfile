@@ -41,6 +41,7 @@ RUN SESSION_SECRET=dummy \
     S3_BUCKET=dummy \
     CLOUDFRONT_BASE_URL=https://dummy.example.com \
     SQS_S3_CLEANUP_QUEUE_URL=https://dummy.example.com/dummy \
+    SQS_STORAGE_CALCULATION_QUEUE_URL=https://dummy.example.com/dummy \
     HANAMI_ENV=production \
     bundle exec hanami assets compile && \
     npm run build:frontend && \
