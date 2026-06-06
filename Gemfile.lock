@@ -542,6 +542,7 @@ DEPENDENCIES
   aws-sdk-sqs
   capybara
   cgi
+  concurrent-ruby
   database_cleaner-sequel
   debug (~> 1.11)
   docquet (~> 1.2)

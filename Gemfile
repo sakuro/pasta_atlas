@@ -12,6 +12,7 @@ gem "hanami-view", "~> 2.3.0"
 
 gem "aws-sdk-s3"
 gem "aws-sdk-sqs"
+gem "concurrent-ruby"
 gem "dry-operation", ">= 1.0.1"
 gem "dry-types", "~> 1.7"
 gem "omniauth", "~> 2.1"

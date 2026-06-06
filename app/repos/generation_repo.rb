@@ -53,6 +53,10 @@ module PastaAtlas
         dataset.any? && dataset.where(NOT_EXPIRED).none?
       end
 
+      def update_storage_bytes(id:, storage_bytes:)
+        generations.dataset.where(id:).update(storage_bytes:)
+      end
+
       def delete_expired
         generations.dataset.where(Sequel.lit("expires_at IS NOT NULL AND expires_at <= NOW()")).delete
       end
