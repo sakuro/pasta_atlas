@@ -6,15 +6,19 @@ const KNOB_HEIGHT = 8;
 
 export class ZoomSliderControl extends L.Control {
   private readonly _stepHeight: number;
+  private readonly _zoomInTitle: string;
+  private readonly _zoomOutTitle: string;
   private _map: L.Map | null = null;
   private _track: HTMLElement | null = null;
   private _knob: HTMLElement | null = null;
   private _btnIn: HTMLElement | null = null;
   private _btnOut: HTMLElement | null = null;
 
-  constructor(stepHeight = 20) {
+  constructor(stepHeight = 20, zoomInTitle = "Zoom in", zoomOutTitle = "Zoom out") {
     super({ position: "topleft" });
     this._stepHeight = stepHeight;
+    this._zoomInTitle = zoomInTitle;
+    this._zoomOutTitle = zoomOutTitle;
   }
 
   onAdd(map: L.Map): HTMLElement {
@@ -27,7 +31,8 @@ export class ZoomSliderControl extends L.Control {
     this._btnIn = L.DomUtil.create("a", "pa-zoomslider-in", container);
     this._btnIn.setAttribute("href", "#");
     this._btnIn.setAttribute("role", "button");
-    this._btnIn.title = "Zoom in";
+    this._btnIn.setAttribute("aria-label", this._zoomInTitle);
+    this._btnIn.dataset.tooltip = this._zoomInTitle;
     this._btnIn.textContent = "+";
 
     this._track = L.DomUtil.create("div", "pa-zoomslider-track", container);
@@ -36,7 +41,8 @@ export class ZoomSliderControl extends L.Control {
     this._btnOut = L.DomUtil.create("a", "pa-zoomslider-out", container);
     this._btnOut.setAttribute("href", "#");
     this._btnOut.setAttribute("role", "button");
-    this._btnOut.title = "Zoom out";
+    this._btnOut.setAttribute("aria-label", this._zoomOutTitle);
+    this._btnOut.dataset.tooltip = this._zoomOutTitle;
     this._btnOut.textContent = "−";
 
     L.DomEvent.on(this._btnIn, "click", (e) => {

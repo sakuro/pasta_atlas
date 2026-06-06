@@ -199,6 +199,8 @@ map-layer-group-planets = Planets
 map-layer-group-space-platforms = Space platforms
 map-layer-group-other = Other
 map-control-box-zoom = Click, then draw a rectangle on the map to zoom in
+map-control-zoom-in = Zoom in
+map-control-zoom-out = Zoom out
 subsurface-name = [entity=huge-rock] { $planet } subsurface level { $level }
 map-info-button =
     .title = Map info

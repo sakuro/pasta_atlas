@@ -1,10 +1,35 @@
 .pa-zoomslider-in,
 .pa-zoomslider-out {
+  position: relative;
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
   font-size: 18px;
   font-weight: bold;
+}
+
+.pa-zoomslider-in::after,
+.pa-zoomslider-out::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  left: calc(100% + 8px);
+  top: 50%;
+  transform: translateY(-50%);
+  background: var(--leaflet-ctrl-text);
+  color: var(--leaflet-ctrl-bg);
+  font-size: 0.75rem;
+  font-weight: normal;
+  white-space: nowrap;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+
+.pa-zoomslider-in:hover::after,
+.pa-zoomslider-out:hover::after {
+  opacity: 1;
 }
 
 .pa-zoomslider-track {
