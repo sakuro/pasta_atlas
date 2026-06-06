@@ -17,7 +17,7 @@ module PastaAtlas
               in Failure(Symbol => status)
                 halt status
               in Success(user)
-                halt :not_found if user.guest?
+                halt :not_found unless user.has_public_profile?
 
                 map_infos = list_recent_maps.call(user_id: user.id).value!
                 json_response(response, {

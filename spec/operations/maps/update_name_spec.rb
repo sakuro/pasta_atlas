@@ -5,7 +5,7 @@ RSpec.describe PastaAtlas::Operations::Maps::UpdateName do
   let(:user_repo) { instance_double(PastaAtlas::Repos::UserRepo) }
   let(:operation) { PastaAtlas::Operations::Maps::UpdateName.new(map_repo:, user_repo:) }
 
-  let(:user) { double("User", id: 1, guest?: false) }
+  let(:user) { double("User", id: 1, can_rename_map?: true) }
   let(:map) { double("Map", id: 10, ulid: "01MAP1", user_id: 1, owned_by?: true) }
   let(:renamed_map) { double("Map", id: 10, display_name: "New Name") }
 
@@ -26,7 +26,7 @@ RSpec.describe PastaAtlas::Operations::Maps::UpdateName do
     end
 
     context "when user is a guest" do
-      let(:guest) { double("User", id: 2, guest?: true) }
+      let(:guest) { double("User", id: 2, can_rename_map?: false) }
 
       before { allow(user_repo).to receive(:find_by_id).with(2).and_return(guest) }
 

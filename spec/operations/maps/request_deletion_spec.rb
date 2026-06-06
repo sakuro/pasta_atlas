@@ -9,7 +9,7 @@ RSpec.describe PastaAtlas::Operations::Maps::RequestDeletion do
   let(:sqs_client) { instance_double(Aws::SQS::Client) }
   let(:operation) { PastaAtlas::Operations::Maps::RequestDeletion.new(map_repo:, user_repo:, settings:, sqs_client:) }
 
-  let(:user) { double("User", id: 1, name: "alice", guest?: false) }
+  let(:user) { double("User", id: 1, name: "alice", can_delete_map?: true) }
   let(:map) { double("Map", id: 10, ulid: "01MAP1", user_id: 1, mapshot_map_id: "map-abc", owned_by?: true) }
 
   describe "#call" do
@@ -23,7 +23,7 @@ RSpec.describe PastaAtlas::Operations::Maps::RequestDeletion do
     end
 
     context "when user is a guest" do
-      let(:guest) { double("User", id: 2, guest?: true) }
+      let(:guest) { double("User", id: 2, can_delete_map?: false) }
 
       before { allow(user_repo).to receive(:find_by_id).with(2).and_return(guest) }
 

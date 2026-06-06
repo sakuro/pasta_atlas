@@ -36,7 +36,7 @@ module PastaAtlas
             mapshot_map_id:,
             savename: metadata.fetch(:savename, "").to_s,
             name:,
-            update_name_on_conflict: !user.guest?
+            update_name_on_conflict: user.can_rename_map?
           )
 
           step within_transaction(
@@ -90,7 +90,7 @@ module PastaAtlas
             mapshot_unique_id:,
             tick:,
             metadata_s3_key:,
-            expires_at: user.guest? ? Time.now + (GUEST_TTL_DAYS * 86400) : nil
+            expires_at: user.uploads_expire? ? Time.now + (GUEST_TTL_DAYS * 86400) : nil
           )
           write_result = write_metadata_to_s3(key: metadata_s3_key, body: metadata.to_json)
           return write_result unless write_result.success?

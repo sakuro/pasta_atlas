@@ -5,7 +5,7 @@ RSpec.describe PastaAtlas::Actions::Spa::User do
   let(:action) { PastaAtlas::Actions::Spa::User.new(find_by_name:) }
 
   context "when the user exists" do
-    let(:user) { double("User", guest?: false) }
+    let(:user) { double("User", has_public_profile?: true) }
 
     before { allow(find_by_name).to receive(:call).with(user_name: "sakuro").and_return(Success(user)) }
 
@@ -17,7 +17,7 @@ RSpec.describe PastaAtlas::Actions::Spa::User do
   end
 
   context "when the user is the guest account" do
-    let(:guest) { double("User", guest?: true) }
+    let(:guest) { double("User", has_public_profile?: false) }
 
     before { allow(find_by_name).to receive(:call).with(user_name: "guest").and_return(Success(guest)) }
 

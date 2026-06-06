@@ -20,7 +20,7 @@ module PastaAtlas
           return Failure(:unauthorized) unless user_id
 
           user = user_repo.find_by_id(user_id)
-          user.guest? ? Failure(:forbidden) : Success(user)
+          user.can_delete_map? ? Success(user) : Failure(:forbidden)
         end
 
         private def find_map(ulid)
