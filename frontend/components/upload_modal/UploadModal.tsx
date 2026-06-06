@@ -39,7 +39,7 @@ type State =
       imageCount: number;
       totalBytes: number;
     }
-  | { type: "preparing" }
+  | { type: "preparing"; prepared: number; total: number }
   | { type: "uploading"; progress: number; total: number }
   | { type: "done"; viewerUrl: string }
   | { type: "error"; error: I18nError };
@@ -148,7 +148,7 @@ export const UploadModal = (props: { isGuest: boolean }) => {
 
     const { mapshotJson, fileMap } = s;
     const imageCount = fileMap.size;
-    setState({ type: "preparing" });
+    setState({ type: "preparing", prepared: 0, total: imageCount });
 
     // Step 1: POST /api/v1/uploads
     let uploadUlid: string, mapUlid: string, generationUlid: string;
@@ -184,24 +184,29 @@ export const UploadModal = (props: { isGuest: boolean }) => {
       return;
     }
 
-    // Step 2: POST /api/v1/uploads/:ulid/presigned_urls
+    // Step 2: POST /api/v1/uploads/:ulid/presigned_urls (batched for progress visibility)
+    const PRESIGNED_BATCH_SIZE = 200;
     const allFilenames = Array.from(fileMap.keys());
-    let presignedUrls: Record<string, string>;
-    try {
-      const resp = await fetch(`/api/v1/uploads/${uploadUlid}/presigned_urls`, {
-        method: "POST",
-        headers: jsonHeaders(),
-        body: JSON.stringify({ filenames: allFilenames }),
-      });
-      if (!resp.ok) {
-        setState({ type: "error", error: { msgId: "upload-error-urls-http", msgArgs: { status: resp.status } } });
+    const presignedUrls: Record<string, string> = {};
+    for (let i = 0; i < allFilenames.length; i += PRESIGNED_BATCH_SIZE) {
+      const batch = allFilenames.slice(i, i + PRESIGNED_BATCH_SIZE);
+      try {
+        const resp = await fetch(`/api/v1/uploads/${uploadUlid}/presigned_urls`, {
+          method: "POST",
+          headers: jsonHeaders(),
+          body: JSON.stringify({ filenames: batch }),
+        });
+        if (!resp.ok) {
+          setState({ type: "error", error: { msgId: "upload-error-urls-http", msgArgs: { status: resp.status } } });
+          return;
+        }
+        const data = await resp.json() as { presigned_urls: Record<string, string> };
+        Object.assign(presignedUrls, data.presigned_urls);
+      } catch {
+        setState({ type: "error", error: { msgId: "upload-error-urls-network" } });
         return;
       }
-      const data = await resp.json() as { presigned_urls: Record<string, string> };
-      presignedUrls = data.presigned_urls;
-    } catch {
-      setState({ type: "error", error: { msgId: "upload-error-urls-network" } });
-      return;
+      setState({ type: "preparing", prepared: Math.min(i + PRESIGNED_BATCH_SIZE, allFilenames.length), total: imageCount });
     }
 
     // Step 3: PUT to S3 via presigned URLs (concurrent, limit 5)
@@ -250,6 +255,10 @@ export const UploadModal = (props: { isGuest: boolean }) => {
   const confirmingState = () => {
     const s = state();
     return s.type === "confirming" ? s : null;
+  };
+  const preparingState = () => {
+    const s = state();
+    return s.type === "preparing" ? s : null;
   };
   const uploadingState = () => {
     const s = state();
@@ -405,9 +414,17 @@ export const UploadModal = (props: { isGuest: boolean }) => {
                   </table>
                 )}
               </Show>
-              <Show when={state().type === "preparing"}>
-                <p class="mb-2" data-l10n-id="upload-preparing" />
-                <progress class="progress is-primary" />
+              <Show when={preparingState()} keyed>
+                {(s) => (
+                  <>
+                    <p
+                      class="mb-2"
+                      data-l10n-id="upload-preparing"
+                      data-l10n-args={JSON.stringify({ prepared: s.prepared, total: s.total })}
+                    />
+                    <progress class="progress is-primary" value={s.prepared} max={s.total} />
+                  </>
+                )}
               </Show>
               <Show when={uploadingState()} keyed>
                 {(s) => (
