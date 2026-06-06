@@ -9,7 +9,7 @@ module PastaAtlas
 
           def handle(request, response)
             result = find_map.call(
-              user_id: current_user_or_guest_id(request),
+              user_id: current_user_id(request),
               mapshot_map_id: request.params[:mapshot_map_id]
             )
 

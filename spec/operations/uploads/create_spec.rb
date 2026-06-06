@@ -33,22 +33,6 @@ RSpec.describe PastaAtlas::Operations::Uploads::Create, :db do
       end
     end
 
-    context "when uploading as a guest user" do
-      let(:user) { Hanami.app["repos.user_repo"].find_by_name("guest") }
-
-      it "sets expires_at approximately 2 days from now" do
-        operation.call(user_id: user.id, metadata:, total_image_count: 5)
-
-        generation = generation_repo.find_with_upload(
-          map_id: map_repo.find_or_create_by_user_and_mapshot_id(
-            user_id: user.id, mapshot_map_id: metadata[:map_id]
-          ).id,
-          mapshot_unique_id: metadata[:unique_id]
-        )
-        expect(generation.expires_at).to be_within(60).of(Time.now + (2 * 86400))
-      end
-    end
-
     context "when a pending upload already exists for the generation" do
       let(:map) { Factory[:map, user:, mapshot_map_id: "ae8ec3ab"] }
       let(:generation) do

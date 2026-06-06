@@ -1,8 +1,9 @@
 # frozen_string_literal: true
 
 RSpec.describe PastaAtlas::Actions::API::Maps::DeletionRequests::Create do
+  let(:guest) { double("User", id: 0) }
   let(:request_deletion) { instance_double(PastaAtlas::Operations::Maps::RequestDeletion) }
-  let(:action) { PastaAtlas::Actions::API::Maps::DeletionRequests::Create.new(request_deletion:) }
+  let(:action) { PastaAtlas::Actions::API::Maps::DeletionRequests::Create.new(guest:, request_deletion:) }
 
   let(:action_params) { {"rack.session" => {"user_id" => 1}, :ulid => "01MAP"} }
 
@@ -26,14 +27,14 @@ RSpec.describe PastaAtlas::Actions::API::Maps::DeletionRequests::Create do
   context "when not logged in" do
     before do
       allow(request_deletion).to receive(:call)
-        .with(ulid: "01MAP", current_user_id: nil)
-        .and_return(Failure(:unauthorized))
+        .with(ulid: "01MAP", current_user_id: 0)
+        .and_return(Failure(:forbidden))
     end
 
-    it "returns 401" do
+    it "returns 403" do
       response = action.call({ulid: "01MAP"})
 
-      expect(response.status).to eq(401)
+      expect(response.status).to eq(403)
     end
   end
 

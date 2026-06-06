@@ -78,7 +78,7 @@ Avatar images use a separate prefix: `avatars/{user_id}/{ulid}.{ext}`
 
 1. Parse `metadata` field (mapshot.json content)
 2. Extract `map_id` and `unique_id` from metadata
-3. Identify the current user (guest user if no session)
+3. Require authentication; return `403 Forbidden` for unauthenticated requests
 4. Find or create `Map` by `(user_id, mapshot_map_id)` using `INSERT ... ON CONFLICT DO NOTHING`
    - A plain transaction is insufficient under `READ COMMITTED`: two concurrent requests can both find "not found" before either inserts
    - The upsert is atomic at the DB level; no transaction wrapper is needed for this step alone
@@ -90,8 +90,6 @@ Avatar images use a separate prefix: `avatars/{user_id}/{ulid}.{ext}`
 7. Set `metadata_s3_key` on the Generation record
 8. Create `Upload` record (`status: pending`, `total_image_count` from request)
 9. Return `{ ulid, map_ulid, generation_ulid }`
-
-For guest uploads, `expires_at` is set to 2 days from creation on the Generation record. S3 objects under the `guest/maps/` prefix are removed by a lifecycle rule after 8 days (providing a safety margin over the DB TTL).
 
 Steps 5–8 run inside a single transaction to ensure Generation, S3 write, and Upload are created atomically. Step 4 (map upsert) runs before this transaction; if the transaction rolls back (e.g. S3 failure), the Map record is retained — this is safe since Map creation is idempotent.
 

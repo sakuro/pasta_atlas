@@ -161,8 +161,9 @@ pagination-next = Další
 
 ## Upload modal
 upload-button = Nahrát
+upload-button-guest =
+    .title = Pro nahrávání map se přihlaste
 upload-modal-title = Nahrát { -mapshot(case: "accusative") }
-upload-modal-title-guest = Nahrát { -mapshot(case: "accusative") } (jako host)
 upload-instructions-folder = Vyberte <strong>složku</strong> obsahující <code data-l10n-name="filename">mapshot.json</code>.
 upload-instructions-folder-path = Výstupní složka { -mapshot(case: "genitive") } (pro Steam):
 upload-copy-path-windows =
@@ -173,12 +174,9 @@ upload-copy-path-linux =
     .title = Kopírovat cestu — vložit v dialogu složky (Ctrl+L)
 upload-instructions-folder-subfolder = Poté vyberte podsložku pro vaši mapu a generaci, např.:
 upload-instructions-generations = Můžete nahrát různé generace existující mapy.
-upload-instructions-guest = U nahrávek z hostovských účtů nelze název mapy po nahrání změnit. Nelze je ručně smazat a jsou automaticky smazány přibližně po dvou dnech.
 upload-select-folder = Vybrat složku
 upload-cancel = Zrušit
 upload-map-title = Název mapy
-upload-map-name-locked =
-    .title = Název mapy nelze po nahrání jako host změnit
 upload-surfaces = Povrchy
 upload-images = Obrázky
 upload-total-size = Celková velikost

@@ -16,15 +16,6 @@ RSpec.describe PastaAtlas::Operations::Maps::UpdateName do
   end
 
   describe "#call" do
-    context "when user is not logged in" do
-      it "returns failure with :unauthorized" do
-        result = operation.call(ulid: "01MAP1", name: "New Name", current_user_id: nil)
-
-        expect(result).to be_failure
-        expect(result.failure).to eq(:unauthorized)
-      end
-    end
-
     context "when user is a guest" do
       let(:guest) { double("User", id: 2, can_rename_map?: false) }
 

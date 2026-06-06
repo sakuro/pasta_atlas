@@ -131,8 +131,9 @@ pagination-next = 下一頁
 
 ## Upload modal
 upload-button = 上傳
+upload-button-guest =
+    .title = 登入後即可上傳地圖
 upload-modal-title = 上傳 { -mapshot }
-upload-modal-title-guest = 上傳 { -mapshot }（訪客）
 upload-instructions-folder = 請選取包含 <code data-l10n-name="filename">mapshot.json</code> 的<strong>資料夾</strong>。
 upload-instructions-folder-path = { -mapshot } 的輸出資料夾（Steam 版）：
 upload-copy-path-windows =
@@ -143,12 +144,9 @@ upload-copy-path-linux =
     .title = 複製路徑 — 在資料夾對話框中按 Ctrl+L 貼上
 upload-instructions-folder-subfolder = 接著選取您的地圖與世代的子資料夾。例如：
 upload-instructions-generations = 您可以上傳同一張地圖的不同世代。
-upload-instructions-guest = 訪客帳號的上傳在上傳後無法更改地圖名稱。無法手動刪除，約兩天後會自動刪除。
 upload-select-folder = 選取資料夾
 upload-cancel = 取消
 upload-map-title = 地圖標題
-upload-map-name-locked =
-    .title = 以訪客身分上傳後無法更改地圖名稱
 upload-surfaces = 表面
 upload-images = 圖片數量
 upload-total-size = 總大小

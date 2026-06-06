@@ -17,15 +17,10 @@ RSpec.describe PastaAtlas::Actions::API::Uploads::Create, :db do
   let(:map) { double("Map", ulid: "01MAP") }
 
   context "when no session" do
-    before do
-      allow(create_upload).to receive(:call).and_return(Success({upload:, generation:, map:}))
-    end
-
-    it "uses the guest user" do
+    it "returns 403" do
       response = action.call({"rack.session" => {}}.merge(action_params))
 
-      expect(response.status).to eq(201)
-      expect(create_upload).to have_received(:call).with(hash_including(user_id: 99))
+      expect(response.status).to eq(403)
     end
   end
 

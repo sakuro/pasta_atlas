@@ -6,10 +6,6 @@ module PastaAtlas
   module Operations
     module Uploads
       class Create < PastaAtlas::Operation
-        # Shorter than the S3 lifecycle (8 days) so DB records are cleaned up before S3 objects disappear.
-        GUEST_TTL_DAYS = 2
-        private_constant :GUEST_TTL_DAYS
-
         include Deps[
           "repos.generation_repo",
           "repos.upload_event_repo",
@@ -90,7 +86,7 @@ module PastaAtlas
             mapshot_unique_id:,
             tick:,
             metadata_s3_key:,
-            expires_at: user.uploads_expire? ? Time.now + (GUEST_TTL_DAYS * 86400) : nil
+            expires_at: nil
           )
           write_result = write_metadata_to_s3(key: metadata_s3_key, body: metadata.to_json)
           return write_result unless write_result.success?

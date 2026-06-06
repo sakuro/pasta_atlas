@@ -6,58 +6,46 @@ RSpec.describe PastaAtlas::Resolvers::LocaleResolver do
   let(:resolver) { PastaAtlas::Resolvers::LocaleResolver.new(load_preferences:, supported_locales:) }
 
   describe "#call" do
-    context "when user_id is nil" do
+    before { allow(load_preferences).to receive(:call).with(user_id: 42).and_return(Success(preference)) }
+
+    context "when locale is set" do
+      let(:preference) { double("UserPreference", locale: "ja") }
+
+      it "returns the stored locale" do
+        expect(resolver.call(user_id: 42)).to eq("ja")
+      end
+    end
+
+    context "when locale is nil (follow browser)" do
+      let(:preference) { double("UserPreference", locale: nil) }
+
       context "with no Accept-Language header" do
         it "returns 'en'" do
-          expect(resolver.call(user_id: nil)).to eq("en")
+          expect(resolver.call(user_id: 42)).to eq("en")
         end
       end
 
       context "with an exact supported locale" do
         it "returns 'ja'" do
-          expect(resolver.call(user_id: nil, accept_language: "ja")).to eq("ja")
+          expect(resolver.call(user_id: 42, accept_language: "ja")).to eq("ja")
         end
       end
 
       context "with a region-qualified locale" do
         it "returns the language part" do
-          expect(resolver.call(user_id: nil, accept_language: "ja-JP")).to eq("ja")
+          expect(resolver.call(user_id: 42, accept_language: "ja-JP")).to eq("ja")
         end
       end
 
       context "with an unsupported locale" do
         it "falls back to 'en'" do
-          expect(resolver.call(user_id: nil, accept_language: "xx")).to eq("en")
+          expect(resolver.call(user_id: 42, accept_language: "xx")).to eq("en")
         end
       end
 
       context "with multiple locales and q-values" do
         it "returns the highest-quality supported locale" do
-          expect(resolver.call(user_id: nil, accept_language: "xx;q=0.9,ja;q=0.8,en;q=0.7")).to eq("ja")
-        end
-      end
-    end
-
-    context "when user_id is present" do
-      let(:preference) { double("UserPreference", locale: "ja") }
-
-      before { allow(load_preferences).to receive(:call).with(user_id: 42).and_return(Success(preference)) }
-
-      it "returns the stored locale" do
-        expect(resolver.call(user_id: 42)).to eq("ja")
-      end
-
-      context "when locale is nil (follow browser)" do
-        let(:preference) { double("UserPreference", locale: nil) }
-
-        it "negotiates from Accept-Language" do
-          expect(resolver.call(user_id: 42, accept_language: "ja")).to eq("ja")
-        end
-
-        context "with no Accept-Language header" do
-          it "returns 'en'" do
-            expect(resolver.call(user_id: 42)).to eq("en")
-          end
+          expect(resolver.call(user_id: 42, accept_language: "xx;q=0.9,ja;q=0.8,en;q=0.7")).to eq("ja")
         end
       end
     end

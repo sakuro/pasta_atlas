@@ -18,11 +18,7 @@ module PastaAtlas
 
     private def current_user(request) = user_resolver.call(request.session[:user_id])
 
-    private def current_user_id(request) = request.session[:user_id]
-
-    private def current_user_or_guest_id(request)
-      request.session[:user_id] || guest_user_id
-    end
+    private def current_user_id(request) = request.session[:user_id] || guest_user_id
 
     private def guest_user_id = guest.id
   end

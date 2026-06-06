@@ -9,11 +9,7 @@ module PastaAtlas
       ]
 
       def call(user_id:, accept_language: nil)
-        if user_id
-          load_preferences.call(user_id:).value!.locale || negotiate(accept_language)
-        else
-          negotiate(accept_language)
-        end
+        load_preferences.call(user_id:).value!.locale || negotiate(accept_language)
       end
 
       private def negotiate(header)

@@ -13,15 +13,6 @@ RSpec.describe PastaAtlas::Operations::Maps::RequestDeletion do
   let(:map) { double("Map", id: 10, ulid: "01MAP1", user_id: 1, mapshot_map_id: "map-abc", owned_by?: true) }
 
   describe "#call" do
-    context "when user is not logged in" do
-      it "returns failure with :unauthorized" do
-        result = operation.call(ulid: "01MAP1", current_user_id: nil)
-
-        expect(result).to be_failure
-        expect(result.failure).to eq(:unauthorized)
-      end
-    end
-
     context "when user is a guest" do
       let(:guest) { double("User", id: 2, can_delete_map?: false) }
 
