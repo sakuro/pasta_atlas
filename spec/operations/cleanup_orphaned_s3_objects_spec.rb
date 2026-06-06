@@ -55,36 +55,11 @@ RSpec.describe PastaAtlas::Operations::CleanupOrphanedS3Objects do
       end
     end
 
-    context "when a user has an avatar/ sub-prefix" do
-      before do
-        stub_list_prefixes("", ["alice/"])
-        stub_list_prefixes("alice/", ["alice/avatar/", "alice/map-abc/"])
-        allow(user_repo).to receive(:find_by_name).with("alice").and_return(user)
-        allow(map_repo).to receive(:find_by_user_and_mapshot_id)
-          .with(user_id: 1, mapshot_map_id: "map-abc")
-          .and_return(double("Map"))
-        allow(s3_client).to receive(:delete_objects)
-      end
-
-      it "does not delete objects under avatar/" do
-        operation.call
-
-        expect(s3_client).not_to have_received(:delete_objects)
-      end
-
-      it "does not look up avatar as a map" do
-        operation.call
-
-        expect(map_repo).not_to have_received(:find_by_user_and_mapshot_id)
-          .with(user_id: 1, mapshot_map_id: "avatar")
-      end
-    end
-
     context "when a map prefix exists in S3 but not in the DB" do
       before do
         stub_list_prefixes("", ["alice/"])
-        stub_list_prefixes("alice/", ["alice/map-abc/"])
-        stub_list_objects("alice/map-abc/", ["alice/map-abc/tile.png"])
+        stub_list_prefixes("alice/maps/", ["alice/maps/map-abc/"])
+        stub_list_objects("alice/maps/map-abc/", ["alice/maps/map-abc/tile.png"])
         allow(user_repo).to receive(:find_by_name).with("alice").and_return(user)
         allow(map_repo).to receive(:find_by_user_and_mapshot_id)
           .with(user_id: 1, mapshot_map_id: "map-abc")
@@ -97,7 +72,7 @@ RSpec.describe PastaAtlas::Operations::CleanupOrphanedS3Objects do
 
         expect(s3_client).to have_received(:delete_objects).with(
           bucket: "test-bucket",
-          delete: {objects: [{key: "alice/map-abc/tile.png"}], quiet: true}
+          delete: {objects: [{key: "alice/maps/map-abc/tile.png"}], quiet: true}
         )
       end
 
@@ -112,7 +87,7 @@ RSpec.describe PastaAtlas::Operations::CleanupOrphanedS3Objects do
     context "when a map prefix exists in both S3 and the DB" do
       before do
         stub_list_prefixes("", ["alice/"])
-        stub_list_prefixes("alice/", ["alice/map-abc/"])
+        stub_list_prefixes("alice/maps/", ["alice/maps/map-abc/"])
         allow(user_repo).to receive(:find_by_name).with("alice").and_return(user)
         allow(map_repo).to receive(:find_by_user_and_mapshot_id)
           .with(user_id: 1, mapshot_map_id: "map-abc")

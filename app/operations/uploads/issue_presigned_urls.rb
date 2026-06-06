@@ -22,7 +22,7 @@ module PastaAtlas
           step validate_ownership(map, user_id)
           user = user_repo.find_by_id(map.user_id)
 
-          prefix = "#{user.name}/#{map.mapshot_map_id}/#{generation.mapshot_unique_id}/"
+          prefix = "#{user.name}/maps/#{map.mapshot_map_id}/#{generation.mapshot_unique_id}/"
           existing_keys = step list_existing_keys(prefix)
 
           presigned_urls_for(filenames:, prefix:, existing_keys:)

@@ -32,11 +32,11 @@ RSpec.describe PastaAtlas::Operations::User::Destroy do
 
         expect(sqs_client).to have_received(:send_message).with(
           queue_url: "https://sqs.example.com/queue",
-          message_body: "alice/map-abc/"
+          message_body: "alice/maps/map-abc/"
         )
         expect(sqs_client).to have_received(:send_message).with(
           queue_url: "https://sqs.example.com/queue",
-          message_body: "alice/map-xyz/"
+          message_body: "alice/maps/map-xyz/"
         )
       end
 

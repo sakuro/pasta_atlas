@@ -16,6 +16,6 @@ db.transaction do
   users.dataset.insert_conflict(target: :name).insert(name: "guest")
 
   guest_id = users.dataset.where(name: "guest").get(:id)
-  user_profiles.dataset.insert_conflict(target: :user_id, update: {display_name: "Guest"}).insert(user_id: guest_id, display_name: "Guest")
+  user_profiles.dataset.insert_conflict(target: :user_id, update: {display_name: "Guest", avatar_s3_key: "guest/avatar/guest.png"}).insert(user_id: guest_id, display_name: "Guest", avatar_s3_key: "guest/avatar/guest.png")
   user_preferences.dataset.insert_conflict(target: :user_id).insert(user_id: guest_id)
 end

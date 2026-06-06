@@ -27,13 +27,21 @@ resource "aws_s3_bucket_lifecycle_configuration" "mapshots" {
     status = "Enabled"
 
     filter {
-      prefix = "guest/"
+      prefix = "guest/maps/"
     }
 
     expiration {
       days = 8
     }
   }
+}
+
+resource "aws_s3_object" "guest_avatar" {
+  bucket       = aws_s3_bucket.mapshots.id
+  key          = "guest/avatar/guest.png"
+  source       = "../../../frontend/factorio-icons/entity/character.png"
+  content_type = "image/png"
+  source_hash  = filemd5("../../../frontend/factorio-icons/entity/character.png")
 }
 
 resource "aws_s3_bucket_cors_configuration" "mapshots" {

@@ -19,7 +19,7 @@ module PastaAtlas
         end
 
         private def map_s3_prefixes(user)
-          map_repo.find_all_by_user_id(user.id).map {|m| "#{user.name}/#{m.mapshot_map_id}/" }
+          map_repo.find_all_by_user_id(user.id).map {|m| "#{user.name}/maps/#{m.mapshot_map_id}/" }
         end
 
         private def schedule_s3_cleanup(prefix)

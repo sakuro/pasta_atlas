@@ -85,7 +85,7 @@ RSpec.describe PastaAtlas::Operations::Maps::RequestDeletion do
 
         expect(sqs_client).to have_received(:send_message).with(
           queue_url: "https://sqs.example.com/queue",
-          message_body: "alice/map-abc/"
+          message_body: "alice/maps/map-abc/"
         )
       end
 

@@ -56,7 +56,7 @@ RSpec.describe PastaAtlas::Operations::Uploads::Create, :db do
           map:,
           mapshot_unique_id: "550f41a9",
           tick: 1000,
-          metadata_s3_key: "testuser/ae8ec3ab/550f41a9/mapshot.json"]
+          metadata_s3_key: "testuser/maps/ae8ec3ab/550f41a9/mapshot.json"]
       end
       let!(:existing_upload) { Factory[:upload, generation:, total_image_count: 3] }
 
@@ -77,7 +77,7 @@ RSpec.describe PastaAtlas::Operations::Uploads::Create, :db do
           map:,
           mapshot_unique_id: "550f41a9",
           tick: 1000,
-          metadata_s3_key: "testuser/ae8ec3ab/550f41a9/mapshot.json"]
+          metadata_s3_key: "testuser/maps/ae8ec3ab/550f41a9/mapshot.json"]
       end
 
       before do
