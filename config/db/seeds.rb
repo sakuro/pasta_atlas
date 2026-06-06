@@ -18,4 +18,10 @@ db.transaction do
   guest_id = users.dataset.where(name: "guest").get(:id)
   user_profiles.dataset.insert_conflict(target: :user_id, update: {display_name: "Guest", avatar_s3_key: "guest/avatar/guest.png"}).insert(user_id: guest_id, display_name: "Guest", avatar_s3_key: "guest/avatar/guest.png")
   user_preferences.dataset.insert_conflict(target: :user_id).insert(user_id: guest_id)
+
+  users.dataset.insert_conflict(target: :name).insert(name: "compilatron")
+
+  compilatron_id = users.dataset.where(name: "compilatron").get(:id)
+  user_profiles.dataset.insert_conflict(target: :user_id, update: {display_name: "Compilatron", avatar_s3_key: "compilatron/avatar/compilatron.png"}).insert(user_id: compilatron_id, display_name: "Compilatron", avatar_s3_key: "compilatron/avatar/compilatron.png")
+  user_preferences.dataset.insert_conflict(target: :user_id).insert(user_id: compilatron_id)
 end

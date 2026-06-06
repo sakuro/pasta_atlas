@@ -44,6 +44,14 @@ resource "aws_s3_object" "guest_avatar" {
   source_hash  = filemd5("../../../frontend/factorio-icons/entity/character.png")
 }
 
+resource "aws_s3_object" "compilatron_avatar" {
+  bucket       = aws_s3_bucket.mapshots.id
+  key          = "compilatron/avatar/compilatron.png"
+  source       = "../../../app/assets/images/compilatron.png"
+  content_type = "image/png"
+  source_hash  = filemd5("../../../app/assets/images/compilatron.png")
+}
+
 resource "aws_s3_bucket_cors_configuration" "mapshots" {
   bucket = aws_s3_bucket.mapshots.id
 
