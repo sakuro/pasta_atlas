@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 namespace :s3 do
-  desc "Enqueue generations with unknown storage bytes for recalculation"
-  task enqueue_storage_calculation: :environment do
+  desc "Enqueue generations with unknown storage bytes for backfill"
+  task backfill_storage_bytes: :environment do
     sqs_client = Hanami.app["sqs.client"]
     settings = Hanami.app["settings"]
     generation_repo = Hanami.app["repos.generation_repo"]
