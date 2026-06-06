@@ -12,7 +12,6 @@ module PastaAtlas
 
       def can_rename_map? = !guest?
       def can_delete_map? = !guest?
-      def uploads_expire? = guest?
     end
   end
 end

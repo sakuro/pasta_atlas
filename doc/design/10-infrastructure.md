@@ -43,8 +43,6 @@ ACM certificates for CloudFront must be provisioned in us-east-1 (AWS requiremen
 {user_profile_name}/{mapshot_map_id}/{mapshot_unique_id}/{filename}
 ```
 
-Guest uploads use `guest` as the user profile name prefix, enabling S3 lifecycle rules to expire guest data automatically.
-
 ## DNS
 
 Gandi manages DNS. No Route 53 is used. The application domain CNAME points to the ALB DNS name; the CDN domain CNAME points to the CloudFront distribution.
@@ -114,7 +112,7 @@ Condition: AWS:SourceArn == <mapshots distribution ARN>
 
 The application ECS task role holds `s3:GetObject`, `s3:PutObject`, `s3:DeleteObject`, and `s3:ListBucket` for generating presigned URLs and managing objects.
 
-A lifecycle rule expires objects under the `guest/maps/` prefix after 8 days. The app-level DB TTL for guest generations is 2 days, keeping DB cleanup ahead of S3 expiry.
+The S3 lifecycle rule that expires objects under the `guest/maps/` prefix after 8 days can be removed once any existing guest data has naturally expired.
 
 CORS is configured for `PUT` requests from allowed origins (for presigned URL uploads), exposing the `ETag` header.
 
