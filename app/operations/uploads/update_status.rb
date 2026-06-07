@@ -52,7 +52,7 @@ module PastaAtlas
           generation_repo.update_storage_bytes(id: upload.generation_id, storage_bytes:)
           upload_repo.update_verification(id: upload.id, verification_status: "passed", verified_at: Time.now)
         rescue
-          # storage_bytes remains NULL until backfill
+          # storage_bytes remains nil; use operations/generations/calculate_storage manually if needed
         end
 
         private def head_object_size(key)
