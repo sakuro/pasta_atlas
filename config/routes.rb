@@ -27,6 +27,7 @@ module PastaAtlas
     post "/api/v1/uploads", to: "api.uploads.create"
     patch "/api/v1/uploads/:ulid", to: "api.uploads.update"
     post "/api/v1/uploads/:ulid/presigned_urls", to: "api.uploads.presigned_urls.create"
+    post "/api/v1/uploads/:ulid/verify_batch", to: "api.uploads.verify_batches.create"
 
     get "/api/v1/users/:name", to: "api.users.show"
     delete "/api/v1/users/:user_name", to: "api.users.destroy"

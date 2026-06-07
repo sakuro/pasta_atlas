@@ -13,13 +13,28 @@ RSpec.describe PastaAtlas::Operations::Uploads::UpdateStatus, :db do
 
   describe "#call" do
     context "when updating to complete" do
-      it "sets completed_at and returns the updated upload" do
-        result = operation.call(upload_ulid: upload.ulid, status: "complete", user_id: user.id)
+      context "when all files are verified" do
+        before do
+          5.times {|i| Factory[:upload_verification_key, upload:, s3_key: "user/maps/abc/def/s0zoom_4/tile_#{i}_0.jpg", verified_at: Time.now] }
+        end
 
-        expect(result).to be_success
-        updated = result.value!
-        expect(updated.status).to eq("complete")
-        expect(updated.completed_at).not_to be_nil
+        it "sets completed_at and returns the updated upload" do
+          result = operation.call(upload_ulid: upload.ulid, status: "complete", user_id: user.id)
+
+          expect(result).to be_success
+          updated = result.value!
+          expect(updated.status).to eq("complete")
+          expect(updated.completed_at).not_to be_nil
+        end
+      end
+
+      context "when not all files are verified" do
+        it "returns an incomplete failure" do
+          result = operation.call(upload_ulid: upload.ulid, status: "complete", user_id: user.id)
+
+          expect(result).to be_failure
+          expect(result.failure).to eq(:incomplete)
+        end
       end
     end
 

@@ -9,15 +9,15 @@ module PastaAtlas
           "repos.map_repo",
           "repos.upload_event_repo",
           "repos.upload_repo",
-          "settings",
-          sqs_client: "sqs.client"
+          "repos.upload_verification_key_repo"
         ]
 
         def call(upload_ulid:, status:, user_id:)
           upload = step find_upload(upload_ulid)
           step validate_ownership(upload, user_id)
+          step validate_completeness(upload) if status == "complete"
           step append_event(upload, status)
-          enqueue_storage_calculation(upload) if status == "complete"
+          finalize_verification(upload) if status == "complete"
           step find_upload(upload_ulid)
         end
 
@@ -25,6 +25,11 @@ module PastaAtlas
           generation = generation_repo.find_by_id(upload.generation_id)
           map = map_repo.find_by_id(generation.map_id)
           map.user_id == user_id ? Success() : Failure(:forbidden)
+        end
+
+        private def validate_completeness(upload)
+          verified_count = upload_verification_key_repo.count_verified(upload_id: upload.id)
+          verified_count == upload.total_image_count ? Success() : Failure(:incomplete)
         end
 
         private def find_upload(ulid)
@@ -37,13 +42,9 @@ module PastaAtlas
           Success()
         end
 
-        private def enqueue_storage_calculation(upload)
-          sqs_client.send_message(
-            queue_url: settings.sqs_storage_calculation_queue_url,
-            message_body: upload.generation_id.to_s
-          )
-        rescue Aws::SQS::Errors::ServiceError
-          # Storage will remain NULL until backfill
+        private def finalize_verification(upload)
+          generation_repo.update_storage_bytes(id: upload.generation_id, storage_bytes: upload.verified_bytes)
+          upload_repo.update_verification(id: upload.id, verification_status: "passed", verified_at: Time.now)
         end
       end
     end
