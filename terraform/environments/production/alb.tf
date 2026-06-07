@@ -4,7 +4,7 @@ data "aws_ec2_managed_prefix_list" "cloudfront" {
 
 resource "aws_security_group" "alb" {
   name        = "${var.app_name}-${var.environment}-alb"
-  description = "Allow HTTP from CloudFront only"
+  description = "Allow HTTP/HTTPS from internet"
   vpc_id      = data.aws_vpc.default.id
 }
 
