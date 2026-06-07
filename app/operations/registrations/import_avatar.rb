@@ -19,6 +19,18 @@ module PastaAtlas
         MAX_REDIRECTS = 5
         private_constant :MAX_REDIRECTS
 
+        MAX_RESPONSE_SIZE = 5 * 1024 * 1024
+        private_constant :MAX_RESPONSE_SIZE
+
+        ALLOWED_HOSTS = %w[
+          avatars.githubusercontent.com
+          cdn.discordapp.com
+          media.discordapp.net
+          avatars.steamstatic.com
+          avatars.akamai.steamstatic.com
+        ].freeze
+        private_constant :ALLOWED_HOSTS
+
         def call(user:, avatar_url:)
           step check_url(avatar_url)
           body, content_type = step download(avatar_url)
@@ -30,7 +42,10 @@ module PastaAtlas
 
         private def check_url(url)
           return Failure(:no_url) if url.nil? || url.empty?
-          return Failure(:fetch_failed) unless URI(url).scheme == "https"
+
+          uri = URI(url)
+          return Failure(:fetch_failed) unless uri.scheme == "https"
+          return Failure(:fetch_failed) unless ALLOWED_HOSTS.include?(uri.host)
 
           Success()
         end
@@ -59,17 +74,24 @@ module PastaAtlas
 
           uri = URI(url)
           return nil unless uri.scheme == "https"
+          return nil unless ALLOWED_HOSTS.include?(uri.host)
 
-          response = Net::HTTP.start(uri.host, uri.port, use_ssl: true) {|http|
+          response = Net::HTTP.start(uri.host, uri.port, use_ssl: true, open_timeout: 5, read_timeout: 10) {|http|
             http.get(uri.request_uri)
           }
 
           return fetch(response["Location"], redirect_count + 1) if response.is_a?(Net::HTTPRedirection)
           return nil unless response.is_a?(Net::HTTPSuccess)
 
+          content_length = response["Content-Length"]&.to_i
+          return nil if content_length && content_length > MAX_RESPONSE_SIZE
+
+          body = response.body
+          return nil if body.bytesize > MAX_RESPONSE_SIZE
+
           raw = response["Content-Type"]&.split(";")&.first
           content_type = raw&.strip
-          [response.body, content_type]
+          [body, content_type]
         end
       end
     end
