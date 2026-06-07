@@ -13,6 +13,7 @@ module PastaAtlas
     private def json_response(response, data, status: :ok)
       response.status = status
       response.headers["Content-Type"] = "application/json"
+      response.headers["Cache-Control"] = "no-store, private"
       response.body = JSON.generate(data)
     end
 
