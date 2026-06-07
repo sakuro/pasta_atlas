@@ -51,7 +51,8 @@ module PastaAtlas
               :put_object,
               bucket: settings.s3_bucket,
               key:,
-              expires_in: settings.presigned_url_expiry
+              expires_in: settings.presigned_url_expiry,
+              content_type: "image/jpeg"
             )
           end
         end

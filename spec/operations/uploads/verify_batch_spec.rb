@@ -45,7 +45,7 @@ RSpec.describe PastaAtlas::Operations::Uploads::VerifyBatch do
 
   describe "#call" do
     context "when all files exist in S3" do
-      let(:head_response) { double("HeadResponse", content_length: 1024) }
+      let(:head_response) { double("HeadResponse", content_length: 1024, content_type: "image/jpeg") }
 
       before do
         allow(s3_client).to receive(:head_object).and_return(head_response)
@@ -66,8 +66,8 @@ RSpec.describe PastaAtlas::Operations::Uploads::VerifyBatch do
         expect(upload_verification_key_repo).to have_received(:mark_verified_batch).with(
           upload_id: 1,
           results: [
-            {s3_key: "testuser/maps/ae8ec3ab/550f41a9/s0zoom_4/tile_0_0.jpg", size_bytes: 1024},
-            {s3_key: "testuser/maps/ae8ec3ab/550f41a9/s0zoom_4/tile_0_1.jpg", size_bytes: 1024}
+            {s3_key: "testuser/maps/ae8ec3ab/550f41a9/s0zoom_4/tile_0_0.jpg", size_bytes: 1024, content_type: "image/jpeg"},
+            {s3_key: "testuser/maps/ae8ec3ab/550f41a9/s0zoom_4/tile_0_1.jpg", size_bytes: 1024, content_type: "image/jpeg"}
           ]
         )
       end
@@ -79,11 +79,43 @@ RSpec.describe PastaAtlas::Operations::Uploads::VerifyBatch do
       end
     end
 
+    context "when a file exceeds the size limit" do
+      before do
+        allow(s3_client).to receive(:head_object)
+          .and_return(double("HeadResponse", content_length: 640 * 1024 + 1, content_type: "image/jpeg"))
+        allow(sqs_client).to receive(:send_message)
+        allow(generation_repo).to receive(:delete_by_id)
+      end
+
+      it "returns a verification_failed failure" do
+        result = operation.call(upload:, filenames:)
+
+        expect(result).to be_failure
+        expect(result.failure).to eq(:verification_failed)
+      end
+    end
+
+    context "when a file has wrong content type" do
+      before do
+        allow(s3_client).to receive(:head_object)
+          .and_return(double("HeadResponse", content_length: 1024, content_type: "image/png"))
+        allow(sqs_client).to receive(:send_message)
+        allow(generation_repo).to receive(:delete_by_id)
+      end
+
+      it "returns a verification_failed failure" do
+        result = operation.call(upload:, filenames:)
+
+        expect(result).to be_failure
+        expect(result.failure).to eq(:verification_failed)
+      end
+    end
+
     context "when some files are missing in S3" do
       before do
         allow(s3_client).to receive(:head_object)
           .with(bucket: "test-bucket", key: "testuser/maps/ae8ec3ab/550f41a9/s0zoom_4/tile_0_0.jpg")
-          .and_return(double("HeadResponse", content_length: 1024))
+          .and_return(double("HeadResponse", content_length: 1024, content_type: "image/jpeg"))
         allow(s3_client).to receive(:head_object)
           .with(bucket: "test-bucket", key: "testuser/maps/ae8ec3ab/550f41a9/s0zoom_4/tile_0_1.jpg")
           .and_raise(Aws::S3::Errors::NotFound.new(nil, "Not Found"))
