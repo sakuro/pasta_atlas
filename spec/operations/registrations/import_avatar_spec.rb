@@ -64,7 +64,7 @@ RSpec.describe PastaAtlas::Operations::Registrations::ImportAvatar do
         double("oversized_response").tap do |r|
           allow(r).to receive(:is_a?).with(Net::HTTPRedirection).and_return(false)
           allow(r).to receive(:is_a?).with(Net::HTTPSuccess).and_return(true)
-          allow(r).to receive(:[]).with("Content-Length").and_return((5 * 1024 * 1024 + 1).to_s)
+          allow(r).to receive(:[]).with("Content-Length").and_return(((5 * 1024 * 1024) + 1).to_s)
         end
       end
 
@@ -86,7 +86,7 @@ RSpec.describe PastaAtlas::Operations::Registrations::ImportAvatar do
           allow(r).to receive(:is_a?).with(Net::HTTPRedirection).and_return(false)
           allow(r).to receive(:is_a?).with(Net::HTTPSuccess).and_return(true)
           allow(r).to receive(:[]).with("Content-Length").and_return(nil)
-          allow(r).to receive(:body).and_return("x" * (5 * 1024 * 1024 + 1))
+          allow(r).to receive(:body).and_return("x" * ((5 * 1024 * 1024) + 1))
         end
       end
 

@@ -83,7 +83,7 @@ module PastaAtlas
           return fetch(response["Location"], redirect_count + 1) if response.is_a?(Net::HTTPRedirection)
           return nil unless response.is_a?(Net::HTTPSuccess)
 
-          content_length = response["Content-Length"]&.to_i
+          content_length = Integer(response["Content-Length"], 10) if response["Content-Length"]
           return nil if content_length && content_length > MAX_RESPONSE_SIZE
 
           body = response.body
