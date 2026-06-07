@@ -4,11 +4,11 @@ data "aws_ec2_managed_prefix_list" "cloudfront" {
 
 resource "aws_security_group" "alb" {
   name        = "${var.app_name}-${var.environment}-alb"
-  description = "Allow HTTP/HTTPS from internet"
+  description = "Allow HTTP from CloudFront only"
   vpc_id      = data.aws_vpc.default.id
 }
 
-resource "aws_vpc_security_group_ingress_rule" "alb_http_from_cloudfront" {
+resource "aws_vpc_security_group_ingress_rule" "alb_from_cloudfront" {
   security_group_id = aws_security_group.alb.id
   prefix_list_id    = data.aws_ec2_managed_prefix_list.cloudfront.id
   from_port         = 80
