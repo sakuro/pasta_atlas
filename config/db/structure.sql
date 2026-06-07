@@ -164,7 +164,7 @@ CREATE TABLE public.uploads (
     id bigint NOT NULL,
     ulid character varying(26) NOT NULL,
     generation_id bigint NOT NULL,
-    total_image_count integer,
+    total_image_count integer NOT NULL,
     created_at timestamp with time zone DEFAULT now() NOT NULL
 );
 
@@ -517,4 +517,5 @@ INSERT INTO schema_migrations (filename) VALUES
 ('20260523000000_add_relative_timestamps_to_user_preferences.rb'),
 ('20260527000000_redesign_upload_events.rb'),
 ('20260605000000_make_timezone_nullable_in_user_preferences.rb'),
-('20260607000000_add_storage_bytes_to_generations.rb');
+('20260607000000_add_storage_bytes_to_generations.rb'),
+('20260607010000_add_not_null_to_uploads_total_image_count.rb');
