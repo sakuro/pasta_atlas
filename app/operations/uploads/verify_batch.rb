@@ -20,6 +20,12 @@ module PastaAtlas
         CONCURRENCY = 20
         private_constant :CONCURRENCY
 
+        MAX_IMAGE_SIZE_BYTES = 640 * 1024
+        private_constant :MAX_IMAGE_SIZE_BYTES
+
+        REQUIRED_CONTENT_TYPE = "image/jpeg"
+        private_constant :REQUIRED_CONTENT_TYPE
+
         def call(upload:, filenames:)
           generation = generation_repo.find_by_id(upload.generation_id)
           map = map_repo.find_by_id(generation.map_id)
@@ -29,7 +35,7 @@ module PastaAtlas
           s3_keys = filenames.map {|f| "#{prefix}#{f}" }
           results = head_objects(s3_keys)
 
-          if results.any?(&:nil?)
+          if results.any? { |r| r.nil? || r[:size_bytes] > MAX_IMAGE_SIZE_BYTES || r[:content_type] != REQUIRED_CONTENT_TYPE }
             step schedule_s3_cleanup(prefix)
             generation_repo.delete_by_id(generation.id)
             step Failure(:verification_failed)
@@ -61,7 +67,7 @@ module PastaAtlas
 
         private def head_object(key)
           response = s3_client.head_object(bucket: settings.s3_bucket, key:)
-          {s3_key: key, size_bytes: response.content_length}
+          {s3_key: key, size_bytes: response.content_length, content_type: response.content_type}
         rescue Aws::S3::Errors::NotFound, Aws::S3::Errors::NoSuchKey
           nil
         end
