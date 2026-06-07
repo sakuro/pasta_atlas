@@ -6,8 +6,10 @@ ROM::SQL.migration do
       add_column :verification_status, :text, null: false, default: "pending"
       add_column :verified_bytes, :Bignum, null: false, default: 0
       add_column :verified_at, :timestamptz
-      add_constraint(:verification_status_values,
-        Sequel.lit("verification_status IN ('pending', 'passed', 'failed')"))
+      add_constraint(
+        :verification_status_values,
+        Sequel.lit("verification_status IN ('pending', 'passed', 'failed')")
+      )
     end
 
     create_table :upload_verification_keys do
