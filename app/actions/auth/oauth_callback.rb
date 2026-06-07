@@ -53,6 +53,7 @@ module PastaAtlas
         end
 
         private def login(request, response, user_id)
+          request.session.clear
           request.session[:user_id] = user_id
           response.redirect_to routes.path(:root)
         end

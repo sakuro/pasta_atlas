@@ -35,7 +35,7 @@ module PastaAtlas
             in Dry::Monads::Result::Failure(Symbol => status)
               halt status
             in Success(user)
-              request.session.delete(:pending_auth)
+              request.session.clear
               request.session[:user_id] = user.id
               json_response(response, {redirect_to: "/"})
             end
