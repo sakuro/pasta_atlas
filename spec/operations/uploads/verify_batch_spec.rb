@@ -82,7 +82,7 @@ RSpec.describe PastaAtlas::Operations::Uploads::VerifyBatch do
     context "when a file exceeds the size limit" do
       before do
         allow(s3_client).to receive(:head_object)
-          .and_return(double("HeadResponse", content_length: 640 * 1024 + 1, content_type: "image/jpeg"))
+          .and_return(double("HeadResponse", content_length: (640 * 1024) + 1, content_type: "image/jpeg"))
         allow(sqs_client).to receive(:send_message)
         allow(generation_repo).to receive(:delete_by_id)
       end
