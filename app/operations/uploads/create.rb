@@ -88,13 +88,15 @@ module PastaAtlas
             metadata_s3_key:,
             expires_at: nil
           )
-          write_result = write_metadata_to_s3(key: metadata_s3_key, body: metadata.to_json)
+          metadata_json = metadata.to_json
+          write_result = write_metadata_to_s3(key: metadata_s3_key, body: metadata_json)
           return write_result unless write_result.success?
 
           upload = upload_repo.create(
             ulid: ULID.generate,
             generation_id: generation.id,
-            total_image_count:
+            total_image_count:,
+            verified_bytes: metadata_json.bytesize
           )
           upload_event_repo.create(upload_id: upload.id, event_type: "pending")
           upload = upload_repo.find_by_ulid(upload.ulid)

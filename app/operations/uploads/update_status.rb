@@ -9,10 +9,7 @@ module PastaAtlas
           "repos.map_repo",
           "repos.upload_event_repo",
           "repos.upload_repo",
-          "repos.upload_verification_key_repo",
-          "settings",
-          s3_client: "s3.client",
-          sqs_client: "sqs.client"
+          "repos.upload_verification_key_repo"
         ]
 
         def call(upload_ulid:, status:, user_id:)
@@ -46,19 +43,8 @@ module PastaAtlas
         end
 
         private def finalize_verification(upload)
-          generation = generation_repo.find_by_id(upload.generation_id)
-          metadata_bytes = head_object_size(generation.metadata_s3_key) || 0
-          storage_bytes = upload.verified_bytes + metadata_bytes
-          generation_repo.update_storage_bytes(id: upload.generation_id, storage_bytes:)
+          generation_repo.update_storage_bytes(id: upload.generation_id, storage_bytes: upload.verified_bytes)
           upload_repo.update_verification(id: upload.id, verification_status: "passed", verified_at: Time.now)
-        rescue
-          # storage_bytes remains nil; use operations/generations/calculate_storage manually if needed
-        end
-
-        private def head_object_size(key)
-          s3_client.head_object(bucket: settings.s3_bucket, key:).content_length
-        rescue Aws::S3::Errors::NotFound, Aws::S3::Errors::NoSuchKey
-          nil
         end
       end
     end
