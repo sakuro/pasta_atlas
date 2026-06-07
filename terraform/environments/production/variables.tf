@@ -82,3 +82,8 @@ variable "app_desired_count" {
   type    = number
   default = 1
 }
+
+variable "create_bastion" {
+  type    = bool
+  default = false
+}
