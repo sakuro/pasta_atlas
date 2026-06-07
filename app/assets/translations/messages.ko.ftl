@@ -158,6 +158,7 @@ upload-complete = 업로드 완료!
 upload-view-map = 맵 보기
 upload-close = 닫기
 upload-dismiss = 닫기
+upload-error-too-many-images = 이미지가 너무 많습니다({ $count }개). 최대 { $max }개입니다.
 upload-error-not-found = 선택한 폴더에서 mapshot.json을 찾을 수 없습니다.
 upload-error-parse = mapshot.json을 파싱하는 데 실패했습니다.
 upload-error-conflict = 이 세대는 이미 업로드되었습니다.

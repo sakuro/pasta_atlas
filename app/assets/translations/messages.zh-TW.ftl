@@ -158,6 +158,7 @@ upload-complete = 上傳完成！
 upload-view-map = 查看地圖
 upload-close = 關閉
 upload-dismiss = 關閉
+upload-error-too-many-images = 圖片過多（{ $count } 張）。上限為 { $max } 張。
 upload-error-not-found = 在選取的資料夾中未找到 mapshot.json。
 upload-error-parse = 無法解析 mapshot.json。
 upload-error-conflict = 此世代已上傳過。

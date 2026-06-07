@@ -7,6 +7,7 @@ import { CopyButton } from "../CopyButton";
 import { HowToUploadModal } from "./HowToUploadModal";
 
 const segmenter = new Intl.Segmenter();
+const MAX_IMAGE_COUNT = 10_000;
 
 const csrfToken = (): string =>
   document.querySelector<HTMLMetaElement>('meta[name="csrf-token"]')?.content ?? "";
@@ -112,6 +113,10 @@ export const UploadModal = (props: { isGuest: boolean }) => {
     }
 
     const imageFiles = allFiles.filter((f) => relPath(f).endsWith(".jpg"));
+    if (imageFiles.length > MAX_IMAGE_COUNT) {
+      setState({ type: "error", error: { msgId: "upload-error-too-many-images", msgArgs: { count: imageFiles.length, max: MAX_IMAGE_COUNT } } });
+      return;
+    }
     const fileMap = new Map<string, File>();
     for (const f of imageFiles) fileMap.set(relPath(f), f);
 

@@ -188,6 +188,7 @@ upload-complete = Nahrávání dokončeno!
 upload-view-map = Zobrazit mapu
 upload-close = Zavřít
 upload-dismiss = Zavřít
+upload-error-too-many-images = Příliš mnoho obrázků ({ $count }). Maximum je { $max }.
 upload-error-not-found = Soubor mapshot.json nebyl ve vybrané složce nalezen.
 upload-error-parse = Nepodařilo se načíst mapshot.json.
 upload-error-conflict = Tato generace již byla nahrána.

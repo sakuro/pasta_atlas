@@ -10,7 +10,7 @@ module PastaAtlas
           contract do
             params do
               required(:metadata).filled(:hash)
-              required(:total_image_count).filled(:integer)
+              required(:total_image_count).filled(:integer, gteq?: 1, lteq?: 10_000)
               required(:name).filled(:string)
             end
 

@@ -158,6 +158,7 @@ upload-complete = Upload complete!
 upload-view-map = View Map
 upload-close = Close
 upload-dismiss = Dismiss
+upload-error-too-many-images = Too many images ({ $count }). The maximum is { $max }.
 upload-error-not-found = mapshot.json was not found in the selected folder.
 upload-error-parse = Failed to parse mapshot.json.
 upload-error-conflict = This generation has already been uploaded.
