@@ -3,7 +3,7 @@
 module PastaAtlas
   module Operations
     module Uploads
-      class IssuePresignedUrls < PastaAtlas::Operation
+      class IssuePresignedPosts < PastaAtlas::Operation
         include Deps[
           "repos.generation_repo",
           "repos.map_repo",
@@ -13,6 +13,12 @@ module PastaAtlas
           "settings",
           s3_client: "s3.client"
         ]
+
+        MAX_IMAGE_SIZE_BYTES = 640 * 1024
+        private_constant :MAX_IMAGE_SIZE_BYTES
+
+        REQUIRED_CONTENT_TYPE = "image/jpeg"
+        private_constant :REQUIRED_CONTENT_TYPE
 
         def call(upload_ulid:, filenames:, user_id:)
           upload = step find_upload(upload_ulid)
@@ -28,7 +34,7 @@ module PastaAtlas
           s3_keys = filenames.map {|f| "#{prefix}#{f}" }
           upload_verification_key_repo.create_many(upload_id: upload.id, s3_keys:)
 
-          presigned_urls_for(filenames:, prefix:)
+          presigned_posts_for(filenames:, prefix:)
         end
 
         private def validate_ownership(map, user_id) = map.user_id == user_id ? Success() : Failure(:forbidden)
@@ -42,18 +48,19 @@ module PastaAtlas
           upload.pending? ? Success(upload) : Failure(:unprocessable_entity)
         end
 
-        private def presigned_urls_for(filenames:, prefix:)
-          presigner = Aws::S3::Presigner.new(client: s3_client)
+        private def presigned_posts_for(filenames:, prefix:)
+          bucket = Aws::S3::Bucket.new(name: settings.s3_bucket, client: s3_client)
+          expiry = Time.now + settings.presigned_url_expiry
 
-          filenames.each_with_object({}) do |filename, urls|
+          filenames.each_with_object({}) do |filename, posts|
             key = "#{prefix}#{filename}"
-            urls[filename] = presigner.presigned_url(
-              :put_object,
-              bucket: settings.s3_bucket,
+            post = bucket.presigned_post(
               key:,
-              expires_in: settings.presigned_url_expiry,
-              content_type: "image/jpeg"
+              content_type: REQUIRED_CONTENT_TYPE,
+              content_length_range: 1..MAX_IMAGE_SIZE_BYTES,
+              expires: expiry
             )
+            posts[filename] = {url: post.url, fields: post.fields}
           end
         end
       end
