@@ -8,7 +8,7 @@ class S3CleanupQueueWorker < SqsQueueWorker
   end
 
   private def handle(msg)
-    result = Hanami.app["operations.maps.delete"].call(s3_prefix: msg.body)
+    result = Hanami.app["operations.delete_s3_prefix"].call(s3_prefix: msg.body)
     if result.success?
       @sqs_client.delete_message(queue_url: @queue_url, receipt_handle: msg.receipt_handle)
       puts "Deleted S3 objects under #{msg.body}"

@@ -13,7 +13,8 @@ module PastaAtlas
           "repos.upload_verification_key_repo",
           "repos.user_repo",
           "settings",
-          s3_client: "s3.client"
+          s3_client: "s3.client",
+          sqs_client: "sqs.client"
         ]
 
         CONCURRENCY = 20
@@ -28,13 +29,27 @@ module PastaAtlas
           s3_keys = filenames.map {|f| "#{prefix}#{f}" }
           results = head_objects(s3_keys)
 
-          return Failure(:verification_failed) if results.any?(&:nil?)
+          if results.any?(&:nil?)
+            step schedule_s3_cleanup(prefix)
+            generation_repo.delete_by_id(generation.id)
+            step Failure(:verification_failed)
+          end
 
           upload_verification_key_repo.mark_verified_batch(upload_id: upload.id, results:)
           batch_bytes = results.sum {|r| r[:size_bytes] }
           upload_repo.accumulate_verified_bytes(id: upload.id, bytes: batch_bytes)
 
           {verified_bytes: batch_bytes}
+        end
+
+        private def schedule_s3_cleanup(s3_prefix)
+          sqs_client.send_message(
+            queue_url: settings.sqs_s3_cleanup_queue_url,
+            message_body: s3_prefix
+          )
+          Success()
+        rescue Aws::SQS::Errors::ServiceError
+          Failure(:sqs_error)
         end
 
         private def head_objects(keys)

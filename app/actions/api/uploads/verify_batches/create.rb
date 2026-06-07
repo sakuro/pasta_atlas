@@ -43,6 +43,8 @@ module PastaAtlas
                 json_response(response, {verified_bytes:})
               in Failure(:verification_failed)
                 json_response(response, {error: "verification_failed"}, status: 422)
+              in Failure(:sqs_error)
+                halt :internal_server_error
               in Failure(Symbol => status)
                 halt status
               end

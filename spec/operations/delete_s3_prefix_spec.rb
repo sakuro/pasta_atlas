@@ -2,10 +2,10 @@
 
 require "aws-sdk-s3"
 
-RSpec.describe PastaAtlas::Operations::Maps::Delete do
+RSpec.describe PastaAtlas::Operations::DeleteS3Prefix do
   let(:settings) { double("Settings", s3_bucket: "test-bucket") }
   let(:s3_client) { instance_double(Aws::S3::Client) }
-  let(:operation) { PastaAtlas::Operations::Maps::Delete.new(settings:, s3_client:) }
+  let(:operation) { PastaAtlas::Operations::DeleteS3Prefix.new(settings:, s3_client:) }
 
   describe "#call" do
     context "when S3 deletion fails" do
