@@ -22,7 +22,7 @@ namespace :maps do
     map_repo.delete_by_id(map.id)
     puts "Deleted map record: #{ulid}"
 
-    case Hanami.app["operations.maps.delete"].call(s3_prefix:)
+    case Hanami.app["operations.delete_s3_prefix"].call(s3_prefix:)
     in Success(_)
       puts "Deleted S3 objects under #{s3_prefix}"
     in Failure(reason)
