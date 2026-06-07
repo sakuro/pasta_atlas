@@ -322,7 +322,7 @@ export const UploadModal = (props: { isGuest: boolean }) => {
       <div class="buttons has-addons">
         <button
           class="button is-primary"
-          onClick={props.isGuest ? undefined : openModal}
+          onClick={() => { if (!props.isGuest) openModal(); }}
           disabled={props.isGuest}
           data-l10n-id={props.isGuest ? "upload-button-guest" : undefined}
         >
