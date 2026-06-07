@@ -8,6 +8,7 @@ module PastaAtlas
           "repos.generation_repo",
           "repos.map_repo",
           "repos.upload_repo",
+          "repos.upload_verification_key_repo",
           "repos.user_repo",
           "settings",
           s3_client: "s3.client"
@@ -23,6 +24,9 @@ module PastaAtlas
           user = user_repo.find_by_id(map.user_id)
 
           prefix = "#{user.name}/maps/#{map.mapshot_map_id}/#{generation.mapshot_unique_id}/"
+
+          s3_keys = filenames.map {|f| "#{prefix}#{f}" }
+          upload_verification_key_repo.create_many(upload_id: upload.id, s3_keys:)
 
           presigned_urls_for(filenames:, prefix:)
         end

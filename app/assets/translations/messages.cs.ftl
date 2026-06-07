@@ -200,6 +200,9 @@ upload-error-urls-network = Chyba sítě při získávání URL pro nahrávání
 upload-error-file = Nahrávání selhalo: { $details }
 upload-error-finalize = Obrázky byly nahrány, ale dokončení selhalo.
 upload-error-finalize-network = Obrázky byly nahrány, ale při dokončení došlo k chybě sítě.
+upload-verifying = Ověřuji { $progress } / { $total } souborů...
+upload-error-verify-http = Ověření selhalo (HTTP { $status }).
+upload-error-verify-network = Chyba sítě při ověřování. Zkontrolujte prosím připojení a zkuste to znovu.
 
 ## How to upload
 how-to-upload-button =

@@ -8,6 +8,7 @@ module PastaAtlas
           belongs_to :generation
           has_one :current_upload_status
           has_many :upload_events
+          has_many :upload_verification_keys
         end
       end
     end

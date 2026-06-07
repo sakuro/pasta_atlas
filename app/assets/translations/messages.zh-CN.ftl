@@ -170,6 +170,9 @@ upload-error-urls-network = 获取上传地址时发生网络错误。
 upload-error-file = 上传失败：{ $details }
 upload-error-finalize = 图片已上传，但完成处理失败。
 upload-error-finalize-network = 图片已上传，但完成处理时发生网络错误。
+upload-verifying = 正在验证 { $progress } / { $total } 个文件...
+upload-error-verify-http = 验证失败（HTTP { $status }）。
+upload-error-verify-network = 验证时发生网络错误。请检查您的连接后重试。
 
 ## How to upload
 how-to-upload-button =

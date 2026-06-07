@@ -170,6 +170,9 @@ upload-error-urls-network = Network error getting upload URLs.
 upload-error-file = Failed to upload: { $details }
 upload-error-finalize = Images uploaded, but finalization failed.
 upload-error-finalize-network = Images uploaded, but network error during finalization.
+upload-verifying = Verifying { $progress } / { $total } files...
+upload-error-verify-http = Verification failed (HTTP { $status }).
+upload-error-verify-network = Network error during verification. Please check your connection and try again.
 
 ## How to upload
 how-to-upload-button =

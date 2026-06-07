@@ -42,6 +42,7 @@ type State =
     }
   | { type: "preparing"; prepared: number; total: number }
   | { type: "uploading"; progress: number; total: number }
+  | { type: "verifying"; progress: number; total: number }
   | { type: "done"; viewerUrl: string }
   | { type: "error"; error: I18nError };
 
@@ -150,7 +151,8 @@ export const UploadModal = (props: { isGuest: boolean }) => {
 
     const { mapshotJson, fileMap } = s;
     const imageCount = fileMap.size;
-    setState({ type: "preparing", prepared: 0, total: imageCount });
+    const BATCH_SIZE = 200;
+    const allFilenames = Array.from(fileMap.keys());
 
     // Step 1: POST /api/v1/uploads
     let uploadUlid: string, mapUlid: string, generationUlid: string;
@@ -186,12 +188,16 @@ export const UploadModal = (props: { isGuest: boolean }) => {
       return;
     }
 
-    // Step 2: POST /api/v1/uploads/:ulid/presigned_urls (batched for progress visibility)
-    const PRESIGNED_BATCH_SIZE = 200;
-    const allFilenames = Array.from(fileMap.keys());
-    const presignedUrls: Record<string, string> = {};
-    for (let i = 0; i < allFilenames.length; i += PRESIGNED_BATCH_SIZE) {
-      const batch = allFilenames.slice(i, i + PRESIGNED_BATCH_SIZE);
+    // Step 2: Process each batch sequentially: presign → upload → verify
+    let uploadedCount = 0;
+    let verifiedCount = 0;
+
+    for (let i = 0; i < allFilenames.length; i += BATCH_SIZE) {
+      const batch = allFilenames.slice(i, i + BATCH_SIZE);
+
+      // 2a. Get presigned URLs for this batch
+      setState({ type: "preparing", prepared: i, total: imageCount });
+      let presignedUrls: Record<string, string>;
       try {
         const resp = await fetch(`/api/v1/uploads/${uploadUlid}/presigned_urls`, {
           method: "POST",
@@ -203,34 +209,54 @@ export const UploadModal = (props: { isGuest: boolean }) => {
           return;
         }
         const data = await resp.json() as { presigned_urls: Record<string, string> };
-        Object.assign(presignedUrls, data.presigned_urls);
+        presignedUrls = data.presigned_urls;
       } catch {
         setState({ type: "error", error: { msgId: "upload-error-urls-network" } });
         return;
       }
-      setState({ type: "preparing", prepared: Math.min(i + PRESIGNED_BATCH_SIZE, allFilenames.length), total: imageCount });
-    }
+      setState({ type: "preparing", prepared: i + batch.length, total: imageCount });
 
-    // Step 3: PUT to S3 via presigned URLs (concurrent, limit 5)
-    const alreadyUploaded = imageCount - Object.keys(presignedUrls).length;
-    setState({ type: "uploading", progress: alreadyUploaded, total: imageCount });
-
-    const tasks = Object.entries(presignedUrls).map(([filename, url]) => async () => {
-      const file = fileMap.get(filename)!;
-      const resp = await fetch(url, { method: "PUT", body: file });
-      if (!resp.ok) throw new Error(`${filename}: HTTP ${resp.status}`);
-    });
-
-    try {
-      await runConcurrent(tasks, 5, (done) => {
-        setState({ type: "uploading", progress: alreadyUploaded + done, total: imageCount });
+      // 2b. Upload this batch to S3
+      setState({ type: "uploading", progress: uploadedCount, total: imageCount });
+      const tasks = Object.entries(presignedUrls).map(([filename, url]) => async () => {
+        const file = fileMap.get(filename)!;
+        const resp = await fetch(url, { method: "PUT", body: file });
+        if (!resp.ok) throw new Error(`${filename}: HTTP ${resp.status}`);
       });
-    } catch (err) {
-      setState({ type: "error", error: { msgId: "upload-error-file", msgArgs: { details: (err as Error).message } } });
-      return;
+      try {
+        await runConcurrent(tasks, 5, (done) => {
+          setState({ type: "uploading", progress: uploadedCount + done, total: imageCount });
+        });
+      } catch (err) {
+        setState({ type: "error", error: { msgId: "upload-error-file", msgArgs: { details: (err as Error).message } } });
+        return;
+      }
+      uploadedCount += batch.length;
+
+      // 2c. Verify this batch
+      setState({ type: "verifying", progress: verifiedCount, total: imageCount });
+      try {
+        const resp = await fetch(`/api/v1/uploads/${uploadUlid}/verify_batch`, {
+          method: "POST",
+          headers: jsonHeaders(),
+          body: JSON.stringify({ filenames: batch }),
+        });
+        if (resp.status === 422) {
+          setState({ type: "error", error: { msgId: "upload-error-verify-http", msgArgs: { status: resp.status } } });
+          return;
+        }
+        if (!resp.ok) {
+          setState({ type: "error", error: { msgId: "upload-error-verify-http", msgArgs: { status: resp.status } } });
+          return;
+        }
+      } catch {
+        setState({ type: "error", error: { msgId: "upload-error-verify-network" } });
+        return;
+      }
+      verifiedCount += batch.length;
     }
 
-    // Step 4: PATCH /api/v1/uploads/:ulid
+    // Step 3: PATCH /api/v1/uploads/:ulid complete
     try {
       const resp = await fetch(`/api/v1/uploads/${uploadUlid}`, {
         method: "PATCH",
@@ -265,6 +291,10 @@ export const UploadModal = (props: { isGuest: boolean }) => {
   const uploadingState = () => {
     const s = state();
     return s.type === "uploading" ? s : null;
+  };
+  const verifyingState = () => {
+    const s = state();
+    return s.type === "verifying" ? s : null;
   };
   const doneState = () => {
     const s = state();
@@ -313,7 +343,7 @@ export const UploadModal = (props: { isGuest: boolean }) => {
           <div class="modal-card" style={{ width: "90vw", "max-width": "1000px" }}>
             <header class="modal-card-head">
               <p class="modal-card-title" data-l10n-id="upload-modal-title" />
-              <Show when={state().type !== "uploading" && state().type !== "preparing"}>
+              <Show when={state().type !== "uploading" && state().type !== "preparing" && state().type !== "verifying"}>
                 <button class="delete" aria-label="close" onClick={dismiss} />
               </Show>
             </header>
@@ -427,6 +457,18 @@ export const UploadModal = (props: { isGuest: boolean }) => {
                     <p
                       class="mb-2"
                       data-l10n-id="upload-progress"
+                      data-l10n-args={JSON.stringify({ progress: s.progress, total: s.total })}
+                    />
+                    <progress class="progress is-primary" value={s.progress} max={s.total} />
+                  </>
+                )}
+              </Show>
+              <Show when={verifyingState()} keyed>
+                {(s) => (
+                  <>
+                    <p
+                      class="mb-2"
+                      data-l10n-id="upload-verifying"
                       data-l10n-args={JSON.stringify({ progress: s.progress, total: s.total })}
                     />
                     <progress class="progress is-primary" value={s.progress} max={s.total} />
