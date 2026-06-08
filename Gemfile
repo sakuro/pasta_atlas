@@ -38,7 +38,7 @@ group :development do
   gem "rubocop-capybara", "~> 2.22"
   gem "rubocop-performance", "~> 1.26"
   gem "rubocop-rake", "~> 0.7.1"
-  gem "rubocop-rspec", github: "sakuro/rubocop-rspec", branch: "fix/spec-file-path-format-empty-custom-transform"
+  gem "rubocop-rspec"
   gem "rubocop-sequel", "~> 0.4.1"
   gem "rubocop-thread_safety", "~> 0.7.3"
 
