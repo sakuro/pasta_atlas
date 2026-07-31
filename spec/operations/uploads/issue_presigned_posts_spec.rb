@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-RSpec.describe PastaAtlas::Operations::Uploads::IssuePresignedUrls, :db do
-  let(:operation) { Hanami.app["operations.uploads.issue_presigned_urls"] }
+RSpec.describe PastaAtlas::Operations::Uploads::IssuePresignedPosts, :db do
+  let(:operation) { Hanami.app["operations.uploads.issue_presigned_posts"] }
   let(:filenames) { ["s1zoom_4/tile_0_0.jpg", "s1zoom_4/tile_0_1.jpg"] }
   let(:upload_event_repo) { Hanami.app["repos.upload_event_repo"] }
 
@@ -19,13 +19,13 @@ RSpec.describe PastaAtlas::Operations::Uploads::IssuePresignedUrls, :db do
   before { Factory[:upload_event, upload:, event_type: "pending"] }
 
   describe "#call" do
-    it "returns presigned URLs for all requested files" do
+    it "returns presigned POST entries for all requested files" do
       result = operation.call(upload_ulid: upload.ulid, filenames:, user_id: user.id)
 
       expect(result).to be_success
-      urls = result.value!
-      expect(urls.keys).to match_array(filenames)
-      expect(urls.values).to all(be_a(String))
+      posts = result.value!
+      expect(posts.keys).to match_array(filenames)
+      expect(posts.values).to all(match(url: be_a(String), fields: be_a(Hash)))
     end
 
     context "when the upload does not exist" do
