@@ -17,7 +17,7 @@
     "bulma": "^1.0.4",
     "hanami-assets": "^2.3.0",
     "leaflet": "^1.9.4",
-    "solid-js": "^1.9.12",
+    "solid-js": "^1.9.17",
     "unique-names-generator": "^4.7.1"
   },
   "devDependencies": {
