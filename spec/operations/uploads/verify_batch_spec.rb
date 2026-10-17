@@ -79,6 +79,28 @@ RSpec.describe PastaAtlas::Operations::Uploads::VerifyBatch do
       end
     end
 
+    context "when S3 raises an unexpected error" do
+      before do
+        allow(s3_client).to receive(:head_object)
+          .and_raise(Aws::S3::Errors::ServiceError.new(nil, "Service Unavailable"))
+        allow(generation_repo).to receive(:delete_by_id)
+      end
+
+      it "propagates the exception" do
+        expect { operation.call(upload:, filenames:) }.to raise_error(Aws::S3::Errors::ServiceError)
+      end
+
+      it "does not delete the generation" do
+        begin
+          operation.call(upload:, filenames:)
+        rescue Aws::S3::Errors::ServiceError
+          nil
+        end
+
+        expect(generation_repo).not_to have_received(:delete_by_id)
+      end
+    end
+
     context "when some files are missing in S3" do
       before do
         allow(s3_client).to receive(:head_object)

@@ -4,9 +4,9 @@ module PastaAtlas
   module Actions
     module API
       module Uploads
-        module PresignedUrls
+        module PresignedPosts
           class Create < PastaAtlas::Action
-            include Deps["operations.uploads.issue_presigned_urls"]
+            include Deps["operations.uploads.issue_presigned_posts"]
 
             contract do
               params do
@@ -31,15 +31,15 @@ module PastaAtlas
             def handle(request, response)
               halt :bad_request unless request.params.valid?
 
-              result = issue_presigned_urls.call(
+              result = issue_presigned_posts.call(
                 upload_ulid: request.params[:ulid],
                 filenames: request.params[:filenames],
                 user_id: current_user_id(request)
               )
 
               case result
-              in Success(urls)
-                json_response(response, {presigned_urls: urls})
+              in Success(posts)
+                json_response(response, {presigned_posts: posts})
               in Failure(Symbol => status)
                 halt status
               end
