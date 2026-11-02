@@ -55,7 +55,7 @@ module PastaAtlas
         private def head_objects(keys)
           keys.each_slice(CONCURRENCY).flat_map do |slice|
             futures = slice.map {|key| Concurrent::Future.execute { head_object(key) } }
-            futures.map(&:value)
+            futures.map(&:value!)
           end
         end
 
