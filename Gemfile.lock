@@ -202,11 +202,11 @@ GEM
       rackup
       rake (~> 13.0)
       zeitwerk (~> 2.6)
-    hanami-controller (2.3.1)
+    hanami-controller (2.3.2)
       dry-configurable (~> 1.0, < 2)
       dry-core (~> 1.0)
       hanami-utils (~> 2.3.0)
-      rack (>= 2.1)
+      rack (>= 2.2.16)
       zeitwerk (~> 2.6)
     hanami-db (2.3.0)
       rom (~> 5.4, >= 5.4.1)
@@ -515,7 +515,7 @@ GEM
     xpath (3.2.0)
       nokogiri (~> 1.8)
     yard (0.9.44)
-    zeitwerk (2.8.2)
+    zeitwerk (2.8.3)
 
 PLATFORMS
   aarch64-linux
@@ -653,7 +653,7 @@ CHECKSUMS
   hanami (2.3.2) sha256=2f1e7e10d760bd0c3929bcb55a42f38281bd5da507e40b98e62282f52f452e3b
   hanami-assets (2.3.0) sha256=c396bb735833458d0ceda013f498154eccafcae50c36db7f27cdd50f0560223d
   hanami-cli (2.3.5) sha256=213fc8181e566930821d830eae335b22e93c3e5018f4f22d0c13792d1e76f05e
-  hanami-controller (2.3.1) sha256=ad48df2b4e437fc8392c236d0ddc2fabc1a466db5ee829f05519134889e2b9d9
+  hanami-controller (2.3.2) sha256=2821a3284ac394324f23e31012d2d9f679730c105b9bc593dc5e2b7b1c68b1cc
   hanami-db (2.3.0) sha256=d6baa6c16a9321e5132799b8b26c3e6a2e19b8c5515c8785fb1ab94720d94711
   hanami-reloader (2.3.0) sha256=0367250fd5a4d322ac055bae75612ed3babb4eb6c4a77be22321990479d3404d
   hanami-router (2.3.1) sha256=81b3665cb851de5703bd2fea3f375eccb2af871288cf130ab0fbc42b3b8ae31f
@@ -782,7 +782,7 @@ CHECKSUMS
   version_gem (1.1.11) sha256=695df6464862b3dc976b4f6e0e089062517c8137ecd31078d8c378347f959c97
   xpath (3.2.0) sha256=6dfda79d91bb3b949b947ecc5919f042ef2f399b904013eb3ef6d20dd3a4082e
   yard (0.9.44) sha256=eb087e9b631ccd887b049f303d489963945452d5e2a7eb49a5a74a7cf6887f28
-  zeitwerk (2.8.2) sha256=7212a61311083c604184b1ea2574b9aa05cd14f855a0841c06985cabe9181d12
+  zeitwerk (2.8.3) sha256=2c85125a8467ce069e20123d1e709a08955c9d29c118c25b46b7b7fafdbb92e5
 
 BUNDLED WITH
   4.0.12
