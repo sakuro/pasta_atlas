@@ -197,9 +197,10 @@ export const UploadModal = (props: { isGuest: boolean }) => {
 
       // 2a. Get presigned URLs for this batch
       setState({ type: "preparing", prepared: i, total: imageCount });
-      let presignedUrls: Record<string, string>;
+      type PresignedEntry = { url: string; fields: Record<string, string> };
+      let presignedUrls: Record<string, PresignedEntry>;
       try {
-        const resp = await fetch(`/api/v1/uploads/${uploadUlid}/presigned_urls`, {
+        const resp = await fetch(`/api/v1/uploads/${uploadUlid}/presigned_posts`, {
           method: "POST",
           headers: jsonHeaders(),
           body: JSON.stringify({ filenames: batch }),
@@ -208,8 +209,8 @@ export const UploadModal = (props: { isGuest: boolean }) => {
           setState({ type: "error", error: { msgId: "upload-error-urls-http", msgArgs: { status: resp.status } } });
           return;
         }
-        const data = await resp.json() as { presigned_urls: Record<string, string> };
-        presignedUrls = data.presigned_urls;
+        const data = await resp.json() as { presigned_posts: Record<string, PresignedEntry> };
+        presignedUrls = data.presigned_posts;
       } catch {
         setState({ type: "error", error: { msgId: "upload-error-urls-network" } });
         return;
@@ -218,9 +219,12 @@ export const UploadModal = (props: { isGuest: boolean }) => {
 
       // 2b. Upload this batch to S3
       setState({ type: "uploading", progress: uploadedCount, total: imageCount });
-      const tasks = Object.entries(presignedUrls).map(([filename, url]) => async () => {
+      const tasks = Object.entries(presignedUrls).map(([filename, { url, fields }]) => async () => {
         const file = fileMap.get(filename)!;
-        const resp = await fetch(url, { method: "PUT", body: file });
+        const form = new FormData();
+        for (const [k, v] of Object.entries(fields)) form.append(k, v);
+        form.append("file", file);
+        const resp = await fetch(url, { method: "POST", body: form });
         if (!resp.ok) throw new Error(`${filename}: HTTP ${resp.status}`);
       });
       try {
