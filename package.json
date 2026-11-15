@@ -17,7 +17,7 @@
     "bulma": "^1.0.4",
     "hanami-assets": "^2.3.0",
     "leaflet": "^1.9.4",
-    "solid-js": "^1.9.12",
+    "solid-js": "^1.9.17",
     "unique-names-generator": "^4.7.1"
   },
   "devDependencies": {
@@ -30,8 +30,8 @@
     "jsdom": "^29.1.1",
     "prettier": "^3.8.3",
     "typescript": "^6.0.3",
-    "vite": "^8.0.10",
+    "vite": "^8.3.5",
     "vite-plugin-solid": "^2.11.12",
-    "vitest": "^4.1.5"
+    "vitest": "^4.1.12"
   }
 }
