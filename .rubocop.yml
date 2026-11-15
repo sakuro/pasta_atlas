@@ -42,6 +42,10 @@ inherit_gem:
 
 inherit_from: .rubocop_todo.yml
 
+# Standard arithmetic precedence (e.g. `640 * 1024 + 1`) is clear without parentheses.
+Lint/AmbiguousOperatorPrecedence:
+  Enabled: false
+
 Metrics/BlockLength:
   Max: 30
   Exclude:

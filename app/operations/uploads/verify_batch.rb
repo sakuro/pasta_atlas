@@ -35,7 +35,7 @@ module PastaAtlas
           s3_keys = filenames.map {|f| "#{prefix}#{f}" }
           results = head_objects(s3_keys)
 
-          if results.any? { |r| r.nil? || r[:size_bytes] > MAX_IMAGE_SIZE_BYTES || r[:content_type] != REQUIRED_CONTENT_TYPE }
+          if results.any? {|r| r.nil? || r[:size_bytes] > MAX_IMAGE_SIZE_BYTES || r[:content_type] != REQUIRED_CONTENT_TYPE }
             step schedule_s3_cleanup(prefix)
             generation_repo.delete_by_id(generation.id)
             step Failure(:verification_failed)
