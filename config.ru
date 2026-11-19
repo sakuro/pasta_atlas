@@ -1,5 +1,8 @@
 # frozen_string_literal: true
 
+require_relative "lib/lambda_support/bootstrap"
+LambdaSupport::Bootstrap.load_secrets
+
 require "hanami/boot"
 
 if Hanami.env?(:development)
@@ -21,6 +24,10 @@ if Hanami.env?(:development)
       [status, headers, body]
     end
   end)
+end
+
+if (origin_verify_secret = ENV.fetch("ORIGIN_VERIFY_SECRET", nil))
+  use PastaAtlas::Middleware::OriginVerify, secret: origin_verify_secret
 end
 
 run Hanami.app
