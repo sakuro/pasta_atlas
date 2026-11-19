@@ -13,7 +13,7 @@ pasta-atlas/
 
 | File | Description |
 |---|---|
-| `main.tf` | Terraform backend and providers |
+| `main.tf` | HCP Terraform backend and providers |
 | `variables.tf` | Production configuration inputs |
 | `s3.tf` | S3 bucket for map assets |
 | `cloudfront.tf` | CloudFront distributions |
@@ -27,6 +27,12 @@ pasta-atlas/
 | `sqs.tf` | SQS queue for S3 cleanup |
 | `scheduler.tf` | EventBridge scheduler |
 | `outputs.tf` | `ecr_repository_url`, `rds_endpoint`, and other outputs |
+
+## State
+
+The production state is stored in the `pasta-atlas-production` workspace of the `sakuro` organization on HCP Terraform (execution mode: Local, so plans and applies run on this machine). `environments/local` uses local state.
+
+HCP Terraform authenticates with a team API token (organization tokens cannot lock or write state). Store it in the global fnox configuration as `TF_TOKEN_app_terraform_io`; the `fnox-env` plugin in `mise.toml` exports it.
 
 ## Before First Use
 

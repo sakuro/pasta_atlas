@@ -1,9 +1,14 @@
 [env]
 _.file = [".env", ".env.development", ".env.development.local", ".env.local"]
 _.path = ["bin", "node_modules/.bin"]
+_.fnox-env = { tools = true }
+
+[plugins]
+fnox-env = "https://github.com/jdx/mise-env-fnox"
 
 [tools]
 aws-cli = "latest"
+fnox = "latest"
 gitleaks = "latest"
 ruby = "4"
 terraform = "1.15"
