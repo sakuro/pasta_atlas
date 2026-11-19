@@ -6,7 +6,6 @@ _.path = ["bin", "node_modules/.bin"]
 aws-cli = "latest"
 gitleaks = "latest"
 ruby = "4"
-sops = "latest"
 terraform = "1.15"
 tflint = "0.62"
 
