@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1
 
 # ---- Builder: Ruby + Node for asset compilation ----
-FROM ruby:4.0.9-slim AS builder
+FROM ruby:4.0.10-slim AS builder
 
 ARG NODE_MAJOR=25
 
@@ -48,7 +48,7 @@ RUN SESSION_SECRET=dummy \
     rm -f public/assets/vite-entries.json
 
 # ---- Runtime: minimal image with pre-built artifacts ----
-FROM ruby:4.0.9-slim AS runtime
+FROM ruby:4.0.10-slim AS runtime
 
 RUN apt-get update -qq && \
     apt-get install -y --no-install-recommends libpq-dev && \
