@@ -12,12 +12,12 @@ terraform {
     }
   }
 
-  backend "s3" {
-    bucket       = "sakuro-terraform-state"
-    key          = "pasta-atlas/production/terraform.tfstate"
-    region       = "ap-northeast-1"
-    encrypt      = true
-    use_lockfile = true
+  cloud {
+    organization = "sakuro"
+
+    workspaces {
+      name = "pasta-atlas-production"
+    }
   }
 }
 
