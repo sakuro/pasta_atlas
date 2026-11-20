@@ -13,6 +13,9 @@ module PastaAtlas
         private def find(user_id)
           user = user_repo.find_by_id(user_id)
           user ? Success(user) : Failure(:not_found)
+        rescue ROM::TupleCountMismatchError
+          # UserRepo#find_by_id raises for an unknown id.
+          Failure(:not_found)
         end
       end
     end

@@ -49,7 +49,7 @@ RSpec.describe PastaAtlas::Actions::Auth::OAuthCallback do
   end
 
   context "when logged in and connecting a new provider" do
-    let(:user) { double("User", name: "alice") }
+    let(:user) { double("User", id: 1, name: "alice") }
     let(:env) { base_env.merge("rack.session" => {"user_id" => 1}) }
 
     before do
@@ -63,6 +63,43 @@ RSpec.describe PastaAtlas::Actions::Auth::OAuthCallback do
 
       expect(response.status).to eq(302)
       expect(response.headers["Location"]).to eq("/@alice#tab-credentials")
+    end
+  end
+
+  context "when the session refers to a user that no longer exists" do
+    let(:env) { base_env.merge("rack.session" => {"user_id" => 999}) }
+
+    before do
+      allow(find_by_id).to receive(:call).with(user_id: 999).and_return(Failure(:not_found))
+    end
+
+    context "without an existing credential" do
+      before { allow(find_credential).to receive(:call).with(provider: "github", uid: "12345").and_return(Failure(:not_found)) }
+
+      it "treats the visitor as signed out and starts the registration" do
+        response = action.call(env)
+
+        expect(response.status).to eq(302)
+        expect(response.headers["Location"]).to eq("/auth/register")
+      end
+
+      it "drops the stale user id from the session" do
+        action.call(env)
+
+        expect(env["rack.session"]).not_to have_key("user_id")
+      end
+    end
+
+    context "with an existing credential" do
+      before do
+        allow(find_credential).to receive(:call).with(provider: "github", uid: "12345").and_return(Success(double("Credential", user_id: 7)))
+      end
+
+      it "signs in as the credential's user" do
+        action.call(env)
+
+        expect(env["rack.session"]).to include("user_id" => 7)
+      end
     end
   end
 end
