@@ -12,7 +12,7 @@ fnox = "latest"
 gitleaks = "latest"
 ruby = "4"
 terraform = "1.17.2"
-tflint = "0.62"
+tflint = "0.66.0"
 
 [tasks.default]
 depends = ["dev"]
