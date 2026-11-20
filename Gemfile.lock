@@ -251,7 +251,7 @@ GEM
     hansi (0.2.1)
     hashie (5.2.0)
       logger
-    i18n (1.14.8)
+    i18n (1.15.2)
       concurrent-ruby (~> 1.0)
     ice_nine (0.11.2)
     io-console (0.9.5)
@@ -418,12 +418,13 @@ GEM
       dry-struct (~> 1.0)
       dry-types (~> 1.6)
       transproc (~> 1.1)
-    rom-factory (0.13.0)
+    rom-factory (0.14.1)
       dry-configurable (~> 1.3)
       dry-core (~> 1.1)
       dry-struct (~> 1.7)
       faker (>= 2.0, < 4)
       rom-core (~> 5.4)
+      tsort (~> 0.2)
     rom-repository (5.4.3)
       dry-core (~> 1.0)
       dry-initializer (~> 3.2)
@@ -670,7 +671,7 @@ CHECKSUMS
   hanami-webconsole (2.3.1) sha256=0fec8e5b4395ab3c93b976a4cb8a7b9d61ed85d19c67534aa74c99385f2c768f
   hansi (0.2.1) sha256=7e27dfd729f1692a3a7690fc0ef3af9d5e3cfc0285bb135cae7e56180e4805db
   hashie (5.2.0) sha256=357a22635195c2e3911fbbc3de9a7d528843d1f42ab0aae02171048f16332d72
-  i18n (1.14.8) sha256=285778639134865c5e0f6269e0b818256017e8cde89993fdfcbfb64d088824a5
+  i18n (1.15.2) sha256=00f9eb62412fe593b2a65a97daa75300d37abb8f7202ec748e94b6d46a9dd1b5
   ice_nine (0.11.2) sha256=5d506a7d2723d5592dc121b9928e4931742730131f22a1a37649df1c1e2e63db
   io-console (0.9.5) sha256=83dd9bbf4c4680416629245b39cd4212eb5f4d9a4ea91804870c1f6b846414d5
   irb (1.19.0) sha256=55ee56acbdd6c9fe06a2e6909f46a24e5c41f45f16906bab04e8049cf46f1d27
@@ -747,7 +748,7 @@ CHECKSUMS
   rom (5.4.3) sha256=dc8925ba216e9635651edbbb1b4ddc0f145782a100e78458434e5f0aacfec2c8
   rom-changeset (5.4.0) sha256=503b9d2ad082743a28c06da70d431c7f12c18c4c0bca7f90c66d5aa2e13db898
   rom-core (5.4.0) sha256=a08264e40892cf86a57e32f6c09803b30e4fb3b1da86a64d41e71d92575df08f
-  rom-factory (0.13.0) sha256=b6a3d45f79a2c48117ae1550a0790d1cd6b26b27fdff6307e7368ddb7a65ef85
+  rom-factory (0.14.1) sha256=47d92aefd1456b22f21f0073a77b9a9923a033fdfb0bc292398df5fb21684177
   rom-repository (5.4.3) sha256=a45477c6e01241ed9361c6d5e457c398882f97e376f7a0ac1276e0aa8c013557
   rom-sql (3.7.0) sha256=56ba0714603d72d7ab5ad3247b6526d04ae83b6fcc807f4a1fa953cd7a65a639
   rouge (5.0.0) sha256=e2de9bba2f9cb88f8a73bca3643b560b2b398f32f91bf716f584477bc0175ebc
