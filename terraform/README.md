@@ -102,7 +102,7 @@ The Lambda functions receive env vars from `lambda.tf`; secrets are fetched from
 | App env var | Source |
 |---|---|
 | `S3_BUCKET` | `s3_bucket_name` output |
-| `CLOUDFRONT_BASE_URL` | `cloudfront_domain_name` output |
+| `CLOUDFRONT_BASE_URL` | `https://` + `cloudfront_domain_name` output (set in `lambda.tf`) |
 | `SQS_S3_CLEANUP_QUEUE_URL` | `sqs_s3_cleanup_queue_url` output |
 | `SESSION_SECRET` | SSM: `/pasta-atlas/production/session_secret` |
 | `GITHUB_CLIENT_SECRET` | SSM: `/pasta-atlas/production/github_client_secret` |
