@@ -52,6 +52,14 @@ resource "aws_vpc_security_group_egress_rule" "app_egress" {
   ip_protocol       = "-1"
 }
 
+resource "aws_eip" "nat" {
+  domain = "vpc"
+
+  tags = {
+    Name = "${var.app_name}-${var.environment}-nat"
+  }
+}
+
 module "fck_nat" {
   source  = "RaJiska/fck-nat/aws"
   version = "1.3.0"
@@ -63,4 +71,5 @@ module "fck_nat" {
   ha_mode             = true
   update_route_tables = true
   route_tables_ids    = { private = aws_route_table.private.id }
+  eip_allocation_ids  = [aws_eip.nat.id]
 }
