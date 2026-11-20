@@ -12,16 +12,15 @@ data "archive_file" "placeholder" {
 
 locals {
   lambda_environment = {
-    HANAMI_ENV                        = var.environment
-    SSM_PARAMETER_PREFIX              = "/${var.app_name}/${var.environment}"
-    APP_BASE_URL                      = "https://${var.app_domain_name}"
-    S3_BUCKET                         = aws_s3_bucket.mapshots.bucket
-    CLOUDFRONT_BASE_URL               = "https://${aws_cloudfront_distribution.mapshots.domain_name}"
-    SQS_S3_CLEANUP_QUEUE_URL          = aws_sqs_queue.s3_cleanup.url
-    SQS_STORAGE_CALCULATION_QUEUE_URL = aws_sqs_queue.storage_calculation.url
-    PRESIGNED_URL_EXPIRY              = tostring(var.presigned_url_expiry)
-    GITHUB_CLIENT_ID                  = var.github_client_id
-    DISCORD_CLIENT_ID                 = var.discord_client_id
+    HANAMI_ENV               = var.environment
+    SSM_PARAMETER_PREFIX     = "/${var.app_name}/${var.environment}"
+    APP_BASE_URL             = "https://${var.app_domain_name}"
+    S3_BUCKET                = aws_s3_bucket.mapshots.bucket
+    CLOUDFRONT_BASE_URL      = "https://${aws_cloudfront_distribution.mapshots.domain_name}"
+    SQS_S3_CLEANUP_QUEUE_URL = aws_sqs_queue.s3_cleanup.url
+    PRESIGNED_URL_EXPIRY     = tostring(var.presigned_url_expiry)
+    GITHUB_CLIENT_ID         = var.github_client_id
+    DISCORD_CLIENT_ID        = var.discord_client_id
     # /var/task is read-only and Bundler needs a writable home in every function.
     HOME = "/tmp"
   }
@@ -117,34 +116,6 @@ resource "aws_lambda_function" "s3_cleanup" {
   }
 }
 
-resource "aws_lambda_function" "storage_calculation" {
-  function_name = local.lambda_function_names["storage-calculation"]
-  role          = aws_iam_role.app.arn
-  runtime       = var.lambda_runtime
-  architectures = ["arm64"]
-  handler       = "lambda_function.LambdaFunction::StorageCalculation.process"
-  memory_size   = 512
-  timeout       = local.worker_timeout_seconds
-
-  filename         = data.archive_file.placeholder.output_path
-  source_code_hash = data.archive_file.placeholder.output_base64sha256
-
-  vpc_config {
-    subnet_ids         = local.lambda_vpc.subnet_ids
-    security_group_ids = local.lambda_vpc.security_group_ids
-  }
-
-  environment {
-    variables = local.lambda_environment
-  }
-
-  depends_on = [aws_cloudwatch_log_group.lambda, aws_iam_role_policy_attachment.app_lambda_vpc]
-
-  lifecycle {
-    ignore_changes = [filename, source_code_hash]
-  }
-}
-
 resource "aws_lambda_function" "task" {
   function_name = local.lambda_function_names["task"]
   role          = aws_iam_role.app.arn
@@ -180,17 +151,6 @@ resource "aws_lambda_event_source_mapping" "s3_cleanup" {
   function_response_types = ["ReportBatchItemFailures"]
 
   # Keeps database connections within what the RDS instance accepts.
-  scaling_config {
-    maximum_concurrency = 2
-  }
-}
-
-resource "aws_lambda_event_source_mapping" "storage_calculation" {
-  event_source_arn        = aws_sqs_queue.storage_calculation.arn
-  function_name           = aws_lambda_function.storage_calculation.arn
-  batch_size              = 1
-  function_response_types = ["ReportBatchItemFailures"]
-
   scaling_config {
     maximum_concurrency = 2
   }

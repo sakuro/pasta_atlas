@@ -13,7 +13,7 @@ pasta_atlas runs on AWS Lambda behind CloudFront. DNS is managed by Gandi. The r
 | ACM | TLS certificates for the CloudFront distributions |
 | RDS (PostgreSQL) | Database |
 | S3 | Tile images and mapshot.json (`mapshots`), static assets (`assets`), deploy packages (`artifacts`) |
-| SQS | Async queues for S3 object deletion and storage calculation, each with a dead-letter queue |
+| SQS | Async queue for S3 object deletion, with a dead-letter queue |
 | VPC | Default VPC shared by RDS and Lambda; Lambda runs in added private subnets with a NAT instance (fck-nat) for outbound access |
 | SSM Parameter Store | Runtime secrets (SecureString) |
 | CloudWatch Logs | Application logs |

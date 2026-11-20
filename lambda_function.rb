@@ -15,20 +15,12 @@ require_relative "lib/lambda_support/task_runner"
 LambdaSupport::Bootstrap.load_secrets
 require "hanami/prepare"
 require_relative "lib/workers/s3_cleanup_processor"
-require_relative "lib/workers/storage_calculation_processor"
 
 # Entry points of the event functions. The app function does not use this file: it
 # runs Puma through run.sh and the Lambda Web Adapter.
 module LambdaFunction
   module S3Cleanup
     PROCESSOR = S3CleanupProcessor.new(operation: Hanami.app["operations.delete_s3_prefix"])
-    private_constant :PROCESSOR
-
-    def self.process(event:, **) = LambdaSupport::SqsBatch.process(event) {|body| PROCESSOR.call(body) }
-  end
-
-  module StorageCalculation
-    PROCESSOR = StorageCalculationProcessor.new(operation: Hanami.app["operations.generations.calculate_storage"])
     private_constant :PROCESSOR
 
     def self.process(event:, **) = LambdaSupport::SqsBatch.process(event) {|body| PROCESSOR.call(body) }

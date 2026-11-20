@@ -41,10 +41,9 @@ resource "aws_s3_bucket_lifecycle_configuration" "lambda_artifacts" {
 
 locals {
   lambda_function_names = {
-    app                 = "${var.app_name}-${var.environment}-app"
-    s3-cleanup          = "${var.app_name}-${var.environment}-s3-cleanup"
-    storage-calculation = "${var.app_name}-${var.environment}-storage-calculation"
-    task                = "${var.app_name}-${var.environment}-task"
+    app        = "${var.app_name}-${var.environment}-app"
+    s3-cleanup = "${var.app_name}-${var.environment}-s3-cleanup"
+    task       = "${var.app_name}-${var.environment}-task"
   }
 }
 

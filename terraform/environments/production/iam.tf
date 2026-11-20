@@ -91,7 +91,6 @@ data "aws_iam_policy_document" "app_sqs" {
     ]
     resources = [
       aws_sqs_queue.s3_cleanup.arn,
-      aws_sqs_queue.storage_calculation.arn,
     ]
   }
 }

@@ -5,7 +5,3 @@ output "s3_bucket_name" {
 output "sqs_s3_cleanup_queue_url" {
   value = aws_sqs_queue.s3_cleanup.url
 }
-
-output "sqs_storage_calculation_queue_url" {
-  value = aws_sqs_queue.storage_calculation.url
-}
