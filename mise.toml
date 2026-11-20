@@ -11,7 +11,7 @@ aws-cli = "latest"
 fnox = "latest"
 gitleaks = "latest"
 ruby = "4"
-terraform = "1.15"
+terraform = "1.17.2"
 tflint = "0.62"
 
 [tasks.default]
