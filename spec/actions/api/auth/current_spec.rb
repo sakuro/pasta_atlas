@@ -85,7 +85,13 @@ RSpec.describe PastaAtlas::Actions::API::Auth::Current do
     let(:env) { {"rack.session" => {"user_id" => 999}} }
 
     before do
-      allow(find_user).to receive(:call).with(user_id: 999).and_raise(ROM::TupleCountMismatchError)
+      allow(find_user).to receive(:call).with(user_id: 999).and_return(Failure(:not_found))
+    end
+
+    it "drops the stale user id from the session" do
+      action.call(env)
+
+      expect(env["rack.session"]).not_to have_key("user_id")
     end
 
     it "returns 200 with null user and guest preferences" do

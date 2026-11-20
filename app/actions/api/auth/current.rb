@@ -15,7 +15,9 @@ module PastaAtlas
             user_id = current_user_id(request)
             return json_response(response, {user: nil, preferences: guest_preferences}) if user_id == guest_user_id
 
-            user = find_user.call(user_id:).value!
+            # A session can outlive its user, for example when the account is deleted from another
+            # device. Drop the stale id so that signing in starts from a clean session.
+            user = find_user.call(user_id:).value_or { return forget_user(request, response) }
             profile_data = load_profile.call(user_id:).value!
             preference = load_preferences.call(user_id:).value!
             json_response(response, {
@@ -31,6 +33,12 @@ module PastaAtlas
               }
             })
           rescue ROM::TupleCountMismatchError
+            forget_user(request, response)
+          end
+
+          private def forget_user(request, response)
+            # Session#delete passes the key on as it is, unlike Session#[], and the session is keyed by strings.
+            request.session.delete("user_id")
             json_response(response, {user: nil, preferences: guest_preferences})
           end
 
