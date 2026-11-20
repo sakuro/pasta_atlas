@@ -30,6 +30,12 @@ RSpec.describe LambdaSupport::TaskRunner do
       expect([rake_calls, env]).to eq([["maps:delete"], {"MAP_ULID" => "01ABC"}])
     end
 
+    it "runs the stale upload cleanup through its rake task" do
+      runner.call("task" => "cleanup:stale_uploads")
+
+      expect(rake_calls).to eq(["cleanup:stale_uploads"])
+    end
+
     it "rejects tasks that are not allow-listed" do
       expect { runner.call("task" => "db:drop") }
         .to raise_error(LambdaSupport::TaskRunner::UnknownTask, "unknown task: db:drop")

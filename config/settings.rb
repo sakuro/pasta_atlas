@@ -20,6 +20,7 @@ module PastaAtlas
       uri
     }
     setting :presigned_url_expiry, default: 3600, constructor: Types::Params::Integer
+    setting :stale_upload_days, default: 7, constructor: Types::Params::Integer
     setting :sqs_s3_cleanup_queue_url, constructor: Types::String
   end
 end

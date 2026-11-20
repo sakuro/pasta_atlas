@@ -100,3 +100,22 @@ resource "aws_cloudwatch_metric_alarm" "app_5xx_rate" {
   alarm_actions = [aws_sns_topic.alarms_us_east_1.arn]
   ok_actions    = [aws_sns_topic.alarms_us_east_1.arn]
 }
+
+# The task function runs the migrations and the scheduled cleanup; a failure of either
+# surfaces as an invocation error.
+resource "aws_cloudwatch_metric_alarm" "task_errors" {
+  alarm_name          = "${var.app_name}-${var.environment}-task-errors"
+  alarm_description   = "The task function (migration, seed, map deletion or scheduled cleanup) failed."
+  namespace           = "AWS/Lambda"
+  metric_name         = "Errors"
+  dimensions          = { FunctionName = aws_lambda_function.task.function_name }
+  statistic           = "Sum"
+  period              = 300
+  evaluation_periods  = 1
+  threshold           = 0
+  comparison_operator = "GreaterThanThreshold"
+  treat_missing_data  = "notBreaching"
+
+  alarm_actions = [aws_sns_topic.alarms.arn]
+  ok_actions    = [aws_sns_topic.alarms.arn]
+}
