@@ -41,7 +41,7 @@ group :development do
   gem "rubocop-rake", "~> 0.7.1"
   gem "rubocop-rspec"
   gem "rubocop-sequel", "~> 0.4.1"
-  gem "rubocop-thread_safety", "~> 0.7.3"
+  gem "rubocop-thread_safety", "~> 0.8.0"
 
   gem "redcarpet", "~> 3.6"
   gem "yard", "~> 0.9.43"

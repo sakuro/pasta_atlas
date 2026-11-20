@@ -482,9 +482,9 @@ GEM
     rubocop-sequel (0.4.1)
       lint_roller (~> 1.1)
       rubocop (>= 1.72.1, < 2)
-    rubocop-thread_safety (0.7.3)
+    rubocop-thread_safety (0.8.0)
       lint_roller (~> 1.1)
-      rubocop (~> 1.72, >= 1.72.1)
+      rubocop (~> 1.89)
       rubocop-ast (>= 1.44.0, < 2.0)
     ruby-lsp (0.26.11)
       language_server-protocol (~> 3.17.0)
@@ -581,7 +581,7 @@ DEPENDENCIES
   rubocop-rake (~> 0.7.1)
   rubocop-rspec
   rubocop-sequel (~> 0.4.1)
-  rubocop-thread_safety (~> 0.7.3)
+  rubocop-thread_safety (~> 0.8.0)
   ruby-lsp (~> 0.26.9)
   simplecov (~> 0.22.0)
   tzinfo
@@ -766,7 +766,7 @@ CHECKSUMS
   rubocop-rake (0.7.1) sha256=3797f2b6810c3e9df7376c26d5f44f3475eda59eb1adc38e6f62ecf027cbae4d
   rubocop-rspec (3.10.2) sha256=0b3e2ecc592cd10ecbf0095bb58d1e357905276e069643523cc19eb7495f65e2
   rubocop-sequel (0.4.1) sha256=f325dc470c1e3191a616b41a4bf8cfbb2c3c2f4fbc2eee6286de019ca1f7c113
-  rubocop-thread_safety (0.7.3) sha256=067cdd52fbf5deffc18995437e45b5194236eaff4f71de3375a1f6052e48f431
+  rubocop-thread_safety (0.8.0) sha256=71fe5e7894fb9acfbd4c2dcd394feabc35bd690f75b0bc846e1504d9e31f9034
   ruby-lsp (0.26.11) sha256=4cc8f1587237ff8c9031680b5491df901a82559eeaa1ae96863ffe700b32583d
   ruby-openid (2.9.2) sha256=7f8e39426b9833172a79f4696bc63b66b0d2c766971919a69b3db5be400d17a4
   ruby-progressbar (1.13.0) sha256=80fc9c47a9b640d6834e0dc7b3c94c9df37f08cb072b7761e4a71e22cff29b33
