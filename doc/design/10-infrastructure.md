@@ -17,6 +17,7 @@ pasta_atlas runs on AWS Lambda behind CloudFront. DNS is managed by Gandi. The r
 | VPC | Default VPC shared by RDS and Lambda; Lambda runs in added private subnets with a NAT instance (fck-nat) for outbound access |
 | SSM Parameter Store | Runtime secrets (SecureString) |
 | CloudWatch Logs | Application logs |
+| CloudWatch Alarms | Alarm on messages in the s3-cleanup dead-letter queue, notified through an SNS topic |
 | IAM | Function execution roles (S3/SQS/SSM access), deploy role (CI/CD) |
 
 ACM certificates for CloudFront must be provisioned in us-east-1 (AWS requirement).
