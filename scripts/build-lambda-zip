@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+# Builds dist/lambda.zip inside the Lambda Ruby base image so native gems match the runtime.
+# Requires compiled assets in public/assets and Docker.
+set -euo pipefail
+
+cd "$(dirname "$0")/.."
+mkdir -p dist
+
+docker run --rm --platform linux/arm64 --entrypoint /bin/bash \
+  -v "$PWD":/src:ro -v "$PWD/dist":/out \
+  public.ecr.aws/lambda/ruby:4.0 -c '
+    set -euo pipefail
+    dnf install -y gcc make zip tar libyaml-devel >/dev/null
+    rm -rf /build && mkdir -p /build/public/assets
+    cd /src
+    tar --exclude=public/assets -cf - Gemfile Gemfile.lock Rakefile app config config.ru lib public lambda_function.rb run.sh \
+      | tar -C /build -xf -
+    cp public/assets/assets.json /build/public/assets/
+    cd /build
+    bundle config set --local path vendor/bundle
+    bundle config set --local without development:test
+    bundle install --jobs 4
+    rm -rf vendor/bundle/ruby/*/cache vendor/bundle/ruby/*/doc
+    find vendor/bundle -type f \( -name "*.o" -o -name "*.c" -o -name "*.h" \) -delete
+    rm -f /out/lambda.zip
+    zip -qr /out/lambda.zip .
+  '
+
+echo "Built dist/lambda.zip ($(du -h dist/lambda.zip | cut -f1))"
