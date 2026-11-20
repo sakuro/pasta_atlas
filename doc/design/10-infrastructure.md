@@ -2,30 +2,28 @@
 
 ## Overview
 
-pasta_atlas runs on AWS with container-based deployment. DNS is managed by Gandi.
+pasta_atlas runs on AWS Lambda behind CloudFront. DNS is managed by Gandi. The runtime design, networking, origin protection and deployment are described in [16-lambda-migration.md](16-lambda-migration.md); this document covers the rest.
 
 ## AWS Services
 
 | Service | Role |
 |---|---|
-| ECS Fargate | Application runtime (no EC2 to manage) |
-| ECR | Docker image registry |
-| ALB | HTTPS termination, Gandi CNAME target |
-| ACM | TLS certificate for ALB and CloudFront |
+| Lambda | Application (`app`), one-off tasks (`task`) and SQS workers |
+| CloudFront | `app` distribution (application and static assets) and `mapshots` distribution (CDN for tiles) |
+| ACM | TLS certificates for the CloudFront distributions |
 | RDS (PostgreSQL) | Database |
-| S3 | Tile image and mapshot.json storage |
-| CloudFront | CDN for S3 content and static assets |
-| SQS | Async queue for S3 object deletion requests |
-| VPC | Network isolation; RDS in private subnet |
+| S3 | Tile images and mapshot.json (`mapshots`), static assets (`assets`), deploy packages (`artifacts`) |
+| SQS | Async queues for S3 object deletion and storage calculation, each with a dead-letter queue |
+| VPC | Default VPC shared by RDS and Lambda; Lambda runs in added private subnets with a NAT instance (fck-nat) for outbound access |
 | SSM Parameter Store | Runtime secrets (SecureString) |
-| CloudWatch Logs | Application logs (30-day retention) |
-| IAM | ECS task role (S3/SQS/SSM access), deploy role (CI/CD) |
+| CloudWatch Logs | Application logs |
+| IAM | Function execution roles (S3/SQS/SSM access), deploy role (CI/CD) |
 
-ACM certificates for CloudFront must be provisioned in us-east-1 (AWS requirement). The ALB certificate is provisioned in the primary region (ap-northeast-1).
+ACM certificates for CloudFront must be provisioned in us-east-1 (AWS requirement).
 
 ## Domains
 
-| Environment | Application (ALB) | Assets (CloudFront) |
+| Environment | Application (`app` distribution) | Tiles (`mapshots` distribution) |
 |---|---|---|
 | production | `pasta-atlas.layer8.works` | `maps.pasta-atlas.layer8.works` |
 | development | `pasta-atlas-development.layer8.works` | `maps.pasta-atlas-development.layer8.works` |
@@ -45,61 +43,24 @@ ACM certificates for CloudFront must be provisioned in us-east-1 (AWS requiremen
 
 ## DNS
 
-Gandi manages DNS. No Route 53 is used. The application domain CNAME points to the ALB DNS name; the CDN domain CNAME points to the CloudFront distribution.
+Gandi manages DNS. No Route 53 is used. Both CNAMEs point to their CloudFront distributions.
 
-## Container Deployment
-
-The application runs as an ECS Service backed by Fargate. Each deployment follows this sequence:
-
-1. GitHub Actions builds a Docker image and pushes it to ECR
-2. GitHub Actions updates the ECS Service to trigger a rolling deployment
-3. ECS replaces old tasks with new ones; GitHub Actions waits for stability
-4. GitHub Actions invalidates the CloudFront cache for `/assets/ftl-manifest.json`
-
-Database migrations run as a one-off ECS task using the same image, executed before the service update.
-
-## CI/CD Workflows
+## Deployment and CI/CD
 
 | Workflow | Trigger | Purpose |
 |---|---|---|
 | `ci.yml` | Push to `main`, pull requests | Runs tests and linters |
-| `deploy.yml` | Manual (`workflow_dispatch`) | Builds and deploys to production |
-| `migrate.yml` | Manual (`workflow_dispatch`) | Runs DB migrations in production |
+| `deploy.yml` | Manual (`workflow_dispatch`) | Builds the Lambda package and deploys to production |
+| `migrate.yml` | Manual (`workflow_dispatch`) | Runs DB migrations through the `task` function |
+| `seed.yml` | Manual (`workflow_dispatch`) | Runs DB seed through the `task` function |
+| `delete-map.yml` | Manual (`workflow_dispatch`) | Deletes a map through the `task` function |
 
-### ci.yml
-
-Two parallel jobs:
+`ci.yml` runs two parallel jobs:
 
 - **backend**: spins up PostgreSQL, compiles frontend assets, loads DB structure, then runs `bundle exec rake` (RuboCop + RSpec)
 - **frontend**: runs `npm run type-check`, `npm run lint:frontend`, and `npm run test:frontend`
 
-### deploy.yml
-
-Two sequential jobs:
-
-1. **build**: builds a multi-arch Docker image (`linux/arm64`), pushes to ECR with `:latest` and `:<git-sha>` tags; uses GitHub Actions cache for layer caching
-2. **deploy**: triggers force-new-deployment on both ECS services (`pasta-atlas-production` and `pasta-atlas-production-s3-cleanup-queue-worker`), waits for stability, then invalidates the CloudFront `/assets/ftl-manifest.json` cache entry
-
-### migrate.yml
-
-Runs `bundle exec hanami db migrate` as a Fargate one-off task using the `pasta-atlas-production-migrate` task definition. The workflow retrieves network configuration from the running service, launches the task, waits for it to stop, and checks its exit code.
-
-## Database Migrations
-
-The migrate task definition reuses the same Docker image as the application, overriding the command to `bundle exec hanami db migrate`.
-
-**Initial schema setup** (e.g., bootstrapping a new environment):
-
-```bash
-# Run as a one-off ECS task or locally against the target database
-bundle exec hanami db structure load
-```
-
-**Ongoing migrations** (each deploy that includes schema changes):
-
-1. Trigger `migrate.yml` via GitHub Actions
-2. The workflow launches the ECS migrate task and waits for it to exit cleanly
-3. Trigger `deploy.yml` to roll out the new application image
+The deploy sequence, rollback and one-off task invocation are described in [16-lambda-migration.md](16-lambda-migration.md#deployment). Run `migrate.yml` before `deploy.yml` when a release contains migrations.
 
 ## S3 Bucket Policy
 
@@ -110,7 +71,7 @@ Principal: cloudfront.amazonaws.com
 Condition: AWS:SourceArn == <mapshots distribution ARN>
 ```
 
-The application ECS task role holds `s3:GetObject`, `s3:PutObject`, `s3:DeleteObject`, and `s3:ListBucket` for generating presigned URLs and managing objects.
+The `app` function's execution role holds `s3:GetObject`, `s3:PutObject`, `s3:DeleteObject`, and `s3:ListBucket` for generating presigned URLs and managing objects.
 
 The S3 lifecycle rule that expires objects under the `guest/maps/` prefix after 8 days can be removed once any existing guest data has naturally expired.
 
@@ -124,10 +85,10 @@ Two distributions are provisioned:
 
 | Path | Origin | Cache policy |
 |---|---|---|
-| `/assets/*` | ALB | CachingOptimized (long TTL) |
-| `*` (default) | ALB | CachingDisabled + AllViewerExceptHostHeader |
+| `/assets/*` | S3 `assets` bucket (OAC) | CachingOptimized (long TTL) |
+| `*` (default) | Lambda Function URL | CachingDisabled + AllViewerExceptHostHeader |
 
-Static assets are safe to cache long-term because Vite fingerprints filenames with a content hash. Dynamic responses are not cached.
+Static assets are safe to cache long-term because Vite fingerprints filenames with a content hash. Dynamic responses are not cached. See [16-lambda-migration.md](16-lambda-migration.md#origin-protection) for how the Function URL is protected.
 
 ### `mapshots` — CDN domain (`maps.pasta-atlas.layer8.works`)
 
@@ -140,7 +101,7 @@ Infrastructure is managed under `terraform/environments/`.
 - `production/` is the production root and directly declares the AWS resources used by the application.
 - `local/` contains the local mapshots S3 support used during development.
 
-Terraform manages all infrastructure except ECS Task Definition revisions, which are updated by CI/CD on each deployment.
+Terraform manages all infrastructure. Function code is updated by CI/CD on each deployment.
 
 ## Environments
 

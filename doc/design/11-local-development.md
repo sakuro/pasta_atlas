@@ -108,7 +108,9 @@ Starts all services concurrently via mise:
 | Asset watch (esbuild) | `bundle exec hanami assets watch` |
 | Island watch (Vite) | `npm run dev:islands` |
 | Docker Compose (Floci + PostgreSQL) | `docker compose up` |
-| S3 cleanup queue worker | `bundle exec rake s3:process_cleanup_queue` |
+| SQS queue worker (S3 cleanup, storage calculation) | `bundle exec rake s3:process_queues` |
+
+Production runs the same message handling in Lambda functions triggered by SQS (see [16-lambda-migration.md](16-lambda-migration.md)).
 
 Access the app at **http://localhost:2300**.
 

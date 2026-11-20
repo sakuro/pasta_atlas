@@ -7,9 +7,9 @@ require "uri"
 module PastaAtlas
   module Middleware
     # Corrects rack.url_scheme and HTTP_HOST when running behind a reverse proxy
-    # (CloudFront → ALB → ECS) that uses HTTP internally.
+    # (CloudFront → Lambda Function URL) that uses HTTP internally.
     # Without this, Rack::OpenID's return_to verification fails because req.url
-    # reflects the internal HTTP scheme and ALB hostname instead of the public HTTPS URL.
+    # reflects the internal HTTP scheme and Function URL hostname instead of the public HTTPS URL.
     class ReverseProxyFix
       def initialize(app, base_url:)
         @app = app

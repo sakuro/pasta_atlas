@@ -56,9 +56,9 @@ All functions share one zip. Only `app` attaches the Lambda Web Adapter layer (v
 
 ### Package
 
-- The zip holds `vendor/bundle` (about 88 MB), the application code, `config.ru`, `run.sh` and `public/assets/assets.json`. The unzipped size is about 90 MB against the 250 MB limit.
-- `public/assets` (about 51 MB) is served from S3 and not included except for `assets.json`.
-- The build runs inside `public.ecr.aws/lambda/ruby:4.0` with `gcc` installed, so native gems match the runtime (Amazon Linux 2023). Build artifacts (`*.o`, `*.c`, `*.h`) are removed.
+- The zip holds `vendor/bundle`, the application code, `config.ru` and `run.sh`. Measured size is about 26 MB zipped and 69 MB unzipped, against the 250 MB limit.
+- `public/assets` (about 51 MB) is served from S3. `public/` in the zip contains only the 404/500 pages and `assets/assets.json`.
+- The build runs inside `public.ecr.aws/lambda/ruby:4.0` with `gcc`, `make`, `zip`, `tar` and `libyaml-devel` installed (psych builds from source), so native gems match the runtime (Amazon Linux 2023). Build artifacts (`*.o`, `*.c`, `*.h`) are removed and file modes are normalised.
 - `pg` needs no system libpq: `Gemfile.lock` carries the precompiled `aarch64-linux` build, which bundles libpq.
 - The `Dockerfile` is removed. ECR is no longer needed.
 
@@ -71,7 +71,7 @@ All functions share one zip. Only `app` attaches the Lambda Web Adapter layer (v
 All resources stay in the default VPC. Its subnets are public, and Lambda ENIs have no public IPv4 address, so a function in them cannot reach the internet even with an internet gateway. Outbound access is needed for OAuth providers (GitHub, Discord, Steam) and SQS.
 
 - Add private subnets in two availability zones, using unused CIDR ranges of the default VPC.
-- Run one fck-nat instance (t4g.nano, Auto Scaling group with min = max = 1, Elastic IP) in an existing public subnet. The private route tables send `0.0.0.0/0` to it.
+- Run one fck-nat instance (t4g.nano, Auto Scaling group with min = max = 1, Elastic IP) in an existing public subnet. The private route tables send `0.0.0.0/0` to it. The fck-nat Terraform module is pinned to 1.3.0; the AWS provider has since been upgraded to `~> 6.45` (needed for the `ruby4.0` runtime and `invoked_via_function_url` on `aws_lambda_permission`), so a newer module is possible as a follow-up.
 - Add an S3 gateway endpoint (free) so S3 traffic bypasses the NAT instance. SQS goes through the NAT instance; an interface endpoint costs more than it saves.
 - All four functions run in the private subnets and reuse the existing `app` security group, which RDS already allows.
 - The bastion is unchanged (created only when `create_bastion` is true).
@@ -93,7 +93,7 @@ Decision: the Function URL uses `AuthType NONE`. CloudFront adds a secret header
 
 - A dedicated bucket `pasta-atlas-production-assets` is served through the `app` distribution for `/assets/*`, using OAC and `CachingOptimized`.
 - Deployment runs `aws s3 sync` of `public/assets` before the function code is updated, without `--delete`, so previous fingerprinted files remain valid during and after a rollout.
-- Fingerprinted files get a long `Cache-Control` (`immutable`). Mutable files (`ftl-manifest.json`) get a short one and are invalidated on each deployment, as today.
+- Fingerprinted files get `Cache-Control: public, max-age=31536000, immutable`. `ftl-manifest.json` gets `max-age=300` and is invalidated on each deployment.
 
 ## Secrets
 
@@ -112,18 +112,20 @@ Non-secret configuration is set as ordinary Lambda environment variables from Te
 
 Three GitHub Actions workflows run one-off ECS tasks today from the same task definition: `migrate.yml` (`hanami db migrate`), `seed.yml` (`hanami db seed`) and `delete-map.yml` (`rake maps:delete` with `MAP_ULID`). They are replaced by one `task` function that accepts an event naming an allow-listed task (`db:migrate`, `db:seed`, `maps:delete`) and runs it in-process. The maximum timeout of 15 minutes applies.
 
-The structure dump after migration is skipped (`hanami db migrate --no-dump`); the current Dockerfile achieves the same by replacing `pg_dump` with a stub. `scripts/seed-db` invokes the function instead of an ECS task.
+The structure dump after migration is skipped (`hanami db migrate --no-dump`). `scripts/seed-db` invokes the function instead of an ECS task.
+
+The function is invoked with `--cli-read-timeout 0` and without CLI retries (`scripts/invoke-lambda-task`), since a retry after a client timeout would run the task, for example a migration, a second time.
 
 ## Deployment
 
 `deploy.yml` becomes:
 
-1. Build the zip in the Lambda base image and upload it to S3.
-2. Sync assets to S3.
-3. Update the code of all functions and publish versions.
+1. Build the zip in the Lambda base image and upload it to the artifacts bucket as `<sha>.zip` (90-day lifecycle).
+2. Sync assets to S3 without `--delete`.
+3. Update the code of all functions from the zip. No Lambda versions are published.
 4. Invalidate `/assets/ftl-manifest.json`.
 
-`migrate.yml`, `seed.yml` and `delete-map.yml` become manual invocations of the `task` function. Migrations run before `deploy.yml`, as today. Rolling back application code uses Lambda versions.
+`migrate.yml`, `seed.yml` and `delete-map.yml` become manual invocations of the `task` function. Migrations run before `deploy.yml`, as today. Rolling back means re-running the code update with the zip of an earlier commit from the artifacts bucket.
 
 ## Cutover
 
@@ -146,12 +148,12 @@ Local development is unchanged: Hanami runs directly, with PostgreSQL and floci 
 
 - The local polling worker is kept for SQS, sharing `handle` with the Lambda handlers, so local runs follow the production message path.
 - Guest cleanup remains a manual rake task.
-- [11-local-development.md](11-local-development.md) needs its process list corrected (`rake s3:process_queues`).
+- The process list in [11-local-development.md](11-local-development.md) uses `rake s3:process_queues`.
 
 ## Tooling
 
-- The Dockerfile pins are removed, so no Renovate exclusion is needed for Ruby. `mise.toml` (`ruby = "4"`) and CI (`ruby-version: "4.0"`) are unchanged.
-- Renovate must not bump the build image `public.ecr.aws/lambda/ruby` to a new minor version by itself; the Terraform `runtime` has to change together with it.
+- `mise.toml` (`ruby = "4"`) and CI (`ruby-version: "4.0"`) are unchanged.
+- `renovate.json` disables major and minor updates of `public.ecr.aws/lambda/ruby`. Changing the Ruby minor version is manual: the Terraform runtime, the tag in `scripts/build-lambda-zip` and CI change together.
 
 ## Cost estimate
 
@@ -162,21 +164,18 @@ Local development is unchanged: Hanami runs directly, with PostgreSQL and floci 
 | S3, CloudFront, Lambda, SQS | a few dollars at most |
 | Total | about $30 |
 
-The estimate is unmeasured. Check Cost Explorer after the migration. The RDS-managed master user secret accounts for the $0.40 Secrets Manager charge.
+The estimate is unmeasured. Check Cost Explorer after the migration. The RDS-managed master user secret accounts for the Secrets Manager charge.
 
 ## Items to verify
 
-Verified locally with the Lambda runtime emulator: the Web Adapter layer with Puma on the managed `ruby:4.0` image, and `pg` without system libpq. Not yet verified:
+Verified locally: the Web Adapter layer with Puma on the managed `ruby:4.0` image, `pg` without system libpq, the `task` function running `db:migrate`, `db:seed` and `maps:delete` in-process, Rakefile loading, `lambda_function.rb` under Hanami boot, and the secrets loader. The account's Lambda concurrency quota is 1000, so reserved concurrency of 10 is fine. Not yet verified on real AWS:
 
-- Hanami boot and cold start duration on real Lambda.
+- Hanami boot and cold start duration (including the SSM call).
 - Database connectivity from the private subnets.
 - OAuth callback URLs with the Function URL `Host` header.
-- Running `db:migrate`, `db:seed` and `maps:delete` in-process in the `task` function.
-- The account's Lambda concurrency quota; a reserved concurrency limit needs at least 10 unreserved executions left.
 - The current fck-nat AMI and module.
-- The secrets loader and its cold start cost.
 
 ## Follow-ups
 
 - Remove the guest cleanup: `Operations::CleanupGuestMaps`, `rake cleanup:guest_maps`, `delete_expired`, `delete_guest_orphans`, the `expire-guest` lifecycle rule and the related design notes. Guest uploads were removed in #43, and `Uploads::Create` now sets `expires_at: nil`. Before removal, confirm that no guest-owned maps or generations with `expires_at` remain in production. Dropping the `expires_at` column is a separate decision.
-- Update `10-infrastructure.md` (it describes RDS in a private subnet, but the Terraform uses the default VPC), `11-local-development.md` and `14-secrets-management.md` after implementation.
+- Upgrade the fck-nat module (see [Networking](#networking)).
