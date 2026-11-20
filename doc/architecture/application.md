@@ -8,50 +8,50 @@
 
 ```
 pasta_atlas/
-  app/                   # Application code (Hanami)
-    actions/             # HTTP actions (SPA shell + JSON API)
-      auth/              # OAuth callbacks, registration, session
-      spa/               # SPA shell delivery
-      api/               # JSON API
-        auth/
-        maps/
-        uploads/
-        users/
-        pages/
-    views/               # Hanami views (HTML rendering)
-    templates/           # ERB templates
-    relations/           # ROM relations
-    repos/               # Repositories
-    structs/             # Immutable value objects (ROM structs)
-    values/              # Non-ROM value objects
-    middleware/          # Rack middleware
-    operations/          # Use cases (orchestrate repos, S3, etc.)
-  frontend/              # Vite source (SPA)
-    app.tsx              # Entry point (routing, providers)
-    pages/               # Page components (MapsIndexPage, MapViewerPage, UserPage, …)
-      map_viewer/        # MapViewer and Leaflet subcomponents
-      user/              # UserPage tab components
-    layout/
-      AppLayout.tsx      # Shared navbar, upload button, footer
-    components/          # Shared SolidJS components
-    contexts/            # AuthContext, ToastContext
-    lib/                 # l10n.ts, display-settings.ts
-    factorio-icons/      # Factorio icon assets
-  vite.config.ts
-  tsconfig.json
-  package.json           # single package.json for both hanami-assets and Vite
-  public/                # Static files served by Hanami
-  spec/                  # RSpec tests
-  doc/                   # Documentation
+  app/                     # Application code (Hanami)
+    action.rb, operation.rb, view.rb   # Base classes
+    actions/               # HTTP actions
+      auth/                # OAuth callbacks (GitHub, Discord, Steam), failure, registration, session
+      spa/                 # SPA shell delivery (shell, map_viewer, user, not_found)
+      api/                 # JSON API (auth, maps, pages, uploads, users)
+    assets/                # hanami-assets sources: css/, js/, images/, translations/ (.ftl)
+    db/                    # ROM base classes (repo, relation, struct)
+    middleware/            # Rack middleware (origin_verify, reverse_proxy_fix)
+    operations/            # Use cases (maps, uploads, user, registrations, S3 cleanup)
+    page_content/          # Static page HTML per locale (about, privacy_policy, terms_of_service)
+    relations/             # ROM relations
+    repos/                 # Repositories
+    resolvers/             # user_resolver, locale_resolver
+    structs/               # Immutable value objects (ROM structs)
+    templates/             # ERB templates (layouts/app, spa/shell)
+    values/                # Non-ROM value objects
+    views/                 # Hanami views
+  frontend/                # Vite source (SPA)
+    app.tsx                # Entry point (routing, providers)
+    pages/                 # Page components; map_viewer/ (viewer, leaflet/, richtext/) and user/ (tabs)
+    layout/AppLayout.tsx   # Navbar, content area, footer
+    components/            # Shared components; upload_modal/ holds the upload dialogs
+    contexts/              # AuthContext, ToastContext
+    lib/                   # l10n, display-settings, format-ticks, share-url
+    factorio-icons/        # Factorio icon assets
+  config/                  # Hanami config, routes, db/ (migrations, structure.sql), assets.js
+  lambda_function.rb       # Handlers of the SQS and task Lambda functions
+  run.sh                   # Starts Puma behind the Lambda Web Adapter
+  scripts/                 # Build and invocation scripts
+  terraform/               # Infrastructure
+  spec/                    # RSpec tests
+  doc/                     # Documentation
 ```
+
+`vite.config.ts`, `tsconfig.json` and a single `package.json` serve both hanami-assets and Vite.
 
 ## Responsibility split
 
 | Layer | Location | Examples |
 |---|---|---|
-| SPA shell delivery | `app/actions/spa/` + `app/views/spa/` | Validate route, set 404 if needed, render `<div id="app"></div>` |
+| SPA shell delivery | `app/actions/spa/` + `app/views/spa/` | Validate the route (map exists, user exists and is public), set 404 or 403 if needed, render `<div id="app"></div>` |
 | JSON delivery | `app/actions/api/` | Parse request, call operation, render JSON |
-| Use cases | `app/operations/` | Create map, start upload, issue presigned URLs, generate avatar URL |
+| Use cases | `app/operations/` | Find or create a map, start an upload, issue presigned POSTs, verify upload batches, issue an avatar upload URL |
 | Data access | `app/repos/` | Find/persist domain entities |
 | DB mapping | `app/relations/` | ROM relation definitions |
 
@@ -64,7 +64,7 @@ Operations use `Dry::Operation`. The `call` method runs inside `steps`, which wr
 - The last expression in `call` must be a **raw value** — never wrap it in `Success`
 - Intermediate results are obtained via `step`; a `Failure` from `step` short-circuits `call`
 - Private helpers return `Success`/`Failure`; `call` itself never calls `return Failure(...)`
-- Auth/authz failures use Rack-standard symbols: `:forbidden`, `:unauthorized`, `:not_found`
+- Authorization failures use Rack status symbols: `:forbidden`, `:unauthorized`, `:not_found`
 
 ```ruby
 def call(user_id:, user_name:)
@@ -79,18 +79,21 @@ end
 
 ### Action
 
-Actions handle HTTP concerns only. Auth/authz is delegated to Operations.
+Actions handle HTTP concerns. Parameter validation (`:bad_request`) and checks that need only the request or session (pending OAuth data, rejecting the guest) stay in the Action; ownership and domain rules belong to Operations.
 
-- Pass `current_user_id(request)` directly to the Operation; do not check login state in Actions
-- Hanami's `halt` accepts Rack-standard symbols, so Operation failures map directly: `:forbidden` → 403, `:unauthorized` → 401, `:not_found` → 404
+- Pass `current_user_id(request)` directly to the Operation
+- `halt` accepts only status names known to Rack, plus Hanami's `:unprocessable_entity` and `:unprocessable_content`. Any other symbol raises `Hanami::Action::UnknownHttpStatusError` and the client gets a 500.
+- Failures that name a status can therefore go straight to `halt`: `:forbidden`, `:unauthorized`, `:not_found`, `:conflict`, `:unprocessable_entity`, `:bad_gateway`. Domain failures (`:incomplete`, `:s3_error`, `[:invalid, error_key]`, …) must be matched by the Action before the generic branch and mapped to a status.
 
 ```ruby
-result = some_operation.call(user_id: current_user_id(request), ...)
-case result
-in Failure(status); halt status
-in Success(value);  ...
+case some_operation.call(user_id: current_user_id(request), ...)
+in Failure(:incomplete)         then halt :unprocessable_content
+in Failure(Symbol => status)    then halt status
+in Success(value)               then ...
 end
 ```
+
+Actions under `app/actions/auth/` must write `Dry::Monads::Result::Failure`, because `Auth::Failure` is an action class and shadows the monad.
 
 ## Why not slices
 
@@ -104,11 +107,11 @@ Introducing a `web` slice would place repos and operations in the app container 
 
 ## Asset Pipeline
 
-Two build pipelines run in parallel:
+Two build pipelines write to `public/assets/`:
 
-| Pipeline | Tool | Output | Handles |
-|---|---|---|---|
-| General assets | hanami-assets (esbuild) | `public/assets/` | Global CSS, fonts, images (files under `app/assets/`) |
-| SPA bundle | Vite + `@solidjs/vite-plugin` | `public/assets/` | Single SPA entry (`frontend/app.tsx`) |
+| Pipeline | Tool | Handles |
+|---|---|---|
+| General assets | hanami-assets (esbuild), configured in `config/assets.js` | `app/assets/`: `js/app.ts` (imports Bulma, FontAwesome and `css/app.css`), images, and the `.ftl` translation files (fingerprinted and listed in `ftl-manifest.json`) |
+| SPA bundle | Vite + `@solidjs/vite-plugin` (`npm run build:frontend`, `npm run dev:frontend`) | The single entry `frontend/app.tsx`; it imports the same CSS again, so the bundle emits its own `app.css` |
 
-Hanami serves both from the same origin — no CORS configuration needed. A custom `hanamiViteEntries` Vite plugin writes `vite-entries.json` after each build so hanami-assets can resolve the content-hashed filenames.
+Hanami serves both from the same origin. The `hanamiViteEntries` plugin in `vite.config.ts` writes `vite-entries.json` with the hashed `app.js` and `app.css` names, and `config/assets.js` merges it into `assets.json` after each hanami-assets build. The `javascript_tag "app"` and `stylesheet_tag "app"` helpers in the layout therefore resolve to the Vite bundle.

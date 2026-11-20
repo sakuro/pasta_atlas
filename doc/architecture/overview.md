@@ -16,4 +16,5 @@ Pasta Atlas is a web application for uploading and browsing Factorio map screens
 | Frontend | Solid.js, Bulma, Leaflet.js |
 | Database | PostgreSQL |
 | Storage | AWS S3 + CloudFront |
-| Infrastructure | Terraform |
+| Authentication | OmniAuth (GitHub, Discord, Steam) |
+| Infrastructure | Terraform; AWS Lambda, RDS, SQS, CloudFront |
