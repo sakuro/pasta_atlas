@@ -48,7 +48,7 @@ resource "aws_iam_role_policy_attachment" "app_s3" {
   policy_arn = aws_iam_policy.app_s3.arn
 }
 
-# SSM read permission for the app to fetch SESSION_SECRET at startup
+# SSM read permission for the Lambda SSM loader, which fetches secrets at init
 resource "aws_iam_policy" "app_ssm" {
   name   = "${var.app_name}-${var.environment}-ssm"
   policy = data.aws_iam_policy_document.app_ssm.json
@@ -99,9 +99,4 @@ data "aws_iam_policy_document" "app_sqs" {
 resource "aws_iam_role_policy_attachment" "app_sqs" {
   role       = aws_iam_role.app.name
   policy_arn = aws_iam_policy.app_sqs.arn
-}
-
-resource "aws_iam_role_policy_attachment" "execution_ssm" {
-  role       = aws_iam_role.execution.name
-  policy_arn = aws_iam_policy.app_ssm.arn
 }

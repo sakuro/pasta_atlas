@@ -63,26 +63,6 @@ variable "discord_client_id" {
   default = "1506102791695761548"
 }
 
-variable "container_port" {
-  type    = number
-  default = 3000
-}
-
-variable "container_cpu" {
-  type    = number
-  default = 256
-}
-
-variable "container_memory" {
-  type    = number
-  default = 512
-}
-
-variable "app_desired_count" {
-  type    = number
-  default = 1
-}
-
 variable "create_bastion" {
   type    = bool
   default = false
