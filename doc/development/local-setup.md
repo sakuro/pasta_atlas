@@ -13,7 +13,8 @@ Local development uses Docker-based substitutes for AWS services. No AWS account
 
 ## Prerequisites
 
-- [mise](https://mise.jdx.dev/) — manages Ruby, Node.js, Terraform, and other tools
+- [mise](https://mise.jdx.dev/) — manages Ruby, Terraform, the AWS CLI and other tools
+- Node.js and npm (installed separately; mise does not manage them)
 - Docker
 
 ## First-time setup
@@ -128,7 +129,7 @@ Starts all services concurrently via mise:
 |---|---|
 | Hanami web server | `bundle exec hanami server` |
 | Asset watch (esbuild) | `bundle exec hanami assets watch` |
-| Island watch (Vite) | `npm run dev:islands` |
+| Frontend watch (Vite) | `npm run dev:frontend` |
 | Docker Compose (Floci + PostgreSQL) | `docker compose up` |
 | SQS queue worker (S3 cleanup) | `bundle exec rake s3:process_queues` |
 
@@ -141,12 +142,22 @@ Access the app at **http://localhost:2300**.
 mise loads env files in this order for development:
 
 ```
-.env                    # base defaults (committed)
 .env.development        # dev defaults (committed)
 .env.development.local  # local overrides (gitignored)
-.env.local              # any other local overrides (gitignored)
+.env.local              # any other local overrides
 ```
 
 `.env.development` contains working dummy values for all settings except OAuth credentials. `GITHUB_CLIENT_ID`, `GITHUB_CLIENT_SECRET`, `DISCORD_CLIENT_ID`, `DISCORD_CLIENT_SECRET`, and `STEAM_WEB_API_KEY` need real values and belong in `.env.development.local`.
 
 For tests, `.env.test` provides all dummy values and no additional configuration is needed. Override via `.env.test.local` if necessary.
+
+## Running the tests
+
+```bash
+bundle exec rake                 # RSpec and RuboCop
+npm run type-check
+npm run lint:frontend
+npm run test:frontend -- --run   # without --run, Vitest stays in watch mode
+```
+
+Request specs need compiled assets (`bundle exec hanami assets compile`) and a prepared test database (`HANAMI_ENV=test bundle exec hanami db structure load` and `db seed`); CI does both before running the specs.

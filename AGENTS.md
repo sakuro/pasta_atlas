@@ -25,13 +25,13 @@ npm run build:frontend    # Production build
 npm run dev:frontend      # Watch mode for development
 npm run type-check        # TypeScript type checking
 npm run lint:frontend     # ESLint on .ts/.tsx files
-npm run test:frontend     # Run Vitest tests
+npm run test:frontend -- --run   # Run Vitest tests once
 ```
 
 ### Development server
 
 ```bash
-bin/dev   # Start all dev services via mise: Hanami, Vite watch, PostgreSQL (Docker Compose), and floci (AWS S3 emulator)
+bin/dev   # Start all dev services via mise: Hanami server, hanami assets watch, Vite watch, Docker Compose (PostgreSQL and the floci AWS emulator), and the SQS cleanup worker (rake s3:process_queues)
 ```
 
 ## Architecture
@@ -52,20 +52,20 @@ Actions handle HTTP concerns (params, session, response codes). Operations conta
 
 - **Map** — a Factorio world tracked by `mapshot_map_id` (unique per user); `id` is bigserial primary key, `ulid` is a separate public identifier column
 - **Generation** — a snapshot of a Map at a given game tick; references S3 `metadata_s3_key` (mapshot.json)
-- **Upload** — tracks a tile-image upload session for a Generation (status: pending/complete/failed)
+- **Upload** — tracks a tile-image upload session for a Generation (status pending/complete/failed, derived from upload events; verification status pending/passed/failed)
 - **User / UserProfile / UserPreference / Credential** — account, display info, locale+timezone preferences, OAuth credential
 
 ### Authentication
 
-GitHub and Discord OAuth are supported. On first login, `session[:pending_auth]` holds OAuth data until the user chooses a username. After login, `session[:user_id]` is set. No session cookie exists for unauthenticated visitors. A special "guest" User is used when no session is present.
+GitHub, Discord and Steam are supported. On first login, `session[:pending_auth]` holds OAuth data until the user chooses a username. After login, `session[:user_id]` is set. No session cookie exists for unauthenticated visitors. A special "guest" User is used when no session is present.
 
 ### S3 integration
 
-The server issues presigned URLs; the frontend uploads tile images directly to S3. CloudFront serves the images. floci (AWS S3 emulator) is used in development.
+The server issues presigned POSTs; the frontend uploads tile images directly to S3 (avatars use a presigned URL). CloudFront serves the images. Deleted maps' S3 prefixes are removed asynchronously through an SQS queue (`rake s3:process_queues` in development, a Lambda function in production). floci (AWS emulator) is used in development.
 
 ### Frontend
 
-The frontend is a SolidJS SPA. It is bundled by Vite into `public/assets/` and served as a single entry point. Bulma CSS + FontAwesome for styling.
+The frontend is a SolidJS SPA. The SPA is bundled by Vite (`frontend/app.tsx`) into `public/assets/`; hanami-assets (esbuild) builds the CSS and JS of the HTML shell. Bulma CSS + FontAwesome for styling.
 
 ## Documentation
 
