@@ -397,7 +397,7 @@ GEM
     regexp_parser (2.13.4)
     reline (0.7.0)
       io-console (~> 0.5)
-    repl_type_completor (0.1.17)
+    repl_type_completor (0.1.18)
       prism (>= 1.0)
       rbs (>= 2.7.0)
     rexml (3.4.4)
@@ -745,7 +745,7 @@ CHECKSUMS
   redcarpet (3.6.1) sha256=d444910e6aa55480c6bcdc0cdb057626e8a32c054c29e793fa642ba2f155f445
   regexp_parser (2.13.4) sha256=1d0547814f57e6f00946957bd0ca201bc42f42cfb08eee89df60998aedcd8a3b
   reline (0.7.0) sha256=5b012d8e55dbf9d450f12bde2cf7d15ff546ae80b3f8f3b30e570d431815583d
-  repl_type_completor (0.1.17) sha256=885c1a13e2cc79ad7f02d9f8d4bc27a6fa5e0eb26c3235498eb3bd621492c541
+  repl_type_completor (0.1.18) sha256=38f6f99076512d3f38f1a0fe177226d2260908d1220dc5294877a45370010f39
   rexml (3.4.4) sha256=19e0a2c3425dfbf2d4fc1189747bdb2f849b6c5e74180401b15734bc97b5d142
   rom (5.4.3) sha256=dc8925ba216e9635651edbbb1b4ddc0f145782a100e78458434e5f0aacfec2c8
   rom-changeset (5.4.0) sha256=503b9d2ad082743a28c06da70d431c7f12c18c4c0bca7f90c66d5aa2e13db898
