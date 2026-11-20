@@ -28,7 +28,7 @@ jobs:
       DATABASE_URL: postgres://pasta_atlas:pasta_atlas@localhost:5432/pasta_atlas_test
 
     steps:
-      - uses: actions/checkout@v6.1.0
+      - uses: actions/checkout@v7.0.1
         with:
           persist-credentials: false
 
@@ -61,7 +61,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v6.1.0
+      - uses: actions/checkout@v7.0.1
         with:
           persist-credentials: false
 
@@ -88,7 +88,7 @@ jobs:
       contents: read
 
     steps:
-      - uses: actions/checkout@v6.1.0
+      - uses: actions/checkout@v7.0.1
         with:
           persist-credentials: false
 
