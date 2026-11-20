@@ -97,3 +97,9 @@ variable "app_reserved_concurrency" {
   type    = number
   default = 10
 }
+
+variable "alarm_email" {
+  description = "Address that receives CloudWatch alarm notifications. The subscription must be confirmed from the email."
+  type        = string
+  default     = null
+}

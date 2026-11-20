@@ -25,6 +25,8 @@ pasta-atlas/
 | `lambda_support.tf` | Origin secret, artifacts bucket, log groups |
 | `rds.tf` | RDS PostgreSQL instance |
 | `iam.tf` | IAM roles and policies |
+| `ci_role.tf` | GitHub Actions OIDC role and its policies |
+| `alarms.tf` | SNS topic and CloudWatch alarm for the dead-letter queue (set `alarm_email` to subscribe) |
 | `ssm.tf` | SSM parameters (secrets) |
 | `sqs.tf` | SQS queue for S3 cleanup |
 | `outputs.tf` | `rds_endpoint`, bucket and CloudFront outputs |
