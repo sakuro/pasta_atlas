@@ -195,7 +195,7 @@ GEM
       json (>= 2.7.2)
       rack-session
       zeitwerk (~> 2.6)
-    hanami-assets (2.3.0)
+    hanami-assets (3.0.0)
       zeitwerk (~> 2.6)
     hanami-cli (2.3.5)
       bundler (>= 2.1)
@@ -553,7 +553,7 @@ DEPENDENCIES
   dry-types (~> 1.7)
   foxtail-tools
   hanami (~> 2.3.0)
-  hanami-assets (~> 2.3.0)
+  hanami-assets (~> 3.0.0)
   hanami-controller (~> 2.3.0)
   hanami-db (~> 2.3.0)
   hanami-reloader (~> 2.3.0)
@@ -660,7 +660,7 @@ CHECKSUMS
   guard-compat (1.2.1) sha256=3ad21ab0070107f92edfd82610b5cdc2fb8e368851e72362ada9703443d646fe
   guard-puma (0.9.2) sha256=a8a9f7938b063737c6ed68cbc029cc05d8183426d65f877266fc0c243fe690d9
   hanami (2.3.2) sha256=2f1e7e10d760bd0c3929bcb55a42f38281bd5da507e40b98e62282f52f452e3b
-  hanami-assets (2.3.0) sha256=c396bb735833458d0ceda013f498154eccafcae50c36db7f27cdd50f0560223d
+  hanami-assets (3.0.0) sha256=b9ce246ca12ffa8e79f71194e312a484ffbb0d8fd28582b22869706c0afbd3da
   hanami-cli (2.3.5) sha256=213fc8181e566930821d830eae335b22e93c3e5018f4f22d0c13792d1e76f05e
   hanami-controller (2.3.2) sha256=2821a3284ac394324f23e31012d2d9f679730c105b9bc593dc5e2b7b1c68b1cc
   hanami-db (2.3.0) sha256=d6baa6c16a9321e5132799b8b26c3e6a2e19b8c5515c8785fb1ab94720d94711

@@ -16,7 +16,7 @@
     "@solidjs/router": "^2.0.1",
     "@solidjs/web": "^2.0.3",
     "bulma": "^1.0.4",
-    "hanami-assets": "^2.3.0",
+    "hanami-assets": "^3.0.0",
     "leaflet": "^1.9.4",
     "solid-js": "^2.0.3",
     "unique-names-generator": "^4.7.1"
