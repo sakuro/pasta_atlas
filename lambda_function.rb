@@ -1,5 +1,12 @@
 # frozen_string_literal: true
 
+# The managed runtime adds its own gems (for example a newer bigdecimal) to GEM_PATH.
+# Without Bundler, the first unversioned require (aws-sdk-core during the SSM call)
+# activates the newest copy, and hanami-utils then fails to activate. This must run
+# before anything else requires a gem.
+ENV["BUNDLE_GEMFILE"] ||= File.expand_path("Gemfile", __dir__)
+require "bundler/setup"
+
 require_relative "lib/lambda_support/bootstrap"
 require_relative "lib/lambda_support/sqs_batch"
 require_relative "lib/lambda_support/task_runner"
