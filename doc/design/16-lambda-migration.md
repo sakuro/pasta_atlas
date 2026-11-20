@@ -125,7 +125,7 @@ The function is invoked with `--cli-read-timeout 0` and without CLI retries (`sc
 3. Update the code of all functions from the zip. No Lambda versions are published.
 4. Invalidate `/assets/ftl-manifest.json`.
 
-`migrate.yml`, `seed.yml` and `delete-map.yml` become manual invocations of the `task` function. Migrations run before `deploy.yml`, as today. Rolling back means re-running the code update with the zip of an earlier commit from the artifacts bucket.
+`migrate.yml`, `seed.yml` and `delete-map.yml` become manual invocations of the `task` function. Run `deploy.yml` first and then `migrate.yml`, because only `deploy.yml` updates the code of the `task` function. Migrations must therefore be backward compatible with the previously deployed application code, since the new code runs briefly before the schema change. Rolling back means re-running the code update with the zip of an earlier commit from the artifacts bucket.
 
 ## Cutover
 
@@ -140,7 +140,7 @@ Because the service is stopped, no parallel run or rollback stack is needed.
 
 ### CORS
 
-The `mapshots` bucket configuration in Terraform allows `GET`, `POST` and `PUT` since commit `1e7d45f`, because presigned POST needs `POST` in the preflight. That change was never applied; the live bucket allows `PUT` only. It is applied as part of this migration.
+The `mapshots` bucket configuration in Terraform allows `POST` and `PUT` (`GET` is local-only) since commit `1e7d45f`, because presigned POST needs `POST` in the preflight. That change was never applied; the live bucket allows `PUT` only. It is applied as part of this migration.
 
 ## Local development
 

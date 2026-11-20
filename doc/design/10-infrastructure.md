@@ -60,7 +60,7 @@ Gandi manages DNS. No Route 53 is used. Both CNAMEs point to their CloudFront di
 - **backend**: spins up PostgreSQL, compiles frontend assets, loads DB structure, then runs `bundle exec rake` (RuboCop + RSpec)
 - **frontend**: runs `npm run type-check`, `npm run lint:frontend`, and `npm run test:frontend`
 
-The deploy sequence, rollback and one-off task invocation are described in [16-lambda-migration.md](16-lambda-migration.md#deployment). Run `migrate.yml` before `deploy.yml` when a release contains migrations.
+The deploy sequence, rollback and one-off task invocation are described in [16-lambda-migration.md](16-lambda-migration.md#deployment). When a release contains migrations, run `migrate.yml` after `deploy.yml`.
 
 ## S3 Bucket Policy
 
