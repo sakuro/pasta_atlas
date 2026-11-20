@@ -1,5 +1,6 @@
 import { createSignal } from "solid-js";
 import "../lib/l10n";
+import { buildShareUrl } from "../lib/share-url";
 
 type Props = {
   mapPath: string;
@@ -9,7 +10,7 @@ type Props = {
 export const ShareButtons = (props: Props) => {
   const [copied, setCopied] = createSignal(false);
 
-  const shareUrl = () => `${window.location.origin}${props.mapPath}${window.location.search}`;
+  const shareUrl = () => buildShareUrl(window.location.origin, props.mapPath, window.location.search);
 
   const openShare = (url: string) => window.open(url, "_blank", "noopener,noreferrer");
 
