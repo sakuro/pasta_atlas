@@ -205,8 +205,9 @@ Directory selection uses `<input type="file" webkitdirectory>`. The hidden input
 | User cancels directory picker | stays in `instructions` | Modal remains open |
 | POST /api/v1/uploads → 409 Conflict | `uploading → error` | Message: already uploaded; link to existing generation |
 | POST /api/v1/uploads → network / 5xx error | `uploading → error` | Generic error message |
-| POST presigned_urls → network / 4xx / 5xx | `uploading → error` | Generic error message |
-| S3 PUT fails (individual file) | `uploading → error` | Generic error message |
+| POST presigned_posts → network / 4xx / 5xx | `preparing → error` | Generic error message |
+| S3 POST fails (individual file) | `uploading → error` | Generic error message |
+| POST verify_batch → network / 4xx / 5xx | `verifying → error` | Generic error message |
 | PATCH /api/v1/uploads/:ulid → network error | `uploading → error` | Generic error message (images are uploaded; user can retry PATCH manually if needed) |
 
 From the `error` state, the user can dismiss the modal (returning to `idle`) or go back to `instructions` to retry.

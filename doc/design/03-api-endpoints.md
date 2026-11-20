@@ -2,7 +2,7 @@
 
 Images and mapshot.json are served directly via CloudFront, not through the application server.
 
-Presigned PUT URLs are generated locally by the AWS SDK (no S3 API call). The presigned_urls endpoint does make one S3 ListObjectsV2 call to filter already-uploaded files.
+Presigned POSTs are generated locally by the AWS SDK (no S3 API call). The verify_batch endpoint issues one S3 HeadObject call per file.
 
 ---
 
@@ -515,9 +515,9 @@ Start an upload session. Creates Map (if new for this user), Generation, and Upl
 
 ---
 
-### POST /api/v1/uploads/:ulid/presigned_urls
+### POST /api/v1/uploads/:ulid/presigned_posts
 
-Request presigned S3 PUT URLs for image files. The server checks existing S3 keys (via ListObjectsV2, 1 API call) and returns URLs only for files not yet uploaded. Send the full filename list each time — the server handles filtering.
+Request presigned S3 POSTs for image files. Each POST policy requires `Content-Type: image/jpeg` and a size of 1 byte to 640 KB. Send at most 200 filenames per call; each must match `s<surface>zoom_<zoom>/tile_<x>_<y>.jpg`.
 
 **Request body:**
 
@@ -531,21 +531,43 @@ Request presigned S3 PUT URLs for image files. The server checks existing S3 key
 
 ```json
 {
-  "presigned_urls": {
-    "s1zoom_4_0_0.png": "https://s3.amazonaws.com/bucket/...?X-Amz-Signature=...",
-    "s1zoom_4_1_0.png": "https://s3.amazonaws.com/bucket/...?X-Amz-Signature=..."
+  "presigned_posts": {
+    "s1zoom_4/tile_0_0.jpg": {
+      "url": "https://bucket.s3.amazonaws.com/",
+      "fields": { "key": "...", "policy": "...", "x-amz-signature": "..." }
+    }
   }
 }
 ```
 
-May be called multiple times with a subset of filenames (e.g. remaining files after partial upload, or after URL expiry).
+The client submits each file as `multipart/form-data` to `url`, with `fields` first and the `file` part last.
 
 **Error responses:**
 
 | Status | Condition |
 |---|---|
+| `400 Bad Request` | Invalid or too many filenames |
+| `403 Forbidden` | The map belongs to another user |
 | `404 Not Found` | Upload with given ULID does not exist |
 | `422 Unprocessable Entity` | Upload status is `complete` or `failed` |
+
+---
+
+### POST /api/v1/uploads/:ulid/verify_batch
+
+Check that the files of one batch exist in S3 and record their sizes.
+
+**Request body:** `{ "filenames": [...] }` (1–200 entries)
+
+**Response `200 OK`:** `{ "verified_bytes": 123456 }`
+
+**Error responses:**
+
+| Status | Condition |
+|---|---|
+| `403 Forbidden` | Guest user, or the map belongs to another user |
+| `404 Not Found` | Upload with given ULID does not exist |
+| `422 Unprocessable Entity` | An object is missing (`{ "error": "verification_failed" }`); the generation is deleted and its S3 prefix is queued for cleanup |
 
 ---
 
