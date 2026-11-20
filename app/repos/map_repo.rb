@@ -5,9 +5,6 @@ require "ulid"
 module PastaAtlas
   module Repos
     class MapRepo < PastaAtlas::DB::Repo
-      NOT_EXPIRED_GENERATION = Sequel.lit("(generations.expires_at IS NULL OR generations.expires_at > NOW())")
-      private_constant :NOT_EXPIRED_GENERATION
-
       def find_by_id(id) = maps.where(id:).one!
       def find_by_ulid(ulid) = maps.where(ulid:).one
       def find_all_by_user_id(user_id) = maps.where(user_id:).to_a
@@ -18,7 +15,6 @@ module PastaAtlas
           .join(:current_upload_statuses, upload_id: :id)
           .where(Sequel[:current_upload_statuses][:status] => "complete")
           .join(:generations, {Sequel[:generations][:id] => Sequel[:uploads][:generation_id]})
-          .where(NOT_EXPIRED_GENERATION)
           .group(Sequel[:generations][:map_id])
           .order(Sequel.desc(Sequel.function(:max, Sequel[:current_upload_statuses][:occurred_at])))
           .offset((page - 1) * per_page)
@@ -36,7 +32,6 @@ module PastaAtlas
           .join(:current_upload_statuses, upload_id: :id)
           .where(Sequel[:current_upload_statuses][:status] => "complete")
           .join(:generations, {Sequel[:generations][:id] => Sequel[:uploads][:generation_id]})
-          .where(NOT_EXPIRED_GENERATION)
           .dataset
           .unordered
           .select(Sequel[:generations][:map_id])
@@ -52,7 +47,6 @@ module PastaAtlas
           .join(:current_upload_statuses, upload_id: :id)
           .where(Sequel[:current_upload_statuses][:status] => "complete")
           .join(:generations, {Sequel[:generations][:id] => Sequel[:uploads][:generation_id]})
-          .where(NOT_EXPIRED_GENERATION)
           .where(Sequel[:generations][:map_id] => user_map_ids)
           .group(Sequel[:generations][:map_id])
           .order(Sequel.desc(Sequel.function(:max, Sequel[:current_upload_statuses][:occurred_at])))
@@ -63,16 +57,6 @@ module PastaAtlas
 
         id_to_map = maps.where(id: ordered_ids).to_a.to_h {|m| [m.id, m] }
         ordered_ids.filter_map {|id| id_to_map[id] }
-      end
-
-      def delete_guest_orphans
-        guest_id = users.dataset.where(name: "guest").get(:id)
-        return 0 unless guest_id
-
-        maps.dataset
-          .where(user_id: guest_id)
-          .exclude(id: generations.dataset.unordered.select(:map_id))
-          .delete
       end
 
       def update_name(id:, name:)

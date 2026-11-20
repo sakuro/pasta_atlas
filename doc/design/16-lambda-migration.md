@@ -25,7 +25,6 @@ The service is stopped. The ALB, the application ECS service and the `app` Cloud
 
 - Moving the database off RDS (the NAT instance is the price of keeping it).
 - Rewriting the application in another language.
-- Removing the guest cleanup code (see [Follow-ups](#follow-ups)).
 
 ## Architecture
 
@@ -106,7 +105,7 @@ Non-secret configuration is set as ordinary Lambda environment variables from Te
 - The queue triggers its function through an event source mapping with batch size 1 and limited maximum concurrency (about 2), so database connections stay within RDS limits.
 - The queue gets a dead-letter queue with `maxReceiveCount`. Today a failing message is retried indefinitely.
 - The visibility timeout is at least six times the function timeout.
-- The guest cleanup schedule is not migrated. The EventBridge Scheduler resource, which targets ECS, is removed from Terraform.
+- The guest cleanup schedule is not migrated. The EventBridge Scheduler resource, which targets ECS, is removed from Terraform, and the cleanup code itself was removed with the `expires_at` column.
 
 ## One-off tasks
 
@@ -147,7 +146,6 @@ The `mapshots` bucket configuration in Terraform allows `POST` and `PUT` (`GET` 
 Local development is unchanged: Hanami runs directly, with PostgreSQL and floci in Docker.
 
 - The local polling worker is kept for SQS, sharing `handle` with the Lambda handlers, so local runs follow the production message path.
-- Guest cleanup remains a manual rake task.
 - The process list in [11-local-development.md](11-local-development.md) uses `rake s3:process_queues`.
 
 ## Tooling
@@ -177,5 +175,4 @@ Verified locally: the Web Adapter layer with Puma on the managed `ruby:4.0` imag
 
 ## Follow-ups
 
-- Remove the guest cleanup: `Operations::CleanupGuestMaps`, `rake cleanup:guest_maps`, `delete_expired`, `delete_guest_orphans`, the `expire-guest` lifecycle rule and the related design notes. Guest uploads were removed in #43, and `Uploads::Create` now sets `expires_at: nil`. Before removal, confirm that no guest-owned maps or generations with `expires_at` remain in production. Dropping the `expires_at` column is a separate decision.
 - Upgrade the fck-nat module (see [Networking](#networking)).

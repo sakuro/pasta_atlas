@@ -162,7 +162,6 @@ upload-error-too-many-images = 画像が多すぎます（{ $count }枚）。上
 upload-error-not-found = 選択したフォルダーに mapshot.json が見つかりませんでした。
 upload-error-parse = mapshot.json の解析に失敗しました。
 upload-error-conflict = この世代はすでにアップロード済みです。
-upload-error-expired = このマップは期限切れのため、アップロードできません。
 upload-error-http = アップロードに失敗しました(HTTP { $status })。
 upload-error-network = ネットワークエラー。接続を確認してください。
 upload-error-urls-http = アップロード URL の取得に失敗しました(HTTP { $status })。

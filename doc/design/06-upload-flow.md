@@ -9,7 +9,7 @@ All files for a generation are stored under a per-user prefix:
 {user_name}/{mapshot_map_id}/{mapshot_unique_id}/{surface_file_prefix}{zoom}/tile_{x}_{y}.jpg
 ```
 
-Example (user `sakuro`, guest uploads use `guest`):
+Example (user `sakuro`):
 ```
 sakuro/ae8ec3ab/550f41a9/mapshot.json
 sakuro/ae8ec3ab/550f41a9/s1zoom_4/tile_0_0.jpg
