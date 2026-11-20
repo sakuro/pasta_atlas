@@ -2,6 +2,7 @@
 
 require "hanami"
 require "omniauth"
+require_relative "../app/logging/production_formatter"
 require_relative "../app/middleware/reverse_proxy_fix"
 require "omniauth-discord"
 require "omniauth-github"
@@ -11,6 +12,11 @@ module PastaAtlas
   class App < Hanami::App
     config.inflections do |i|
       i.acronym "OAuth"
+    end
+
+    if Hanami.env?(:production)
+      Dry::Logger.register_formatter(:production, PastaAtlas::Logging::ProductionFormatter)
+      config.logger.formatter = :production
     end
 
     config.actions.sessions = :cookie, {
