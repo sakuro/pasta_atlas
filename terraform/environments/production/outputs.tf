@@ -10,8 +10,20 @@ output "cloudfront_distribution_id" {
   value = aws_cloudfront_distribution.mapshots.id
 }
 
-output "ecr_repository_url" {
-  value = aws_ecr_repository.app.repository_url
+output "app_cloudfront_distribution_id" {
+  value = aws_cloudfront_distribution.app.id
+}
+
+output "app_cloudfront_domain_name" {
+  value = aws_cloudfront_distribution.app.domain_name
+}
+
+output "lambda_artifacts_bucket" {
+  value = aws_s3_bucket.lambda_artifacts.bucket
+}
+
+output "assets_bucket" {
+  value = aws_s3_bucket.assets.bucket
 }
 
 output "rds_endpoint" {

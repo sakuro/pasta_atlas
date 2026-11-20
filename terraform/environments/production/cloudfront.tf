@@ -12,16 +12,26 @@ data "aws_cloudfront_origin_request_policy" "all_viewer_except_host_header" {
 
 resource "aws_cloudfront_distribution" "app" {
   origin {
-    # Connect to ALB over HTTP; HTTPS termination is handled by CloudFront.
-    domain_name = aws_lb.app.dns_name
-    origin_id   = "alb"
+    domain_name = trimsuffix(trimprefix(aws_lambda_function_url.app.function_url, "https://"), "/")
+    origin_id   = "lambda"
 
     custom_origin_config {
       http_port              = 80
       https_port             = 443
-      origin_protocol_policy = "http-only"
+      origin_protocol_policy = "https-only"
       origin_ssl_protocols   = ["TLSv1.2"]
     }
+
+    custom_header {
+      name  = "x-origin-verify"
+      value = random_password.origin_verify.result
+    }
+  }
+
+  origin {
+    domain_name              = aws_s3_bucket.assets.bucket_regional_domain_name
+    origin_id                = "assets"
+    origin_access_control_id = aws_cloudfront_origin_access_control.assets.id
   }
 
   enabled         = true
@@ -33,19 +43,20 @@ resource "aws_cloudfront_distribution" "app" {
     path_pattern           = "/assets/*"
     allowed_methods        = ["GET", "HEAD"]
     cached_methods         = ["GET", "HEAD"]
-    target_origin_id       = "alb"
+    target_origin_id       = "assets"
     viewer_protocol_policy = "redirect-to-https"
     compress               = true
     cache_policy_id        = data.aws_cloudfront_cache_policy.caching_optimized.id
   }
 
   default_cache_behavior {
-    allowed_methods          = ["DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT"]
-    cached_methods           = ["GET", "HEAD"]
-    target_origin_id         = "alb"
-    viewer_protocol_policy   = "redirect-to-https"
-    compress                 = true
-    cache_policy_id          = data.aws_cloudfront_cache_policy.caching_disabled.id
+    allowed_methods        = ["DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT"]
+    cached_methods         = ["GET", "HEAD"]
+    target_origin_id       = "lambda"
+    viewer_protocol_policy = "redirect-to-https"
+    compress               = true
+    cache_policy_id        = data.aws_cloudfront_cache_policy.caching_disabled.id
+    # The viewer Host header must not be forwarded: the Function URL answers 404 for it.
     origin_request_policy_id = data.aws_cloudfront_origin_request_policy.all_viewer_except_host_header.id
   }
 

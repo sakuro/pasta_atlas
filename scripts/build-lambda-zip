@@ -1,0 +1,35 @@
+#!/usr/bin/env bash
+# Builds dist/lambda.zip inside the Lambda Ruby base image so native gems match the runtime.
+# Requires compiled assets in public/assets and Docker.
+set -euo pipefail
+
+cd "$(dirname "$0")/.."
+mkdir -p dist
+
+docker run --rm --platform linux/arm64 --entrypoint /bin/bash \
+  -v "$PWD":/src:ro -v "$PWD/dist":/out \
+  public.ecr.aws/lambda/ruby:4.0 -c '
+    set -euo pipefail
+    dnf install -y gcc make zip tar libyaml-devel >/dev/null
+    rm -rf /build && mkdir -p /build/public/assets
+    cd /src
+    tar -cf - Gemfile Gemfile.lock Rakefile app config config.ru lib lambda_function.rb run.sh \
+      public/404.html public/500.html \
+      | tar -C /build -xf -
+    # public/assets is served from S3/CloudFront; the app only needs the manifest.
+    cp public/assets/assets.json /build/public/assets/
+    cd /build
+    bundle config set --local path vendor/bundle
+    bundle config set --local without development:test
+    bundle config set --local frozen true
+    bundle install --jobs 4
+    rm -rf vendor/bundle/ruby/*/cache vendor/bundle/ruby/*/doc
+    find vendor/bundle -type f \( -name "*.o" -o -name "*.c" -o -name "*.h" \) -delete
+    # Host modes are preserved by tar; the Lambda runtime user needs read access.
+    chmod -R a+rX /build
+    chmod 755 run.sh
+    rm -f /out/lambda.zip
+    zip -qr /out/lambda.zip .
+  '
+
+echo "Built dist/lambda.zip ($(du -h dist/lambda.zip | cut -f1))"

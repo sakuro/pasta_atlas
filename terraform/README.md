@@ -19,14 +19,15 @@ pasta-atlas/
 | `cloudfront.tf` | CloudFront distributions |
 | `acm.tf` | ACM certificates |
 | `dns.tf` | DNS records |
-| `alb.tf` | Application Load Balancer |
-| `ecs.tf` | ECS cluster, task definitions, and services |
+| `network.tf` | Private subnets, fck-nat, S3 endpoint |
+| `assets.tf` | Assets bucket |
+| `lambda.tf` | Lambda functions, Function URL, event source mappings |
+| `lambda_support.tf` | Origin secret, artifacts bucket, log groups |
 | `rds.tf` | RDS PostgreSQL instance |
 | `iam.tf` | IAM roles and policies |
 | `ssm.tf` | SSM parameters (secrets) |
 | `sqs.tf` | SQS queue for S3 cleanup |
-| `scheduler.tf` | EventBridge scheduler |
-| `outputs.tf` | `ecr_repository_url`, `rds_endpoint`, and other outputs |
+| `outputs.tf` | `rds_endpoint`, bucket and CloudFront outputs |
 
 ## State
 
@@ -88,23 +89,11 @@ The RDS master password is managed automatically by AWS Secrets Manager (`manage
 
 ## Deploying a New Application Version
 
-```bash
-# Build and push image
-docker build -t pasta-atlas .
-docker tag pasta-atlas:latest <ecr_repository_url>:latest
-aws ecr get-login-password --region ap-northeast-1 | docker login --username AWS --password-stdin <ecr_repository_url>
-docker push <ecr_repository_url>:latest
-
-# Force ECS to pull the new image
-aws ecs update-service \
-  --cluster pasta-atlas-production \
-  --service pasta-atlas-production \
-  --force-new-deployment
-```
+Deployment is done by the GitHub Actions deploy workflow, which uploads the Lambda package to the `lambda_artifacts_bucket`, the compiled assets to the `assets_bucket`, and invalidates the `app_cloudfront_distribution_id` distribution.
 
 ## Application Environment Variables
 
-ECS task definitions wire env vars automatically. The table below lists the source for each variable.
+The Lambda functions receive env vars from `lambda.tf`; secrets are fetched from SSM at init. The table below lists the source for each variable.
 
 ### Production
 

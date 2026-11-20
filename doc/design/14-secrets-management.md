@@ -27,12 +27,8 @@ aws ssm put-parameter --overwrite \
   --value "<actual value>"
 ```
 
-## ECS Injection
+## Loading
 
-Secrets are injected into ECS tasks at launch via the `secrets` field in the task definition, referencing SSM parameter ARNs:
+Lambda cannot inject SSM parameters into the environment. `LambdaSupport::SecretsLoader` (`lib/lambda_support/secrets_loader.rb`) fetches them with `ssm:GetParameters` under the prefix given by `SSM_PARAMETER_PREFIX` and sets `ENV` before Hanami reads its settings. Every Lambda entry point calls it during initialization, so a secret update takes effect on the next cold start. The execution role needs `ssm:GetParameters` on the prefix and `kms:Decrypt`.
 
-```json
-{ "name": "SESSION_SECRET", "valueFrom": "<ssm-parameter-arn>" }
-```
-
-The ECS execution role holds `ssm:GetParameter`, `ssm:GetParameters`, and `kms:Decrypt` (via KMS service condition) to read the SecureString values at task start. A secret update takes effect only after a new task is launched (force-new-deployment or next scheduled task start).
+`origin_verify_secret` is the exception to the storage rule above: Terraform generates it (`random_password`) because CloudFront needs the value in its origin configuration, so it is stored in the Terraform state. See [16-lambda-migration.md](16-lambda-migration.md#origin-protection).

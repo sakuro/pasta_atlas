@@ -1,20 +1,19 @@
 # frozen_string_literal: true
 
 require_relative "sqs_queue_worker"
+require_relative "storage_calculation_processor"
 
 class StorageCalculationQueueWorker < SqsQueueWorker
-  def initialize(sqs_client:, settings:, stop:, wait_time_seconds:)
+  def initialize(sqs_client:, settings:, stop:, wait_time_seconds:, processor: nil)
     super(sqs_client:, queue_url: settings.sqs_storage_calculation_queue_url, stop:, wait_time_seconds:)
+    @processor = processor || StorageCalculationProcessor.new(
+      operation: Hanami.app["operations.generations.calculate_storage"]
+    )
   end
 
   private def handle(msg)
-    generation_id = Integer(msg.body)
-    result = Hanami.app["operations.generations.calculate_storage"].call(generation_id:)
-    if result.success?
-      @sqs_client.delete_message(queue_url: @queue_url, receipt_handle: msg.receipt_handle)
-      puts "Calculated storage for generation #{generation_id}: #{result.value!} bytes"
-    else
-      warn "Failed to calculate storage for generation #{generation_id}: #{result.failure}"
-    end
+    return unless @processor.call(msg.body).success?
+
+    @sqs_client.delete_message(queue_url: @queue_url, receipt_handle: msg.receipt_handle)
   end
 end

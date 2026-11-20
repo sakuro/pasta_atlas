@@ -4,6 +4,7 @@ AllCops:
   EnabledByDefault: true
   Exclude:
     - bin/**/*
+    - dist/**/*
     - vendor/**/*
   ExtraDetails: true
   NewCops: enable

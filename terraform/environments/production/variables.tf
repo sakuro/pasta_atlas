@@ -63,27 +63,37 @@ variable "discord_client_id" {
   default = "1506102791695761548"
 }
 
-variable "container_port" {
-  type    = number
-  default = 3000
-}
-
-variable "container_cpu" {
-  type    = number
-  default = 256
-}
-
-variable "container_memory" {
-  type    = number
-  default = 512
-}
-
-variable "app_desired_count" {
-  type    = number
-  default = 1
-}
-
 variable "create_bastion" {
   type    = bool
   default = false
+}
+
+variable "private_subnet_cidrs" {
+  type    = list(string)
+  default = ["172.31.128.0/20", "172.31.144.0/20"]
+}
+
+variable "app_dns_enabled" {
+  type    = bool
+  default = false
+}
+
+variable "lambda_runtime" {
+  type    = string
+  default = "ruby4.0"
+}
+
+variable "web_adapter_layer_arn" {
+  type    = string
+  default = "arn:aws:lambda:ap-northeast-1:753240598075:layer:LambdaAdapterLayerArm64:30"
+}
+
+variable "app_memory_size" {
+  type    = number
+  default = 1024
+}
+
+variable "app_reserved_concurrency" {
+  type    = number
+  default = 10
 }

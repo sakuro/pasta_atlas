@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+# Invokes the production task function and fails when the function reports an error.
+# Usage: scripts/invoke-lambda-task '{"task":"db:migrate"}'
+set -euo pipefail
+
+if [ "$#" -ne 1 ]; then
+  echo "Usage: $0 '<json payload>'" >&2
+  exit 2
+fi
+
+FUNCTION=${TASK_FUNCTION:-pasta-atlas-production-task}
+RESPONSE=$(mktemp)
+trap 'rm -f "$RESPONSE"' EXIT
+
+# No read timeout and a single attempt: a client-side timeout would make the CLI retry
+# and run a non-idempotent task (migration, map deletion) again while the first still runs.
+export AWS_MAX_ATTEMPTS=1
+RESULT=$(aws lambda invoke \
+  --function-name "$FUNCTION" \
+  --cli-binary-format raw-in-base64-out \
+  --cli-read-timeout 0 \
+  --payload "$1" \
+  --log-type Tail \
+  --output json \
+  "$RESPONSE")
+
+echo "$RESULT" | jq -r '.LogResult // empty' | base64 --decode
+if [ -n "$(echo "$RESULT" | jq -r '.FunctionError // empty')" ]; then
+  cat "$RESPONSE" >&2
+  exit 1
+fi

@@ -7,14 +7,21 @@ permissions:
   id-token: write
   contents: read
 
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: false
+
 env:
   AWS_REGION: ap-northeast-1
-  ECR_REPOSITORY: pasta-atlas-production
-  ECS_CLUSTER: pasta-atlas-production
+  ARTIFACTS_BUCKET: pasta-atlas-production-lambda-artifacts
+  ASSETS_BUCKET: pasta-atlas-production-assets
+  FUNCTIONS: pasta-atlas-production-app pasta-atlas-production-s3-cleanup pasta-atlas-production-storage-calculation pasta-atlas-production-task
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
+  deploy:
+    timeout-minutes: 30
+    # An arm64 runner builds native gems for the arm64 Lambda runtime without emulation.
+    runs-on: ubuntu-24.04-arm
 
     steps:
       - name: Checkout
@@ -22,64 +29,75 @@ jobs:
         with:
           persist-credentials: false
 
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@e1253824e5c10ff9df46874f81ed3ec929e19cfd # v6.3.0
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6.5.0
         with:
-          role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/github-actions-cicd
-          aws-region: ${{ env.AWS_REGION }}
+          node-version: "26"
+          cache: npm
 
-      - name: Login to ECR
-        id: login-ecr
-        uses: aws-actions/amazon-ecr-login@7290e214a610b32bc0eef81748948b6d466a8783 # v2.2.0
+      - run: npm ci
 
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@ce360397dd3f832beb865e1373c09c0e9f86d70a # v4.0.0
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@d7f5e7f509e45cec5c76c4d5afdd7de93d0b3df5 # v4.1.0
-
-      - name: Build and push
-        uses: docker/build-push-action@f9f3042f7e2789586610d6e8b85c8f03e5195baf # v7.2.0
+      - uses: ruby/setup-ruby@afeafc3d1ab54a631816aba4c914a0081c12ff2f # v1.310.0
         with:
-          context: .
-          platforms: linux/arm64
-          push: true
-          tags: |
-            ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:latest
-            ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:${{ github.sha }}
-          build-args: COMMIT_SHA=${{ github.sha }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+          ruby-version: "4.0"
+          bundler-cache: true
 
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@e1253824e5c10ff9df46874f81ed3ec929e19cfd # v6.3.0
-        with:
-          role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/github-actions-cicd
-          aws-region: ${{ env.AWS_REGION }}
-
-      - name: Update ECS services
+      - name: Compile assets
         run: |
-          for SERVICE in pasta-atlas-production pasta-atlas-production-s3-queue-worker; do
-            aws ecs update-service \
-              --region "$AWS_REGION" \
-              --cluster "$ECS_CLUSTER" \
-              --service "$SERVICE" \
-              --force-new-deployment \
-              --no-cli-pager > /dev/null
-            echo "Deployment started: $SERVICE"
+          bundle exec hanami assets compile
+          npm run build:frontend
+          rm -f public/assets/vite-entries.json
+        env:
+          SESSION_SECRET: dummy
+          GITHUB_CLIENT_ID: dummy
+          GITHUB_CLIENT_SECRET: dummy
+          DISCORD_CLIENT_ID: dummy
+          DISCORD_CLIENT_SECRET: dummy
+          STEAM_WEB_API_KEY: dummy
+          S3_BUCKET: dummy
+          CLOUDFRONT_BASE_URL: https://dummy.example.com
+          SQS_S3_CLEANUP_QUEUE_URL: https://dummy.example.com/dummy
+          SQS_STORAGE_CALCULATION_QUEUE_URL: https://dummy.example.com/dummy
+          HANAMI_ENV: production
+
+      - name: Build package
+        run: scripts/build-lambda-zip
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@e1253824e5c10ff9df46874f81ed3ec929e19cfd # v6.3.0
+        with:
+          role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/github-actions-cicd
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Upload package
+        run: aws s3 cp dist/lambda.zip "s3://$ARTIFACTS_BUCKET/$GITHUB_SHA.zip"
+
+      # Assets are uploaded before the code so that pages served by the new code can
+      # always find their files. Nothing is deleted: older fingerprinted files stay valid.
+      - name: Sync assets
+        run: |
+          aws s3 sync public/assets "s3://$ASSETS_BUCKET/assets/" \
+            --exclude "ftl-manifest.json" --exclude "assets.json" --exclude ".vite/*" \
+            --cache-control "public, max-age=31536000, immutable" --no-progress
+          aws s3 cp public/assets/ftl-manifest.json "s3://$ASSETS_BUCKET/assets/ftl-manifest.json" \
+            --cache-control "public, max-age=300" --no-progress
+
+      - name: Update functions
+        run: |
+          # A pending configuration update (e.g. after terraform apply) rejects code updates.
+          for FUNCTION in $FUNCTIONS; do
+            aws lambda wait function-updated --function-name "$FUNCTION"
           done
-
-      - name: Wait for services stable
-        run: |
-          aws ecs wait services-stable \
-            --region "$AWS_REGION" \
-            --cluster "$ECS_CLUSTER" \
-            --services pasta-atlas-production pasta-atlas-production-s3-queue-worker
+          for FUNCTION in $FUNCTIONS; do
+            aws lambda update-function-code \
+              --function-name "$FUNCTION" \
+              --s3-bucket "$ARTIFACTS_BUCKET" \
+              --s3-key "$GITHUB_SHA.zip" \
+              --no-cli-pager > /dev/null
+          done
+          for FUNCTION in $FUNCTIONS; do
+            aws lambda wait function-updated --function-name "$FUNCTION"
+            echo "Updated: $FUNCTION"
+          done
 
       - name: Invalidate CloudFront cache
         run: |

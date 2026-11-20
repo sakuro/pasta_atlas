@@ -89,3 +89,4 @@ Detailed design documents are in `doc/design/`:
 | 13 | [Comments](doc/design/13-comments.md) |
 | 14 | [Secrets Management](doc/design/14-secrets-management.md) |
 | 15 | [Notifications](doc/design/15-notifications.md) |
+| 16 | [Lambda Migration](doc/design/16-lambda-migration.md) |
