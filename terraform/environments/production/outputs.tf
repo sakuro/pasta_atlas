@@ -2,8 +2,11 @@ output "s3_bucket_name" {
   value = aws_s3_bucket.mapshots.bucket
 }
 
+# The `cloudfront_*` outputs belong to the mapshots distribution (map tiles); the
+# `app_cloudfront_*` outputs belong to the application distribution. Domain names are
+# bare host names without a scheme.
 output "cloudfront_domain_name" {
-  value = "https://${aws_cloudfront_distribution.mapshots.domain_name}"
+  value = aws_cloudfront_distribution.mapshots.domain_name
 }
 
 output "cloudfront_distribution_id" {
