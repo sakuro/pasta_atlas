@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+# Invokes the production task function and fails when the function reports an error.
+# Usage: scripts/invoke-lambda-task '{"task":"db:migrate"}'
+set -euo pipefail
+
+if [ "$#" -ne 1 ]; then
+  echo "Usage: $0 '<json payload>'" >&2
+  exit 2
+fi
+
+FUNCTION=${TASK_FUNCTION:-pasta-atlas-production-task}
+RESPONSE=$(mktemp)
+trap 'rm -f "$RESPONSE"' EXIT
+
+# The default CLI read timeout (60 s) is shorter than the function timeout (900 s).
+RESULT=$(aws lambda invoke \
+  --function-name "$FUNCTION" \
+  --cli-binary-format raw-in-base64-out \
+  --cli-read-timeout 900 \
+  --payload "$1" \
+  --log-type Tail \
+  --output json \
+  "$RESPONSE")
+
+echo "$RESULT" | jq -r '.LogResult // empty' | base64 --decode
+if [ -n "$(echo "$RESULT" | jq -r '.FunctionError // empty')" ]; then
+  cat "$RESPONSE" >&2
+  exit 1
+fi

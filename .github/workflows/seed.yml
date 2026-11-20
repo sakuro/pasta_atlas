@@ -9,56 +9,22 @@ permissions:
 
 env:
   AWS_REGION: ap-northeast-1
-  ECS_CLUSTER: pasta-atlas-production
-  ECS_TASK_DEFINITION: pasta-atlas-production-migrate
 
 jobs:
   seed:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Checkout
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        with:
+          persist-credentials: false
+
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@e1253824e5c10ff9df46874f81ed3ec929e19cfd # v6.3.0
         with:
           role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/github-actions-cicd
           aws-region: ${{ env.AWS_REGION }}
 
-      - name: Start seed task
-        run: |
-          NETWORK_CONFIG=$(aws ecs describe-services \
-            --region "$AWS_REGION" \
-            --cluster "$ECS_CLUSTER" \
-            --services pasta-atlas-production \
-            --query 'services[0].networkConfiguration' \
-            --output json)
-
-          TASK_ARN=$(aws ecs run-task \
-            --region "$AWS_REGION" \
-            --cluster "$ECS_CLUSTER" \
-            --task-definition "$ECS_TASK_DEFINITION" \
-            --launch-type FARGATE \
-            --network-configuration "$NETWORK_CONFIG" \
-            --overrides '{"containerOverrides":[{"name":"pasta-atlas","command":["bundle","exec","hanami","db","seed"]}]}' \
-            --no-cli-pager \
-            --query 'tasks[0].taskArn' \
-            --output text)
-
-          echo "TASK_ARN=$TASK_ARN" >> "$GITHUB_ENV"
-
-      - name: Wait for seed task to finish
-        run: |
-          aws ecs wait tasks-stopped \
-            --region "$AWS_REGION" \
-            --cluster "$ECS_CLUSTER" \
-            --tasks "$TASK_ARN"
-
-      - name: Check seed result
-        run: |
-          EXIT_CODE=$(aws ecs describe-tasks \
-            --region "$AWS_REGION" \
-            --cluster "$ECS_CLUSTER" \
-            --tasks "$TASK_ARN" \
-            --query 'tasks[0].containers[0].exitCode' \
-            --output text)
-          echo "Exit code: $EXIT_CODE"
-          [ "$EXIT_CODE" = "0" ] || exit 1
+      - name: Run seed
+        run: scripts/invoke-lambda-task '{"task":"db:seed"}'
