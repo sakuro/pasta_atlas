@@ -12,8 +12,8 @@ RSpec.describe PastaAtlas::Operations::Maps::ListRecentByUser do
   let(:profile) { double("UserProfile", display_name: "Alice", avatar_s3_key: nil) }
 
   before do
-    allow(user_repo).to receive(:find_by_id).with(1).and_return(user)
-    allow(user_profile_repo).to receive(:find_by_user_id).with(1).and_return(profile)
+    allow(user_repo).to receive(:fetch_by_id).with(1).and_return(user)
+    allow(user_profile_repo).to receive(:fetch_by_user_id).with(1).and_return(profile)
   end
 
   describe "#call" do

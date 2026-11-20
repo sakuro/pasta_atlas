@@ -6,22 +6,14 @@
 #
 # To load the seeds, run `hanami db seed`. Seeds are also loaded as part of `hanami db prepare`.
 
-users = Hanami.app["relations.users"]
-user_profiles = Hanami.app["relations.user_profiles"]
-user_preferences = Hanami.app["relations.user_preferences"]
+user_repo = Hanami.app["repos.user_repo"]
+user_profile_repo = Hanami.app["repos.user_profile_repo"]
+user_preference_repo = Hanami.app["repos.user_preference_repo"]
 
-db = users.dataset.db
-
-db.transaction do
-  users.dataset.insert_conflict(target: :name).insert(name: "guest")
-
-  guest_id = users.dataset.where(name: "guest").get(:id)
-  user_profiles.dataset.insert_conflict(target: :user_id, update: {display_name: "Guest", avatar_s3_key: "guest/avatar/guest.png"}).insert(user_id: guest_id, display_name: "Guest", avatar_s3_key: "guest/avatar/guest.png")
-  user_preferences.dataset.insert_conflict(target: :user_id).insert(user_id: guest_id)
-
-  users.dataset.insert_conflict(target: :name).insert(name: "compilatron")
-
-  compilatron_id = users.dataset.where(name: "compilatron").get(:id)
-  user_profiles.dataset.insert_conflict(target: :user_id, update: {display_name: "Compilatron", avatar_s3_key: "compilatron/avatar/compilatron.png"}).insert(user_id: compilatron_id, display_name: "Compilatron", avatar_s3_key: "compilatron/avatar/compilatron.png")
-  user_preferences.dataset.insert_conflict(target: :user_id).insert(user_id: compilatron_id)
+user_repo.transaction do
+  PastaAtlas::SystemUsers::SEEDED.each do |system_user|
+    user = user_repo.find_or_create_by_name(name: system_user.name)
+    user_profile_repo.upsert(user_id: user.id, display_name: system_user.display_name, avatar_s3_key: system_user.avatar_s3_key)
+    user_preference_repo.find_or_create_by_user_id(user_id: user.id)
+  end
 end

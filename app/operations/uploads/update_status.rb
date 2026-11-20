@@ -22,8 +22,8 @@ module PastaAtlas
         end
 
         private def validate_ownership(upload, user_id)
-          generation = generation_repo.find_by_id(upload.generation_id)
-          map = map_repo.find_by_id(generation.map_id)
+          generation = generation_repo.fetch_by_id(upload.generation_id)
+          map = map_repo.fetch_by_id(generation.map_id)
           map.user_id == user_id ? Success() : Failure(:forbidden)
         end
 

@@ -10,8 +10,8 @@ module PastaAtlas
         private_constant :LIMIT
 
         def call(user_id:)
-          user = user_repo.find_by_id(user_id)
-          profile = user_profile_repo.find_by_user_id(user_id)
+          user = user_repo.fetch_by_id(user_id)
+          profile = user_profile_repo.fetch_by_user_id(user_id)
           avatar_url = profile.avatar_s3_key ? "#{settings.cloudfront_base_url}/#{profile.avatar_s3_key}" : nil
           user_info = Values::UserInfo[name: user.name, display_name: profile.display_name || user.name, avatar_url:]
 

@@ -8,9 +8,7 @@ module PastaAtlas
       def call(user_id)
         return guest unless user_id
 
-        user_repo.find_by_id(user_id)
-      rescue ROM::TupleCountMismatchError
-        guest
+        user_repo.find_by_id(user_id) || guest
       end
     end
   end

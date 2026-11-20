@@ -7,9 +7,9 @@ RSpec.describe PastaAtlas::Operations::Uploads::UpdateStatus, :db do
   let(:user_repo) { Hanami.app["repos.user_repo"] }
 
   let!(:upload) { Factory[:upload] }
-  let(:generation) { generation_repo.find_by_id(upload.generation_id) }
-  let(:map) { map_repo.find_by_id(generation.map_id) }
-  let(:user) { user_repo.find_by_id(map.user_id) }
+  let(:generation) { generation_repo.fetch_by_id(upload.generation_id) }
+  let(:map) { map_repo.fetch_by_id(generation.map_id) }
+  let(:user) { user_repo.fetch_by_id(map.user_id) }
 
   describe "#call" do
     context "when updating to complete" do

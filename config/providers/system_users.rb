@@ -2,7 +2,7 @@
 
 Hanami.app.register_provider(:system_users, namespace: true) do
   start do
-    names = %w[guest api admin compilatron].freeze
+    names = PastaAtlas::SystemUsers::RESERVED_NAMES
     register "names", names
 
     repo = target["repos.user_repo"]

@@ -21,9 +21,9 @@ module PastaAtlas
         private_constant :CONCURRENCY
 
         def call(upload:, filenames:)
-          generation = generation_repo.find_by_id(upload.generation_id)
-          map = map_repo.find_by_id(generation.map_id)
-          user = user_repo.find_by_id(map.user_id)
+          generation = generation_repo.fetch_by_id(upload.generation_id)
+          map = map_repo.fetch_by_id(generation.map_id)
+          user = user_repo.fetch_by_id(map.user_id)
           prefix = "#{user.name}/maps/#{map.mapshot_map_id}/#{generation.mapshot_unique_id}/"
 
           s3_keys = filenames.map {|f| "#{prefix}#{f}" }

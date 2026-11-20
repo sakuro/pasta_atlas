@@ -14,8 +14,8 @@ module PastaAtlas
 
         def call(ulid:)
           map = step find_map(ulid)
-          user = user_repo.find_by_id(map.user_id)
-          profile = user_profile_repo.find_by_user_id(user.id)
+          user = user_repo.fetch_by_id(map.user_id)
+          profile = user_profile_repo.fetch_by_user_id(user.id)
           generations = generation_repo.find_complete_by_map_id(map.id)
           step check_has_generations(generations)
           latest_generation = generations.max_by(&:created_at)

@@ -9,7 +9,7 @@ RSpec.describe PastaAtlas::Operations::Uploads::CleanupStale do
   let(:sqs_client) { instance_double(Aws::SQS::Client, send_message: nil) }
   let(:operation) { PastaAtlas::Operations::Uploads::CleanupStale.new(generation_repo:, upload_repo:, settings:, sqs_client:) }
   let(:now) { Time.utc(2026, 11, 20, 12) }
-  let(:row) { {generation_id: 10, user_name: "sakuro", mapshot_map_id: "ae8ec3ab", mapshot_unique_id: "550f41a9"} }
+  let(:row) { PastaAtlas::Values::StaleUpload[generation_id: 10, user_name: "sakuro", mapshot_map_id: "ae8ec3ab", mapshot_unique_id: "550f41a9"] }
 
   before { allow(upload_repo).to receive(:find_stale_incomplete).and_return([row]) }
 
