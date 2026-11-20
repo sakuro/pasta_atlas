@@ -40,6 +40,28 @@ RSpec.describe PastaAtlas::Operations::Maps::FindOrCreate, :db do
         expect(result.value!.name).to eq("Updated Name")
       end
 
+      it "keeps the name of a map that has one when the user may not rename" do
+        existing_map = Factory[:map, user:, mapshot_map_id: "named", name: "First"]
+
+        result = operation.call(user_id: user.id, mapshot_map_id: "named", name: "Second", update_name_on_conflict: false)
+
+        expect(result.value!).to have_attributes(id: existing_map.id, name: "First")
+      end
+
+      it "sets the name of a map that has none even when the user may not rename" do
+        result = operation.call(user_id: user.id, mapshot_map_id: "abc123", name: "Given", update_name_on_conflict: false)
+
+        expect(result.value!.name).to eq("Given")
+      end
+
+      it "keeps the savename of the first upload" do
+        operation.call(user_id: user.id, mapshot_map_id: "saved", savename: "first")
+
+        result = operation.call(user_id: user.id, mapshot_map_id: "saved", savename: "second")
+
+        expect(result.value!.savename).to eq("first")
+      end
+
       it "does not overwrite name when not provided" do
         result = operation.call(user_id: user.id, mapshot_map_id: "abc123")
 

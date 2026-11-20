@@ -13,7 +13,7 @@ user_preference_repo = Hanami.app["repos.user_preference_repo"]
 user_repo.transaction do
   PastaAtlas::SystemUsers::SEEDED.each do |system_user|
     user = user_repo.find_or_create_by_name(name: system_user.name)
-    user_profile_repo.upsert(user_id: user.id, display_name: system_user.display_name, avatar_s3_key: system_user.avatar_s3_key)
+    user_profile_repo.find_or_create_by_user_id(user_id: user.id, display_name: system_user.display_name, avatar_s3_key: system_user.avatar_s3_key)
     user_preference_repo.find_or_create_by_user_id(user_id: user.id)
   end
 end

@@ -10,10 +10,10 @@ module PastaAtlas
       def update_avatar(user_id, avatar_s3_key:) = user_profiles.where(user_id:).command(:update).call(avatar_s3_key:)
       def clear_avatar(user_id) = user_profiles.where(user_id:).command(:update).call(avatar_s3_key: nil)
 
-      def upsert(user_id:, display_name:, avatar_s3_key:)
+      def find_or_create_by_user_id(user_id:, display_name:, avatar_s3_key:)
         # INSERT ... ON CONFLICT cannot be written with a ROM command.
         user_profiles.dataset
-          .insert_conflict(target: :user_id, update: {display_name:, avatar_s3_key:})
+          .insert_conflict(target: :user_id)
           .insert(user_id:, display_name:, avatar_s3_key:)
         user_profiles.where(user_id:).one!
       end
