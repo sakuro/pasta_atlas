@@ -1,4 +1,4 @@
-import { createResource, createSignal, For, onCleanup, onMount, Show } from "solid-js";
+import { createResource, createSignal, For, onSettled, Show } from "solid-js";
 import { l10n, SUPPORTED_LOCALES } from "../../lib/l10n";
 import { applyPreferences, lang } from "../../lib/display-settings";
 import { SpinnerBlock } from "../../components/SpinnerBlock";
@@ -61,15 +61,15 @@ export const UserPreferencesTab = (props: {
 
   const updateTzTime = () => setTzTime(currentTimeInTz(selectedTz()));
 
-  onMount(() => {
+  onSettled(() => {
     const now = new Date();
     const msUntilNextMinute = (60 - now.getSeconds()) * 1000 - now.getMilliseconds();
-    let intervalId: ReturnType<typeof setInterval>;
+    let intervalId: ReturnType<typeof setInterval> | undefined;
     const timeoutId = setTimeout(() => {
       updateTzTime();
       intervalId = setInterval(updateTzTime, 60000);
     }, msUntilNextMinute);
-    onCleanup(() => { clearTimeout(timeoutId); clearInterval(intervalId); });
+    return () => { clearTimeout(timeoutId); clearInterval(intervalId); };
   });
 
   const onTzChange = (tz: string) => {

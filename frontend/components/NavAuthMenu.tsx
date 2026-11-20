@@ -1,4 +1,4 @@
-import { Show, createSignal, onCleanup } from "solid-js";
+import { Show, createSignal, onSettled } from "solid-js";
 import { Avatar } from "./Avatar";
 import "../lib/l10n";
 
@@ -34,10 +34,10 @@ const UserMenu = (props: UserMenuProps) => {
     });
   };
 
-  onCleanup(() => document.removeEventListener("click", handleDocumentClick));
+  onSettled(() => () => document.removeEventListener("click", handleDocumentClick));
 
   return (
-    <div ref={containerRef} class={`navbar-item has-dropdown${isOpen() ? " is-active" : ""}`}>
+    <div ref={containerRef} class={["navbar-item has-dropdown", { "is-active": isOpen() }]}>
       <a class="navbar-link" onClick={toggle}>
         <Avatar url={props.avatarUrl || null} size={24} />
         <span class="ml-2">{props.displayName}</span>

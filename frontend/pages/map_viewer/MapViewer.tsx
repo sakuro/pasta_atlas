@@ -1,4 +1,4 @@
-import { createResource, createSignal, createMemo, Show, Suspense, onMount } from "solid-js";
+import { createResource, createSignal, createMemo, Show, Loading, onSettled } from "solid-js";
 import { useNavigate } from "@solidjs/router";
 import { useToast } from "../../contexts/ToastContext";
 
@@ -85,7 +85,7 @@ export const MapViewer = (props: MapViewerProps) => {
 
   const isOwner = () => props.viewerName !== null && props.viewerName === props.authorName;
 
-  onMount(() => {
+  onSettled(() => {
     document.title = `${props.displayName} - ${document.title}`;
   });
 
@@ -181,11 +181,11 @@ export const MapViewer = (props: MapViewerProps) => {
         </div>
       </Show>
       <div style={{ flex: 1, "min-height": 0 }}>
-        <Suspense fallback={<div class="p-4">Loading...</div>}>
+        <Loading fallback={<div class="p-4">Loading...</div>}>
           <Show when={activeMapData()} keyed>
             {(data) => <LeafletMap mapshot={data.mapshot} assetBase={data.assetBase} />}
           </Show>
-        </Suspense>
+        </Loading>
       </div>
     </div>
   );

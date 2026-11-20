@@ -76,7 +76,7 @@ export const MapNameEditor = (props: MapNameEditorProps) => {
           />
         </div>
         <div class="control">
-          <span class={`button is-small is-static ${editGraphemeCount() > MAX_GRAPHEMES ? "has-text-danger" : "has-text-grey-light"}`}>
+          <span class={["button is-small is-static", editGraphemeCount() > MAX_GRAPHEMES ? "has-text-danger" : "has-text-grey-light"]}>
             {editGraphemeCount()} / {MAX_GRAPHEMES}
           </span>
         </div>

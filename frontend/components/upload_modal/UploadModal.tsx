@@ -1,5 +1,5 @@
 import { createSignal, Show } from "solid-js";
-import { Portal } from "solid-js/web";
+import { Portal } from "@solidjs/web";
 import { useNavigate } from "@solidjs/router";
 import { adjectives, animals, colors, uniqueNamesGenerator } from "unique-names-generator";
 import "../../lib/l10n";
@@ -416,7 +416,7 @@ export const UploadModal = (props: { isGuest: boolean }) => {
                               />
                             </span>
                             <div class="control">
-                              <span class={`button is-static ${displayNameCount() > 30 ? "has-text-danger" : "has-text-grey-light"}`}>
+                              <span class={["button is-static", displayNameCount() > 30 ? "has-text-danger" : "has-text-grey-light"]}>
                                 {displayNameCount()} / 30
                               </span>
                             </div>

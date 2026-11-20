@@ -1,5 +1,5 @@
 import { createSignal, Show, For } from "solid-js";
-import { Portal } from "solid-js/web";
+import { Portal } from "@solidjs/web";
 import { lang } from "../lib/display-settings";
 import { CopyButton } from "./CopyButton";
 import { formatTicks } from "../lib/format-ticks";

@@ -40,8 +40,7 @@ export const AuthProvider: ParentComponent = (props) => {
     }
   });
 
-  createEffect(() => {
-    const data = authData();
+  createEffect(() => authData(), (data) => {
     if (data === undefined) return;
     applyPreferences(data.preferences.locale, data.preferences.timezone, data.preferences.relative_timestamps);
     connectRoot();
@@ -61,9 +60,9 @@ export const AuthProvider: ParentComponent = (props) => {
   };
 
   return (
-    <AuthContext.Provider value={{ currentUser, refetch, updateCurrentUser }}>
+    <AuthContext value={{ currentUser, refetch, updateCurrentUser }}>
       {props.children}
-    </AuthContext.Provider>
+    </AuthContext>
   );
 };
 

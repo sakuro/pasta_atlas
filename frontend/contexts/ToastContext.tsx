@@ -29,7 +29,7 @@ export const ToastProvider: ParentComponent = (props) => {
   const dismiss = (id: number) => setToasts(prev => prev.filter(t => t.id !== id));
 
   return (
-    <ToastContext.Provider value={{ showToast }}>
+    <ToastContext value={{ showToast }}>
       {props.children}
       <div style={{ position: "fixed", top: "4rem", right: "1rem", "z-index": "9999", "pointer-events": "none" }}>
         <For each={toasts()}>
@@ -44,7 +44,7 @@ export const ToastProvider: ParentComponent = (props) => {
           )}
         </For>
       </div>
-    </ToastContext.Provider>
+    </ToastContext>
   );
 };
 

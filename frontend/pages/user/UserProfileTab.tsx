@@ -117,7 +117,7 @@ export const UserProfileTab = (props: {
                       />
                     </div>
                     <div class="control">
-                      <span class={`button is-static ${graphemeCount() > 30 ? "has-text-danger" : "has-text-grey-light"}`}>
+                      <span class={["button is-static", graphemeCount() > 30 ? "has-text-danger" : "has-text-grey-light"]}>
                         {graphemeCount()} / 30
                       </span>
                     </div>

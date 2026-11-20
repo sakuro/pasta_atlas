@@ -72,18 +72,22 @@ export const UserPage = () => {
   const tabs = () => (isOwner() ? OWNER_TABS : GUEST_TABS);
   const [activeTab, setActiveTab] = createSignal("tab-recent-maps");
 
+  const isAvailableTab = (tabId: string) => tabs().some((t) => t.id === tabId);
+
   const activateTab = (tabId: string) => {
-    if (!tabs().some((t) => t.id === tabId)) return;
-    setActiveTab(tabId);
+    if (isAvailableTab(tabId)) setActiveTab(tabId);
   };
 
   // Tracks both location.hash and tabs() (which depends on isOwner()/currentUser()).
   // When auth resolves and tabs() changes to OWNER_TABS, this effect re-runs and
   // can activate the owner-only tab that was initially rejected.
-  createEffect(() => {
-    const hash = location.hash.slice(1);
-    if (hash) activateTab(hash);
-  });
+  createEffect(
+    () => {
+      const hash = location.hash.slice(1);
+      return hash && isAvailableTab(hash) ? hash : null;
+    },
+    (tabId) => { if (tabId) setActiveTab(tabId); }
+  );
 
   return (
     <section class="section">
@@ -117,12 +121,12 @@ export const UserPage = () => {
                   <For each={tabs()}>
                     {(tab) => (
                       <li
-                        classList={{ "is-active": activeTab() === tab.id }}
+                        class={{ "is-active": activeTab() === tab.id }}
                         onClick={() => activateTab(tab.id)}
                       >
                         <a>
                           <span class="icon-text">
-                            <span classList={{ icon: true, "has-text-danger": !!tab.danger }}>
+                            <span class={["icon", { "has-text-danger": !!tab.danger }]}>
                               <i class={tab.icon} />
                             </span>
                             <span data-l10n-id={tab.labelId} />

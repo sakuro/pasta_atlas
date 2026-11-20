@@ -26,9 +26,9 @@ export const AppLayout = (props: RouteSectionProps) => {
           </div>
           <a
             role="button"
-            class={`navbar-burger${menuActive() ? " is-active" : ""}`}
+            class={["navbar-burger", { "is-active": menuActive() }]}
             aria-label="menu"
-            aria-expanded={menuActive()}
+            aria-expanded={menuActive() ? "true" : "false"}
             onClick={() => setMenuActive(v => !v)}
           >
             <span aria-hidden="true" />
@@ -37,7 +37,7 @@ export const AppLayout = (props: RouteSectionProps) => {
             <span aria-hidden="true" />
           </a>
         </div>
-        <div class={`navbar-menu${menuActive() ? " is-active" : ""}`}>
+        <div class={["navbar-menu", { "is-active": menuActive() }]}>
           <div class="navbar-end">
             <Show when={user() !== undefined}>
               <NavAuthMenu

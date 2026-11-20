@@ -6,7 +6,7 @@ import "../app/assets/css/app.css";
 import "./lib/l10n";
 
 import { createEffect } from "solid-js";
-import { render } from "solid-js/web";
+import { render } from "@solidjs/web";
 import { Router, Route } from "@solidjs/router";
 import { AuthProvider } from "./contexts/AuthContext";
 import { ToastProvider } from "./contexts/ToastContext";
@@ -20,7 +20,7 @@ import { RegistrationPage } from "./pages/RegistrationPage";
 import { StaticPage } from "./pages/StaticPage";
 
 const App = () => {
-  createEffect(() => { document.documentElement.lang = lang(); });
+  createEffect(() => lang(), (l) => { document.documentElement.lang = l; });
 
   return (
     <AuthProvider>

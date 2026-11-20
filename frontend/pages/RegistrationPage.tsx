@@ -98,7 +98,7 @@ export const RegistrationPage = () => {
                     />
                   </div>
                   <div class="control">
-                    <span class={`button is-static ${nameValue().length >= 15 ? "has-text-danger" : "has-text-grey-light"}`}>
+                    <span class={["button is-static", nameValue().length >= 15 ? "has-text-danger" : "has-text-grey-light"]}>
                       {nameValue().length} / 15
                     </span>
                   </div>

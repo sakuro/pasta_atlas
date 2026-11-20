@@ -1,4 +1,4 @@
-import { onMount, onCleanup } from "solid-js";
+import { onSettled } from "solid-js";
 import L from "leaflet";
 import { type Mapshot as MapInfoMapshot } from "../../../components/MapInfoModal";
 import { l10n } from "../../../lib/l10n";
@@ -56,9 +56,11 @@ const latLngToWorld = (surface: Surface, latlng: L.LatLng): { x: number; y: numb
 
 export const LeafletMap = (props: { mapshot: Mapshot; assetBase: string }) => {
   let mapEl!: HTMLDivElement;
+  let mapInstance: L.Map | undefined;
+  let disposed = false;
 
-  onMount(async () => {
-    const { surfaces } = props.mapshot;
+  const setup = async (mapshot: Mapshot, assetBase: string) => {
+    const { surfaces } = mapshot;
     if (!surfaces.length) return;
 
     const planetSurfaces = surfaces.filter((s) => s.is_planet);
@@ -98,6 +100,8 @@ export const LeafletMap = (props: { mapshot: Mapshot; assetBase: string }) => {
         if (results[i] !== null) subsurfaceFormatted.set(idx, results[i]!);
       });
     }
+    // The component may have been disposed while the labels were being localized.
+    if (disposed) return;
 
     const labels = surfaces.map((s, i) => {
       const subsurface = subsurfaceFormatted.get(i);
@@ -123,6 +127,7 @@ export const LeafletMap = (props: { mapshot: Mapshot; assetBase: string }) => {
       zoomDelta: 1.0,
       zoomControl: false,
     });
+    mapInstance = map;
 
     // Shared overlay groups — content is swapped on surface change
     const trainLayerGroup = L.layerGroup();
@@ -150,7 +155,7 @@ export const LeafletMap = (props: { mapshot: Mapshot; assetBase: string }) => {
       );
 
       baseLayers[label] = L.tileLayer(
-        `${props.assetBase}${surface.file_prefix}{z}/tile_{x}_{y}.jpg`,
+        `${assetBase}${surface.file_prefix}{z}/tile_{x}_{y}.jpg`,
         {
           tileSize: surface.render_size,
           bounds,
@@ -262,8 +267,16 @@ export const LeafletMap = (props: { mapshot: Mapshot; assetBase: string }) => {
       if (e.name === trainStationsLabel) setParams({ lt: "0" });
       if (e.name === tagsLabel) setParams({ lg: "0" });
     });
+  };
 
-    onCleanup(() => map.remove());
+  // onSettled cannot take an async callback (its return value is the cleanup), so the
+  // async setup runs detached and the cleanup covers both a finished and an aborted setup.
+  onSettled(() => {
+    void setup(props.mapshot, props.assetBase);
+    return () => {
+      disposed = true;
+      mapInstance?.remove();
+    };
   });
 
   return <div ref={mapEl} style={{ width: "100%", height: "100%" }} />;

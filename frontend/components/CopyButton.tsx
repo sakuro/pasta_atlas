@@ -1,5 +1,5 @@
 import { createSignal } from "solid-js";
-import type { JSX } from "solid-js";
+import type { JSX } from "@solidjs/web";
 
 interface CopyButtonProps {
   text: string;
@@ -20,7 +20,7 @@ export const CopyButton = (props: CopyButtonProps) => {
 
   return (
     <button
-      class={`button is-small${props.class ? ` ${props.class}` : ""}`}
+      class={["button is-small", props.class]}
       style={props.style}
       onClick={handleCopy}
       data-l10n-id={props.l10nId}
