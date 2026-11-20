@@ -1,4 +1,4 @@
-# IAM task role for Fargate
+# IAM execution role for the Lambda functions
 resource "aws_iam_role" "app" {
   name = "${var.app_name}-${var.environment}-app"
 
@@ -11,9 +11,14 @@ data "aws_iam_policy_document" "app_assume_role" {
 
     principals {
       type        = "Service"
-      identifiers = ["ecs-tasks.amazonaws.com"]
+      identifiers = ["lambda.amazonaws.com"]
     }
   }
+}
+
+resource "aws_iam_role_policy_attachment" "app_lambda_vpc" {
+  role       = aws_iam_role.app.name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole"
 }
 
 # S3 permissions: generate presigned URLs (PutObject) and read objects
