@@ -12,11 +12,13 @@ FUNCTION=${TASK_FUNCTION:-pasta-atlas-production-task}
 RESPONSE=$(mktemp)
 trap 'rm -f "$RESPONSE"' EXIT
 
-# The default CLI read timeout (60 s) is shorter than the function timeout (900 s).
+# No read timeout and a single attempt: a client-side timeout would make the CLI retry
+# and run a non-idempotent task (migration, map deletion) again while the first still runs.
+export AWS_MAX_ATTEMPTS=1
 RESULT=$(aws lambda invoke \
   --function-name "$FUNCTION" \
   --cli-binary-format raw-in-base64-out \
-  --cli-read-timeout 900 \
+  --cli-read-timeout 0 \
   --payload "$1" \
   --log-type Tail \
   --output json \

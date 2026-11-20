@@ -71,13 +71,17 @@ jobs:
       - name: Sync assets
         run: |
           aws s3 sync public/assets "s3://$ASSETS_BUCKET/assets/" \
-            --exclude "ftl-manifest.json" \
+            --exclude "ftl-manifest.json" --exclude "assets.json" --exclude ".vite/*" \
             --cache-control "public, max-age=31536000, immutable" --no-progress
           aws s3 cp public/assets/ftl-manifest.json "s3://$ASSETS_BUCKET/assets/ftl-manifest.json" \
             --cache-control "public, max-age=300" --no-progress
 
       - name: Update functions
         run: |
+          # A pending configuration update (e.g. after terraform apply) rejects code updates.
+          for FUNCTION in $FUNCTIONS; do
+            aws lambda wait function-updated --function-name "$FUNCTION"
+          done
           for FUNCTION in $FUNCTIONS; do
             aws lambda update-function-code \
               --function-name "$FUNCTION" \
