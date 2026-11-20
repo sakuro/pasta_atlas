@@ -75,7 +75,7 @@ variable "private_subnet_cidrs" {
 
 variable "app_dns_enabled" {
   type    = bool
-  default = false
+  default = true
 }
 
 variable "lambda_runtime" {
