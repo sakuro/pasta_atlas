@@ -10,6 +10,12 @@
     {
       "matchUpdateTypes": ["minor", "patch"],
       "automerge": true
+    },
+    {
+      "description": "The Lambda runtime in Terraform must change together with the build image minor version.",
+      "matchPackageNames": ["public.ecr.aws/lambda/ruby"],
+      "matchUpdateTypes": ["major", "minor"],
+      "enabled": false
     }
   ],
   "lockFileMaintenance": {
