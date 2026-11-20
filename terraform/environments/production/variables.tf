@@ -87,3 +87,13 @@ variable "create_bastion" {
   type    = bool
   default = false
 }
+
+variable "private_subnet_cidrs" {
+  type    = list(string)
+  default = ["172.31.128.0/20", "172.31.144.0/20"]
+}
+
+variable "app_dns_enabled" {
+  type    = bool
+  default = false
+}
