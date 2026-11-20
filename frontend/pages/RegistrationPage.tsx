@@ -1,6 +1,5 @@
 import { createResource, createSignal, Show } from "solid-js";
 import { useNavigate } from "@solidjs/router";
-import { useAuth } from "../contexts/AuthContext";
 import { SpinnerBlock } from "../components/SpinnerBlock";
 import { ErrorNotification } from "../components/ErrorNotification";
 
@@ -14,7 +13,6 @@ const csrfToken = (): string =>
 
 export const RegistrationPage = () => {
   const navigate = useNavigate();
-  const { refetch } = useAuth();
   const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
   const [pending] = createResource<PendingAuth | null>(async () => {
@@ -47,8 +45,9 @@ export const RegistrationPage = () => {
         }),
       });
       if (res.ok) {
-        refetch();
-        navigate("/");
+        // The server clears the session, which invalidates the CSRF token in this page's
+        // meta tag. A full page load picks up the new token.
+        window.location.assign("/");
       } else {
         const json = await res.json() as { error?: string };
         setError(json.error ?? "error-unknown");

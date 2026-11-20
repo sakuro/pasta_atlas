@@ -1,5 +1,4 @@
 import { createSignal } from "solid-js";
-import { useNavigate } from "@solidjs/router";
 import "../../lib/l10n";
 
 const csrfToken = (): string =>
@@ -9,7 +8,6 @@ export const UserDangerTab = (props: {
   userName: string;
   onError?: (msgKey: string) => void;
 }) => {
-  const navigate = useNavigate();
   const [confirmValue, setConfirmValue] = createSignal("");
   const [submitting, setSubmitting] = createSignal(false);
 
@@ -24,7 +22,8 @@ export const UserDangerTab = (props: {
         body: JSON.stringify({ user_name: props.userName, confirm_user_name: confirmValue() }),
       });
       if (res.ok) {
-        navigate("/");
+        // The server clears the session; reload so the page gets a fresh CSRF token.
+        window.location.assign("/");
       } else {
         props.onError?.("error-unknown");
       }
