@@ -1,4 +1,4 @@
-import { Portal } from "solid-js/web";
+import { Portal } from "@solidjs/web";
 
 export const HowToUploadModal = (props: { onClose: () => void }) => (
   <Portal mount={document.body}>

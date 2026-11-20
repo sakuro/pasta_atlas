@@ -6,8 +6,8 @@ import "../app/assets/css/app.css";
 import "./lib/l10n";
 
 import { createEffect } from "solid-js";
-import { render } from "solid-js/web";
-import { Router, Route } from "@solidjs/router";
+import { render } from "@solidjs/web";
+import { createRouter } from "@solidjs/router";
 import { AuthProvider } from "./contexts/AuthContext";
 import { ToastProvider } from "./contexts/ToastContext";
 import { AppLayout } from "./layout/AppLayout";
@@ -19,21 +19,27 @@ import { UserPage } from "./pages/UserPage";
 import { RegistrationPage } from "./pages/RegistrationPage";
 import { StaticPage } from "./pages/StaticPage";
 
+const Router = createRouter({
+  routes: [
+    { path: "/", component: MapsIndexPage },
+    { path: "/maps/:ulid", component: MapViewerPage },
+    { path: "/auth/register", component: RegistrationPage },
+    { path: "/about", component: () => <StaticPage slug="about" /> },
+    { path: "/privacy", component: () => <StaticPage slug="privacy" /> },
+    { path: "/terms", component: () => <StaticPage slug="terms" /> },
+    { path: "/:at_user_name", component: UserPage, matchFilters: { at_user_name: /^@/ } },
+    { path: "*", component: NotFoundPage },
+  ],
+});
+
 const App = () => {
-  createEffect(() => { document.documentElement.lang = lang(); });
+  createEffect(() => lang(), (l) => { document.documentElement.lang = l; });
 
   return (
     <AuthProvider>
       <ToastProvider>
-        <Router root={AppLayout}>
-          <Route path="/" component={MapsIndexPage} />
-          <Route path="/maps/:ulid" component={MapViewerPage} />
-          <Route path="/auth/register" component={RegistrationPage} />
-          <Route path="/about" component={() => <StaticPage slug="about" />} />
-          <Route path="/privacy" component={() => <StaticPage slug="privacy" />} />
-          <Route path="/terms" component={() => <StaticPage slug="terms" />} />
-          <Route path="/:at_user_name" component={UserPage} matchFilters={{ at_user_name: /^@/ }} />
-          <Route path="*" component={NotFoundPage} />
+        <Router>
+          {(props) => <AppLayout {...props} />}
         </Router>
       </ToastProvider>
     </AuthProvider>

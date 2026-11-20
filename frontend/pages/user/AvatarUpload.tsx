@@ -1,4 +1,4 @@
-import { createSignal, onMount, onCleanup, Show } from "solid-js";
+import { createSignal, onSettled, Show } from "solid-js";
 import "../../lib/l10n";
 import { Spinner } from "../../components/Spinner";
 
@@ -87,12 +87,7 @@ export const AvatarUpload = (props: Props) => {
     setState({ type: "selected", file, previewUrl: URL.createObjectURL(file) });
   };
 
-  onMount(() => {
-    if (props.form) {
-      const handler = (e: SubmitEvent) => { void handleFormSubmit(e); };
-      props.form.addEventListener("submit", handler);
-      onCleanup(() => props.form?.removeEventListener("submit", handler));
-    }
+  onSettled(() => {
     props.onRef?.({
       prepareForSubmit: async () => {
         const s = state();
@@ -113,6 +108,12 @@ export const AvatarUpload = (props: Props) => {
         return null;
       },
     });
+
+    const form = props.form;
+    if (!form) return;
+    const handler = (e: SubmitEvent) => { void handleFormSubmit(e); };
+    form.addEventListener("submit", handler);
+    return () => form.removeEventListener("submit", handler);
   });
 
   const removeAvatar = async (): Promise<boolean> => {

@@ -1,4 +1,4 @@
-import { Show, createSignal, onCleanup } from "solid-js";
+import { Show, createSignal, onFlush, onSettled } from "solid-js";
 import { Avatar } from "./Avatar";
 import "../lib/l10n";
 
@@ -20,6 +20,10 @@ const UserMenu = (props: UserMenuProps) => {
 
   const close = () => setIsOpen(false);
 
+  // The menu links navigate; closing in onFlush keeps the close from being held
+  // until the destination route settles.
+  const closeBeforeNavigation = () => onFlush(close);
+
   const handleDocumentClick = (e: MouseEvent) => {
     if (containerRef && !containerRef.contains(e.target as Node)) {
       close();
@@ -27,35 +31,37 @@ const UserMenu = (props: UserMenuProps) => {
   };
 
   const toggle = () => {
-    setIsOpen(v => {
-      if (!v) document.addEventListener("click", handleDocumentClick);
-      else document.removeEventListener("click", handleDocumentClick);
-      return !v;
-    });
+    if (isOpen()) {
+      document.removeEventListener("click", handleDocumentClick);
+      setIsOpen(false);
+    } else {
+      document.addEventListener("click", handleDocumentClick);
+      setIsOpen(true);
+    }
   };
 
-  onCleanup(() => document.removeEventListener("click", handleDocumentClick));
+  onSettled(() => () => document.removeEventListener("click", handleDocumentClick));
 
   return (
-    <div ref={containerRef} class={`navbar-item has-dropdown${isOpen() ? " is-active" : ""}`}>
+    <div ref={containerRef} class={["navbar-item has-dropdown", { "is-active": isOpen() }]}>
       <a class="navbar-link" onClick={toggle}>
         <Avatar url={props.avatarUrl || null} size={24} />
         <span class="ml-2">{props.displayName}</span>
       </a>
       <div class="navbar-dropdown is-right">
-        <a class="navbar-item" href={`${props.userPath}#tab-recent-maps`} onClick={close}>
+        <a class="navbar-item" href={`${props.userPath}#tab-recent-maps`} onClick={closeBeforeNavigation}>
           <span class="icon"><i class="fa-solid fa-map" /></span>
           <span data-l10n-id="user-tab-maps" />
         </a>
-        <a class="navbar-item" href={`${props.userPath}#tab-profile`} onClick={close}>
+        <a class="navbar-item" href={`${props.userPath}#tab-profile`} onClick={closeBeforeNavigation}>
           <span class="icon"><i class="fa-solid fa-circle-user" /></span>
           <span data-l10n-id="user-tab-profile" />
         </a>
-        <a class="navbar-item" href={`${props.userPath}#tab-preferences`} onClick={close}>
+        <a class="navbar-item" href={`${props.userPath}#tab-preferences`} onClick={closeBeforeNavigation}>
           <span class="icon"><i class="fa-solid fa-gear" /></span>
           <span data-l10n-id="user-tab-preferences" />
         </a>
-        <a class="navbar-item" href={`${props.userPath}#tab-credentials`} onClick={close}>
+        <a class="navbar-item" href={`${props.userPath}#tab-credentials`} onClick={closeBeforeNavigation}>
           <span class="icon"><i class="fa-solid fa-link" /></span>
           <span data-l10n-id="user-tab-credentials" />
         </a>

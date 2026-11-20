@@ -1,4 +1,4 @@
-import { createResource, createSignal, For, onCleanup, onMount, Show } from "solid-js";
+import { createMemo, createSignal, Errored, For, Loading, onSettled, Show } from "solid-js";
 import { l10n, SUPPORTED_LOCALES } from "../../lib/l10n";
 import { applyPreferences, lang } from "../../lib/display-settings";
 import { SpinnerBlock } from "../../components/SpinnerBlock";
@@ -45,43 +45,39 @@ export const UserPreferencesTab = (props: {
   onSuccess?: () => void;
   onError?: (msgKey: string) => void;
 }) => {
-  const [data] = createResource(
-    () => props.active() && props.userName,
-    async (userName) => {
-      const res = await fetch(`/api/v1/users/${userName}/preferences`);
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      return res.json() as Promise<PreferencesData>;
-    }
-  );
+  const data = createMemo(async (): Promise<PreferencesData | undefined> => {
+    if (!props.active()) return undefined;
+    const res = await fetch(`/api/v1/users/${props.userName}/preferences`);
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    return res.json() as Promise<PreferencesData>;
+  });
 
-  const [selectedTz, setSelectedTz] = createSignal<string | null>(null);
-  const [tzTime, setTzTime] = createSignal("");
-  const [relativeTimestamps, setRelativeTimestamps] = createSignal(false);
+  // Form drafts seeded from the fetched preferences; re-seeded if they are refetched.
+  const [selectedTz, setSelectedTz] = createSignal<string | null>(() => data()?.timezone ?? null);
+  const [relativeTimestamps, setRelativeTimestamps] = createSignal(() => data()?.relative_timestamps ?? false);
   const [submitting, setSubmitting] = createSignal(false);
 
-  const updateTzTime = () => setTzTime(currentTimeInTz(selectedTz()));
+  // Bumped at each minute boundary so the clock next to the timezone select stays current.
+  const [minuteTick, setMinuteTick] = createSignal(0);
+  const tzTime = () => {
+    minuteTick();
+    return currentTimeInTz(selectedTz());
+  };
+  const updateTzTime = () => setMinuteTick((n) => n + 1);
 
-  onMount(() => {
+  onSettled(() => {
     const now = new Date();
     const msUntilNextMinute = (60 - now.getSeconds()) * 1000 - now.getMilliseconds();
-    let intervalId: ReturnType<typeof setInterval>;
+    let intervalId: ReturnType<typeof setInterval> | undefined;
     const timeoutId = setTimeout(() => {
       updateTzTime();
       intervalId = setInterval(updateTzTime, 60000);
     }, msUntilNextMinute);
-    onCleanup(() => { clearTimeout(timeoutId); clearInterval(intervalId); });
+    return () => { clearTimeout(timeoutId); clearInterval(intervalId); };
   });
 
   const onTzChange = (tz: string) => {
-    const value = tz === "" ? null : tz;
-    setSelectedTz(value);
-    setTzTime(currentTimeInTz(value));
-  };
-
-  const initPref = (pref: PreferencesData) => {
-    setSelectedTz(pref.timezone);
-    setTzTime(currentTimeInTz(pref.timezone));
-    setRelativeTimestamps(pref.relative_timestamps);
+    setSelectedTz(tz === "" ? null : tz);
   };
 
   const handleSubmit = async (e: SubmitEvent) => {
@@ -116,17 +112,10 @@ export const UserPreferencesTab = (props: {
   };
 
   return (
-    <>
-      <Show when={data.loading}>
-        <SpinnerBlock />
-      </Show>
-      <Show when={data.error}>
-        <ErrorNotification l10nId="error-load-failed" />
-      </Show>
-      <Show when={!data.loading && data()} keyed>
-        {(pref) => {
-          initPref(pref);
-          return (
+    <Errored fallback={<ErrorNotification l10nId="error-load-failed" />}>
+      <Loading fallback={<SpinnerBlock />}>
+        <Show when={data()} keyed>
+          {(pref) => (
             <form onSubmit={(e) => void handleSubmit(e)}>
               <div class="field">
                 <p class="label">
@@ -214,9 +203,9 @@ export const UserPreferencesTab = (props: {
                 </div>
               </div>
             </form>
-          );
-        }}
-      </Show>
-    </>
+          )}
+        </Show>
+      </Loading>
+    </Errored>
   );
 };

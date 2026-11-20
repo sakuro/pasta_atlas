@@ -1,5 +1,5 @@
 import { createSignal, Show } from "solid-js";
-import { A, RouteSectionProps } from "@solidjs/router";
+import type { RouteSectionProps } from "@solidjs/router";
 import { NavAuthMenu } from "../components/NavAuthMenu";
 import { Spinner } from "../components/Spinner";
 import { Footer } from "../components/Footer";
@@ -16,9 +16,9 @@ export const AppLayout = (props: RouteSectionProps) => {
     <>
       <nav class="navbar" role="navigation" aria-label="main navigation">
         <div class="navbar-brand">
-          <A class="navbar-item" href="/">
+          <a class="navbar-item" href="/">
             <strong data-l10n-id="app-name" />
-          </A>
+          </a>
           <div class="navbar-item">
             <Show when={user() !== undefined}>
               <UploadModal isGuest={user() === null} />
@@ -26,9 +26,9 @@ export const AppLayout = (props: RouteSectionProps) => {
           </div>
           <a
             role="button"
-            class={`navbar-burger${menuActive() ? " is-active" : ""}`}
+            class={["navbar-burger", { "is-active": menuActive() }]}
             aria-label="menu"
-            aria-expanded={menuActive()}
+            aria-expanded={menuActive() ? "true" : "false"}
             onClick={() => setMenuActive(v => !v)}
           >
             <span aria-hidden="true" />
@@ -37,7 +37,7 @@ export const AppLayout = (props: RouteSectionProps) => {
             <span aria-hidden="true" />
           </a>
         </div>
-        <div class={`navbar-menu${menuActive() ? " is-active" : ""}`}>
+        <div class={["navbar-menu", { "is-active": menuActive() }]}>
           <div class="navbar-end">
             <Show when={user() !== undefined}>
               <NavAuthMenu

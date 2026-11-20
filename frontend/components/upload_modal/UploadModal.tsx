@@ -1,5 +1,5 @@
-import { createSignal, Show } from "solid-js";
-import { Portal } from "solid-js/web";
+import { createSignal, onFlush, Show } from "solid-js";
+import { Portal } from "@solidjs/web";
 import { useNavigate } from "@solidjs/router";
 import { adjectives, animals, colors, uniqueNamesGenerator } from "unique-names-generator";
 import "../../lib/l10n";
@@ -416,7 +416,7 @@ export const UploadModal = (props: { isGuest: boolean }) => {
                               />
                             </span>
                             <div class="control">
-                              <span class={`button is-static ${displayNameCount() > 30 ? "has-text-danger" : "has-text-grey-light"}`}>
+                              <span class={["button is-static", displayNameCount() > 30 ? "has-text-danger" : "has-text-grey-light"]}>
                                 {displayNameCount()} / 30
                               </span>
                             </div>
@@ -479,7 +479,7 @@ export const UploadModal = (props: { isGuest: boolean }) => {
                 {(s) => (
                   <div class="has-text-centered">
                     <p class="mb-4" data-l10n-id="upload-complete" />
-                    <button class="button is-primary" data-l10n-id="upload-view-map" onClick={() => { dismiss(); navigate(s().viewerUrl); }} />
+                    <button class="button is-primary" data-l10n-id="upload-view-map" onClick={() => { onFlush(dismiss); navigate(s().viewerUrl); }} />
                   </div>
                 )}
               </Show>

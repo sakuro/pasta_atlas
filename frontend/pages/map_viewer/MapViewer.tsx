@@ -1,4 +1,4 @@
-import { createResource, createSignal, createMemo, Show, Suspense, onMount } from "solid-js";
+import { createSignal, createMemo, Show, Loading, onSettled } from "solid-js";
 import { useNavigate } from "@solidjs/router";
 import { useToast } from "../../contexts/ToastContext";
 
@@ -41,7 +41,7 @@ export const MapViewer = (props: MapViewerProps) => {
   const navigate = useNavigate();
   const { showToast } = useToast();
 
-  const [mapData] = createResource(() =>
+  const mapData = createMemo(() =>
     fetch(`/api/v1/maps/${props.ulid}`).then((r) => r.json() as Promise<MapData>)
   );
 
@@ -56,10 +56,10 @@ export const MapViewer = (props: MapViewerProps) => {
       : data.generations[0];
   });
 
-  const [mapshot] = createResource(
-    () => activeGeneration()?.metadata_url,
-    (url) => fetch(url).then((r) => r.json() as Promise<Mapshot>)
-  );
+  const mapshot = createMemo(() => {
+    const url = activeGeneration()?.metadata_url;
+    return url ? fetch(url).then((r) => r.json() as Promise<Mapshot>) : undefined;
+  });
 
   const activeMapData = createMemo(() => {
     const ms = mapshot();
@@ -85,7 +85,7 @@ export const MapViewer = (props: MapViewerProps) => {
 
   const isOwner = () => props.viewerName !== null && props.viewerName === props.authorName;
 
-  onMount(() => {
+  onSettled(() => {
     document.title = `${props.displayName} - ${document.title}`;
   });
 
@@ -125,39 +125,48 @@ export const MapViewer = (props: MapViewerProps) => {
           )}
         </Show>
         <div style={{ flex: 1 }} />
-        <Show when={mapData()}>
-          {(data) => (
-            <GenerationSelect
-              generations={data().generations}
-              value={activeGeneration()?.ulid ?? ""}
-              onChange={handleGenerationChange}
-            />
-          )}
-        </Show>
-        <Show when={mapshot()}>
-          <div class="buttons has-addons mb-0">
-            <button class="button is-small" onClick={() => setShowInfo(true)} data-l10n-id="map-info-button">
-              <span class="icon is-small"><i class="fa-solid fa-circle-info" /></span>
-            </button>
-            <Show when={isOwner()}>
-              <button class="button is-small" onClick={() => setShowDeleteConfirm(true)} data-l10n-id="map-delete-button">
-                <span class="icon is-small has-text-danger"><i class="fa-solid fa-trash" /></span>
+        {/* Each async slot has its own boundary (without a fallback) so the toolbar renders
+            right away and fills in as data arrives. `on` re-arms the mapshot boundaries when
+            the generation changes, hiding the previous generation's controls and map. */}
+        <Loading>
+          <Show when={mapData()}>
+            {(data) => (
+              <GenerationSelect
+                generations={data().generations}
+                value={activeGeneration()?.ulid ?? ""}
+                onChange={handleGenerationChange}
+              />
+            )}
+          </Show>
+        </Loading>
+        <Loading on={generationUlid()}>
+          <Show when={mapshot()}>
+            <div class="buttons has-addons mb-0">
+              <button class="button is-small" onClick={() => setShowInfo(true)} data-l10n-id="map-info-button">
+                <span class="icon is-small"><i class="fa-solid fa-circle-info" /></span>
               </button>
-            </Show>
-          </div>
-        </Show>
-        <Show when={activeGeneration()}>
-          {(gen) => (
-            <ShareButtons
-              mapPath={`/maps/${props.ulid}?generation=${gen().ulid}`}
-              mapName={mapData()!.display_name}
-            />
-          )}
-        </Show>
+              <Show when={isOwner()}>
+                <button class="button is-small" onClick={() => setShowDeleteConfirm(true)} data-l10n-id="map-delete-button">
+                  <span class="icon is-small has-text-danger"><i class="fa-solid fa-trash" /></span>
+                </button>
+              </Show>
+            </div>
+          </Show>
+          <Show when={showInfo() && mapshot()}>
+            <MapInfoModal mapshot={mapshot()!} onClose={() => setShowInfo(false)} />
+          </Show>
+        </Loading>
+        <Loading>
+          <Show when={activeGeneration()}>
+            {(gen) => (
+              <ShareButtons
+                mapPath={`/maps/${props.ulid}?generation=${gen().ulid}`}
+                mapName={mapData().display_name}
+              />
+            )}
+          </Show>
+        </Loading>
       </div>
-      <Show when={showInfo() && mapshot()}>
-        <MapInfoModal mapshot={mapshot()!} onClose={() => setShowInfo(false)} />
-      </Show>
       <Show when={showDeleteConfirm()}>
         <div class="modal is-active">
           <div class="modal-background" onClick={() => setShowDeleteConfirm(false)} />
@@ -181,11 +190,11 @@ export const MapViewer = (props: MapViewerProps) => {
         </div>
       </Show>
       <div style={{ flex: 1, "min-height": 0 }}>
-        <Suspense fallback={<div class="p-4">Loading...</div>}>
+        <Loading fallback={<div class="p-4">Loading...</div>} on={generationUlid()}>
           <Show when={activeMapData()} keyed>
             {(data) => <LeafletMap mapshot={data.mapshot} assetBase={data.assetBase} />}
           </Show>
-        </Suspense>
+        </Loading>
       </div>
     </div>
   );

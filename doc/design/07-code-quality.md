@@ -26,9 +26,8 @@ Hanami generates a Rakefile with a default task that runs the test suite (`rake`
 | Tool | Purpose |
 |---|---|
 | TypeScript | Static typing |
-| Vite + vite-plugin-solid | Build toolchain; uses Babel for Solid.js JSX transform |
-| ESLint + `eslint-plugin-solid` | Static analysis including Solid.js-specific rules |
+| Vite + `@solidjs/vite-plugin` | Build toolchain; compiles Solid.js JSX |
+| ESLint + `eslint-plugin-solid` | Static analysis including Solid.js-specific rules (`v2` configuration) |
 | Prettier | Code formatting |
 | Vitest | Unit and component testing (shares Vite config) |
-| `@solidjs/testing-library` | Component testing utilities for Solid.js |
 | Playwright | End-to-end testing (added when needed) |

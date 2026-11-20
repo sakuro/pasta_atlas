@@ -13,15 +13,16 @@
     "@fluent/bundle": "^0.19.1",
     "@fluent/dom": "^0.10.2",
     "@fortawesome/fontawesome-free": "^7.2.0",
-    "@solidjs/router": "^0.16.1",
+    "@solidjs/router": "^2.0.1",
+    "@solidjs/web": "^2.0.3",
     "bulma": "^1.0.4",
     "hanami-assets": "^2.3.0",
     "leaflet": "^1.9.4",
-    "solid-js": "^1.9.17",
+    "solid-js": "^2.0.3",
     "unique-names-generator": "^4.7.1"
   },
   "devDependencies": {
-    "@solidjs/testing-library": "^0.8.10",
+    "@solidjs/vite-plugin": "^3.0.1",
     "@types/leaflet": "^1.9.21",
     "@types/node": "^25.6.0",
     "@typescript-eslint/parser": "^8.59.0",
@@ -31,7 +32,6 @@
     "prettier": "^3.8.3",
     "typescript": "^6.0.3",
     "vite": "^8.3.5",
-    "vite-plugin-solid": "^2.11.12",
     "vitest": "^4.1.12"
   }
 }

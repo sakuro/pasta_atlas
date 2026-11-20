@@ -1,4 +1,4 @@
-import { createResource, Show } from "solid-js";
+import { createMemo, Errored, Loading, Show } from "solid-js";
 import { useParams } from "@solidjs/router";
 import { useAuth } from "../contexts/AuthContext";
 import { MapViewer } from "./map_viewer/MapViewer";
@@ -16,14 +16,14 @@ interface MapViewerData {
   updated_at: string | null;
 }
 
+class NotFoundError extends Error {}
+
 export const MapViewerPage = () => {
   const params = useParams();
   const { currentUser } = useAuth();
 
-  class NotFoundError extends Error {}
-
-  const [data] = createResource(() => params.ulid, async (ulid) => {
-    const res = await fetch(`/api/v1/maps/${ulid}`);
+  const data = createMemo(async () => {
+    const res = await fetch(`/api/v1/maps/${params.ulid}`);
     if (res.status === 404) throw new NotFoundError();
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     return res.json() as Promise<MapViewerData>;
@@ -36,30 +36,29 @@ export const MapViewerPage = () => {
 
   return (
     <div class="map-viewer-page">
-      <Show when={data.loading}>
-        <SpinnerBlock />
-      </Show>
-      <Show when={data.error instanceof NotFoundError}>
-        <ErrorNotification l10nId="error-map-not-found" type="warning" />
-      </Show>
-      <Show when={data.error && !(data.error instanceof NotFoundError)}>
-        <ErrorNotification l10nId="error-load-failed" />
-      </Show>
-      <Show when={!data.error && data()} keyed>
-        {(mapData) => (
-          <div id="map-viewer">
-            <MapViewer
-              ulid={mapData.ulid}
-              displayName={mapData.display_name}
-              authorName={mapData.owner.name}
-              authorDisplayName={mapData.owner.display_name}
-              authorAvatarUrl={mapData.owner.avatar_url}
-              updatedAt={mapData.updated_at}
-              viewerName={viewerName()}
-            />
-          </div>
-        )}
-      </Show>
+      <Errored fallback={(err) => (
+        <Show when={err() instanceof NotFoundError} fallback={<ErrorNotification l10nId="error-load-failed" />}>
+          <ErrorNotification l10nId="error-map-not-found" type="warning" />
+        </Show>
+      )}>
+        <Loading fallback={<SpinnerBlock />} on={params.ulid}>
+          <Show when={data()} keyed>
+            {(mapData) => (
+              <div id="map-viewer">
+                <MapViewer
+                  ulid={mapData.ulid}
+                  displayName={mapData.display_name}
+                  authorName={mapData.owner.name}
+                  authorDisplayName={mapData.owner.display_name}
+                  authorAvatarUrl={mapData.owner.avatar_url}
+                  updatedAt={mapData.updated_at}
+                  viewerName={viewerName()}
+                />
+              </div>
+            )}
+          </Show>
+        </Loading>
+      </Errored>
     </div>
   );
 };

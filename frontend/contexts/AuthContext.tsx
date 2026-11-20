@@ -1,4 +1,4 @@
-import { createContext, createResource, createMemo, createEffect, useContext, ParentComponent, Accessor } from "solid-js";
+import { createContext, createSignal, createMemo, createEffect, refresh, useContext, ParentComponent, Accessor } from "solid-js";
 import { applyPreferences } from "../lib/display-settings";
 import { l10n, connectRoot } from "../lib/l10n";
 
@@ -30,7 +30,10 @@ const AuthContext = createContext<AuthContextValue>();
 export const AuthProvider: ParentComponent = (props) => {
   const guestAuth: AuthResponse = { user: null, preferences: { locale: null, timezone: "UTC", relative_timestamps: false } };
 
-  const [authData, { refetch, mutate }] = createResource<AuthResponse>(async () => {
+  // A writable memo so updateCurrentUser can patch the fetched value locally.
+  // loadingValue keeps the first fetch from suspending: consumers treat `undefined`
+  // as "not known yet" and render their own placeholder instead of a Loading boundary.
+  const [authData, setAuthData] = createSignal<AuthResponse | undefined>(async () => {
     try {
       const res = await fetch("/api/v1/auth/current");
       if (!res.ok) return guestAuth;
@@ -38,10 +41,11 @@ export const AuthProvider: ParentComponent = (props) => {
     } catch {
       return guestAuth;
     }
-  });
+  }, { loadingValue: undefined });
 
-  createEffect(() => {
-    const data = authData();
+  const refetch = () => { void refresh(authData); };
+
+  createEffect(() => authData(), (data) => {
     if (data === undefined) return;
     applyPreferences(data.preferences.locale, data.preferences.timezone, data.preferences.relative_timestamps);
     connectRoot();
@@ -57,13 +61,13 @@ export const AuthProvider: ParentComponent = (props) => {
   const updateCurrentUser = (patch: Partial<CurrentUser>) => {
     const data = authData();
     if (!data?.user) return;
-    mutate({ ...data, user: { ...data.user, ...patch } });
+    setAuthData({ ...data, user: { ...data.user, ...patch } });
   };
 
   return (
-    <AuthContext.Provider value={{ currentUser, refetch, updateCurrentUser }}>
+    <AuthContext value={{ currentUser, refetch, updateCurrentUser }}>
       {props.children}
-    </AuthContext.Provider>
+    </AuthContext>
   );
 };
 

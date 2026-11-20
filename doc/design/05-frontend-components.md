@@ -1,6 +1,6 @@
 # Frontend Component Design
 
-Framework: SolidJS + Bulma + Leaflet.js + `@solidjs/router`
+Framework: SolidJS 2 + Bulma + Leaflet.js + `@solidjs/router` 2
 
 The frontend is a SPA bundled by Vite from `frontend/app.tsx`. All page navigation is handled client-side by `@solidjs/router`. Hanami serves a minimal HTML shell (`<div id="app"></div>`) for every SPA route; the SPA mounts, fetches data from the JSON API, and renders the page.
 

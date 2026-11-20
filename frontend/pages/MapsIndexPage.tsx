@@ -1,4 +1,4 @@
-import { createResource, For, Show } from "solid-js";
+import { createMemo, Errored, For, isPending, Loading, Show } from "solid-js";
 import { useSearchParams } from "@solidjs/router";
 import { MapCard, type MapData } from "../components/MapCard";
 import { SpinnerBlock } from "../components/SpinnerBlock";
@@ -41,8 +41,8 @@ export const MapsIndexPage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const page = () => Math.max(Number(searchParams.page || 1), 1);
 
-  const [data] = createResource(page, async (p) => {
-    const res = await fetch(`/api/v1/maps?page=${p}`);
+  const data = createMemo(async () => {
+    const res = await fetch(`/api/v1/maps?page=${page()}`);
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     return res.json() as Promise<MapsResponse>;
   });
@@ -61,33 +61,29 @@ export const MapsIndexPage = () => {
       </section>
       <section class="section">
         <div class="container">
-          <Show when={data.loading}>
-            <SpinnerBlock />
-          </Show>
-          <Show when={data.error}>
-            <ErrorNotification l10nId="error-load-failed" />
-          </Show>
-          <Show when={!data.error && data()} keyed>
-            {(response) => (
-              <>
-                <div class="columns is-multiline">
-                  <For each={response.maps}>
-                    {(map) => (
-                      <div class="column is-half-tablet is-one-quarter-desktop">
-                        <MapCard map={map} />
-                      </div>
-                    )}
-                  </For>
-                </div>
-                <Pagination
-                  page={response.page}
-                  perPage={response.per_page}
-                  total={response.total}
-                  onPageChange={handlePageChange}
-                />
-              </>
-            )}
-          </Show>
+          <Errored fallback={<ErrorNotification l10nId="error-load-failed" />}>
+            <Loading fallback={<SpinnerBlock />}>
+              {/* A page change keeps the current list on screen until the next one lands. */}
+              <Show when={isPending(() => data())}>
+                <SpinnerBlock />
+              </Show>
+              <div class="columns is-multiline">
+                <For each={data().maps}>
+                  {(map) => (
+                    <div class="column is-half-tablet is-one-quarter-desktop">
+                      <MapCard map={map} />
+                    </div>
+                  )}
+                </For>
+              </div>
+              <Pagination
+                page={data().page}
+                perPage={data().per_page}
+                total={data().total}
+                onPageChange={handlePageChange}
+              />
+            </Loading>
+          </Errored>
         </div>
       </section>
     </>

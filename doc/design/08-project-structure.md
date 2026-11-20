@@ -49,6 +49,6 @@ Two build pipelines run in parallel:
 | Pipeline | Tool | Output | Handles |
 |---|---|---|---|
 | General assets | hanami-assets (esbuild) | `public/assets/` | Global CSS, fonts, images (files under `app/assets/`) |
-| SPA bundle | Vite + vite-plugin-solid | `public/assets/` | Single SPA entry (`frontend/app.tsx`) |
+| SPA bundle | Vite + `@solidjs/vite-plugin` | `public/assets/` | Single SPA entry (`frontend/app.tsx`) |
 
 Hanami serves both from the same origin — no CORS configuration needed. A custom `hanamiViteEntries` Vite plugin writes `vite-entries.json` after each build so hanami-assets can resolve the content-hashed filenames.
