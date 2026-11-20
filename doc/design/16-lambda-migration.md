@@ -19,7 +19,7 @@ Lambda removes the Fargate, ALB and public IPv4 costs. RDS and a NAT instance re
 
 ### Current state
 
-The service is stopped. The ALB, the application ECS service and the `app` CloudFront distribution have already been removed from AWS, as has the Gandi CNAME. RDS, the S3 buckets, the SQS queues and the `maps` distribution remain. `terraform plan` shows 7 additions and 2 changes, with no deletions, so the Terraform state matches reality apart from the stopped parts.
+The service is stopped. The ALB, the application ECS service and the `app` CloudFront distribution have already been removed from AWS, as has the Gandi CNAME. RDS, the S3 buckets, the SQS queues and the `maps` distribution remain. At the time of writing, `terraform plan` showed 7 additions and 2 changes, with no deletions, so the Terraform state matched reality apart from the stopped parts.
 
 ### Non-goals
 
