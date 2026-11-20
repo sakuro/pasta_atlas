@@ -17,21 +17,3 @@ Pasta Atlas is a web application for uploading and browsing Factorio map screens
 | Database | PostgreSQL |
 | Storage | AWS S3 + CloudFront |
 | Infrastructure | Terraform |
-
-## Design Documents
-
-| # | Document |
-|---|---|
-| 01 | [Domain Model](01-domain-model.md) |
-| 02 | [DB Schema](02-db-schema.md) |
-| 03 | [API Endpoints](03-api-endpoints.md) |
-| 04 | [Application Structure](04-application-structure.md) |
-| 05 | [Frontend Components](05-frontend-components.md) |
-| 06 | [Upload Flow](06-upload-flow.md) |
-| 07 | [Code Quality](07-code-quality.md) |
-| 08 | [Project Structure](08-project-structure.md) |
-| 09 | [Frontend Styling](09-frontend-styling.md) |
-| 10 | [Infrastructure](10-infrastructure.md) |
-| 11 | [Local Development](11-local-development.md) |
-| 12 | [Factorio Rich Text](12-rich-text.md) |
-| 13 | [Comments](13-comments.md) |

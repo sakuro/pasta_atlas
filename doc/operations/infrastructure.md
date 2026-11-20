@@ -2,7 +2,7 @@
 
 ## Overview
 
-pasta_atlas runs on AWS Lambda behind CloudFront. DNS is managed by Gandi. The runtime design, networking, origin protection and deployment are described in [16-lambda-migration.md](16-lambda-migration.md); this document covers the rest.
+pasta_atlas runs on AWS Lambda behind CloudFront. DNS is managed by Gandi. The runtime design, networking, origin protection and deployment are described in [Lambda](lambda.md); this document covers the rest.
 
 ## AWS Services
 
@@ -61,7 +61,7 @@ Gandi manages DNS. No Route 53 is used. Both CNAMEs point to their CloudFront di
 - **backend**: spins up PostgreSQL, compiles frontend assets, loads DB structure, then runs `bundle exec rake` (RuboCop + RSpec)
 - **frontend**: runs `npm run type-check`, `npm run lint:frontend`, and `npm run test:frontend`
 
-The deploy sequence, rollback and one-off task invocation are described in [16-lambda-migration.md](16-lambda-migration.md#deployment). When a release contains migrations, run `migrate.yml` after `deploy.yml`.
+The deploy sequence, rollback and one-off task invocation are described in [Lambda](lambda.md#deployment). When a release contains migrations, run `migrate.yml` after `deploy.yml`.
 
 ## S3 Bucket Policy
 
@@ -87,7 +87,7 @@ Two distributions are provisioned:
 | `/assets/*` | S3 `assets` bucket (OAC) | CachingOptimized (long TTL) |
 | `*` (default) | Lambda Function URL | CachingDisabled + AllViewerExceptHostHeader |
 
-Static assets are safe to cache long-term because Vite fingerprints filenames with a content hash. Dynamic responses are not cached. See [16-lambda-migration.md](16-lambda-migration.md#origin-protection) for how the Function URL is protected.
+Static assets are safe to cache long-term because Vite fingerprints filenames with a content hash. Dynamic responses are not cached. See [Lambda](lambda.md#origin-protection) for how the Function URL is protected.
 
 ### `mapshots` — CDN domain (`maps.pasta-atlas.layer8.works`)
 
@@ -113,4 +113,4 @@ No staging environment is defined at this time.
 
 ### Local development
 
-See [11-local-development.md](11-local-development.md).
+See [Local Setup](../development/local-setup.md).

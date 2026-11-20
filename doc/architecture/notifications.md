@@ -61,7 +61,7 @@ Indexes:
 - on `(receiver_id, created_at DESC)`
 - on `(subject_type, subject_id)`
 
-`type` is enforced with a CHECK constraint (not a PostgreSQL ENUM; see [DB Schema](02-db-schema.md) enum strategy).
+`type` is enforced with a CHECK constraint (not a PostgreSQL ENUM; see [DB Schema](db-schema.md) enum strategy).
 
 Display text is rendered on the frontend from `type` + `actor_id` + `subject_type` + `subject_id` at read time.
 

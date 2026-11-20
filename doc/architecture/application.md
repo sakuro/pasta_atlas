@@ -2,33 +2,47 @@
 
 ## Overview
 
-`app/` holds all application code. Slices are not used at this stage.
+`app/` holds all application code. Slices are not used at this stage. `frontend/` holds the SPA source.
 
-## Current implementation
+## Directory Layout
 
 ```
-app/
-  actions/           # HTTP actions (parse request, call operation, render response)
-    auth/            # OmniAuth callbacks, registration, session management
-    spa/             # SPA shell delivery
-      shell.rb                      # GET / (and other client-routed pages)
-      map_viewer.rb                 # GET /maps/:map_ulid
-      user.rb                       # GET /@:user_name
-      not_found.rb                  # GET /*path (catch-all)
-    api/             # JSON API
-      auth/                         # Current user info, registration data
-      maps/                         # Map CRUD, lookup
-      uploads/                      # Upload lifecycle, presigned URLs
-      users/                        # User, profile, preferences, avatar, credentials
-      pages/                        # Static page content
-  views/             # Hanami views (HTML rendering)
-  templates/         # ERB templates
-  relations/         # ROM relations (DB table mappings)
-  repos/             # Repositories
-  structs/           # Immutable value objects (ROM structs)
-  values/            # Non-ROM value objects
-  middleware/        # Rack middleware
-  operations/        # Use cases (orchestrate repos, S3, etc.)
+pasta_atlas/
+  app/                   # Application code (Hanami)
+    actions/             # HTTP actions (SPA shell + JSON API)
+      auth/              # OAuth callbacks, registration, session
+      spa/               # SPA shell delivery
+      api/               # JSON API
+        auth/
+        maps/
+        uploads/
+        users/
+        pages/
+    views/               # Hanami views (HTML rendering)
+    templates/           # ERB templates
+    relations/           # ROM relations
+    repos/               # Repositories
+    structs/             # Immutable value objects (ROM structs)
+    values/              # Non-ROM value objects
+    middleware/          # Rack middleware
+    operations/          # Use cases (orchestrate repos, S3, etc.)
+  frontend/              # Vite source (SPA)
+    app.tsx              # Entry point (routing, providers)
+    pages/               # Page components (MapsIndexPage, MapViewerPage, UserPage, …)
+      map_viewer/        # MapViewer and Leaflet subcomponents
+      user/              # UserPage tab components
+    layout/
+      AppLayout.tsx      # Shared navbar, upload button, footer
+    components/          # Shared SolidJS components
+    contexts/            # AuthContext, ToastContext
+    lib/                 # l10n.ts, display-settings.ts
+    factorio-icons/      # Factorio icon assets
+  vite.config.ts
+  tsconfig.json
+  package.json           # single package.json for both hanami-assets and Vite
+  public/                # Static files served by Hanami
+  spec/                  # RSpec tests
+  doc/                   # Documentation
 ```
 
 ## Responsibility split
@@ -87,3 +101,14 @@ Introducing a `web` slice would place repos and operations in the app container 
 | Slice | Purpose | Trigger to add |
 |---|---|---|
 | `admin` | Administrative interface | When admin tooling is needed |
+
+## Asset Pipeline
+
+Two build pipelines run in parallel:
+
+| Pipeline | Tool | Output | Handles |
+|---|---|---|---|
+| General assets | hanami-assets (esbuild) | `public/assets/` | Global CSS, fonts, images (files under `app/assets/`) |
+| SPA bundle | Vite + `@solidjs/vite-plugin` | `public/assets/` | Single SPA entry (`frontend/app.tsx`) |
+
+Hanami serves both from the same origin — no CORS configuration needed. A custom `hanamiViteEntries` Vite plugin writes `vite-entries.json` after each build so hanami-assets can resolve the content-hashed filenames.
