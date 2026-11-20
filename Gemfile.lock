@@ -95,7 +95,7 @@ GEM
       concurrent-ruby (~> 1.0)
       dry-core (~> 1.1)
       zeitwerk (~> 2.6)
-    dry-monads (1.10.0)
+    dry-monads (1.11.1)
       concurrent-ruby (~> 1.0)
       dry-core (~> 1.1)
       zeitwerk (~> 2.6)
@@ -103,8 +103,8 @@ GEM
       dry-configurable (~> 1.0, < 2)
       dry-core (~> 1.0, < 2)
       dry-events (~> 1.0, < 2)
-    dry-operation (1.1.0)
-      dry-monads (~> 1.6)
+    dry-operation (1.2.0)
+      dry-monads (~> 1.10)
       zeitwerk (~> 2.6)
     dry-schema (1.16.0)
       concurrent-ruby (~> 1.0)
@@ -629,9 +629,9 @@ CHECKSUMS
   dry-initializer (3.2.0) sha256=37d59798f912dc0a1efe14a4db4a9306989007b302dcd5f25d0a2a20c166c4e3
   dry-logger (1.2.2) sha256=eaf91bbc131135b2148d779fb22b8aff4a1b1ad616c721dab6d113beaa5e41c7
   dry-logic (1.6.0) sha256=da6fedbc0f90fc41f9b0cc7e6f05f5d529d1efaef6c8dcc8e0733f685745cea2
-  dry-monads (1.10.0) sha256=68c90d77617c6ce88d60704fc3b233907e6320974152fe75ad947f968006ca39
+  dry-monads (1.11.1) sha256=d38f17407f0f122f63e0435e5b43cdb2ec47ea343dad5c849edfc4682853e100
   dry-monitor (1.0.1) sha256=4ac8ed1f85b14bfde1aa0bce9496d7d2fc699c5a4a1131010c8014d5f9e7a309
-  dry-operation (1.1.0) sha256=db4227ac0c9313c0c84eda4e26539dcc1e1aae9effdf9e60a397ab2a90a01b92
+  dry-operation (1.2.0) sha256=d71d41dabab3eb97b91199f9749d4be5a094b0b201bfd044c5bedcdebd36d68d
   dry-schema (1.16.0) sha256=cd3aaeabc0f1af66ec82a29096d4c4fb92a0a58b9dae29a22b1bbceb78985727
   dry-struct (1.8.1) sha256=033868594c45241540172bf1ebbc8bb76b72b4f0717072325deba38ac13e80f1
   dry-system (1.2.5) sha256=a02f57c18cbcc6c9c4ea99a7eed0afc830263d2051c855a46a7229ea3708d143
