@@ -6,6 +6,12 @@ RSpec.describe PastaAtlas::Middleware::OriginVerify do
   let(:app) { ->(_env) { [200, {"content-type" => "text/plain"}, ["ok"]] } }
   let(:request) { Rack::MockRequest.new(PastaAtlas::Middleware::OriginVerify.new(app, secret: "s3cret")) }
 
+  describe ".new" do
+    it "rejects an empty secret" do
+      expect { PastaAtlas::Middleware::OriginVerify.new(app, secret: "") }.to raise_error(ArgumentError)
+    end
+  end
+
   describe "#call" do
     it "passes requests carrying the secret header" do
       expect(request.get("/", "HTTP_X_ORIGIN_VERIFY" => "s3cret").status).to eq(200)

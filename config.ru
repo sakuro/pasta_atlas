@@ -26,8 +26,11 @@ if Hanami.env?(:development)
   end)
 end
 
-if (origin_verify_secret = ENV.fetch("ORIGIN_VERIFY_SECRET", nil))
-  use PastaAtlas::Middleware::OriginVerify, secret: origin_verify_secret
-end
+# Fail closed: where secrets come from SSM (Lambda), a missing secret must stop the boot
+# instead of leaving the public Function URL unprotected.
+origin_verify_secret = ENV.fetch("ORIGIN_VERIFY_SECRET", nil)
+raise KeyError, "ORIGIN_VERIFY_SECRET is not set" if origin_verify_secret.nil? && ENV.key?("SSM_PARAMETER_PREFIX")
+
+use PastaAtlas::Middleware::OriginVerify, secret: origin_verify_secret if origin_verify_secret
 
 run Hanami.app

@@ -15,6 +15,9 @@ module PastaAtlas
       private_constant :HEADER, :READINESS_PATH
 
       def initialize(app, secret:)
+        # An empty secret would match requests that omit the header.
+        raise ArgumentError, "secret must not be empty" if secret.empty?
+
         @app = app
         @secret = secret
       end
