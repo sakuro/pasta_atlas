@@ -51,6 +51,28 @@ This creates the following resources in Floci:
 - `pasta-atlas-local-mapshots` S3 bucket
 - `pasta-atlas-local-s3-cleanup` SQS queue
 
+The bucket's CORS rule must allow `POST` because the browser uploads tiles with presigned POSTs (see [06-upload-flow.md](06-upload-flow.md)). After changing `s3.tf` or `sqs.tf`, run `terraform apply` again.
+
+Floci keeps its data in the `floci_data` volume, while the Terraform state (`terraform.tfstate`) is a gitignored local file. If the state file is missing but the volume still has the resources, `terraform apply` fails because the bucket and queue already exist. Either import them:
+
+```bash
+cd terraform/environments/local
+terraform import aws_s3_bucket.mapshots pasta-atlas-local-mapshots
+terraform import aws_sqs_queue.s3_cleanup http://localhost:4566/000000000000/pasta-atlas-local-s3-cleanup
+terraform apply
+```
+
+or discard the Floci data and start over (this also removes uploaded maps):
+
+```bash
+docker compose down
+docker volume rm pasta_atlas_floci_data
+docker compose up -d
+terraform apply
+```
+
+If `AWS_ENDPOINT_URL` points at Floci in your shell, `terraform` against real AWS (`environments/production`) must run with it unset.
+
 ### 4. Configure OAuth providers
 
 At least one provider must be configured. Create `.env.development.local` (gitignored) with credentials for the providers you want to use.
