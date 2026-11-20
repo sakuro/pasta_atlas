@@ -31,4 +31,4 @@ aws ssm put-parameter --overwrite \
 
 Lambda cannot inject SSM parameters into the environment. `LambdaSupport::SecretsLoader` (`lib/lambda_support/secrets_loader.rb`) fetches them with `ssm:GetParameters` under the prefix given by `SSM_PARAMETER_PREFIX` and sets `ENV` before Hanami reads its settings. Every Lambda entry point calls it during initialization, so a secret update takes effect on the next cold start. The execution role needs `ssm:GetParameters` on the prefix and `kms:Decrypt`.
 
-`origin_verify_secret` is the exception to the storage rule above: Terraform generates it (`random_password`) because CloudFront needs the value in its origin configuration, so it is stored in the Terraform state. See [16-lambda-migration.md](16-lambda-migration.md#origin-protection).
+`origin_verify_secret` is the exception to the storage rule above: Terraform generates it (`random_password`) because CloudFront needs the value in its origin configuration, so it is stored in the Terraform state. See [Lambda](lambda.md#origin-protection).

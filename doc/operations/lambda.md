@@ -96,7 +96,7 @@ Decision: the Function URL uses `AuthType NONE`. CloudFront adds a secret header
 
 ## Secrets
 
-Secrets stay in SSM Parameter Store and are never written to Terraform state (see [14-secrets-management.md](14-secrets-management.md)). Unlike ECS, Lambda cannot inject SSM parameters into the environment. A small loader fetches them with `ssm:GetParameters` at initialization and sets `ENV` before Hanami reads its settings. Every entry point calls it, including the event functions and `migrate`. The execution role needs read access to the parameters under `/pasta-atlas/production/`. Initialization adds one SSM call per cold start.
+Secrets stay in SSM Parameter Store and are never written to Terraform state (see [Secrets Management](secrets.md)). Unlike ECS, Lambda cannot inject SSM parameters into the environment. A small loader fetches them with `ssm:GetParameters` at initialization and sets `ENV` before Hanami reads its settings. Every entry point calls it, including the event functions and `migrate`. The execution role needs read access to the parameters under `/pasta-atlas/production/`. Initialization adds one SSM call per cold start.
 
 Non-secret configuration is set as ordinary Lambda environment variables from Terraform.
 
@@ -146,7 +146,7 @@ The `mapshots` bucket configuration in Terraform allows `POST` and `PUT` (`GET` 
 Local development is unchanged: Hanami runs directly, with PostgreSQL and floci in Docker.
 
 - The local polling worker is kept for SQS, sharing `handle` with the Lambda handlers, so local runs follow the production message path.
-- The process list in [11-local-development.md](11-local-development.md) uses `rake s3:process_queues`.
+- The process list in [Local Setup](../development/local-setup.md) uses `rake s3:process_queues`.
 
 ## Tooling
 

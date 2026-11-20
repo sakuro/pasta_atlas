@@ -117,4 +117,4 @@ npm run test:frontend   # Vitest
 
 ## Design documentation
 
-Detailed design documents are in [`doc/design/`](doc/design/).
+See [`doc/`](doc/README.md) for the architecture, operations and development documents.

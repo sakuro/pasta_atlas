@@ -51,7 +51,7 @@ This creates the following resources in Floci:
 - `pasta-atlas-local-mapshots` S3 bucket
 - `pasta-atlas-local-s3-cleanup` SQS queue
 
-The bucket's CORS rule must allow `POST` because the browser uploads tiles with presigned POSTs (see [06-upload-flow.md](06-upload-flow.md)). After changing `s3.tf` or `sqs.tf`, run `terraform apply` again.
+The bucket's CORS rule must allow `POST` because the browser uploads tiles with presigned POSTs (see [Upload Flow](../architecture/upload-flow.md)). After changing `s3.tf` or `sqs.tf`, run `terraform apply` again.
 
 Floci keeps its data in the `floci_data` volume, while the Terraform state (`terraform.tfstate`) is a gitignored local file. If the state file is missing but the volume still has the resources, `terraform apply` fails because the bucket and queue already exist. Either import them:
 
@@ -132,7 +132,7 @@ Starts all services concurrently via mise:
 | Docker Compose (Floci + PostgreSQL) | `docker compose up` |
 | SQS queue worker (S3 cleanup) | `bundle exec rake s3:process_queues` |
 
-Production runs the same message handling in Lambda functions triggered by SQS (see [16-lambda-migration.md](16-lambda-migration.md)).
+Production runs the same message handling in Lambda functions triggered by SQS (see [Lambda](../operations/lambda.md)).
 
 Access the app at **http://localhost:2300**.
 

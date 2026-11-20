@@ -67,26 +67,6 @@ The server issues presigned URLs; the frontend uploads tile images directly to S
 
 The frontend is a SolidJS SPA. It is bundled by Vite into `public/assets/` and served as a single entry point. Bulma CSS + FontAwesome for styling.
 
-## Design documents
+## Documentation
 
-Detailed design documents are in `doc/design/`:
-
-| # | Document |
-|---|---|
-| 00 | [Overview](doc/design/00-overview.md) |
-| 01 | [Domain Model](doc/design/01-domain-model.md) |
-| 02 | [DB Schema](doc/design/02-db-schema.md) |
-| 03 | [API Endpoints](doc/design/03-api-endpoints.md) |
-| 04 | [Application Structure](doc/design/04-application-structure.md) |
-| 05 | [Frontend Components](doc/design/05-frontend-components.md) |
-| 06 | [Upload Flow](doc/design/06-upload-flow.md) |
-| 07 | [Code Quality](doc/design/07-code-quality.md) |
-| 08 | [Project Structure](doc/design/08-project-structure.md) |
-| 09 | [Frontend Styling](doc/design/09-frontend-styling.md) |
-| 10 | [Infrastructure](doc/design/10-infrastructure.md) |
-| 11 | [Local Development](doc/design/11-local-development.md) |
-| 12 | [Factorio Rich Text](doc/design/12-rich-text.md) |
-| 13 | [Comments](doc/design/13-comments.md) |
-| 14 | [Secrets Management](doc/design/14-secrets-management.md) |
-| 15 | [Notifications](doc/design/15-notifications.md) |
-| 16 | [Lambda Migration](doc/design/16-lambda-migration.md) |
+Documents are in `doc/`; [doc/README.md](doc/README.md) lists them. They are grouped by `architecture/` (how the application works), `operations/` (production) and `development/` (local setup, code quality).
