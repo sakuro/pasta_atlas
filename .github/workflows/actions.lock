@@ -5,14 +5,14 @@ version: 'v0.0.3'
 workflows:
     '.github/workflows/ci.yml':
         - 'actions/checkout@v7.0.1'
-        - 'actions/setup-node@v6.5.0'
+        - 'actions/setup-node@v7.1.0'
         - 'ruby/setup-ruby@v1.343.0'
     '.github/workflows/delete-map.yml':
         - 'actions/checkout@v7.0.1'
         - 'aws-actions/configure-aws-credentials@v6.3.0'
     '.github/workflows/deploy.yml':
         - 'actions/checkout@v7.0.1'
-        - 'actions/setup-node@v6.5.0'
+        - 'actions/setup-node@v7.1.0'
         - 'aws-actions/configure-aws-credentials@v6.3.0'
         - 'ruby/setup-ruby@v1.343.0'
     '.github/workflows/migrate.yml':
@@ -27,9 +27,9 @@ dependencies:
         commit: 'sha1-3d3c42e5aac5ba805825da76410c181273ba90b1'
         owner_id: 44036562
         repo_id: 197814629
-    'actions/setup-node@v6.5.0':
-        ref: 'v6.5.0'
-        commit: 'sha1-249970729cb0ef3589644e2896645e5dc5ba9c38'
+    'actions/setup-node@v7.1.0':
+        ref: 'v7.1.0'
+        commit: 'sha1-949feb2413d6458794dcd2491c4babbbce0c15c1'
         owner_id: 44036562
         repo_id: 189476904
     'aws-actions/configure-aws-credentials@v6.3.0':
