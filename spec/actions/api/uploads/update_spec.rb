@@ -60,6 +60,16 @@ RSpec.describe PastaAtlas::Actions::API::Uploads::Update, :db do
       end
     end
 
+    context "when not every image has been verified" do
+      before { allow(update_status).to receive(:call).and_return(Failure(:incomplete)) }
+
+      it "returns 422" do
+        response = action.call(session.merge(action_params))
+
+        expect(response.status).to eq(422)
+      end
+    end
+
     context "when the upload belongs to another user" do
       before { allow(update_status).to receive(:call).and_return(Failure(:forbidden)) }
 

@@ -28,6 +28,8 @@ module PastaAtlas
                 status: upload.status,
                 completed_at: upload.completed_at&.iso8601
               })
+            in Failure(:incomplete)
+              halt :unprocessable_content
             in Failure(Symbol => status)
               halt status
             end
