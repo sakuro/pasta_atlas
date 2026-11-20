@@ -27,7 +27,7 @@ terraform/
 | `bastion.tf` | Optional bastion instance (`create_bastion`) |
 | `iam.tf` | Lambda execution role and policies |
 | `ci_role.tf` | GitHub Actions OIDC role and its policies |
-| `alarms.tf` | SNS topic and CloudWatch alarm for the dead-letter queue |
+| `alarms.tf` | SNS topics and CloudWatch alarms (dead-letter queue, `app` function errors and throttles, CloudFront 5xx rate) |
 | `ssm.tf` | SSM parameters (secrets) |
 | `sqs.tf` | SQS queue for S3 cleanup and its dead-letter queue |
 | `outputs.tf` | Bucket, distribution, queue and RDS outputs |

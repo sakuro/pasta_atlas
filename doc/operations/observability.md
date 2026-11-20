@@ -27,3 +27,18 @@ env -u AWS_ENDPOINT_URL AWS_PROFILE=terraform aws logs tail /aws/lambda/pasta-at
 ```
 
 Use `aws logs filter-log-events` with `--filter-pattern '"\"status\":500"'` to find failed requests.
+
+## Alarms
+
+Every alarm notifies the `pasta-atlas-production-alarms` SNS topic, which emails `alarm_email` when it is set (each subscription must be confirmed once). CloudFront reports its metrics in us-east-1, and an alarm can only notify a topic of its own region, so that alarm uses a second topic with the same name in us-east-1 and a second subscription.
+
+| Alarm | Metric | Condition (5 minutes) |
+|---|---|---|
+| `…-s3-cleanup-dlq-not-empty` | SQS `ApproximateNumberOfMessagesVisible` of the dead-letter queue | above 0 |
+| `…-app-errors` | Lambda `Errors` of the `app` function | above 0 |
+| `…-app-throttles` | Lambda `Throttles` of the `app` function | above 0 |
+| `…-app-5xx-rate` | CloudFront `5xxErrorRate` of the application distribution | 5% or more |
+
+`Errors` counts unhandled exceptions and timeouts. A 500 that Puma returns normally is not an invocation error, so the CloudFront alarm is the one that sees it. With little traffic a single failed request exceeds 5%, which is intended. Missing data counts as healthy, so an idle site does not alarm.
+
+Not monitored yet: the `s3-cleanup` and `task` functions' errors, RDS connections and free storage, and the NAT instance.
