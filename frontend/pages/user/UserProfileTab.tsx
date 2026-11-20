@@ -1,4 +1,4 @@
-import { createResource, createSignal, Show } from "solid-js";
+import { createMemo, createSignal, Errored, Loading, Show } from "solid-js";
 import { AvatarUpload, type AvatarUploadRef } from "./AvatarUpload";
 import "../../lib/l10n";
 import { SpinnerBlock } from "../../components/SpinnerBlock";
@@ -23,16 +23,15 @@ export const UserProfileTab = (props: {
   onSuccess?: (data: ProfileUpdate) => void;
   onError?: (msgKey: string) => void;
 }) => {
-  const [data] = createResource(
-    () => props.active() && props.userName,
-    async (userName) => {
-      const res = await fetch(`/api/v1/users/${userName}/profile`);
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      return res.json() as Promise<ProfileData>;
-    }
-  );
+  const data = createMemo(async (): Promise<ProfileData | undefined> => {
+    if (!props.active()) return undefined;
+    const res = await fetch(`/api/v1/users/${props.userName}/profile`);
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    return res.json() as Promise<ProfileData>;
+  });
 
-  const [displayName, setDisplayName] = createSignal("");
+  // Editable draft seeded from the fetched profile; re-seeded if the profile is refetched.
+  const [displayName, setDisplayName] = createSignal(() => data()?.display_name ?? "");
   const graphemeCount = () => [...segmenter.segment(displayName())].length;
   const [submitting, setSubmitting] = createSignal(false);
   let avatarRef: AvatarUploadRef | undefined;
@@ -68,17 +67,10 @@ export const UserProfileTab = (props: {
   };
 
   return (
-    <>
-      <Show when={data.loading}>
-        <SpinnerBlock />
-      </Show>
-      <Show when={data.error}>
-        <ErrorNotification l10nId="error-load-failed" />
-      </Show>
-      <Show when={!data.loading && data()} keyed>
-        {(profile) => {
-          setDisplayName(profile.display_name ?? "");
-          return (
+    <Errored fallback={<ErrorNotification l10nId="error-load-failed" />}>
+      <Loading fallback={<SpinnerBlock />}>
+        <Show when={data()} keyed>
+          {(profile) => (
             <form onSubmit={(e) => void handleSubmit(e)}>
               <div class="field">
                 <p class="label">
@@ -135,9 +127,9 @@ export const UserProfileTab = (props: {
                 </div>
               </div>
             </form>
-          );
-        }}
-      </Show>
-    </>
+          )}
+        </Show>
+      </Loading>
+    </Errored>
   );
 };
