@@ -2,7 +2,7 @@ name: pasta_atlas
 
 services:
   floci:
-    image: floci/floci:1.5.9
+    image: floci/floci:1.7.0
     ports:
       - "4566:4566"
     environment:
