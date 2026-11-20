@@ -108,3 +108,29 @@ html:has(.map-viewer-page) body > #app {
   flex: 1;
   min-height: 0;
 }
+
+/* Bulma highlights only `a.navbar-item` on hover and focus. The log-in and log-out items are
+   buttons because they submit forms, so they get the same highlight and the layout of a link. */
+.navbar-dropdown button.navbar-item {
+  width: 100%;
+  border: none;
+  font: inherit;
+  text-align: start;
+  cursor: pointer;
+}
+
+.navbar-dropdown button.navbar-item:hover,
+.navbar-dropdown button.navbar-item:focus,
+.navbar-dropdown button.navbar-item:focus-within {
+  --bulma-navbar-item-background-l-delta: var(--bulma-navbar-item-hover-background-l-delta);
+}
+
+.navbar-dropdown button.navbar-item:active {
+  --bulma-navbar-item-background-l-delta: var(--bulma-navbar-item-active-background-l-delta);
+}
+
+@media screen and (min-width: 1024px) {
+  .navbar-dropdown button.navbar-item {
+    padding-inline-end: 3rem;
+  }
+}
