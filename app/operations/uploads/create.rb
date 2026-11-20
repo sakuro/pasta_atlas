@@ -56,11 +56,6 @@ module PastaAtlas
         private def within_transaction(map:, user:, mapshot_map_id:, mapshot_unique_id:, tick:, metadata:, total_image_count:)
           result = nil
           generation_repo.transaction do
-            if generation_repo.all_expired_for_map?(map_id: map.id)
-              result = Failure(:gone)
-              next
-            end
-
             generation = generation_repo.find_with_upload(
               map_id: map.id, mapshot_unique_id:
             )
@@ -85,8 +80,7 @@ module PastaAtlas
             map_id: map.id,
             mapshot_unique_id:,
             tick:,
-            metadata_s3_key:,
-            expires_at: nil
+            metadata_s3_key:
           )
           metadata_json = metadata.to_json
           write_result = write_metadata_to_s3(key: metadata_s3_key, body: metadata_json)

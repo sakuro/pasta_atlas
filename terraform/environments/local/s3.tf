@@ -19,23 +19,6 @@ resource "aws_s3_bucket_public_access_block" "mapshots" {
   restrict_public_buckets = true
 }
 
-resource "aws_s3_bucket_lifecycle_configuration" "mapshots" {
-  bucket = aws_s3_bucket.mapshots.id
-
-  rule {
-    id     = "expire-guest"
-    status = "Enabled"
-
-    filter {
-      prefix = "guest/maps/"
-    }
-
-    expiration {
-      days = 8
-    }
-  }
-}
-
 resource "aws_s3_object" "guest_avatar" {
   bucket       = aws_s3_bucket.mapshots.id
   key          = "guest/avatar/guest.png"

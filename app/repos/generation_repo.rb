@@ -3,14 +3,10 @@
 module PastaAtlas
   module Repos
     class GenerationRepo < PastaAtlas::DB::Repo
-      NOT_EXPIRED = Sequel.lit("(expires_at IS NULL OR expires_at > NOW())")
-      private_constant :NOT_EXPIRED
-
       def find_by_id(id) = generations.where(id:).one!
 
       def find_latest_complete_by_map_ids(map_ids)
         generations.where(map_id: map_ids)
-          .where(NOT_EXPIRED)
           .combine(upload: :current_upload_status)
           .to_a
           .select {|g| g.upload&.status == "complete" }
@@ -31,7 +27,6 @@ module PastaAtlas
 
       def find_complete_by_map_id(map_id)
         generations.where(map_id:)
-          .where(NOT_EXPIRED)
           .combine(upload: :current_upload_status)
           .to_a
           .select {|g| g.upload&.status == "complete" }
@@ -48,20 +43,11 @@ module PastaAtlas
         generations.changeset(:create, attrs).commit
       end
 
-      def all_expired_for_map?(map_id:)
-        dataset = generations.dataset.where(map_id:)
-        dataset.any? && dataset.where(NOT_EXPIRED).none?
-      end
-
       def update_storage_bytes(id:, storage_bytes:)
         generations.dataset.where(id:).update(storage_bytes:)
       end
 
       def delete_by_id(id) = generations.dataset.where(id:).delete
-
-      def delete_expired
-        generations.dataset.where(Sequel.lit("expires_at IS NOT NULL AND expires_at <= NOW()")).delete
-      end
     end
   end
 end

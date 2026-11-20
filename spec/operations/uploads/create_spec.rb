@@ -19,18 +19,6 @@ RSpec.describe PastaAtlas::Operations::Uploads::Create, :db do
         expect(upload.status).to eq("pending")
         expect(upload.total_image_count).to eq(5)
       end
-
-      it "does not set expires_at for a regular user" do
-        operation.call(user_id: user.id, metadata:, total_image_count: 5)
-
-        generation = generation_repo.find_with_upload(
-          map_id: map_repo.find_or_create_by_user_and_mapshot_id(
-            user_id: user.id, mapshot_map_id: metadata[:map_id]
-          ).id,
-          mapshot_unique_id: metadata[:unique_id]
-        )
-        expect(generation.expires_at).to be_nil
-      end
     end
 
     context "when a pending upload already exists for the generation" do
@@ -75,21 +63,6 @@ RSpec.describe PastaAtlas::Operations::Uploads::Create, :db do
 
         expect(result).to be_failure
         expect(result.failure).to eq(:conflict)
-      end
-    end
-
-    context "when all generations for the map are expired" do
-      let(:map) { Factory[:map, user:, mapshot_map_id: "ae8ec3ab"] }
-
-      before do
-        Factory[:generation, :expired, map:, mapshot_unique_id: "prev_gen"]
-      end
-
-      it "returns a gone failure" do
-        result = operation.call(user_id: user.id, metadata:, total_image_count: 5)
-
-        expect(result).to be_failure
-        expect(result.failure).to eq(:gone)
       end
     end
 

@@ -166,10 +166,6 @@ export const UploadModal = (props: { isGuest: boolean }) => {
         setState({ type: "error", error: { msgId: "upload-error-conflict" } });
         return;
       }
-      if (resp.status === 410) {
-        setState({ type: "error", error: { msgId: "upload-error-expired" } });
-        return;
-      }
       if (resp.status === 422) {
         const data = await resp.json() as { error?: string };
         setState({ type: "error", error: { msgId: data.error ?? "error-unknown" } });

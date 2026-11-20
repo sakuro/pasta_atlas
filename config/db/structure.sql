@@ -85,7 +85,6 @@ CREATE TABLE public.generations (
     tick bigint NOT NULL,
     metadata_s3_key text NOT NULL,
     created_at timestamp with time zone DEFAULT now() NOT NULL,
-    expires_at timestamp with time zone,
     storage_bytes bigint
 );
 
@@ -387,13 +386,6 @@ CREATE INDEX credentials_user_id_index ON public.credentials USING btree (user_i
 
 
 --
--- Name: generations_expires_at_index; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX generations_expires_at_index ON public.generations USING btree (expires_at);
-
-
---
 -- Name: generations_map_id_index; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -573,4 +565,5 @@ INSERT INTO schema_migrations (filename) VALUES
 ('20260605000000_make_timezone_nullable_in_user_preferences.rb'),
 ('20260607000000_add_storage_bytes_to_generations.rb'),
 ('20260607010000_add_not_null_to_uploads_total_image_count.rb'),
-('20260608000000_add_verification_to_uploads.rb');
+('20260608000000_add_verification_to_uploads.rb'),
+('20261120000000_drop_expires_at_from_generations.rb');

@@ -73,8 +73,6 @@ Condition: AWS:SourceArn == <mapshots distribution ARN>
 
 The `app` function's execution role holds `s3:GetObject`, `s3:PutObject`, `s3:DeleteObject`, and `s3:ListBucket` for generating presigned URLs and managing objects.
 
-The S3 lifecycle rule that expires objects under the `guest/maps/` prefix after 8 days can be removed once any existing guest data has naturally expired.
-
 CORS is configured for `PUT` requests from allowed origins (for presigned URL uploads), exposing the `ETag` header.
 
 ## CloudFront Distributions
