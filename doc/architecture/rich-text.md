@@ -6,10 +6,11 @@ Factorio allows train stop names (`backer_name`) and map tags (`text`) to contai
 
 | Data | Field | Rendering context |
 |---|---|---|
-| Station marker popup | `Surface.stations[].backer_name` | Leaflet `bindPopup` |
-| Layer switcher label | `Surface.surface_localised_name` / `surface_name` | Leaflet `control.layers` key |
+| Station marker | `Surface.stations[].backer_name` | Permanent Leaflet tooltip (`bindTooltip`) |
+| Map tag marker | tag `text` | Permanent Leaflet tooltip (`bindTooltip`) |
+| Layer switcher label | Localized surface name: FTL lookup by `surface_name`, falling back to `surface_localised_name` / `surface_name`; planets get a `[planet=<surface_name>]` prefix | Leaflet `control.layers` key |
 
-Both are processed by `renderRichText()` in `frontend/pages/map_viewer/richtext/index.ts`.
+All three are processed by `renderRichText()` in `frontend/pages/map_viewer/richtext/index.ts`.
 
 ## Tag Reference
 
@@ -39,7 +40,7 @@ Supported tag names:
 | `space-location` | `space-location/` | |
 | `planet` | `space-location/` | No `planet/` directory; reuses `space-location/` sprites |
 | `shortcut` | `shortcut/` | |
-| `img` | varies | Value is `type/name`; slash becomes hyphen in class name (e.g. `[img=item/iron-ore]` → `factorio-img--item-iron-ore`). No alias needed; write the sprite directory name as-is (e.g. `[img=space-location/nauvis]`, not `[img=planet/nauvis]`) |
+| `img` | varies | Works for every directory under `frontend/factorio-icons/`. Value is `type/name`; slash becomes hyphen in class name (e.g. `[img=item/iron-ore]` → `factorio-img--item-iron-ore`). No alias needed; write the sprite directory name as-is (e.g. `[img=space-location/nauvis]`, not `[img=planet/nauvis]`) |
 | `gps`, `train-stop`, `train`, `space-platform`, `special-item`, `armor`, `tip` | — | No sprites; `<i>` renders without background |
 | `space-age` | — | No value; no sprite |
 
@@ -61,12 +62,13 @@ Supported tag names:
 |---|---|---|
 | `[color=red]...[/color]` | `<span style="color:red">...</span>` | Named color |
 | `[color=0.5,0,0]...[/color]` | `<span style="color:rgba(128,0,0,1)">...</span>` | RGB floats 0–1 |
+| `[color=0.5,0,0,0.5]...[/color]` | `<span style="color:rgba(128,0,0,0.5)">...</span>` | RGBA; the alpha value is used as given |
 | `[color=#ff0000]...[/color]` | `<span style="color:#ff0000">...</span>` | Hex `#rrggbb` |
 | `[color=#80ff0000]...[/color]` | `<span style="color:rgba(255,0,0,0.502)">...</span>` | Factorio ARGB `#aarrggbb` |
 | `[font=default-bold]...[/font]` | `<span class="factorio-font--default-bold">...</span>` | No font assets wired |
 | `[tooltip=...]...[/tooltip]` | `<span>...</span>` | Tooltip data not surfaced |
 
-Unclosed tags are auto-closed at end of string. Unmatched closing tags are discarded.
+An unparsable color value produces a `<span>` without a style. Unclosed tags are auto-closed at end of string. Unmatched closing tags are discarded.
 
 ### Unknown tags
 
@@ -130,8 +132,8 @@ Run from the project root after adding or removing sprites:
 
 | File | Role |
 |---|---|
-| `frontend/pages/map_viewer/richtext.ts` | Parser: `renderRichText(input: string): string` |
-| `frontend/pages/map_viewer/richtext.test.ts` | Vitest unit tests |
-| `frontend/pages/map_viewer/richtext.css` | Base `.factorio-icon` styles; imports `richtext-icons.css` |
-| `frontend/pages/map_viewer/richtext-icons.css` | Generated `background-image` mappings (do not edit manually) |
+| `frontend/pages/map_viewer/richtext/index.ts` | Parser: `renderRichText(input: string): string` |
+| `frontend/pages/map_viewer/richtext/richtext.test.ts` | Vitest unit tests |
+| `frontend/pages/map_viewer/richtext/richtext.css` | Base `.factorio-icon` styles; imports `richtext-icons.css` |
+| `frontend/pages/map_viewer/richtext/richtext-icons.css` | Generated `background-image` mappings (do not edit manually) |
 | `frontend/factorio-icons/` | Sprite PNG source files (git-tracked; Vite processes at build time) |

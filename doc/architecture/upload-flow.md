@@ -31,22 +31,23 @@ Avatar images use a separate prefix: `avatars/{user_id}/{ulid}.{ext}`
   → User selects a directory; browser delivers all files as a FileList
   → If user cancels: stay in instructions state (modal remains open)
   → If mapshot.json not found in FileList: show error state
+  → If mapshot.json is not valid JSON: show error state
   → If more than 10,000 images: show error state
   → If mapshot.json found: parse and proceed to confirming
 
 [confirming]
   → Parse mapshot.json (validate structure)
-  → Separate: mapshot.json | image files
+  → Separate: mapshot.json | image files (files ending in `.jpg`)
   → Show summary to user:
-      - Map name (editable; default resolution: existing map name → name → savename → generated name)
+      - Map name (editable; default resolution: existing map name from `GET /api/v1/maps/lookup` → name → savename → generated name)
       - Surface count
       - Image file count
       - Total file size (sum of all image files)
   → User confirms
 
-[uploading]
+[preparing → uploading → verifying]
   Step 1: POST /api/v1/uploads
-    Body: { metadata: <mapshot.json content>, total_image_count: N, name: <display name or null> }
+    Body: { metadata: <mapshot.json content>, total_image_count: N, name: <display name> }
     → Receive: { ulid, map_ulid, generation_ulid }
 
   Step 2: For each batch of up to 200 image files (sequential):
@@ -81,16 +82,17 @@ Avatar images use a separate prefix: `avatars/{user_id}/{ulid}.{ext}`
 ### POST /api/v1/uploads
 
 1. Require authentication; return `403 Forbidden` for the guest user
-2. Parse `metadata` (mapshot.json content) and extract `map_id`, `unique_id` and `tick`
-3. Validate the optional display `name` (length and allowed characters); return `422` on failure
-4. Find or create `Map` by `(user_id, mapshot_map_id)` using `INSERT ... ON CONFLICT DO NOTHING`
+2. Validate the params; return `400` unless `name` is present, `total_image_count` is 1–10000, `map_id` and `unique_id` are 8 lowercase hex characters and `tick` is an integer in 0..4294967295
+3. Validate `name` (at most 30 grapheme clusters, no control characters); return `422` on failure
+4. Find or create `Map` by `(user_id, mapshot_map_id)` using `INSERT ... ON CONFLICT DO NOTHING`. If the map already exists, its display name is replaced with the submitted `name`
    - A plain transaction is insufficient under `READ COMMITTED`: two concurrent requests can both find "not found" before either inserts
 5. Check if `Generation` with `(map_id, mapshot_unique_id)` already exists
    - If exists with a `complete` upload → return `409 Conflict`
-   - If exists with a `pending`/`failed` upload → return the existing upload (allow retry)
+   - If exists with a `pending` upload → return the existing upload (allow retry)
+   - If exists with a `failed` upload → it is returned too, but `presigned_posts` rejects it with `422`, so it cannot be resumed. The bundled client never sets `failed`; only the API can
    - If not exists → create `Generation`
 6. Write mapshot.json to S3 at `{user_name}/maps/{mapshot_map_id}/{mapshot_unique_id}/mapshot.json` and set `metadata_s3_key` on the Generation
-7. Create `Upload` record (`status: pending`, `total_image_count` from request)
+7. Create the `Upload` (`total_image_count` from the request, `verified_bytes` initialised to the size of mapshot.json) and append an `upload_events` row with `event_type: pending`
 8. Return `{ ulid, map_ulid, generation_ulid }`
 
 Steps 5–7 run inside a single transaction. Step 4 runs before it; if the transaction rolls back (e.g. S3 failure), the Map record is retained — Map creation is idempotent.
@@ -107,20 +109,20 @@ Steps 5–7 run inside a single transaction. Step 4 runs before it; if the trans
 
 ### POST /api/v1/uploads/:ulid/verify_batch
 
-1. Validate `filenames` (non-empty, at most 200); require authentication and ownership of the Map
+1. Validate `filenames` (non-empty, at most 200; `400` otherwise); return `404` if the upload is unknown; return `403` for the guest or a non-owner
 2. Issue a `HeadObject` for each key (concurrency 20)
-3. If any object is missing: enqueue the generation's S3 prefix on the cleanup queue, delete the Generation, and return `422` with `{ error: "verification_failed" }`
-4. Otherwise mark the keys verified, add the batch size to `uploads.verified_bytes`, and return `{ verified_bytes }`
+3. If any object is missing: enqueue the generation's S3 prefix on the cleanup queue, delete the Generation, and return `422` with `{ error: "verification_failed" }`. If the enqueue fails, return `500` and keep the Generation
+4. Otherwise mark the keys verified, add the summed object sizes of the batch to `uploads.verified_bytes`, and return `{ verified_bytes }` (the bytes of this batch, not a running total)
 
 Verification makes the size recorded in the database reflect what is actually in S3, independent of the client.
 
 ### PATCH /api/v1/uploads/:ulid
 
-1. Find `Upload` by ULID; return `404` if not found; require ownership of the Map
-2. For `complete`: the number of verified keys must equal `total_image_count`
+1. `status` must be `complete` or `failed` (`400` otherwise); find `Upload` by ULID (`404` if not found); return `403` for the guest or a non-owner
+2. For `complete`: the number of verified keys must equal `total_image_count`; otherwise return `422`
 3. Append an `upload_events` row (`complete` or `failed`)
 4. For `complete`: store `verified_bytes` as the generation's `storage_bytes` and mark the verification as passed
-5. Return `{ ulid, status, completed_at }`
+5. Return `{ ulid, status, completed_at }` (`completed_at` is null unless the upload is complete)
 
 ---
 
@@ -146,7 +148,7 @@ sequenceDiagram
     alt complete upload exists
         UC-->>Client: 409 Conflict
     else pending/failed upload exists
-        UC-->>Client: existing upload
+        UC-->>Client: 201 existing upload
     else no generation
         UC->>DB: INSERT generation
         UC->>S3: PUT mapshot.json
@@ -211,7 +213,7 @@ sequenceDiagram
 | Generation already fully uploaded | Server returns `409 Conflict` |
 | File is not `image/jpeg` or exceeds 640 KB | S3 rejects the POST against the policy; upload enters error state |
 | Presigned POST expires mid-upload | S3 rejects the POST; upload enters error state |
-| Object missing after upload | `verify_batch` returns `422`; the generation is deleted and its S3 prefix is scheduled for cleanup |
+| Object missing after upload | `verify_batch` returns `422`; the generation and its upload are deleted and the S3 prefix is scheduled for cleanup. A retry starts from Step 1 |
 | Client closes browser during upload | Upload stays `pending`; resumable on next attempt (see below) |
 | S3 write fails for `mapshot.json` | Server returns `502`; Generation and Upload records are rolled back |
 

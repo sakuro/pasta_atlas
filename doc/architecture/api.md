@@ -12,7 +12,7 @@ Authentication uses OmniAuth. GitHub, Discord, and Steam OAuth are supported.
 
 ### GET /auth/github/callback
 
-OmniAuth GitHub OAuth callback. On success, either sets `session[:user_id]` and redirects to `/` (existing user), or stores OAuth data in `session[:pending_auth]` and redirects to `/auth/register` (new user).
+OmniAuth GitHub OAuth callback. If a user is already logged in, the provider is linked to that account and the response redirects to `/@{name}#tab-credentials` (a `error-credential-conflict` flash is set when the credential belongs to another user or linking fails). Otherwise, for an existing credential the session is reset, `session[:user_id]` is set and the response redirects to `/`; for an unknown credential the OAuth data is stored in `session[:pending_auth]` and the response redirects to `/auth/register`. `400 Bad Request` if the OmniAuth data is missing.
 
 ### GET /auth/discord/callback
 
@@ -20,22 +20,22 @@ OmniAuth Discord OAuth callback. Same behavior as the GitHub callback.
 
 ### POST /auth/steam/callback
 
-OmniAuth Steam OAuth callback. Same behavior as the GitHub callback.
+OmniAuth Steam OAuth callback. Same behavior as the GitHub callback, but rejected with `400 Bad Request` unless the login was started through `/auth/steam` in the same session (login CSRF guard).
 
 ### GET /auth/failure
 
-Renders the SPA shell with a 400 status. OmniAuth redirects here on failure.
+OmniAuth redirects here on failure. Redirects to `/?auth_error=<message>`, where `message` is the OmniAuth failure message (`unknown` if absent).
 
 ### POST /auth/register
 
-Creates a new User, UserProfile, UserPreference, and Credential. Validates username (max 15 chars, alphanumeric + `-_`, must start and end with alphanumeric, reserved names `guest`/`api`/`admin` are rejected). Requires `session[:pending_auth]`.
+Creates a new User, UserProfile, UserPreference, and Credential. Validates username (max 15 chars, alphanumeric + `-_`, must start and end with alphanumeric, reserved names `guest`/`api`/`admin`/`compilatron` and taken names are rejected; the name is lowercased before validation). Requires `session[:pending_auth]`.
 
 **Request params:**
 
 | Field | Notes |
 |---|---|
 | `name` | New username |
-| `timezone` | IANA timezone identifier |
+| `timezone` | IANA timezone identifier (optional; `UTC` if empty or invalid) |
 | `terms` | Must be `"1"` (terms acceptance) |
 
 **Response `200 OK`:**
@@ -52,7 +52,7 @@ The SPA navigates to the returned path on success.
 |---|---|---|
 | `403 Forbidden` | — | No `session[:pending_auth]` |
 | `422 Unprocessable Entity` | `{"error": "error-terms-required"}` | Terms not accepted |
-| `422 Unprocessable Entity` | `{"error": "<key>"}` | Invalid username |
+| `422 Unprocessable Entity` | `{"error": "error-username-empty" \| "error-username-too-long" \| "error-username-invalid-chars" \| "error-username-reserved" \| "error-username-taken"}` | Invalid username |
 
 ### DELETE /auth/session
 
@@ -71,7 +71,7 @@ Returns the current user and preferences. Used by the SPA on load to initialize 
   "user": {
     "name": "sakuro",
     "display_name": "OZAWA Sakuro",
-    "avatar_url": "https://cdn.example.com/avatars/42/01HXY....jpg"
+    "avatar_url": "https://cdn.example.com/sakuro/avatar/01HXY....jpg"
   },
   "preferences": {
     "locale": "ja",
@@ -86,7 +86,7 @@ Returns the current user and preferences. Used by the SPA on load to initialize 
 ```json
 {
   "user": null,
-  "preferences": { "locale": null, "timezone": "UTC", "relative_timestamps": false }
+  "preferences": { "locale": null, "timezone": null, "relative_timestamps": false }
 }
 ```
 
@@ -121,7 +121,7 @@ Returns public user info.
   "user": {
     "name": "sakuro",
     "display_name": "OZAWA Sakuro",
-    "avatar_url": "https://cdn.example.com/avatars/42/01HXY....jpg"
+    "avatar_url": "https://cdn.example.com/sakuro/avatar/01HXY....jpg"
   }
 }
 ```
@@ -130,7 +130,7 @@ Returns public user info.
 
 | Status | Condition |
 |---|---|
-| `403 Forbidden` | User is the guest account |
+| `403 Forbidden` | User is a system account (guest or compilatron) |
 | `404 Not Found` | User not found |
 
 ### GET /api/v1/users/:user_name/profile
@@ -143,7 +143,7 @@ Returns the user's profile. Authenticated, own profile only.
 {
   "user_name": "sakuro",
   "display_name": "OZAWA Sakuro",
-  "avatar_url": "https://cdn.example.com/avatars/42/01HXY....jpg"
+  "avatar_url": "https://cdn.example.com/sakuro/avatar/01HXY....jpg"
 }
 ```
 
@@ -151,8 +151,7 @@ Returns the user's profile. Authenticated, own profile only.
 
 | Status | Condition |
 |---|---|
-| `401 Unauthorized` | Not logged in |
-| `403 Forbidden` | Not own profile |
+| `403 Forbidden` | Not logged in, or not own profile |
 
 ### PATCH /api/v1/users/:user_name/profile
 
@@ -162,8 +161,8 @@ Updates `display_name` (and optionally `avatar_s3_key`). Authenticated, own prof
 
 | Field | Notes |
 |---|---|
-| `display_name` | Max 64 grapheme clusters; no leading/trailing whitespace or control characters |
-| `avatar_s3_key` | Optional; S3 key under `avatars/{user_id}/` |
+| `display_name` | Max 30 grapheme clusters; no control characters or whitespace other than a plain space; empty clears it |
+| `avatar_s3_key` | Optional; applied only if under `{user_name}/avatar/`, otherwise ignored |
 
 **Response `200 OK`:**
 
@@ -175,9 +174,8 @@ Updates `display_name` (and optionally `avatar_s3_key`). Authenticated, own prof
 
 | Status | Condition |
 |---|---|
-| `401 Unauthorized` | Not logged in |
-| `403 Forbidden` | Not own profile |
-| `422 Unprocessable Entity` | Validation error |
+| `403 Forbidden` | Not logged in, or not own profile |
+| `422 Unprocessable Entity` | `{"error": "error-profile-display-name-too-long" \| "error-profile-display-name-invalid-chars"}` |
 
 ### GET /api/v1/users/:user_name/preferences
 
@@ -202,9 +200,9 @@ Updates timezone, locale, and relative_timestamps. Authenticated, own profile on
 
 | Field | Notes |
 |---|---|
-| `timezone` | IANA timezone identifier (e.g. `"Asia/Tokyo"`); defaults to `"UTC"` if invalid |
-| `locale` | BCP 47 language tag (e.g. `"ja"`); empty = use browser locale |
-| `relative_timestamps` | `"true"` or `"false"` |
+| `timezone` | IANA timezone identifier (e.g. `"Asia/Tokyo"`); empty or invalid is stored as null |
+| `locale` | Supported BCP 47 language tag (e.g. `"ja"`); empty or unsupported is stored as null (use browser locale) |
+| `relative_timestamps` | `"true"` enables; any other value or absence disables |
 
 **Response `200 OK`:**
 
@@ -216,18 +214,17 @@ Updates timezone, locale, and relative_timestamps. Authenticated, own profile on
 
 | Status | Condition |
 |---|---|
-| `401 Unauthorized` | Not logged in |
-| `403 Forbidden` | Not own profile |
+| `403 Forbidden` | Not logged in, or not own profile |
 
 ### PATCH /api/v1/users/:user_name/avatar
 
-Sets `avatar_s3_key` on the UserProfile. The S3 key must be under `avatars/{user_id}/`. Authenticated, own profile only.
+Sets `avatar_s3_key` on the UserProfile. The S3 key must be under `{user_name}/avatar/`. The previous avatar object is queued for S3 cleanup. Authenticated, own profile only.
 
 **Request params:**
 
 | Field | Notes |
 |---|---|
-| `s3_key` | S3 key under `avatars/{user_id}/` |
+| `s3_key` | S3 key under `{user_name}/avatar/` |
 
 **Response:** `204 No Content`
 
@@ -236,7 +233,7 @@ Sets `avatar_s3_key` on the UserProfile. The S3 key must be under `avatars/{user
 | Status | Condition |
 |---|---|
 | `403 Forbidden` | Not authenticated or not own profile |
-| `422 Unprocessable Entity` | S3 key not under `avatars/{user_id}/` |
+| `422 Unprocessable Entity` | S3 key not under `{user_name}/avatar/` |
 
 ### DELETE /api/v1/users/:user_name/avatar
 
@@ -287,8 +284,8 @@ Supported content types: `image/jpeg`, `image/png`, `image/webp`.
 
 ```json
 {
-  "presigned_url": "https://s3.amazonaws.com/bucket/avatars/42/01HXY....jpg?...",
-  "s3_key": "avatars/42/01HXY....jpg"
+  "presigned_url": "https://s3.amazonaws.com/bucket/sakuro/avatar/01HXY....jpg?...",
+  "s3_key": "sakuro/avatar/01HXY....jpg"
 }
 ```
 
@@ -297,11 +294,11 @@ Supported content types: `image/jpeg`, `image/png`, `image/webp`.
 | Status | Condition |
 |---|---|
 | `403 Forbidden` | Not authenticated or not own profile |
-| `422 Unprocessable Entity` | Unsupported content type |
+| `400 Bad Request` | Missing or unsupported content type |
 
 ### GET /api/v1/users/:user_name/maps
 
-Returns recent maps uploaded by this user.
+Returns up to the 3 most recently updated maps of this user that have a complete generation.
 
 **Response `200 OK`:**
 
@@ -326,11 +323,11 @@ Returns recent maps uploaded by this user.
 
 | Status | Condition |
 |---|---|
-| `404 Not Found` | User not found or is the guest account |
+| `404 Not Found` | User not found, or is a system account (guest or compilatron) |
 
 ### DELETE /api/v1/users/:user_name
 
-Deletes the user account, clears the session, and returns a redirect target. Authenticated, own account only.
+Deletes the user account, queues the S3 prefixes of its maps and avatar for cleanup, clears the session, and returns a redirect target. Authenticated, own account only.
 
 **Request params:**
 
@@ -349,8 +346,7 @@ Deletes the user account, clears the session, and returns a redirect target. Aut
 | Status | Condition |
 |---|---|
 | `400 Bad Request` | `confirm_user_name` does not match |
-| `401 Unauthorized` | Not logged in |
-| `403 Forbidden` | Not own account |
+| `403 Forbidden` | Not logged in, or not own account |
 
 ---
 
@@ -420,7 +416,8 @@ Map details with all complete generations.
 {
   "ulid": "01HXYZ...",
   "display_name": "my-save",
-  "owner": { "name": "sakuro" },
+  "owner": { "name": "sakuro", "display_name": "OZAWA Sakuro", "avatar_url": "https://cdn.example.com/..." },
+  "updated_at": "2026-04-26T01:23:45Z",
   "generations": [
     {
       "ulid": "01HABC...",
@@ -431,13 +428,13 @@ Map details with all complete generations.
 }
 ```
 
-`generations` is sorted by `tick` descending. `metadata_url` is the CloudFront URL for the generation's mapshot.json.
+`avatar_url` may be null. `updated_at` is the creation time of the latest generation. `generations` is sorted by `tick` descending. `metadata_url` is the CloudFront URL for the generation's mapshot.json.
 
 **Error responses:**
 
 | Status | Condition |
 |---|---|
-| `404 Not Found` | Map with given ULID does not exist |
+| `404 Not Found` | Map does not exist or has no complete generation |
 
 ### PATCH /api/v1/maps/:ulid/name
 
@@ -447,7 +444,7 @@ Updates the display name of a map. Authenticated, own map only.
 
 | Field | Notes |
 |---|---|
-| `name` | New display name |
+| `name` | New display name; leading and trailing whitespace is stripped; max 30 grapheme clusters; no control characters |
 
 **Response `200 OK`:**
 
@@ -459,21 +456,19 @@ Updates the display name of a map. Authenticated, own map only.
 
 | Status | Condition |
 |---|---|
-| `401 Unauthorized` | Not logged in |
-| `403 Forbidden` | Not own map |
+| `403 Forbidden` | Guest, or not own map |
 | `404 Not Found` | Map not found |
-| `422 Unprocessable Entity` | Validation error |
+| `422 Unprocessable Entity` | `{"error": "error-map-name-too-long" \| "error-map-name-invalid-chars"}` |
 
 ### POST /api/v1/maps/:ulid/deletion_requests
 
-Requests deletion of a map. Authenticated, own map only. Redirects to `/` on success.
+Deletes a map and queues its S3 prefix for cleanup. Authenticated, own map only. On success, sets the flash `map-deletion-requested` and redirects to `/`.
 
 **Error responses:**
 
 | Status | Condition |
 |---|---|
-| `401 Unauthorized` | Not logged in |
-| `403 Forbidden` | Not own map |
+| `403 Forbidden` | Guest, or not own map |
 | `404 Not Found` | Map not found |
 
 ---
@@ -494,7 +489,7 @@ Start an upload session. Creates Map (if new for this user), Generation, and Upl
 }
 ```
 
-`name` is optional. When provided, it overrides the display name derived from `mapshot.json` (`name` → `savename` → `mapshot_map_id`).
+`name` is required (max 30 grapheme clusters). It is the map's display name; if the map already exists, it replaces the stored name. `total_image_count` must be 1–10000, `metadata.map_id` and `metadata.unique_id` must be 8 lowercase hex characters, and `metadata.tick` an integer in 0..4294967295. If a pending upload already exists for the same generation, it is returned again with `201`.
 
 **Response `201 Created`:**
 
@@ -510,7 +505,10 @@ Start an upload session. Creates Map (if new for this user), Generation, and Upl
 
 | Status | Condition |
 |---|---|
+| `400 Bad Request` | Invalid params |
+| `403 Forbidden` | Guest |
 | `409 Conflict` | A `complete` upload already exists for this generation |
+| `422 Unprocessable Entity` | `{"error": "error-map-name-too-long" \| "error-map-name-invalid-chars"}` |
 | `502 Bad Gateway` | S3 write of `mapshot.json` failed; DB records rolled back |
 
 ---
@@ -559,7 +557,7 @@ Check that the files of one batch exist in S3 and record their sizes.
 
 **Request body:** `{ "filenames": [...] }` (1–200 entries)
 
-**Response `200 OK`:** `{ "verified_bytes": 123456 }`
+**Response `200 OK`:** `{ "verified_bytes": 123456 }` (the bytes of this batch, not a running total)
 
 **Error responses:**
 
@@ -567,13 +565,15 @@ Check that the files of one batch exist in S3 and record their sizes.
 |---|---|
 | `403 Forbidden` | Guest user, or the map belongs to another user |
 | `404 Not Found` | Upload with given ULID does not exist |
+| `400 Bad Request` | `filenames` is empty or has more than 200 entries |
 | `422 Unprocessable Entity` | An object is missing (`{ "error": "verification_failed" }`); the generation is deleted and its S3 prefix is queued for cleanup |
+| `500 Internal Server Error` | The cleanup message could not be queued; the generation is kept |
 
 ---
 
 ### PATCH /api/v1/uploads/:ulid
 
-Mark an upload as complete or failed.
+Mark an upload as `complete` or `failed`. `complete` requires every expected file to be verified.
 
 **Request body:**
 
@@ -597,7 +597,10 @@ Mark an upload as complete or failed.
 
 | Status | Condition |
 |---|---|
+| `400 Bad Request` | `status` is not `complete` or `failed` |
+| `403 Forbidden` | Guest, or the map belongs to another user |
 | `404 Not Found` | Upload with given ULID does not exist |
+| `422 Unprocessable Entity` | `status` is `complete` but not all files have been verified |
 
 ---
 
