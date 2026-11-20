@@ -90,7 +90,8 @@ export class ZoomSliderControl extends L.Control {
 
   onRemove(map: L.Map): void {
     map.off("zoomend zoomlevelschange", this._update, this);
-    this._map = null;
+    // _map is L.Control's own field: Control.remove() still uses it after onRemove
+    // and clears it itself, so it must not be nulled here.
     this._track = null;
     this._knob = null;
     this._btnIn = null;
