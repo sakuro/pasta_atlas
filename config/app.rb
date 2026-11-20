@@ -8,6 +8,10 @@ require "omniauth-discord"
 require "omniauth-github"
 require "omniauth-steam"
 
+# ruby-openid verifies the server certificate only when a CA file is set; without one it
+# silently uses VERIFY_NONE for the requests that confirm a Steam sign-in.
+OpenID.fetcher.ca_file = OpenSSL::X509::DEFAULT_CERT_FILE
+
 module PastaAtlas
   class App < Hanami::App
     config.inflections do |i|
