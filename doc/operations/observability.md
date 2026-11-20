@@ -37,8 +37,9 @@ Every alarm notifies the `pasta-atlas-production-alarms` SNS topic, which emails
 | `…-s3-cleanup-dlq-not-empty` | SQS `ApproximateNumberOfMessagesVisible` of the dead-letter queue | above 0 |
 | `…-app-errors` | Lambda `Errors` of the `app` function | above 0 |
 | `…-app-throttles` | Lambda `Throttles` of the `app` function | above 0 |
+| `…-task-errors` | Lambda `Errors` of the `task` function (migration, seed, map deletion, scheduled cleanup) | above 0 |
 | `…-app-5xx-rate` | CloudFront `5xxErrorRate` of the application distribution | 5% or more |
 
 `Errors` counts unhandled exceptions and timeouts. A 500 that Puma returns normally is not an invocation error, so the CloudFront alarm is the one that sees it. With little traffic a single failed request exceeds 5%, which is intended. Missing data counts as healthy, so an idle site does not alarm.
 
-Not monitored yet: the `s3-cleanup` and `task` functions' errors, RDS connections and free storage, and the NAT instance.
+Not monitored yet: the `s3-cleanup` function's errors, RDS connections and free storage, and the NAT instance.

@@ -214,7 +214,7 @@ sequenceDiagram
 | File is not `image/jpeg` or exceeds 640 KB | S3 rejects the POST against the policy; upload enters error state |
 | Presigned POST expires mid-upload | S3 rejects the POST; upload enters error state |
 | Object missing after upload | `verify_batch` returns `422`; the generation and its upload are deleted and the S3 prefix is scheduled for cleanup. A retry starts from Step 1 |
-| Client closes browser during upload | Upload stays `pending`; resumable on next attempt (see below) |
+| Client closes browser during upload | Upload stays `pending`; resumable on next attempt (see below). After 7 days without activity the daily cleanup deletes the generation and its S3 objects ([Lambda](../operations/lambda.md#scheduled-cleanup)) |
 | S3 write fails for `mapshot.json` | Server returns `502`; Generation and Upload records are rolled back |
 
 ### Resume design

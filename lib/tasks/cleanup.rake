@@ -13,4 +13,14 @@ namespace :cleanup do
       exit 1
     end
   end
+
+  desc "Delete generations of uploads that were started and then abandoned"
+  task stale_uploads: :environment do
+    stats = Hanami.app["operations.uploads.cleanup_stale"].call.value!
+    puts "Deleted #{stats[:deleted]} of #{stats[:found]} stale upload(s)"
+    if stats[:failed].positive?
+      warn "#{stats[:failed]} stale upload(s) could not be queued for cleanup"
+      exit 1
+    end
+  end
 end

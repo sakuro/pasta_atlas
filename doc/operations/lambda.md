@@ -85,9 +85,15 @@ Non-secret configuration is set as ordinary Lambda environment variables from Te
 
 ## One-off tasks
 
-`migrate.yml` (`db:migrate`), `seed.yml` (`db:seed`) and `delete-map.yml` (`maps:delete`, input `ulid`) are manual (`workflow_dispatch`) workflows that invoke the `task` function through `scripts/invoke-lambda-task`; `scripts/seed-db` does the same with `AWS_PROFILE=terraform`. The function accepts an event naming one of these three allow-listed tasks and runs it in-process (`lib/lambda_support/task_runner.rb`). The 15-minute maximum timeout applies. The structure dump after migration is skipped because the image has no `pg_dump`.
+`migrate.yml` (`db:migrate`), `seed.yml` (`db:seed`) and `delete-map.yml` (`maps:delete`, input `ulid`) are manual (`workflow_dispatch`) workflows that invoke the `task` function through `scripts/invoke-lambda-task`; `scripts/seed-db` does the same with `AWS_PROFILE=terraform`. The function accepts an event naming one of these allow-listed tasks and runs it in-process (`lib/lambda_support/task_runner.rb`); the fourth, `cleanup:stale_uploads`, is run by the schedule below. The 15-minute maximum timeout applies. The structure dump after migration is skipped because the image has no `pg_dump`.
 
 The function is invoked with `--cli-read-timeout 0` and without CLI retries, since a retry after a client timeout would run the task, for example a migration, a second time.
+
+## Scheduled cleanup
+
+EventBridge Scheduler invokes the `task` function every day at 03:00 JST with `{"task": "cleanup:stale_uploads"}` (`scheduler.tf`; the schedule's role may only invoke that function). `Operations::Uploads::CleanupStale` finds uploads that are not complete and have had no activity for `STALE_UPLOAD_DAYS` days (default 7). The last activity is the creation of the upload or its latest verified key, so an upload that is still being resumed is kept. For each one it queues the generation's S3 prefix on the `s3-cleanup` queue and then deletes the generation, which cascades to its uploads, events and verification keys. A prefix that cannot be queued leaves the generation in place for the next run, and the task exits with an error. The schedule does not retry; the next day's run is the retry.
+
+Maps that lose their last generation stay as rows: they are not listed or shown without a complete generation, and a new upload reuses them.
 
 ## Deployment
 

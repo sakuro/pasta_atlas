@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module LambdaSupport
-  # Replaces the one-off ECS tasks (migrate, seed, delete map). Only the tasks listed
+  # Runs the one-off tasks (migrate, seed, delete map) and the scheduled cleanup. Only the tasks listed
   # here can be run, whatever the invoker sends.
   class TaskRunner
     class UnknownTask < StandardError; end
@@ -25,6 +25,7 @@ module LambdaSupport
       in "db:migrate" then @cli.call(%w[db migrate --no-dump])
       in "db:seed" then @cli.call(%w[db seed])
       in "maps:delete" then delete_map(event["map_ulid"])
+      in "cleanup:stale_uploads" then @rake.call("cleanup:stale_uploads")
       in name then raise UnknownTask, "unknown task: #{name}"
       end
     end
