@@ -7,6 +7,10 @@ permissions:
   id-token: write
   contents: read
 
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: false
+
 env:
   AWS_REGION: ap-northeast-1
   ARTIFACTS_BUCKET: pasta-atlas-production-lambda-artifacts
@@ -15,6 +19,7 @@ env:
 
 jobs:
   deploy:
+    timeout-minutes: 30
     # An arm64 runner builds native gems for the arm64 Lambda runtime without emulation.
     runs-on: ubuntu-24.04-arm
 
