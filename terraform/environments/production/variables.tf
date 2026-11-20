@@ -97,3 +97,23 @@ variable "app_dns_enabled" {
   type    = bool
   default = false
 }
+
+variable "lambda_runtime" {
+  type    = string
+  default = "ruby4.0"
+}
+
+variable "web_adapter_layer_arn" {
+  type    = string
+  default = "arn:aws:lambda:ap-northeast-1:753240598075:layer:LambdaAdapterLayerArm64:30"
+}
+
+variable "app_memory_size" {
+  type    = number
+  default = 1024
+}
+
+variable "app_reserved_concurrency" {
+  type    = number
+  default = 10
+}
