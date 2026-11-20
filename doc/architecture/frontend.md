@@ -1,267 +1,128 @@
-# Frontend Component Design
+# Frontend
 
-Framework: SolidJS 2 + Bulma + Leaflet.js + `@solidjs/router` 2
+Stack: SolidJS 2 (`solid-js`, `@solidjs/web`), `@solidjs/router` 2, Bulma, Leaflet, Fluent (localization) and FontAwesome.
 
-The frontend is a SPA bundled by Vite from `frontend/app.tsx`. All page navigation is handled client-side by `@solidjs/router`. Hanami serves a minimal HTML shell (`<div id="app"></div>`) for every SPA route; the SPA mounts, fetches data from the JSON API, and renders the page.
+The frontend is a SPA bundled by Vite from `frontend/app.tsx`. Hanami serves a minimal HTML shell (`<div id="app"></div>`) for the SPA routes; the SPA mounts, fetches data from the JSON API, and renders the page. Navigation is handled client-side. For the layout of `frontend/` see [application.md](application.md).
 
-## URL Structure
+## Routes
 
-| Page | URL | Component |
-|---|---|---|
-| Map listing | `/` | `MapsIndexPage` |
-| Map viewer | `/maps/:ulid` | `MapViewerPage` |
-| User profile | `/@:user_name` | `UserPage` |
-| Registration | `/auth/register` | `RegistrationPage` |
-| About / Privacy / Terms | `/about`, `/privacy`, `/terms` | `StaticPage` |
-| 404 | `*` | `NotFoundPage` |
+Defined with `createRouter` in `frontend/app.tsx`:
 
-Map viewer query parameters (managed by Leaflet via `history.replaceState`):
+| URL | Component |
+|---|---|
+| `/` | `MapsIndexPage` |
+| `/maps/:ulid` | `MapViewerPage` |
+| `/@:user_name` | `UserPage` (route `/:at_user_name`, filtered to values starting with `@`) |
+| `/auth/register` | `RegistrationPage` |
+| `/about`, `/privacy`, `/terms` | `StaticPage` |
+| `*` | `NotFoundPage` |
+
+The server renders the shell with status 404 for unknown maps, users and paths, and 403 for non-public profiles; the SPA shows the matching state.
+
+Map viewer query parameters (kept in the URL with `history.replaceState`; see `pages/map_viewer/url_params.ts`):
 
 | Param | Description | Default |
 |---|---|---|
-| `generation` | Generation ULID | latest (first in API response, sorted by tick desc) |
-| `s` | Surface index | first planet surface (`is_planet: true`) |
-| `x`, `y`, `z` | Map center and zoom | surface center, zoom_min |
-| `lt` | Train stations overlay visibility (`0`/`1`) | `1` |
-| `lg` | Tags overlay visibility (`0`/`1`) | `1` |
+| `generation` | Generation ULID | newest generation (first in the API response); an unknown ULID falls back to it |
+| `s` | Index into `surfaces[]` | first planet surface (`is_planet`), else the first surface |
+| `x`, `y`, `z` | Map center (world coordinates) and zoom | the map fits the surface bounds |
+| `lt` | Train stations overlay (`0`/`1`) | `0` (hidden) |
+| `lg` | Tags overlay (`0`/`1`) | `0` (hidden) |
 
-`s`, `x`, `y`, `z`, `lt`, `lg` follow the same conventions as the mapshot standalone viewer.
+Changing the generation removes `s`, `x`, `y` and `z`.
 
-## Application Shell
+## Application shell
 
-`AppLayout` wraps all pages. It renders the navbar, upload button, and footer. Auth state is held in `AuthContext`; `AppLayout` waits for the initial `GET /api/v1/auth/current` response before rendering page content, showing a spinner in the meantime.
+`AppLayout` wraps all routes. It renders the fixed navbar (upload buttons, disabled for guests; `NavAuthMenu`), the route content, and the fixed footer. Content is replaced by a spinner until the initial `GET /api/v1/auth/current` response has arrived.
 
 ## Pages
 
-### MapsIndexPage (`/`)
-
-Fetches `GET /api/v1/maps?page=N` and renders a paginated `MapCard` list. Page navigation is client-side (updates `?page=` search param without a full reload).
-
-Shows only maps with at least one `complete` generation, ordered by most recent generation upload.
-
-`MapCard` displays: `display_name`, owner name, latest generation tick, `created_at`. Links to `/maps/:ulid`.
-
-### MapViewerPage (`/maps/:ulid`)
-
-Fetches `GET /api/v1/maps/:ulid`, then mounts the `MapViewer` component with Leaflet.
-
-### UserPage (`/@:user_name`)
-
-Fetches `GET /api/v1/users/:name` and renders a tabbed profile page. The active tab is tracked via the URL hash.
-
-Tabs:
-
-| Tab | Visible to | Content |
-|---|---|---|
-| Maps | All | Recent maps by this user |
-| Profile | Own profile only | Edit display name and avatar |
-| Preferences | Own profile only | Timezone, locale, relative timestamps |
-| Credentials | Own profile only | Linked OAuth providers |
-| Danger | Own profile only | Account deletion |
-
-### RegistrationPage (`/auth/register`)
-
-Fetches `GET /api/v1/auth/registration` to get pending OAuth data (provider and suggested login name). Renders the username selection form. Submits `POST /auth/register`; on success the server returns `{"redirect_to": "/"}` and the SPA navigates there.
-
-### StaticPage (`/about`, `/privacy`, `/terms`)
-
-Fetches `GET /api/v1/pages/:slug` and renders the returned HTML content.
+| Page | Behavior |
+|---|---|
+| `MapsIndexPage` | `GET /api/v1/maps?page=N` (20 per page); client-side pagination through `?page=`. `MapCard` shows the thumbnail, `display_name`, the author (linked to the user page except for the guest), `updated_at`, and info and share buttons. |
+| `MapViewerPage` | `GET /api/v1/maps/:ulid`; 404 shows `error-map-not-found`. Passes the map data to `MapViewer`. |
+| `UserPage` | `GET /api/v1/users/:name` (404 and 403 have their own messages). The active tab is kept in the URL hash (`#tab-recent-maps`, `#tab-profile`, `#tab-preferences`, `#tab-credentials`, `#tab-danger`). Maps is visible to all; the others only on the own profile. |
+| `RegistrationPage` | `GET /api/v1/auth/registration` returns the pending OAuth data (401 redirects to `/`). Submits `POST /auth/register` with the name, the browser timezone and the terms agreement. On success it reloads the app at `/` (`window.location.assign`), because the session changed and the CSRF token in the page is stale. |
+| `StaticPage` | `GET /api/v1/pages/:slug`; refetched when the display language changes, because the server picks the locale. |
 
 ## Contexts
 
-### AuthContext
+- `AuthContext` provides `currentUser()` (`undefined` while loading, `null` for guests, otherwise `{ name, display_name, avatar_url }`), `refetch()` and `updateCurrentUser(patch)`. A failed request is treated as a guest. The response's locale, timezone and relative-timestamp preferences are applied through `lib/display-settings.ts`.
+- `ToastContext` provides `showToast(l10nId, type?)`; `type` is `success` (default), `danger`, `warning` or `info`. Toasts disappear after 5 seconds.
 
-Fetches `GET /api/v1/auth/current` on mount. Exposes `currentUser()` signal:
-- `undefined` while loading
-- `null` if not logged in (guest)
-- user object `{ name, display_name, avatar_url }` if logged in
+## Map viewer
 
-Also applies locale and timezone preferences from the response.
-
-### ToastContext
-
-Provides `showToast(message, type)` for transient notifications.
-
-## Components
-
-### MapViewer
-
-Mounted inside `MapViewerPage`. Contains the Leaflet map.
-
-#### Data flow
+`MapViewer` receives the map data from `MapViewerPage` and fetches `GET /api/v1/maps/:ulid` itself for the generation list.
 
 ```
-1. Receive map ULID from MapViewerPage
+1. Generations (ulid, tick, metadata_url), newest first
+2. Active generation = ?generation= or the first one
+3. Fetch mapshot.json (metadata_url) → surfaces[] with stations and tags
+4. LeafletMap builds a tile layer and the station and tag markers per surface
+5. The map starts on the surface from ?s=
 
-2. Fetch GET /api/v1/maps/:ulid
-     → generations list (ulid, tick, metadata_url)
-
-3. Resolve active generation from ?generation= or default to latest
-
-4. Fetch mapshot.json from CloudFront (metadata_url)
-     → surfaces[], stations[], tags[] per surface
-
-5. Build SurfaceLayer objects (one per surface)
-     → each holds baseLayer (tiles) + trainLayer (markers) + tagsLayer
-
-6. Initialize Leaflet map; add active surface layers
-
-7. generation change → update ?generation= → re-fetch mapshot.json → rebuild SurfaceLayers
-   surface change    → Leaflet baselayerchange event → update ?s=
-   pan/zoom          → update ?x= ?y= ?z=
-   overlay toggle    → update ?lt= / ?lg=
+generation change → set ?generation=, drop s/x/y/z, re-mount LeafletMap
+surface change    → baselayerchange → update ?s=, repopulate the overlays
+pan / zoom        → update ?x= ?y= ?z=
+overlay toggle    → update ?lt= / ?lg=
 ```
 
-#### GenerationSwitcher (internal, not a separate component)
+The toolbar has `MapNameEditor` (owner only; `PATCH /api/v1/maps/:ulid/name`), `GenerationSelect` (labels use `formatTicks`), `MapInfoModal`, `ShareButtons`, and, for the owner, a delete button with a confirmation (`POST /api/v1/maps/:ulid/deletion_requests`).
 
-Select input listing generations by tick value (descending). Rendered inside `MapViewer`.
+### Leaflet
 
-On change: updates `?generation=` in URL → triggers mapshot.json re-fetch → rebuilds SurfaceLayers.
+- `L.map` with `crs: L.CRS.Simple`, `zoomSnap: 0.1`, `zoomDelta: 1.0` and the default zoom control disabled. Zoom limits come from the active surface.
+- Custom controls under `pages/map_viewer/leaflet/`: `ZoomSliderControl`, `BoxZoomControl` and `LayerControl`. `LayerControl` lists the surfaces (planets, space platforms, others) and two overlay toggles (train stations, tags). It fires `baselayerchange`, `overlayadd` and `overlayremove` itself.
+- Tiles use a plain `L.tileLayer` with `minNativeZoom` and `maxNativeZoom` from the surface, so other zoom levels are scaled. The URL is `{assetBase}{file_prefix}{z}/tile_{x}_{y}.jpg`, where `assetBase` is `metadata_url` without `mapshot.json`.
+- World to map coordinates: `L.latLng(-y * ratio, x * ratio)` with `ratio = render_size / tile_size`.
+- Station and tag markers are FontAwesome `divIcon`s with permanent tooltips. Their text goes through `renderRichText()`; see [rich-text.md](rich-text.md).
 
-#### Leaflet configuration
+## Upload modal
 
-```javascript
-L.map("map-viewer", {
-  crs: L.CRS.Simple,
-  zoomSnap: 0.1,
-  zoomDelta: 1.0,
-  zoomsliderControl: true,
-  zoomControl: false,
-})
-```
-
-Additional controls:
-- `L.Control.boxzoom` (top-left)
-- `L.control.layers()` (top-right) — base layers (surfaces) + overlays (train stations, tags)
-
-Surface switching and overlay toggles are handled by Leaflet's built-in layer control, consistent with the mapshot standalone viewer.
-
-#### SurfaceLayer (internal class)
-
-```javascript
-class SurfaceLayer {
-  baseLayer   // L.tileLayer.fallback(...)
-  trainLayer  // L.layerGroup of station markers
-  tagsLayer   // L.layerGroup of tag markers
-}
-```
-
-Tile URL pattern:
-```
-{encoded_path}{surface.file_prefix}{z}/tile_{x}_{y}.jpg
-```
-
-`encoded_path` is derived from `metadata_url` by stripping the `mapshot.json` filename:
-```
-encodedPath = metadata_url.replace(/mapshot\.json$/, "")
-```
-
-Uses `leaflet.tilelayer.fallback` for graceful handling of missing tiles.
-
-Coordinate conversion:
-```javascript
-worldToLatLng(x, y) {
-  const ratio = surface.render_size / surface.tile_size
-  return L.latLng(-y * ratio, x * ratio)
-}
-```
-
-Station markers: `backer_name` is parsed via `renderRichText()` (`richtext/index.ts`) and shown in a permanent Leaflet tooltip. Icon tags become `<i>` elements with CSS class names; wrapping tags become `<span>` elements. Unknown tags are escaped and output as literal text.
-
-URL sync (via `history.replaceState`):
-- `baselayerchange` → update `?s=`
-- `zoomend` / `moveend` → update `?x=` `?y=` `?z=`
-- `overlayadd` / `overlayremove` → update `?lt=` / `?lg=`
-
----
-
-### UploadModal
-
-Rendered in `AppLayout`. Triggered by the upload button in the navbar.
-
-#### States
+`UploadModal` is rendered through a `Portal`; `HowToUploadModal` explains the procedure. States:
 
 ```
-idle → instructions → confirming → uploading → done | error
+idle → instructions → confirming → (per batch: preparing → uploading → verifying) → done | error
 ```
 
 | State | Description |
 |---|---|
-| `idle` | Modal closed |
-| `instructions` | Upload instructions shown; user selects a directory |
-| `confirming` | `mapshot.json` found; user confirms before starting |
-| `uploading` | Uploading in progress |
-| `done` | Complete; link to the newly uploaded generation |
-| `error` | Upload failed |
+| `instructions` | The user selects a directory (`<input type="file" webkitdirectory>`, triggered from the select button) |
+| `confirming` | `mapshot.json` found; shows surfaces, image count and size; the map name is editable (max 30 grapheme clusters) and prefilled from `GET /api/v1/maps/lookup` |
+| `preparing` | Requesting presigned POSTs for a batch |
+| `uploading` | Posting the files to S3 |
+| `verifying` | `verify_batch` for the batch |
+| `done` | Link to the new generation |
 
-Directory selection uses `<input type="file" webkitdirectory>`. The hidden input is triggered programmatically when the user clicks the select button in the `instructions` state.
+The request sequence is described in [upload-flow.md](upload-flow.md).
 
-#### Error patterns
+| Trigger | Outcome |
+|---|---|
+| No `mapshot.json`, invalid JSON, or more than 10,000 `.jpg` files | `instructions → error` |
+| User cancels the directory picker | Stays in `instructions` |
+| `POST /uploads` fails (409 conflict, 422 with the server's error key, other statuses, network) | `error` with a matching message |
+| `presigned_posts`, S3 POST, `verify_batch` or the final `PATCH` fails | `error` with a generic message |
 
-| Trigger | State transition | User-visible outcome |
-|---|---|---|
-| Directory has no `mapshot.json` | `instructions → error` | Error message shown |
-| `mapshot.json` parse failure (invalid JSON / unexpected structure) | `instructions → error` | Error message shown |
-| User cancels directory picker | stays in `instructions` | Modal remains open |
-| POST /api/v1/uploads → 409 Conflict | `uploading → error` | Message: already uploaded; link to existing generation |
-| POST /api/v1/uploads → network / 5xx error | `uploading → error` | Generic error message |
-| POST presigned_posts → network / 4xx / 5xx | `preparing → error` | Generic error message |
-| S3 POST fails (individual file) | `uploading → error` | Generic error message |
-| POST verify_batch → network / 4xx / 5xx | `verifying → error` | Generic error message |
-| PATCH /api/v1/uploads/:ulid → network error | `uploading → error` | Generic error message (images are uploaded; user can retry PATCH manually if needed) |
+From `error` the user can reselect a folder or dismiss the modal (`idle`). An upload that failed after Step 1 is resumed by selecting the same folder again.
 
-From the `error` state, the user can dismiss the modal (returning to `idle`) or go back to `instructions` to retry.
+## Shared pieces
 
----
+| Piece | Role |
+|---|---|
+| `ShareButtons` | X, Bluesky, Reddit and copy-link buttons; used in `MapViewer` and `MapCard`. The URL comes from `lib/share-url.ts` (`buildShareUrl`): the generation of `mapPath` wins and the other parameters come from the current location. |
+| `FormattedDateTime` | Absolute or relative time according to the user's preference |
+| `lib/l10n.ts` | Fluent localization; elements carry `data-l10n-id` |
+| `lib/display-settings.ts` | Signals for the language, timezone and relative timestamps |
 
-### ShareButtons
+## Solid 2 conventions
 
-Used inside `MapViewerPage`. Renders share buttons for X, Bluesky, Reddit, and a copy-link button. Props: `mapPath` (URL path) and `mapName` (display name). The share URL is built from the current origin + `mapPath` + the active query string (preserving generation/surface/viewport state).
+- Pages load data with `createMemo(async …)` inside `<Errored>` and `<Loading>`; `isPending` keeps the old content visible while the next page loads.
+- State that is fetched but also patched locally uses a writable async signal (`createSignal(async () => …)`), as in `AuthContext`.
+- `createEffect` takes separate compute and apply functions. `onSettled` handles mount-time work and cleanup (Leaflet, redirects).
+- Context providers render as `<AuthContext value={…}>`; `render` comes from `@solidjs/web`.
 
 ## Styling
 
-### CSS Framework
+Bulma 1.x (plain CSS import, default palette) and FontAwesome Free are imported by both bundles. Project CSS is in `app/assets/css/app.css`: the fixed navbar and footer with z-indexes above the Leaflet controls, the viewer-page layout that locks page scrolling so `#map-viewer` fills the viewport, and the footer branding.
 
-[Bulma](https://bulma.io/) via SCSS customization. Built by hanami-assets (esbuild).
-
-### Color Theme
-
-Nord palette. Nord defines 16 colors across four groups:
-
-| Group | Colors | Light theme role | Dark theme role |
-|---|---|---|---|
-| Polar Night | nord0–nord3 | Text (dark on light) | Backgrounds |
-| Snow Storm | nord4–nord6 | Backgrounds and surfaces | Text |
-| Frost | nord7–nord10 | Primary and accent colors | Same |
-| Aurora | nord11–nord15 | Semantic colors | Same |
-
-### Bulma Variable Mapping
-
-Frost and Aurora colors are shared across both themes. Polar Night and Snow Storm swap roles between light and dark.
-
-| Bulma variable | Nord | Value |
-|---|---|---|
-| `$primary` | nord10 | `#5E81AC` |
-| `$link` | nord9 | `#81A1C1` |
-| `$info` | nord8 | `#88C0D0` |
-| `$success` | nord14 | `#A3BE8C` |
-| `$warning` | nord13 | `#EBCB8B` |
-| `$danger` | nord11 | `#BF616A` |
-
-#### Light theme
-
-| Bulma variable | Nord | Value |
-|---|---|---|
-| `$text` | nord0 | `#2E3440` |
-| `$background` | nord6 | `#ECEFF4` |
-| `$border` | nord4 | `#D8DEE9` |
-
-#### Dark theme
-
-| Bulma variable | Nord | Value |
-|---|---|---|
-| `$text` | nord4 | `#D8DEE9` |
-| `$background` | nord0 | `#2E3440` |
-| `$border` | nord3 | `#4C566A` |
-
-Dark mode is applied via `prefers-color-scheme: dark` (automatic) and `data-theme="dark"` (manual toggle).
+Dark mode follows `prefers-color-scheme` through Bulma's `--bulma-scheme-brightness: dark`; there is no manual toggle. Leaflet controls are themed with `--leaflet-ctrl-*` custom properties defined in `app.css` and used by `pages/map_viewer/leaflet/*.css`. Rich text icons and fonts are in `pages/map_viewer/richtext/`.
