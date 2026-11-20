@@ -1,4 +1,4 @@
-import { createSignal, Show } from "solid-js";
+import { createSignal, onFlush, Show } from "solid-js";
 import { Portal } from "@solidjs/web";
 import { useNavigate } from "@solidjs/router";
 import { adjectives, animals, colors, uniqueNamesGenerator } from "unique-names-generator";
@@ -479,7 +479,7 @@ export const UploadModal = (props: { isGuest: boolean }) => {
                 {(s) => (
                   <div class="has-text-centered">
                     <p class="mb-4" data-l10n-id="upload-complete" />
-                    <button class="button is-primary" data-l10n-id="upload-view-map" onClick={() => { dismiss(); navigate(s().viewerUrl); }} />
+                    <button class="button is-primary" data-l10n-id="upload-view-map" onClick={() => { onFlush(dismiss); navigate(s().viewerUrl); }} />
                   </div>
                 )}
               </Show>

@@ -1,4 +1,4 @@
-import { createSignal, Show } from "solid-js";
+import { createEffect, createSignal, Show } from "solid-js";
 import { useToast } from "../../contexts/ToastContext";
 
 const segmenter = new Intl.Segmenter();
@@ -16,10 +16,20 @@ interface MapNameEditorProps {
 
 export const MapNameEditor = (props: MapNameEditorProps) => {
   const { showToast } = useToast();
-  const [displayName, setDisplayName] = createSignal(props.initialName);
+  const [displayName, setDisplayName] = createSignal(() => props.initialName);
   const [isEditing, setIsEditing] = createSignal(false);
   const [editValue, setEditValue] = createSignal("");
   const editGraphemeCount = () => [...segmenter.segment(editValue())].length;
+  let inputEl: HTMLInputElement | undefined;
+
+  // Ref callbacks run before the element is attached, where focus() has no effect;
+  // the effect phase runs after the editor has been inserted into the document.
+  createEffect(() => isEditing(), (editing) => {
+    if (editing && inputEl) {
+      inputEl.focus();
+      inputEl.select();
+    }
+  });
 
   const startEdit = () => {
     setEditValue(displayName());
@@ -71,7 +81,7 @@ export const MapNameEditor = (props: MapNameEditorProps) => {
             value={editValue()}
             onInput={(e) => setEditValue(e.currentTarget.value)}
             onKeyDown={(e) => { if (e.key === "Enter") void saveEdit(); if (e.key === "Escape") cancelEdit(); }}
-            ref={(el) => { el.focus(); el.select(); }}
+            ref={(el) => { inputEl = el; }}
             style={{ "min-width": "8rem", "max-width": "20rem" }}
           />
         </div>
