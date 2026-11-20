@@ -23,7 +23,7 @@ module PastaAtlas
           mapshot_map_id = metadata[:map_id]
           mapshot_unique_id = metadata[:unique_id]
           tick = Integer(metadata[:tick])
-          user = user_repo.find_by_id(user_id)
+          user = user_repo.find_by_id!(user_id)
 
           step validate_name(name) if name
 

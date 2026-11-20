@@ -23,7 +23,7 @@ RSpec.describe PastaAtlas::Resolvers::UserResolver do
     end
 
     context "when user_id is stale" do
-      before { allow(user_repo).to receive(:find_by_id).with(999).and_raise(ROM::TupleCountMismatchError) }
+      before { allow(user_repo).to receive(:find_by_id).with(999).and_return(nil) }
 
       it "returns the guest user" do
         expect(resolver.call(999)).to eq(guest)

@@ -24,10 +24,10 @@ module PastaAtlas
           upload = step find_upload(upload_ulid)
           step validate_pending(upload)
 
-          generation = generation_repo.find_by_id(upload.generation_id)
-          map = map_repo.find_by_id(generation.map_id)
+          generation = generation_repo.find_by_id!(upload.generation_id)
+          map = map_repo.find_by_id!(generation.map_id)
           step validate_ownership(map, user_id)
-          user = user_repo.find_by_id(map.user_id)
+          user = user_repo.find_by_id!(map.user_id)
 
           prefix = "#{user.name}/maps/#{map.mapshot_map_id}/#{generation.mapshot_unique_id}/"
 

@@ -5,10 +5,10 @@ require "ulid"
 module PastaAtlas
   module Repos
     class MapRepo < PastaAtlas::DB::Repo
-      def find_by_id(id) = maps.where(id:).one!
+      def find_by_id!(id) = maps.where(id:).one!
       def find_by_ulid(ulid) = maps.where(ulid:).one
       def find_all_by_user_id(user_id) = maps.where(user_id:).to_a
-      def delete_by_id(id) = maps.dataset.where(id:).delete
+      def delete_by_id(id) = maps.where(id:).command(:delete).call
 
       def list_with_complete_generation(page:, per_page:)
         ordered_ids = uploads
@@ -60,21 +60,17 @@ module PastaAtlas
       end
 
       def update_name(id:, name:)
-        maps.dataset.where(id:).update(name: name.empty? ? nil : name)
+        maps.where(id:).command(:update).call(name: name.empty? ? nil : name)
       end
 
       def find_by_user_and_mapshot_id(user_id:, mapshot_map_id:)
         maps.by_user_and_mapshot_id(user_id, mapshot_map_id).one
       end
 
-      def find_or_create_by_user_and_mapshot_id(user_id:, mapshot_map_id:, savename: "", name: nil, update_name_on_conflict: true)
-        conflict_opts = if name && update_name_on_conflict
-                          {target: %i[user_id mapshot_map_id], update: {name:}}
-                        else
-                          {target: %i[user_id mapshot_map_id]}
-                        end
-        maps.dataset.insert_conflict(**conflict_opts).insert(
-          user_id:, mapshot_map_id:, ulid: ULID.generate, savename:, name:
+      def find_or_create_by_user_and_mapshot_id(user_id:, mapshot_map_id:, savename: "")
+        # INSERT ... ON CONFLICT cannot be written with a ROM command.
+        maps.dataset.insert_conflict(target: %i[user_id mapshot_map_id]).insert(
+          user_id:, mapshot_map_id:, ulid: ULID.generate, savename:
         )
         maps.by_user_and_mapshot_id(user_id, mapshot_map_id).one!
       end

@@ -15,7 +15,7 @@ RSpec.describe PastaAtlas::Operations::User::Avatar::Update do
   describe "#call" do
     context "when s3_key does not match the user's prefix" do
       before do
-        allow(user_profile_repo).to receive(:find_by_user_id).with(1).and_return(profile_without_avatar)
+        allow(user_profile_repo).to receive(:find_by_user_id!).with(1).and_return(profile_without_avatar)
       end
 
       it "returns Failure(:unprocessable_entity)" do
@@ -28,7 +28,7 @@ RSpec.describe PastaAtlas::Operations::User::Avatar::Update do
 
     context "when user has no existing avatar" do
       before do
-        allow(user_profile_repo).to receive(:find_by_user_id).with(1).and_return(profile_without_avatar)
+        allow(user_profile_repo).to receive(:find_by_user_id!).with(1).and_return(profile_without_avatar)
         allow(user_profile_repo).to receive(:update_avatar)
         allow(sqs_client).to receive(:send_message)
       end
@@ -55,7 +55,7 @@ RSpec.describe PastaAtlas::Operations::User::Avatar::Update do
 
     context "when user has an existing avatar" do
       before do
-        allow(user_profile_repo).to receive(:find_by_user_id).with(1).and_return(profile_with_avatar)
+        allow(user_profile_repo).to receive(:find_by_user_id!).with(1).and_return(profile_with_avatar)
         allow(user_profile_repo).to receive(:update_avatar)
         allow(sqs_client).to receive(:send_message)
       end

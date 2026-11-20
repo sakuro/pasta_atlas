@@ -15,7 +15,7 @@ RSpec.describe PastaAtlas::Operations::User::Avatar::Destroy do
   describe "#call" do
     context "when user has no avatar" do
       before do
-        allow(user_profile_repo).to receive(:find_by_user_id).with(1).and_return(profile_without_avatar)
+        allow(user_profile_repo).to receive(:find_by_user_id!).with(1).and_return(profile_without_avatar)
         allow(user_profile_repo).to receive(:clear_avatar)
         allow(sqs_client).to receive(:send_message)
       end
@@ -42,7 +42,7 @@ RSpec.describe PastaAtlas::Operations::User::Avatar::Destroy do
 
     context "when user has an avatar" do
       before do
-        allow(user_profile_repo).to receive(:find_by_user_id).with(1).and_return(profile_with_avatar)
+        allow(user_profile_repo).to receive(:find_by_user_id!).with(1).and_return(profile_with_avatar)
         allow(user_profile_repo).to receive(:clear_avatar)
         allow(sqs_client).to receive(:send_message)
       end

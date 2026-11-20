@@ -38,9 +38,9 @@ RSpec.describe PastaAtlas::Operations::Uploads::VerifyBatch do
   let(:filenames) { ["s0zoom_4/tile_0_0.jpg", "s0zoom_4/tile_0_1.jpg"] }
 
   before do
-    allow(generation_repo).to receive(:find_by_id).with(10).and_return(generation)
-    allow(map_repo).to receive(:find_by_id).with(20).and_return(map)
-    allow(user_repo).to receive(:find_by_id).with(30).and_return(user)
+    allow(generation_repo).to receive(:find_by_id!).with(10).and_return(generation)
+    allow(map_repo).to receive(:find_by_id!).with(20).and_return(map)
+    allow(user_repo).to receive(:find_by_id!).with(30).and_return(user)
   end
 
   describe "#call" do

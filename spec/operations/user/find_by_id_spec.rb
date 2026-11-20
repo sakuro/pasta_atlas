@@ -18,16 +18,6 @@ RSpec.describe PastaAtlas::Operations::User::FindById do
       end
     end
 
-    context "when the repo raises for an unknown id" do
-      before { allow(user_repo).to receive(:find_by_id).with(999).and_raise(ROM::TupleCountMismatchError) }
-
-      it "returns failure with :not_found" do
-        result = operation.call(user_id: 999)
-
-        expect(result.failure).to eq(:not_found)
-      end
-    end
-
     context "when the user does not exist" do
       before { allow(user_repo).to receive(:find_by_id).with(999).and_return(nil) }
 

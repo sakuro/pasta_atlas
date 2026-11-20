@@ -5,6 +5,7 @@ module PastaAtlas
     class UploadVerificationKeyRepo < PastaAtlas::DB::Repo
       def create_many(upload_id:, s3_keys:)
         rows = s3_keys.map {|key| {upload_id:, s3_key: key} }
+        # INSERT ... ON CONFLICT cannot be written with a ROM command.
         upload_verification_keys.dataset
           .insert_conflict(target: %i[upload_id s3_key])
           .multi_insert(rows)
@@ -14,18 +15,16 @@ module PastaAtlas
         now = Time.now
         upload_verification_keys.transaction do
           results.each do |result|
-            upload_verification_keys.dataset
+            upload_verification_keys
               .where(upload_id:, s3_key: result[:s3_key])
-              .update(verified_at: now, size_bytes: result[:size_bytes])
+              .command(:update)
+              .call(verified_at: now, size_bytes: result[:size_bytes])
           end
         end
       end
 
       def count_verified(upload_id:)
-        upload_verification_keys.dataset
-          .where(upload_id:)
-          .exclude(verified_at: nil)
-          .count
+        upload_verification_keys.where(upload_id:).exclude(verified_at: nil).count
       end
     end
   end

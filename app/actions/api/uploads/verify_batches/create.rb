@@ -32,8 +32,8 @@ module PastaAtlas
               upload = upload_repo.find_by_ulid(request.params[:ulid])
               halt :not_found unless upload
 
-              generation = generation_repo.find_by_id(upload.generation_id)
-              map = map_repo.find_by_id(generation.map_id)
+              generation = generation_repo.find_by_id!(upload.generation_id)
+              map = map_repo.find_by_id!(generation.map_id)
               halt :forbidden unless map.user_id == current_user_id(request)
 
               result = verify_batch.call(upload:, filenames: request.params[:filenames])
