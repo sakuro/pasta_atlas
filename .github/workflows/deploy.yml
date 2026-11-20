@@ -15,7 +15,7 @@ env:
   AWS_REGION: ap-northeast-1
   ARTIFACTS_BUCKET: pasta-atlas-production-lambda-artifacts
   ASSETS_BUCKET: pasta-atlas-production-assets
-  FUNCTIONS: pasta-atlas-production-app pasta-atlas-production-s3-cleanup pasta-atlas-production-storage-calculation pasta-atlas-production-task
+  FUNCTIONS: pasta-atlas-production-app pasta-atlas-production-s3-cleanup pasta-atlas-production-task
 
 jobs:
   deploy:
@@ -56,7 +56,6 @@ jobs:
           S3_BUCKET: dummy
           CLOUDFRONT_BASE_URL: https://dummy.example.com
           SQS_S3_CLEANUP_QUEUE_URL: https://dummy.example.com/dummy
-          SQS_STORAGE_CALCULATION_QUEUE_URL: https://dummy.example.com/dummy
           HANAMI_ENV: production
 
       - name: Build package

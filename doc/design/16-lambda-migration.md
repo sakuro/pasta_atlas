@@ -37,7 +37,7 @@ Viewer -> CloudFront (app)
                                     |- RDS (in VPC)
                                     `- SQS, OAuth providers (via NAT instance)
 
-SQS (s3-cleanup, storage-calculation) -> event source mapping -> worker functions (DLQ each)
+SQS (s3-cleanup) -> event source mapping -> worker function (with DLQ)
 GitHub Actions -> aws lambda invoke -> task function (migrate, seed, delete map)
 ```
 
@@ -50,7 +50,6 @@ The managed `ruby4.0` runtime is used, deployed as a zip on arm64. At the time o
 | `app` | CloudFront via Function URL | Yes |
 | `task` | `aws lambda invoke` from GitHub Actions | No |
 | `s3-cleanup` | SQS | No |
-| `storage-calculation` | SQS | No |
 
 All functions share one zip. Only `app` attaches the Lambda Web Adapter layer (v30, arm64) with `AWS_LAMBDA_EXEC_WRAPPER=/opt/bootstrap`, handler `run.sh`, and Puma listening on `AWS_LWA_PORT=7000`. Port 8080 is avoided because the Lambda runtime emulator uses it; the adapter documentation also warns against 3000 and 9001.
 
@@ -65,7 +64,7 @@ All functions share one zip. Only `app` attaches the Lambda Web Adapter layer (v
 
 ### Event functions
 
-`SqsQueueWorker` polling is not used in production. The `handle` logic of each worker (calling `operations.delete_s3_prefix` or `operations.generations.calculate_storage`) is shared between the Lambda handler and the local polling worker. Failures are reported per message (`ReportBatchItemFailures`).
+`SqsQueueWorker` polling is not used in production. The `handle` logic of the worker (calling `operations.delete_s3_prefix`) is shared between the Lambda handler and the local polling worker. Failures are reported per message (`ReportBatchItemFailures`).
 
 ## Networking
 
@@ -74,7 +73,7 @@ All resources stay in the default VPC. Its subnets are public, and Lambda ENIs h
 - Add private subnets in two availability zones, using unused CIDR ranges of the default VPC.
 - Run one fck-nat instance (t4g.nano, Auto Scaling group with min = max = 1, Elastic IP) in an existing public subnet. The private route tables send `0.0.0.0/0` to it. The fck-nat Terraform module is pinned to 1.3.0; the AWS provider has since been upgraded to `~> 6.45` (needed for the `ruby4.0` runtime and `invoked_via_function_url` on `aws_lambda_permission`), so a newer module is possible as a follow-up.
 - Add an S3 gateway endpoint (free) so S3 traffic bypasses the NAT instance. SQS goes through the NAT instance; an interface endpoint costs more than it saves.
-- All four functions run in the private subnets and reuse the existing `app` security group, which RDS already allows.
+- All three functions run in the private subnets and reuse the existing `app` security group, which RDS already allows.
 - The bastion is unchanged (created only when `create_bastion` is true).
 
 A single NAT instance is a single point of failure for sign-in and SQS publishing. Page viewing is not affected. The Auto Scaling group replaces a failed instance.
@@ -104,8 +103,8 @@ Non-secret configuration is set as ordinary Lambda environment variables from Te
 
 ## Asynchronous processing
 
-- Both queues trigger their functions through event source mappings with batch size 1 and limited maximum concurrency (about 2), so database connections stay within RDS limits.
-- Each queue gets a dead-letter queue with `maxReceiveCount`. Today a failing message is retried indefinitely.
+- The queue triggers its function through an event source mapping with batch size 1 and limited maximum concurrency (about 2), so database connections stay within RDS limits.
+- The queue gets a dead-letter queue with `maxReceiveCount`. Today a failing message is retried indefinitely.
 - The visibility timeout is at least six times the function timeout.
 - The guest cleanup schedule is not migrated. The EventBridge Scheduler resource, which targets ECS, is removed from Terraform.
 
