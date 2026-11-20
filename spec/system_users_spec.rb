@@ -14,8 +14,8 @@ RSpec.describe PastaAtlas::SystemUsers, :db do
     PastaAtlas::SystemUsers::SEEDED.each do |system_user|
       user = user_repo.find_by_name(system_user.name)
 
-      expect(user_profile_repo.fetch_by_user_id(user.id)).to have_attributes(display_name: system_user.display_name, avatar_s3_key: system_user.avatar_s3_key)
-      expect(user_preference_repo.fetch_by_user_id(user.id)).not_to be_nil
+      expect(user_profile_repo.find_by_user_id!(user.id)).to have_attributes(display_name: system_user.display_name, avatar_s3_key: system_user.avatar_s3_key)
+      expect(user_preference_repo.find_by_user_id!(user.id)).not_to be_nil
     end
   end
 

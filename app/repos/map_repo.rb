@@ -5,7 +5,7 @@ require "ulid"
 module PastaAtlas
   module Repos
     class MapRepo < PastaAtlas::DB::Repo
-      def fetch_by_id(id) = maps.where(id:).one!
+      def find_by_id!(id) = maps.where(id:).one!
       def find_by_ulid(ulid) = maps.where(ulid:).one
       def find_all_by_user_id(user_id) = maps.where(user_id:).to_a
       def delete_by_id(id) = maps.where(id:).command(:delete).call

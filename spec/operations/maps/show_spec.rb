@@ -19,8 +19,8 @@ RSpec.describe PastaAtlas::Operations::Maps::Show do
     context "when map is found" do
       before do
         allow(map_repo).to receive(:find_by_ulid).with("01MAP1").and_return(map)
-        allow(user_repo).to receive(:fetch_by_id).with(1).and_return(user)
-        allow(user_profile_repo).to receive(:fetch_by_user_id).with(1).and_return(profile)
+        allow(user_repo).to receive(:find_by_id!).with(1).and_return(user)
+        allow(user_profile_repo).to receive(:find_by_user_id!).with(1).and_return(profile)
         allow(generation_repo).to receive(:find_complete_by_map_id).with(1).and_return(generations)
         allow(generation).to receive(:thumbnail_url).with("https://cdn.example.com").and_return("https://cdn.example.com/alice/map1/gen1/s1zoom_4/tile_0_0.jpg")
         allow(generation).to receive(:metadata_url).with("https://cdn.example.com").and_return("https://cdn.example.com/alice/map1/gen1/mapshot.json")
@@ -83,8 +83,8 @@ RSpec.describe PastaAtlas::Operations::Maps::Show do
     context "when the map has no complete generation" do
       before do
         allow(map_repo).to receive(:find_by_ulid).with("01MAP1").and_return(map)
-        allow(user_repo).to receive(:fetch_by_id).with(1).and_return(user)
-        allow(user_profile_repo).to receive(:fetch_by_user_id).with(1).and_return(profile)
+        allow(user_repo).to receive(:find_by_id!).with(1).and_return(user)
+        allow(user_profile_repo).to receive(:find_by_user_id!).with(1).and_return(profile)
         allow(generation_repo).to receive(:find_complete_by_map_id).with(1).and_return([])
       end
 

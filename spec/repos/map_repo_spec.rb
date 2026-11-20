@@ -8,14 +8,14 @@ RSpec.describe PastaAtlas::Repos::MapRepo, :db do
     it "sets the name" do
       repo.update_name(id: map.id, name: "My map")
 
-      expect(repo.fetch_by_id(map.id).name).to eq("My map")
+      expect(repo.find_by_id!(map.id).name).to eq("My map")
     end
 
     it "clears the name when it is empty" do
       repo.update_name(id: map.id, name: "My map")
       repo.update_name(id: map.id, name: "")
 
-      expect(repo.fetch_by_id(map.id).name).to be_nil
+      expect(repo.find_by_id!(map.id).name).to be_nil
     end
   end
 
@@ -27,9 +27,9 @@ RSpec.describe PastaAtlas::Repos::MapRepo, :db do
     end
   end
 
-  describe "#fetch_by_id" do
+  describe "#find_by_id!" do
     it "raises for an unknown id" do
-      expect { repo.fetch_by_id(0) }.to raise_error(ROM::TupleCountMismatchError)
+      expect { repo.find_by_id!(0) }.to raise_error(ROM::TupleCountMismatchError)
     end
   end
 end

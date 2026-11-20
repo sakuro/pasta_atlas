@@ -8,7 +8,7 @@ module PastaAtlas
           include Deps["repos.user_preference_repo"]
 
           def call(user_id:)
-            user_preference_repo.fetch_by_user_id(user_id)
+            user_preference_repo.find_by_user_id!(user_id)
           end
         end
       end

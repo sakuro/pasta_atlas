@@ -20,9 +20,9 @@ RSpec.describe PastaAtlas::Repos::UserProfileRepo, :db do
     end
   end
 
-  describe "#fetch_by_user_id" do
+  describe "#find_by_user_id!" do
     it "raises for a user without a profile" do
-      expect { repo.fetch_by_user_id(user.id) }.to raise_error(ROM::TupleCountMismatchError)
+      expect { repo.find_by_user_id!(user.id) }.to raise_error(ROM::TupleCountMismatchError)
     end
   end
 end

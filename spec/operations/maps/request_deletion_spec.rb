@@ -16,7 +16,7 @@ RSpec.describe PastaAtlas::Operations::Maps::RequestDeletion do
     context "when user is a guest" do
       let(:guest) { double("User", id: 2, can_delete_map?: false) }
 
-      before { allow(user_repo).to receive(:fetch_by_id).with(2).and_return(guest) }
+      before { allow(user_repo).to receive(:find_by_id!).with(2).and_return(guest) }
 
       it "returns failure with :forbidden" do
         result = operation.call(ulid: "01MAP1", current_user_id: 2)
@@ -28,7 +28,7 @@ RSpec.describe PastaAtlas::Operations::Maps::RequestDeletion do
 
     context "when map is not found" do
       before do
-        allow(user_repo).to receive(:fetch_by_id).with(1).and_return(user)
+        allow(user_repo).to receive(:find_by_id!).with(1).and_return(user)
         allow(map_repo).to receive(:find_by_ulid).with("NOTFOUND").and_return(nil)
       end
 
@@ -44,7 +44,7 @@ RSpec.describe PastaAtlas::Operations::Maps::RequestDeletion do
       let(:other_map) { double("Map", id: 10, ulid: "01MAP1", user_id: 99, owned_by?: false) }
 
       before do
-        allow(user_repo).to receive(:fetch_by_id).with(1).and_return(user)
+        allow(user_repo).to receive(:find_by_id!).with(1).and_return(user)
         allow(map_repo).to receive(:find_by_ulid).with("01MAP1").and_return(other_map)
       end
 
@@ -58,7 +58,7 @@ RSpec.describe PastaAtlas::Operations::Maps::RequestDeletion do
 
     context "when user owns the map" do
       before do
-        allow(user_repo).to receive(:fetch_by_id).with(1).and_return(user)
+        allow(user_repo).to receive(:find_by_id!).with(1).and_return(user)
         allow(map_repo).to receive(:find_by_ulid).with("01MAP1").and_return(map)
         allow(map).to receive(:owned_by?).with(user).and_return(true)
         allow(map_repo).to receive(:delete_by_id).with(10)

@@ -18,7 +18,7 @@ module PastaAtlas
 
           def call(user_id:, content_type:)
             user_id = step require_authentication(user_id)
-            user = user_repo.fetch_by_id(user_id)
+            user = user_repo.find_by_id!(user_id)
             ext = ALLOWED_CONTENT_TYPES[content_type]
             key = "#{user.name}/avatar/#{ULID.generate}.#{ext}"
             presigned_url = generate_presigned_url(key:, content_type:)

@@ -30,9 +30,9 @@ RSpec.describe PastaAtlas::Repos::UploadRepo, :db do
 
     it "returns the data needed to build the S3 prefix" do
       upload = upload_created(days_ago: 8)
-      generation = Hanami.app["repos.generation_repo"].fetch_by_id(upload.generation_id)
-      map = Hanami.app["repos.map_repo"].fetch_by_id(generation.map_id)
-      user = Hanami.app["repos.user_repo"].fetch_by_id(map.user_id)
+      generation = Hanami.app["repos.generation_repo"].find_by_id!(upload.generation_id)
+      map = Hanami.app["repos.map_repo"].find_by_id!(generation.map_id)
+      user = Hanami.app["repos.user_repo"].find_by_id!(map.user_id)
 
       row = repo.find_stale_incomplete(before: now - (7 * 24 * 60 * 60)).first
 

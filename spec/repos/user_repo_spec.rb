@@ -15,9 +15,9 @@ RSpec.describe PastaAtlas::Repos::UserRepo, :db do
     end
   end
 
-  describe "#fetch_by_id" do
+  describe "#find_by_id!" do
     it "raises for an unknown id" do
-      expect { repo.fetch_by_id(0) }.to raise_error(ROM::TupleCountMismatchError)
+      expect { repo.find_by_id!(0) }.to raise_error(ROM::TupleCountMismatchError)
     end
   end
 

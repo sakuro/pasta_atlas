@@ -17,7 +17,7 @@ module PastaAtlas
         end
 
         private def find_user(user_id)
-          user = user_repo.fetch_by_id(user_id)
+          user = user_repo.find_by_id!(user_id)
           user.can_delete_map? ? Success(user) : Failure(:forbidden)
         end
 

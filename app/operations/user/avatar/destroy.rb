@@ -12,7 +12,7 @@ module PastaAtlas
           ]
 
           def call(user:)
-            old_s3_key = user_profile_repo.fetch_by_user_id(user.id).avatar_s3_key
+            old_s3_key = user_profile_repo.find_by_user_id!(user.id).avatar_s3_key
             user_profile_repo.clear_avatar(user.id)
             schedule_s3_cleanup(old_s3_key) if old_s3_key
             user
