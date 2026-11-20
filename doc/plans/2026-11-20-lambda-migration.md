@@ -2173,7 +2173,7 @@ aws iam list-attached-role-policies --role-name github-actions-cicd
 aws iam list-role-policies --role-name github-actions-cicd
 ```
 
-Then add (as an inline policy named `lambda-deploy`) permissions for `lambda:UpdateFunctionCode`, `lambda:GetFunction`, `lambda:GetFunctionConfiguration`, `lambda:InvokeFunction` on the four `pasta-atlas-production-*` functions, `s3:PutObject` and `s3:ListBucket` on the artifacts and assets buckets, and keep the existing `cloudfront:ListDistributions` and `cloudfront:CreateInvalidation` rights. Use `aws iam put-role-policy --role-name github-actions-cicd --policy-name lambda-deploy --policy-document file://<policy.json>` with a policy document written to the scratchpad directory. Remove the ECS and ECR rights from the role once the old stack is gone.
+Then add (as an inline policy named `lambda-deploy`) permissions for `lambda:UpdateFunctionCode`, `lambda:GetFunctionConfiguration`, `lambda:InvokeFunction` on the four `pasta-atlas-production-*` functions, `s3:PutObject` and `s3:ListBucket` on the artifacts and assets buckets, `s3:GetObject` on `arn:aws:s3:::pasta-atlas-production-lambda-artifacts/*` (needed by `update-function-code --s3-bucket/--s3-key`), and keep the existing `cloudfront:ListDistributions` and `cloudfront:CreateInvalidation` rights. Use `aws iam put-role-policy --role-name github-actions-cicd --policy-name lambda-deploy --policy-document file://<policy.json>` with a policy document written to the scratchpad directory. Remove the ECS and ECR rights from the role once the old stack is gone.
 
 - [ ] **Step 2: Clear the ECR repository**
 
