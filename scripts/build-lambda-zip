@@ -19,6 +19,16 @@ docker run --rm --platform linux/arm64 --entrypoint /bin/bash \
     # public/assets is served from S3/CloudFront; the app only needs the manifest.
     cp public/assets/assets.json /build/public/assets/
     cd /build
+    # The managed runtime puts its own newer gems on GEM_PATH. Without Bundler set up
+    # first, the event functions fail at init with Gem::ConflictError, and a local RIE
+    # run only shows it when the SSM secrets path is exercised.
+    ruby -rprism -e "
+      first = Prism.parse_file(%q(lambda_function.rb)).value.statements.body.find {|node|
+        node.is_a?(Prism::CallNode) && %i[require require_relative].include?(node.name)
+      }
+      abort %q(lambda_function.rb must require bundler/setup before anything else) unless
+        first&.name == :require && first.arguments.arguments.first.unescaped == %q(bundler/setup)
+    "
     bundle config set --local path vendor/bundle
     bundle config set --local without development:test
     bundle config set --local frozen true

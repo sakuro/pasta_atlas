@@ -60,6 +60,7 @@ All functions share one zip. Only `app` attaches the Lambda Web Adapter layer (v
 - `public/assets` (about 51 MB) is served from S3. `public/` in the zip contains only the 404/500 pages and `assets/assets.json`.
 - The build runs inside `public.ecr.aws/lambda/ruby:4.0` with `gcc`, `make`, `zip`, `tar` and `libyaml-devel` installed (psych builds from source), so native gems match the runtime (Amazon Linux 2023). Build artifacts (`*.o`, `*.c`, `*.h`) are removed and file modes are normalised.
 - `pg` needs no system libpq: `Gemfile.lock` carries the precompiled `aarch64-linux` build, which bundles libpq.
+- The runtime bootstrap adds its own gems (for example a newer `bigdecimal`) to `GEM_PATH`, so `lambda_function.rb` requires `bundler/setup` before anything else and the build fails if it does not. `run.sh` gets the same isolation from `bundle exec`. Local runtime emulator tests must set `SSM_PARAMETER_PREFIX` (local SSM in floci); otherwise the AWS SDK, which is the first code to load `bigdecimal`, is skipped and version conflicts do not show.
 - The `Dockerfile` is removed. ECR is no longer needed.
 
 ### Event functions
