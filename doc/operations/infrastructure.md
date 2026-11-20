@@ -18,7 +18,7 @@ pasta_atlas runs on AWS Lambda behind CloudFront. DNS is managed by Gandi. The r
 | SSM Parameter Store | Runtime secrets (SecureString) |
 | CloudWatch Logs | Application logs |
 | CloudWatch Alarms | Alarm on messages in the s3-cleanup dead-letter queue, notified through an SNS topic |
-| IAM | Function execution roles (S3/SQS/SSM access), deploy role (CI/CD) |
+| IAM | One execution role shared by the three functions (VPC access, S3, SQS, SSM and `kms:Decrypt`); the `github-actions-cicd` OIDC role for the workflows, assumable only from the `main` branch |
 
 ACM certificates for CloudFront must be provisioned in us-east-1 (AWS requirement).
 
@@ -27,24 +27,26 @@ ACM certificates for CloudFront must be provisioned in us-east-1 (AWS requiremen
 | Environment | Application (`app` distribution) | Tiles (`mapshots` distribution) |
 |---|---|---|
 | production | `pasta-atlas.layer8.works` | `maps.pasta-atlas.layer8.works` |
-| development | `pasta-atlas-development.layer8.works` | `maps.pasta-atlas-development.layer8.works` |
 
 ## S3 Buckets
 
-| Environment | Bucket |
-|---|---|
-| production | `pasta-atlas-production-mapshots` |
-| development | `pasta-atlas-development-mapshots` |
+| Environment | Bucket | Contents |
+|---|---|---|
+| production | `pasta-atlas-production-mapshots` | Tile images, mapshot.json and avatars |
+| production | `pasta-atlas-production-assets` | Fingerprinted static assets |
+| production | `pasta-atlas-production-lambda-artifacts` | Deploy packages (90-day expiry) |
+| local | `pasta-atlas-local-mapshots` | Everything, in floci |
 
 ### Key structure
 
 ```
-{user_profile_name}/{mapshot_map_id}/{mapshot_unique_id}/{filename}
+{user_name}/maps/{mapshot_map_id}/{mapshot_unique_id}/{filename}
+{user_name}/avatar/{ulid}.{ext}
 ```
 
 ## DNS
 
-Gandi manages DNS. No Route 53 is used. Both CNAMEs point to their CloudFront distributions.
+Gandi manages DNS (TTL 300); Route 53 is not used. The CNAMEs for the application and tiles domains point to their CloudFront distributions (the application record is controlled by `app_dns_enabled`), and the ACM validation records are created in Gandi too.
 
 ## Deployment and CI/CD
 
@@ -72,9 +74,9 @@ Principal: cloudfront.amazonaws.com
 Condition: AWS:SourceArn == <mapshots distribution ARN>
 ```
 
-The `app` function's execution role holds `s3:GetObject`, `s3:PutObject`, `s3:DeleteObject`, and `s3:ListBucket` for generating presigned URLs and managing objects.
+The Lambda execution role holds `s3:GetObject`, `s3:PutObject`, `s3:DeleteObject`, and `s3:ListBucket` for generating presigned URLs and managing objects.
 
-CORS is configured for `PUT` requests from allowed origins (for presigned URL uploads), exposing the `ETag` header.
+CORS allows `POST` and `PUT` from `allowed_origins` (presigned uploads) and exposes the `ETag` header.
 
 ## CloudFront Distributions
 
@@ -93,12 +95,16 @@ Static assets are safe to cache long-term because Vite fingerprints filenames wi
 
 Single origin: S3 bucket via OAC. All requests use CachingOptimized. A CORS response headers policy adds `Access-Control-Allow-Origin` for allowed origins.
 
+## RDS
+
+PostgreSQL 18 on `db.t4g.micro` (20 GB, single AZ, 7-day backups, deletion protection). The master password is managed by Secrets Manager. The security group accepts port 5432 only from the `app` security group used by the functions. A bastion instance exists only when `create_bastion` is true.
+
 ## Terraform
 
 Infrastructure is managed under `terraform/environments/`.
 
 - `production/` is the production root and directly declares the AWS resources used by the application.
-- `local/` contains the local mapshots S3 support used during development.
+- `local/` creates the S3 bucket and the SQS queue used during development.
 
 Terraform manages all infrastructure. Function code is updated by CI/CD on each deployment.
 
@@ -107,7 +113,7 @@ Terraform manages all infrastructure. Function code is updated by CI/CD on each 
 | Environment | Managed by |
 |---|---|
 | production | Terraform + GitHub Actions |
-| development | Local (Hanami dev server + local PostgreSQL) |
+| local | Hanami dev server, PostgreSQL and floci in Docker; S3 and SQS created by `terraform/environments/local` |
 
 No staging environment is defined at this time.
 

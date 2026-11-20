@@ -6,28 +6,24 @@
 |---|---|
 | RuboCop | Static analysis and style enforcement |
 | docquet | RuboCop configuration provider (inherits comprehensive style rules) |
-| rubocop-performance | RuboCop plugin: performance-related rules |
-| rubocop-rspec | RuboCop plugin: RSpec-specific rules |
-| rubocop-rake | RuboCop plugin: Rake file conventions |
-| RSpec | Unit and integration testing |
-| simplecov | Code coverage reporting integrated with RSpec |
-| YARD + redcarpet | API documentation generation (`doc/api/` output) |
-| ruby-lsp | Language server for editor integration |
-| repl_type_completor | Type-aware completion in IRB/Pry |
+| rubocop-capybara, rubocop-performance, rubocop-rake, rubocop-rspec, rubocop-sequel, rubocop-thread_safety | RuboCop plugins |
+| RSpec | Unit and integration testing; factories use `rom-factory` |
+| simplecov | Code coverage with branch coverage; the run fails below 80% line coverage (`.simplecov`) |
+| YARD + redcarpet | API documentation (`rake doc`, output in `doc/api/`) |
+| gitleaks | Secret scanning (`.gitleaks.toml`) |
 
-`rubocop-capybara` and `rubocop-factory_bot` are added when those libraries are adopted.
-
-### Rake
-
-Hanami generates a Rakefile with a default task that runs the test suite (`rake` with no arguments runs RSpec). No override needed.
+`rake` runs `spec` and then `rubocop`. `rake rubocop:autocorrect` applies the safe corrections.
 
 ## Frontend (TypeScript / Solid.js)
 
-| Tool | Purpose |
-|---|---|
-| TypeScript | Static typing |
-| Vite + `@solidjs/vite-plugin` | Build toolchain; compiles Solid.js JSX |
-| ESLint + `eslint-plugin-solid` | Static analysis including Solid.js-specific rules (`v2` configuration) |
-| Prettier | Code formatting |
-| Vitest | Unit and component testing (shares Vite config) |
-| Playwright | End-to-end testing (added when needed) |
+| Tool | Command | Purpose |
+|---|---|---|
+| TypeScript | `npm run type-check` | Static typing (`tsc --noEmit`) |
+| ESLint + `eslint-plugin-solid` | `npm run lint:frontend` | Static analysis for `frontend/**/*.{ts,tsx}`, with the `v2` configuration |
+| Vitest | `npm run test:frontend` | Unit tests (jsdom); add `-- --run` for a single run |
+| Vite + `@solidjs/vite-plugin` | `npm run build:frontend` | Build; compiles Solid JSX |
+| Prettier | — | Configured in `.prettierrc`; run manually, not part of CI |
+
+## CI
+
+`.github/workflows/ci.yml` runs two jobs. `backend` prepares PostgreSQL 18, compiles the assets, loads the test database structure and seeds, then runs `bundle exec rake`. `frontend` runs the type check, the lint and the Vitest run.
