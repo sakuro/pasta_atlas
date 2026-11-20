@@ -17,8 +17,8 @@ module PastaAtlas
         uploads.where(id:).command(:update).call(verification_status:, verified_at:)
       end
 
-      # An atomic increment (`verified_bytes + n`) cannot be written with a ROM command.
       def accumulate_verified_bytes(id:, bytes:)
+        # An atomic increment (`verified_bytes + n`) cannot be written with a ROM command.
         uploads.dataset.where(id:).update(
           verified_bytes: Sequel.lit("verified_bytes + ?", bytes)
         )

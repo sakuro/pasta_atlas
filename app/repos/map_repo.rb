@@ -67,13 +67,13 @@ module PastaAtlas
         maps.by_user_and_mapshot_id(user_id, mapshot_map_id).one
       end
 
-      # INSERT ... ON CONFLICT cannot be written with a ROM command.
       def find_or_create_by_user_and_mapshot_id(user_id:, mapshot_map_id:, savename: "", name: nil, update_name_on_conflict: true)
         conflict_opts = if name && update_name_on_conflict
                           {target: %i[user_id mapshot_map_id], update: {name:}}
                         else
                           {target: %i[user_id mapshot_map_id]}
                         end
+        # INSERT ... ON CONFLICT cannot be written with a ROM command.
         maps.dataset.insert_conflict(**conflict_opts).insert(
           user_id:, mapshot_map_id:, ulid: ULID.generate, savename:, name:
         )

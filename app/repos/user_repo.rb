@@ -10,8 +10,8 @@ module PastaAtlas
       def create(name:) = users.command(:create).call(name:)
       def destroy(id) = users.where(id:).command(:delete).call
 
-      # INSERT ... ON CONFLICT cannot be written with a ROM command.
       def find_or_create_by_name(name:)
+        # INSERT ... ON CONFLICT cannot be written with a ROM command.
         users.dataset.insert_conflict(target: :name).insert(name:)
         users.where(name:).one!
       end

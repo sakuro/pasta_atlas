@@ -14,10 +14,10 @@ module PastaAtlas
           .transform_values {|gens| gens.max_by(&:tick) }
       end
 
-      # An aggregate: the result is a lookup of map id to time, not records.
       def find_max_created_at_by_map_ids(map_ids)
         return {} if map_ids.empty?
 
+        # An aggregate: the result is a lookup of map id to time, not records.
         generations.dataset
           .where(map_id: map_ids)
           .unordered

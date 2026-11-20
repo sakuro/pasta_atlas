@@ -3,9 +3,9 @@
 module PastaAtlas
   module Repos
     class UploadVerificationKeyRepo < PastaAtlas::DB::Repo
-      # INSERT ... ON CONFLICT cannot be written with a ROM command.
       def create_many(upload_id:, s3_keys:)
         rows = s3_keys.map {|key| {upload_id:, s3_key: key} }
+        # INSERT ... ON CONFLICT cannot be written with a ROM command.
         upload_verification_keys.dataset
           .insert_conflict(target: %i[upload_id s3_key])
           .multi_insert(rows)
