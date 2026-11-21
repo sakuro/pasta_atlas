@@ -18,10 +18,10 @@ module LambdaSupport
       raise RuntimeError, "task exited with status #{e.status}" unless e.success?
     end
 
-    # --no-dump: structure dumps are not wanted in production, and the Lambda image
-    # has no pg_dump.
     private def dispatch(event)
       case event["task"]
+      # --no-dump: structure dumps are not wanted in production, and the Lambda image
+      # has no pg_dump.
       in "db:migrate" then @cli.call(%w[db migrate --no-dump])
       in "db:seed" then @cli.call(%w[db seed])
       in "maps:delete" then delete_map(event["map_ulid"])

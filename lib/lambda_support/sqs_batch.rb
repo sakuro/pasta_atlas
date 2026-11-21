@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 module LambdaSupport
-  # Only failed records are returned so SQS retries them individually. This needs
-  # ReportBatchItemFailures on the event source mapping.
   module SqsBatch
+    # Only failed records are returned so SQS retries them individually. This needs
+    # ReportBatchItemFailures on the event source mapping.
     def self.process(event, &processor)
       failures = event["Records"].reject {|record| succeeded?(record, processor) }
       {"batchItemFailures" => failures.map {|record| {"itemIdentifier" => record["messageId"]} }}
