@@ -14,6 +14,7 @@ export const HowToUploadModal = (props: { onClose: () => void }) => (
             <h4 data-l10n-id="how-to-upload-step1-heading" />
             <p data-l10n-id="how-to-upload-step1-body">
               <a data-l10n-name="mapshot-link" href="https://mods.factorio.com/mod/mapshot" target="_blank" rel="noopener noreferrer" />
+              <a data-l10n-name="mapshot-2-1-link" href="https://mods.factorio.com/mod/mapshot_2_1" target="_blank" rel="noopener noreferrer" />
             </p>
 
             <h4 data-l10n-id="how-to-upload-step2-heading" />
