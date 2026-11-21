@@ -217,7 +217,7 @@ how-to-upload-achievement-warning = Chcete-li se vyhnout ovlivnění úspěchů,
 how-to-upload-step3-heading = 3. Nahrajte
 how-to-upload-step3-click-upload = Klikněte na „Nahrát" v navigační liště.
 how-to-upload-step3-select-folder = Klikněte na „Vybrat složku" a vyberte podsložku obsahující <code data-l10n-name="filename">mapshot.json</code> (ne samotný soubor).
-how-to-upload-step3-confirm = Potvrďte název mapy a detaily, poté klikněte na „Zahájit nahrávání".
+how-to-upload-step3-confirm = Pojmenujte mapu a potvrďte detaily, poté klikněte na „Zahájit nahrávání".
 how-to-upload-step3-view = Po dokončení nahrávání klikněte na „Zobrazit mapu".
 how-to-upload-tip = Stejnou mapu můžete nahrát při různých herních ticích — každé nahrání vytvoří samostatnou generaci, mezi nimiž lze přepínat v prohlížeči map.
 
