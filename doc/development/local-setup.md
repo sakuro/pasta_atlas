@@ -13,8 +13,7 @@ Local development uses Docker-based substitutes for AWS services. No AWS account
 
 ## Prerequisites
 
-- [mise](https://mise.jdx.dev/) — manages Ruby, Terraform, the AWS CLI and other tools
-- Node.js and npm (installed separately; mise does not manage them)
+- [mise](https://mise.jdx.dev/) — manages Ruby, Node.js (with npm), Terraform, the AWS CLI and other tools; `mise install` installs the versions in `mise.toml`, so no global Node.js is needed
 - Docker
 
 ## First-time setup

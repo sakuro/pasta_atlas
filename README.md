@@ -15,7 +15,7 @@ The production site runs on AWS Lambda behind CloudFront.
 
 ## Getting started
 
-Prerequisites: [mise](https://mise.jdx.dev/), Node.js, Docker, and an OAuth app or API key for at least one of GitHub, Discord and Steam.
+Prerequisites: [mise](https://mise.jdx.dev/) (it installs Ruby and Node.js), Docker, and an OAuth app or API key for at least one of GitHub, Discord and Steam.
 
 ```sh
 docker compose up -d                    # PostgreSQL and floci
