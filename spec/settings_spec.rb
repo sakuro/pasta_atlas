@@ -20,16 +20,20 @@ RSpec.describe PastaAtlas::Settings do
       expect(build("https://cdn.example.com").cloudfront_base_url).to be_a(URI::HTTPS)
     end
 
-    it "keeps the value as it is, including a path and a trailing slash" do
-      expect(build("http://localhost:4566/bucket/").cloudfront_base_url.to_s).to eq("http://localhost:4566/bucket/")
+    it "keeps a path" do
+      expect(build("http://localhost:4566/bucket").cloudfront_base_url.to_s).to eq("http://localhost:4566/bucket")
+    end
+
+    it "rejects a trailing slash" do
+      expect { build("https://cdn.example.com/") }.to raise_error(Hanami::Settings::InvalidSettingsError, /cloudfront_base_url/)
     end
 
     it "rejects a value that is not an http(s) URL" do
       expect { build("not a url") }.to raise_error(Hanami::Settings::InvalidSettingsError, /cloudfront_base_url/)
     end
 
-    # The type is chosen when the class is loaded, so this runs against the HTTP-allowing type.
-    # The HTTPS requirement of production is covered by the HTTPSURL examples in types_spec.rb.
+    # The type is chosen when the class is loaded, so this runs against the type that allows HTTP.
+    # The HTTPS requirement of production is covered by the CloudFrontBaseURL examples in types_spec.rb.
     it "accepts an http URL in the test environment" do
       expect(build("http://localhost:4566/bucket").cloudfront_base_url).to be_a(URI::HTTP)
     end
