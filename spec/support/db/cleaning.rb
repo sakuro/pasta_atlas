@@ -28,7 +28,7 @@ RSpec.configure do |config|
     Factory.create(:user_preference, user_id: guest.id)
   end
 
-  config.before :each, :db do |example|
+  config.prepend_before :each, :db do |example|
     strategy = example.metadata[:js] ? :truncation : :transaction
 
     all_databases.call.each do |db|

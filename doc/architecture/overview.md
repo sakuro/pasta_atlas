@@ -12,7 +12,7 @@ Pasta Atlas is a web application for uploading and browsing Factorio map screens
 
 | Layer | Technology |
 |---|---|
-| Backend | Ruby 4.0+, Hanami 2.3+, ROM.rb, Dry.rb |
+| Backend | Ruby 4.0+, Hanami 3.0+, ROM.rb, Dry.rb |
 | Frontend | Solid.js, Bulma, Leaflet.js |
 | Database | PostgreSQL |
 | Storage | AWS S3 + CloudFront |

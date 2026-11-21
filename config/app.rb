@@ -23,6 +23,10 @@ module PastaAtlas
       config.logger.formatter = :production
     end
 
+    # Hanami Action parses a request body only for the accepted formats; without this the
+    # JSON bodies of the API are ignored.
+    config.actions.formats.accept :html, :json
+
     config.actions.sessions = :cookie, {
       key: "pasta_atlas.session",
       secret: settings.session_secret,
