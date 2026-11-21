@@ -63,7 +63,7 @@ GEM
       reline (>= 0.3.8)
     debug_inspector (1.2.0)
     diff-lcs (1.6.2)
-    docquet (1.3.0)
+    docquet (1.4.0)
       dry-cli (~> 1.0)
       dry-inflector (~> 1.0)
       erb (>= 2.2)
@@ -457,9 +457,9 @@ GEM
       parser (>= 3.3.7.2)
       prism (>= 1.7)
       racc
-    rubocop-capybara (2.23.0)
+    rubocop-capybara (3.1.0)
       lint_roller (~> 1.1)
-      rubocop (~> 1.81)
+      rubocop (~> 1.89)
     rubocop-performance (1.27.0)
       lint_roller (~> 1.1)
       rubocop (>= 1.89.0, < 2.0)
@@ -534,7 +534,7 @@ DEPENDENCIES
   concurrent-ruby
   database_cleaner-sequel
   debug (~> 1.11)
-  docquet (~> 1.2)
+  docquet (~> 1.4)
   dotenv
   dry-operation (>= 1.0.1)
   dry-types (~> 1.7)
@@ -563,7 +563,7 @@ DEPENDENCIES
   rexml
   rom-factory
   rubocop (~> 1.86)
-  rubocop-capybara (~> 2.22)
+  rubocop-capybara (~> 3.0)
   rubocop-performance (~> 1.26)
   rubocop-rake (~> 0.7.1)
   rubocop-rspec
@@ -603,7 +603,7 @@ CHECKSUMS
   debug (1.11.1) sha256=2e0b0ac6119f2207a6f8ac7d4a73ca8eb4e440f64da0a3136c30343146e952b6
   debug_inspector (1.2.0) sha256=9bdfa02eebc3da163833e6a89b154084232f5766087e59573b70521c77ea68a2
   diff-lcs (1.6.2) sha256=9ae0d2cba7d4df3075fe8cd8602a8604993efc0dfa934cff568969efb1909962
-  docquet (1.3.0) sha256=78cfa0ae438b85348a707b130597db05326ba9ec1b06108d2f239c6f58eae196
+  docquet (1.4.0) sha256=ab1ffc3221a3c9eb432909b11dcbf5dafe21014878040975fbcb66a9fd980f32
   dotenv (3.2.0) sha256=e375b83121ea7ca4ce20f214740076129ab8514cd81378161f11c03853fe619d
   dry-auto_inject (1.2.1) sha256=dedddc8a13fcdf320def7d6741ce7d6da48d749c6d43175ef0072c0be2ba47c8
   dry-cli (1.4.1) sha256=b8015bb76c708aa8705a36faf694973e75eeeffca39b89c8e172dc6f66a7d874
@@ -744,7 +744,7 @@ CHECKSUMS
   rspec-support (3.13.7) sha256=0640e5570872aafefd79867901deeeeb40b0c9875a36b983d85f54fb7381c47c
   rubocop (1.92.3) sha256=fd77feac46e8e91c3a534f868a1702c59f5bf8173515fd00a3c6ce1198672ff6
   rubocop-ast (1.53.0) sha256=027984d28485d6502ae4c72f9341080f54f538599f5dbb54f81875a4ddcad574
-  rubocop-capybara (2.23.0) sha256=f9ea1ba3a7561ee8e88cf76fc378ce517ce5327155f305ee7b5c2500e5aee357
+  rubocop-capybara (3.1.0) sha256=1712900b04178272b643f7bffa385f7b1d157c4f83a0ad502ae10690e18f5096
   rubocop-performance (1.27.0) sha256=eeeb1374d062a368ee1c787b70eb0b0cc4b184cb1f8565f424760946146d61ce
   rubocop-rake (0.7.1) sha256=3797f2b6810c3e9df7376c26d5f44f3475eda59eb1adc38e6f62ecf027cbae4d
   rubocop-rspec (3.10.2) sha256=0b3e2ecc592cd10ecbf0095bb58d1e357905276e069643523cc19eb7495f65e2
