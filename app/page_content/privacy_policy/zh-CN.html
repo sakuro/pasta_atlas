@@ -12,11 +12,11 @@
       </ul>
       <p class="mt-3">我们还会存储您在使用服务过程中提供的信息：</p>
       <ul>
-        <li>您上传的地图瓦片图片及元数据（<span data-l10n-id="factorio-name"></span> <span data-l10n-id="mapshot-name"></span> 输出）——包含地图种子、地图交换字符串、已安装的 MOD、游戏版本及已游玩刻数</li>
+        <li>您上传的地图瓦片图片及元数据（<span data-l10n-id="factorio-name"></span> <span data-l10n-id="mapshot-name"></span> 输出）——包含地图名称、存档名称、地图种子、地图交换字符串、已安装的 MOD、游戏版本及已游玩刻数</li>
         <li>您设置的头像图片</li>
         <li>您的显示名称、时区和语言偏好</li>
       </ul>
-      <p class="mt-3">我们的服务器还会记录访问日志（IP 地址、请求路径、状态码和时间）。访问日志保存 30 天，仅用于服务运营和调查滥用行为。</p>
+      <p class="mt-3">我们的服务器还会记录访问日志（IP 地址、请求方法和路径、状态码、请求大小、处理时间和时间戳）。请求路径中可能包含用户名和地图标识符。访问日志保存 30 天，仅用于服务运营和调查滥用行为。</p>
     </section>
 
     <section class="section">
@@ -27,13 +27,14 @@
         <li>展示和分享您上传的地图</li>
         <li>向其他用户显示您的个人资料</li>
       </ul>
+      <p class="mt-3">您上传的地图和个人资料可被任何人查看，包括未登录的访客。</p>
       <p class="mt-3">除运营服务所必需的情况外（见下方数据存储），我们不会向第三方出售或分享您的个人信息。</p>
     </section>
 
     <section class="section">
       <h2 class="title is-4">Cookie</h2>
       <p>
-        我们使用单个 Cookie（<code>pasta_atlas.session</code>）来维持您的登录状态。
+        我们使用单个 Cookie（<code>pasta_atlas.session</code>）来维持您的登录状态。有效期为一年。在注册过程中，它还会临时保存从 OAuth 提供方获取的标识符、用户名和头像 URL，直到您完成注册。
         我们不使用跟踪、广告或分析 Cookie。
       </p>
     </section>
@@ -42,7 +43,9 @@
       <h2 class="title is-4">数据存储</h2>
       <p>
         地图图片和头像存储在 Amazon S3 上，通过 Amazon CloudFront 提供服务。
-        其他第三方无法访问您的数据。
+        账户信息、地图元数据和偏好设置存储在 Amazon RDS for PostgreSQL 数据库中，应用日志保存在 Amazon CloudWatch Logs 中。
+        数据存储在 AWS 亚太（东京）区域；CloudFront 会在全球边缘节点缓存地图图片。
+        除 Amazon Web Services 外，没有其他第三方可以访问您的数据。
       </p>
     </section>
 
