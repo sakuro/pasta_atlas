@@ -15,8 +15,8 @@ module PastaAtlas
             end
 
             rule(:metadata) do
-              # A parsed JSON body leaves the keys below the top level as strings.
-              meta = values[:metadata].transform_keys(&:to_sym)
+              # The metadata is a JSON document kept as parsed, so its keys are strings.
+              meta = values[:metadata]
               # gen_map_id / gen_unique_id produce 8 hex chars sliced from SHA-256:
               # https://github.com/Palats/mapshot/blob/ddad172f187d08e56df720efe2fe0bddfb65e347/mod/control.lua#L206-L222
               mapshot_id_pattern = /\A[0-9a-f]{8}\z/
@@ -24,9 +24,9 @@ module PastaAtlas
               # https://lua-api.factorio.com/latest/classes/LuaGameScript.html#tick
               tick_max = 4_294_967_295
 
-              key(%i[metadata map_id]).failure("is invalid") unless meta[:map_id].is_a?(String) && mapshot_id_pattern.match?(meta[:map_id])
-              key(%i[metadata unique_id]).failure("is invalid") unless meta[:unique_id].is_a?(String) && mapshot_id_pattern.match?(meta[:unique_id])
-              tick_int = Integer(meta[:tick], exception: false)
+              key(%i[metadata map_id]).failure("is invalid") unless meta["map_id"].is_a?(String) && mapshot_id_pattern.match?(meta["map_id"])
+              key(%i[metadata unique_id]).failure("is invalid") unless meta["unique_id"].is_a?(String) && mapshot_id_pattern.match?(meta["unique_id"])
+              tick_int = Integer(meta["tick"], exception: false)
               key(%i[metadata tick]).failure("is invalid") unless tick_int&.between?(0, tick_max)
             end
           end
@@ -37,7 +37,7 @@ module PastaAtlas
 
             result = create_upload.call(
               user_id: current_user_id(request),
-              metadata: Hanami::Utils::Hash.deep_symbolize(request.params[:metadata].to_h),
+              metadata: request.params[:metadata].to_h,
               total_image_count: request.params[:total_image_count],
               name: request.params[:name]
             )

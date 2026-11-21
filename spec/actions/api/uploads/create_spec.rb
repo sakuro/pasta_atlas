@@ -9,7 +9,7 @@ RSpec.describe PastaAtlas::Actions::API::Uploads::Create, :db do
 
   let(:session) { {"rack.session" => {"user_id" => 1}} }
   let(:action_params) do
-    {metadata: {map_id: "ae8ec3ab", unique_id: "550f41a9", tick: "1000"}, total_image_count: 5, name: "My Map"}
+    {metadata: {"map_id" => "ae8ec3ab", "unique_id" => "550f41a9", "tick" => "1000"}, total_image_count: 5, name: "My Map"}
   end
 
   let(:upload) { double("Upload", ulid: "01UPLOAD") }
@@ -38,16 +38,12 @@ RSpec.describe PastaAtlas::Actions::API::Uploads::Create, :db do
         expect(body).to include("ulid" => "01UPLOAD", "map_ulid" => "01MAP", "generation_ulid" => "01GEN")
       end
 
-      it "accepts the string keys that a parsed JSON body has below the top level" do
+      it "passes the metadata to the operation as parsed, with string keys" do
         metadata = {"map_id" => "ae8ec3ab", "unique_id" => "550f41a9", "tick" => 1000, "surfaces" => [{"name" => "nauvis"}]}
-        json_params = {metadata:, total_image_count: 5, name: "My Map"}
 
-        response = action.call(session.merge(json_params))
+        action.call(session.merge(metadata:, total_image_count: 5, name: "My Map"))
 
-        expect(response.status).to eq(201)
-        expect(create_upload).to have_received(:call).with(
-          hash_including(metadata: {map_id: "ae8ec3ab", unique_id: "550f41a9", tick: 1000, surfaces: [{name: "nauvis"}]})
-        )
+        expect(create_upload).to have_received(:call).with(hash_including(metadata:))
       end
 
       it "passes name to the operation" do
@@ -85,28 +81,28 @@ RSpec.describe PastaAtlas::Actions::API::Uploads::Create, :db do
       before { allow(create_upload).to receive(:call) }
 
       it "returns 400 for invalid map_id without calling the operation" do
-        params = action_params.merge(metadata: action_params[:metadata].merge(map_id: "xyz!"))
+        params = action_params.merge(metadata: action_params[:metadata].merge("map_id" => "xyz!"))
         response = action.call(session.merge(params))
         expect(response.status).to eq(400)
         expect(create_upload).not_to have_received(:call)
       end
 
       it "returns 400 for invalid unique_id without calling the operation" do
-        params = action_params.merge(metadata: action_params[:metadata].merge(unique_id: "xyz!"))
+        params = action_params.merge(metadata: action_params[:metadata].merge("unique_id" => "xyz!"))
         response = action.call(session.merge(params))
         expect(response.status).to eq(400)
         expect(create_upload).not_to have_received(:call)
       end
 
       it "returns 400 for non-integer tick without calling the operation" do
-        params = action_params.merge(metadata: action_params[:metadata].merge(tick: "abc"))
+        params = action_params.merge(metadata: action_params[:metadata].merge("tick" => "abc"))
         response = action.call(session.merge(params))
         expect(response.status).to eq(400)
         expect(create_upload).not_to have_received(:call)
       end
 
       it "returns 400 for tick exceeding uint32 max without calling the operation" do
-        params = action_params.merge(metadata: action_params[:metadata].merge(tick: 4_294_967_296))
+        params = action_params.merge(metadata: action_params[:metadata].merge("tick" => 4_294_967_296))
         response = action.call(session.merge(params))
         expect(response.status).to eq(400)
         expect(create_upload).not_to have_received(:call)
