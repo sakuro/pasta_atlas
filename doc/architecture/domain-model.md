@@ -118,7 +118,7 @@ Append-only log of status transitions for an Upload.
 | event_type | enum: pending\|complete\|failed |
 | occurred_at | when the transition happened |
 
-The current status of an Upload is the `event_type` of the latest UploadEvent ordered by `occurred_at DESC`. This is exposed via the `current_upload_statuses` database view.
+The current status of an Upload is the `event_type` of the latest UploadEvent ordered by `occurred_at DESC`, with the larger `id` winning a tie. This is exposed via the `current_upload_statuses` database view.
 
 On Upload creation, a `pending` event is inserted within the same transaction.
 
