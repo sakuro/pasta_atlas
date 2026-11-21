@@ -34,6 +34,31 @@ const sortedMods = (mods: Record<string, string>): [string, string][] => {
 };
 
 
+// The explanation opens on click so that it also works without a hover, as on a touch screen.
+const HelpLabel = (props: { icon: string; labelId: string; helpId: string }) => {
+  const [open, setOpen] = createSignal(false);
+
+  return (
+    <th class="map-info-label">
+      <span class="icon-text">
+        <span class="icon"><i class={props.icon} /></span>
+        <span data-l10n-id={props.labelId} />
+        <button
+          type="button"
+          class="map-info-help-button"
+          aria-expanded={open() ? "true" : "false"}
+          onClick={() => setOpen((v: boolean) => !v)}
+        >
+          <span class="icon is-small"><i class="fa-regular fa-circle-question" /></span>
+        </button>
+      </span>
+      <Show when={open()}>
+        <p class="map-info-help" data-l10n-id={props.helpId} />
+      </Show>
+    </th>
+  );
+};
+
 export const MapInfoModal = (props: { mapshot: Mapshot; onClose: () => void }) => {
   const [showMapExchange, setShowMapExchange] = createSignal(false);
 
@@ -80,13 +105,13 @@ export const MapInfoModal = (props: { mapshot: Mapshot; onClose: () => void }) =
                 </Show>
                 <Show when={props.mapshot.tick != null}>
                   <tr>
-                    <th class="map-info-label"><span class="icon-text"><span class="icon"><i class="fa-solid fa-hourglass" /></span><span data-l10n-id="map-info-tick" /><span class="icon is-small has-text-grey-light" data-l10n-id="map-info-tick-help"><i class="fa-regular fa-circle-question" /></span></span></th>
+                    <HelpLabel icon="fa-solid fa-hourglass" labelId="map-info-tick" helpId="map-info-tick-help" />
                     <td>{formatNumber(props.mapshot.tick!, lang())} ({formatTicks(props.mapshot.tick!, lang(), "long")})</td>
                   </tr>
                 </Show>
                 <Show when={props.mapshot.ticks_played != null}>
                   <tr>
-                    <th class="map-info-label"><span class="icon-text"><span class="icon"><i class="fa-solid fa-hourglass-half" /></span><span data-l10n-id="map-info-ticks-played" /><span class="icon is-small has-text-grey-light" data-l10n-id="map-info-ticks-played-help"><i class="fa-regular fa-circle-question" /></span></span></th>
+                    <HelpLabel icon="fa-solid fa-hourglass-half" labelId="map-info-ticks-played" helpId="map-info-ticks-played-help" />
                     <td>{formatNumber(props.mapshot.ticks_played!, lang())} ({formatTicks(props.mapshot.ticks_played!, lang(), "long")})</td>
                   </tr>
                 </Show>

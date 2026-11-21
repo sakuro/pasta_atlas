@@ -53,6 +53,21 @@ body {
   min-width: 12rem;
 }
 
+.map-info-help-button {
+  background: none;
+  border: 0;
+  color: var(--bulma-grey-light);
+  cursor: pointer;
+  padding: 0;
+}
+
+.map-info-help {
+  font-size: 0.875rem;
+  font-weight: normal;
+  max-width: 20rem;
+  white-space: normal;
+}
+
 .footer {
   padding: 1rem 1.5rem;
   position: fixed;
