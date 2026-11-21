@@ -12,9 +12,9 @@ Pasta Atlas is a web application for uploading and browsing Factorio map screens
 
 | Layer | Technology |
 |---|---|
-| Backend | Ruby 4.0+, [Hanami](https://hanakai.org/hanami) 3.0+, [ROM.rb](https://hanakai.org/rom), Dry.rb |
-| Frontend | Solid.js, Bulma, Leaflet.js |
-| Database | PostgreSQL |
-| Storage | AWS S3 + CloudFront |
-| Authentication | OmniAuth (GitHub, Discord, Steam) |
-| Infrastructure | Terraform; AWS Lambda, RDS, SQS, CloudFront |
+| Backend | [Ruby](https://www.ruby-lang.org/) 4.0+, [Hanami](https://hanakai.org/hanami) 3.0+, [ROM.rb](https://hanakai.org/rom), [Dry.rb](https://hanakai.org/dry) |
+| Frontend | [Solid.js](https://www.solidjs.com/), [Vite](https://vite.dev/), [Bulma](https://bulma.io/), [Leaflet.js](https://leafletjs.com/) |
+| Database | [PostgreSQL](https://www.postgresql.org/) |
+| Storage | [AWS S3](https://aws.amazon.com/s3/) + [CloudFront](https://aws.amazon.com/cloudfront/) |
+| Authentication | [OmniAuth](https://github.com/omniauth/omniauth) ([GitHub](https://github.com/), [Discord](https://discord.com/), [Steam](https://store.steampowered.com/)) |
+| Infrastructure | [Terraform](https://developer.hashicorp.com/terraform); [AWS Lambda](https://aws.amazon.com/lambda/), [RDS](https://aws.amazon.com/rds/), [SQS](https://aws.amazon.com/sqs/), [CloudFront](https://aws.amazon.com/cloudfront/) |

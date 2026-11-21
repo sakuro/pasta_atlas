@@ -4,15 +4,6 @@ A web application for browsing Factorio map screenshots captured by the [mapshot
 
 The production site runs on AWS Lambda behind CloudFront.
 
-## Tech stack
-
-| Layer | Technology |
-|-------|-----------|
-| Backend | [Ruby](https://www.ruby-lang.org/) / [Hanami](https://hanakai.org/hanami), [ROM](https://hanakai.org/rom) |
-| Frontend | [SolidJS](https://www.solidjs.com/) / [Vite](https://vitejs.dev/), [Leaflet](https://leafletjs.com/), [Bulma](https://bulma.io/) |
-| Database | PostgreSQL |
-| Storage and queue | AWS S3 and SQS (local: [floci](https://floci.io/)) |
-
 ## Getting started
 
 Prerequisites: [mise](https://mise.jdx.dev/) (it installs Ruby and Node.js), Docker, and an OAuth app or API key for at least one of GitHub, Discord and Steam.
