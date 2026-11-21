@@ -25,6 +25,7 @@ npm run build:frontend    # Production build
 npm run dev:frontend      # Watch mode for development
 npm run type-check        # TypeScript type checking
 npm run lint:frontend     # ESLint on .ts/.tsx files
+npm run format:frontend   # Prettier on .ts/.tsx files (rewrites them)
 npm run test:frontend -- --run   # Run Vitest tests once
 ```
 
