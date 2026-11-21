@@ -18,7 +18,7 @@ sakuro/maps/ae8ec3ab/550f41a9/s1zoom_3/tile_0_0.jpg
 
 The `metadata_s3_key` stored in DB points to `mapshot.json` within this prefix.
 
-Avatar images use a separate prefix: `avatars/{user_id}/{ulid}.{ext}`
+Avatar images use a separate prefix: `{user_name}/avatar/{ulid}.{ext}`
 
 ---
 
@@ -83,7 +83,7 @@ Avatar images use a separate prefix: `avatars/{user_id}/{ulid}.{ext}`
 
 1. Require authentication; return `403 Forbidden` for the guest user
 2. Validate the params; return `400` unless `name` is present, `total_image_count` is 1–10000, `map_id` and `unique_id` are 8 lowercase hex characters and `tick` is an integer in 0..4294967295
-3. Validate `name` (at most 30 grapheme clusters, no control characters); return `422` on failure
+3. Validate `name` (at most 30 grapheme clusters, same character rule as the profile display name); return `422` on failure
 4. Find or create `Map` by `(user_id, mapshot_map_id)` using `INSERT ... ON CONFLICT DO NOTHING`. If the map already exists, its display name is replaced with the submitted `name`
    - A plain transaction is insufficient under `READ COMMITTED`: two concurrent requests can both find "not found" before either inserts
 5. Check if `Generation` with `(map_id, mapshot_unique_id)` already exists

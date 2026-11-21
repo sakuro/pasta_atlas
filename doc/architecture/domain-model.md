@@ -3,7 +3,7 @@
 ## ID Strategy
 
 - Internal IDs are integers (bigserial).
-- Entities exposed in public URLs use a ULID column (`ulid`, `varchar(26)`, unique index) generated in the application layer. User is excluded — its profile `name` serves as the public identifier instead.
+- Entities exposed in public URLs use a ULID column (`ulid`, `varchar(26)`, unique index) generated in the application layer. User is excluded — its `name` serves as the public identifier instead.
 
 ## Enum Strategy
 
@@ -70,7 +70,7 @@ Represents a Factorio game world. One map can have multiple generations.
 | user_id | FK → User | |
 | mapshot_map_id | string | `map_id` from mapshot.json |
 | savename | string | `savename` from mapshot.json (may be empty); the value of the first upload, later uploads do not change it |
-| name | string | nullable; user-defined display name (future use) |
+| name | string | nullable; user-defined display name |
 | created_at | timestamp | |
 
 Unique constraint: `(user_id, mapshot_map_id)`
@@ -83,6 +83,7 @@ When a generation is uploaded:
 - Look up Map by `(user_id, mapshot_map_id)`
 - If not found: create Map, then create Generation linked to it
 - If found: create Generation linked to the existing Map
+- The submitted `name` is set on a Map that has none and replaces an existing one (see [upload flow](upload-flow.md))
 
 ### Generation
 
@@ -124,7 +125,7 @@ One row per S3 key expected for an Upload.
 
 | Field | Type | Notes |
 |---|---|---|
-| id | bigint PK | |
+| id | bigserial PK | |
 | upload_id | FK → Upload | |
 | s3_key | string | |
 | verified_at | timestamp | nullable; set when the object is confirmed to exist |

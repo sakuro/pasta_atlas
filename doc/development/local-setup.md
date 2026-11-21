@@ -31,7 +31,7 @@ aws_access_key_id = dummy
 aws_secret_access_key = dummy
 ```
 
-This provides dummy credentials and region for Floci. No real AWS account is needed.
+This provides dummy credentials and region for Floci. No real AWS account is needed. `.env.development` selects the profile through `AWS_PROFILE`, and both Terraform and `bin/dev` (the `wait-floci` task) use it.
 
 ### 2. Start Docker services
 
@@ -140,9 +140,10 @@ Access the app at **http://localhost:2300**.
 
 ## Environment files
 
-mise loads env files in this order for development:
+mise loads env files in this order for development; later files override earlier ones:
 
 ```
+.env                    # shared values, if present
 .env.development        # dev defaults (committed)
 .env.development.local  # local overrides (gitignored)
 .env.local              # any other local overrides

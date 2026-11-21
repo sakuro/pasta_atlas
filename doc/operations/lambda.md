@@ -85,7 +85,7 @@ Non-secret configuration is set as ordinary Lambda environment variables from Te
 
 ## One-off tasks
 
-`migrate.yml` (`db:migrate`), `seed.yml` (`db:seed`) and `delete-map.yml` (`maps:delete`, input `ulid`) are manual (`workflow_dispatch`) workflows that invoke the `task` function through `scripts/invoke-lambda-task`; `scripts/seed-db` does the same with `AWS_PROFILE=terraform`. The function accepts an event naming one of these allow-listed tasks and runs it in-process (`lib/lambda_support/task_runner.rb`); the fourth, `cleanup:stale_uploads`, is run by the schedule below. The 15-minute maximum timeout applies. The structure dump after migration is skipped because the image has no `pg_dump`.
+`migrate.yml` (`db:migrate`), `seed.yml` (`db:seed`) and `delete-map.yml` (`maps:delete`, workflow input `ulid`, event key `map_ulid`) are manual (`workflow_dispatch`) workflows that invoke the `task` function through `scripts/invoke-lambda-task`; `scripts/seed-db` does the same with `AWS_PROFILE=terraform`. The function accepts an event naming one of these allow-listed tasks and runs it in-process (`lib/lambda_support/task_runner.rb`); the fourth, `cleanup:stale_uploads`, is run by the schedule below. The 15-minute maximum timeout applies. The structure dump after migration is skipped because the image has no `pg_dump`.
 
 The function is invoked with `--cli-read-timeout 0` and without CLI retries, since a retry after a client timeout would run the task, for example a migration, a second time.
 

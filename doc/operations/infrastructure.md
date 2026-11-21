@@ -58,10 +58,11 @@ Gandi manages DNS (TTL 300); Route 53 is not used. The CNAMEs for the applicatio
 | `seed.yml` | Manual (`workflow_dispatch`) | Runs DB seed through the `task` function |
 | `delete-map.yml` | Manual (`workflow_dispatch`) | Deletes a map through the `task` function |
 
-`ci.yml` runs two parallel jobs:
+`ci.yml` runs three parallel jobs:
 
 - **backend**: spins up PostgreSQL, compiles frontend assets, loads DB structure, then runs `bundle exec rake` (RuboCop + RSpec)
 - **frontend**: runs `npm run type-check`, `npm run lint:frontend`, and `npm run test:frontend`
+- **actions-lock**: verifies `.github/workflows/actions.lock` with `gh actions-lock --verify`; regenerate the lockfile after editing a workflow or bumping an action
 
 The deploy sequence, rollback and one-off task invocation are described in [Lambda](lambda.md#deployment). When a release contains migrations, run `migrate.yml` after `deploy.yml`.
 

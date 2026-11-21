@@ -39,4 +39,4 @@ The hooks check only; they do not rewrite files. RSpec and the type check are no
 
 ## CI
 
-`.github/workflows/ci.yml` runs two jobs. `backend` prepares PostgreSQL 18, compiles the assets, loads the test database structure and seeds, then runs `bundle exec rake`. `frontend` runs the type check, the lint and the Vitest run.
+`.github/workflows/ci.yml` runs three jobs. `backend` prepares PostgreSQL 18, compiles the assets, loads the test database structure and seeds, then runs `bundle exec rake`. `frontend` runs the type check, the lint and the Vitest run. `actions-lock` verifies `.github/workflows/actions.lock` with `gh actions-lock --verify`, so regenerate the lockfile after editing a workflow or bumping an action.
