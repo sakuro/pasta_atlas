@@ -49,42 +49,8 @@ body {
 
 /* Map info modal label column */
 .map-info-label {
-  min-width: 12rem;
-  position: relative;
   white-space: nowrap;
-}
-
-.map-info-help-button {
-  background: none;
-  border: 0;
-  color: var(--bulma-grey-light);
-  cursor: pointer;
-  padding: 0;
-}
-
-.map-info-help-text {
-  /* Fixed colours: the theme's invert colours leave the text unreadable in dark mode. */
-  background: #363636;
-  border: 1px solid #5c5c5c;
-  border-radius: var(--bulma-radius);
-  color: #fff;
-  display: none;
-  font-size: 0.875rem;
-  font-weight: normal;
-  left: 0;
-  max-width: min(20rem, calc(90vw - 6rem));
-  padding: 0.5rem 0.75rem;
-  position: absolute;
-  top: 100%;
-  white-space: normal;
-  width: max-content;
-  z-index: 1;
-}
-
-.map-info-help:hover .map-info-help-text,
-.map-info-help:has(:focus-visible) .map-info-help-text,
-.map-info-help.is-open .map-info-help-text {
-  display: block;
+  min-width: 12rem;
 }
 
 .footer {
