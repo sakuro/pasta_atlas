@@ -9,7 +9,7 @@ RSpec.describe PastaAtlas::Operations::Uploads::CleanupStale do
   let(:sqs_client) { instance_double(Aws::SQS::Client, send_message: nil) }
   let(:operation) { PastaAtlas::Operations::Uploads::CleanupStale.new(generation_repo:, upload_repo:, settings:, sqs_client:) }
   let(:now) { Time.utc(2026, 11, 20, 12) }
-  let(:row) { PastaAtlas::Values::StaleUpload[generation_id: 10, user_name: "sakuro", mapshot_map_id: "ae8ec3ab", mapshot_unique_id: "550f41a9"] }
+  let(:row) { PastaAtlas::Values::StaleUpload[generation_id: 10, user_name: "wube", mapshot_map_id: "ae8ec3ab", mapshot_unique_id: "550f41a9"] }
 
   before { allow(upload_repo).to receive(:find_stale_incomplete).and_return([row]) }
 
@@ -23,7 +23,7 @@ RSpec.describe PastaAtlas::Operations::Uploads::CleanupStale do
     operation.call(now:)
 
     expect(sqs_client).to have_received(:send_message)
-      .with(queue_url: "https://sqs.example.com/queue", message_body: "sakuro/maps/ae8ec3ab/550f41a9/").ordered
+      .with(queue_url: "https://sqs.example.com/queue", message_body: "wube/maps/ae8ec3ab/550f41a9/").ordered
     expect(generation_repo).to have_received(:delete_by_id).with(10).ordered
   end
 

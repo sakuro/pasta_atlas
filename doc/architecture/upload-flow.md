@@ -9,11 +9,11 @@ All files for a generation are stored under a per-user prefix:
 {user_name}/maps/{mapshot_map_id}/{mapshot_unique_id}/{surface_file_prefix}{zoom}/tile_{x}_{y}.jpg
 ```
 
-Example (user `sakuro`):
+Example (user `wube`):
 ```
-sakuro/maps/ae8ec3ab/550f41a9/mapshot.json
-sakuro/maps/ae8ec3ab/550f41a9/s1zoom_4/tile_0_0.jpg
-sakuro/maps/ae8ec3ab/550f41a9/s1zoom_3/tile_0_0.jpg
+wube/maps/ae8ec3ab/550f41a9/mapshot.json
+wube/maps/ae8ec3ab/550f41a9/s1zoom_4/tile_0_0.jpg
+wube/maps/ae8ec3ab/550f41a9/s1zoom_3/tile_0_0.jpg
 ```
 
 The `metadata_s3_key` stored in DB points to `mapshot.json` within this prefix.
