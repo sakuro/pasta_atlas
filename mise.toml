@@ -20,7 +20,12 @@ depends = ["dev"]
 [tasks.dev]
 depends = ["web", "assets", "frontend", "floci", "s3-queue-worker"]
 
+# `floci` starts PostgreSQL in parallel with the tasks that need it, so they wait here.
+[tasks.wait-postgres]
+run = "until docker compose exec -T postgres pg_isready -U pasta_atlas -q; do sleep 1; done"
+
 [tasks.web]
+depends = ["wait-postgres"]
 run = "bundle exec hanami server"
 
 [tasks.assets]
@@ -33,4 +38,5 @@ run = "npm run dev:frontend"
 run = "docker compose up"
 
 [tasks.s3-queue-worker]
+depends = ["wait-postgres"]
 run = "bundle exec rake s3:process_queues"

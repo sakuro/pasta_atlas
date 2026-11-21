@@ -123,7 +123,7 @@ This runs `bundle install`, `npm install`, and `hanami db prepare`.
 bin/dev
 ```
 
-Starts all services concurrently via mise:
+Starts all services concurrently via mise. The web server and the queue worker first wait for PostgreSQL (the `wait-postgres` task):
 
 | Process | Command |
 |---|---|
