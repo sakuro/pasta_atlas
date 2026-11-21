@@ -19,6 +19,20 @@ RSpec.describe "JSON request bodies", :db, type: :request do
     expect(last_response.status).to be(403)
   end
 
+  it "rejects a body that is not valid JSON with 400" do
+    header "Content-Type", "application/json"
+    patch "/api/v1/uploads/unknown", "{not json"
+
+    expect(last_response.status).to be(400)
+  end
+
+  it "rejects a body with a duplicate key with 400, as json 3 does" do
+    header "Content-Type", "application/json"
+    patch "/api/v1/uploads/unknown", '{"status":"complete","status":"failed"}'
+
+    expect(last_response.status).to be(400)
+  end
+
   it "still serves HTML pages to a browser" do
     header "Accept", "text/html"
     get "/about"
