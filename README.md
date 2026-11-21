@@ -1,8 +1,6 @@
 # PastaAtlas
 
-A web application for browsing Factorio map screenshots captured by the [mapshot](https://github.com/Palats/mapshot) mod. Users upload tile sets to S3; the app stores metadata in PostgreSQL and serves an interactive map viewer built with SolidJS and Leaflet.
-
-The production site runs on AWS Lambda behind CloudFront.
+A web application for browsing Factorio map screenshots captured by the [mapshot](https://github.com/Palats/mapshot) mod.
 
 ## Getting started
 
