@@ -12,9 +12,9 @@ const csrfToken = (): string =>
   document.querySelector<HTMLMetaElement>('meta[name="csrf-token"]')?.content ?? "";
 
 // Rendered once the registration endpoint answers 401 (no pending OAuth data).
-// Navigating from onSettled keeps the write out of the async computation.
 const RedirectHome = () => {
   const navigate = useNavigate();
+  // Navigating from onSettled keeps the write out of the async computation.
   onSettled(() => { navigate("/"); });
   return null;
 };

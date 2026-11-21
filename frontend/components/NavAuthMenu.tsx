@@ -20,9 +20,10 @@ const UserMenu = (props: UserMenuProps) => {
 
   const close = () => setIsOpen(false);
 
-  // The menu links navigate; closing in onFlush keeps the close from being held
-  // until the destination route settles.
-  const closeBeforeNavigation = () => onFlush(close);
+  const closeBeforeNavigation = () =>
+    // The menu links navigate; closing in onFlush keeps the close from being held
+    // until the destination route settles.
+    onFlush(close);
 
   const handleDocumentClick = (e: MouseEvent) => {
     if (containerRef && !containerRef.contains(e.target as Node)) {

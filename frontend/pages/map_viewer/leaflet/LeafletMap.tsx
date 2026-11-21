@@ -133,8 +133,8 @@ export const LeafletMap = (props: { mapshot: Mapshot; assetBase: string }) => {
     const trainLayerGroup = L.layerGroup();
     const tagLayerGroup = L.layerGroup();
 
-    // Sort indices: planets → space platforms → others
     const cmp = (a: number, b: number): -1 | 0 | 1 => a < b ? -1 : a > b ? 1 : 0;
+    // Sort indices: planets → space platforms → others
     const groupOrder = (s: Surface): number => s.is_planet ? 0 : s.is_space_platform ? 1 : 2;
     const sortedIndices = surfaces.map((_, i) => i).sort((a, b) =>
       cmp(groupOrder(surfaces[a]), groupOrder(surfaces[b])) || cmp(surfaces[a].surface_idx, surfaces[b].surface_idx)
