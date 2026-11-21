@@ -74,5 +74,5 @@ group :test do
   gem "capybara"
   gem "rack-test"
 
-  gem "simplecov", "~> 0.22.0"
+  gem "simplecov", "~> 1.3.0"
 end
