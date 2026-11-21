@@ -212,7 +212,7 @@ GEM
       hanami-utils (~> 2.3.0)
       rack (>= 2.2.16)
       zeitwerk (~> 2.6)
-    hanami-db (2.3.0)
+    hanami-db (3.0.0)
       rom (~> 5.4, >= 5.4.1)
       rom-sql (~> 3.7)
       zeitwerk (~> 2.6)
@@ -492,7 +492,7 @@ GEM
       rbs (>= 3, < 5)
     ruby-openid (2.9.2)
     ruby-progressbar (1.13.0)
-    sequel (5.105.0)
+    sequel (5.110.0)
       bigdecimal
     shellany (0.0.1)
     simplecov (0.22.0)
@@ -555,7 +555,7 @@ DEPENDENCIES
   hanami (~> 2.3.0)
   hanami-assets (~> 2.3.0)
   hanami-controller (~> 2.3.0)
-  hanami-db (~> 2.3.0)
+  hanami-db (~> 3.0.0)
   hanami-reloader (~> 2.3.0)
   hanami-router (~> 2.3.0)
   hanami-rspec (~> 2.3.0)
@@ -663,7 +663,7 @@ CHECKSUMS
   hanami-assets (2.3.0) sha256=c396bb735833458d0ceda013f498154eccafcae50c36db7f27cdd50f0560223d
   hanami-cli (2.3.5) sha256=213fc8181e566930821d830eae335b22e93c3e5018f4f22d0c13792d1e76f05e
   hanami-controller (2.3.2) sha256=2821a3284ac394324f23e31012d2d9f679730c105b9bc593dc5e2b7b1c68b1cc
-  hanami-db (2.3.0) sha256=d6baa6c16a9321e5132799b8b26c3e6a2e19b8c5515c8785fb1ab94720d94711
+  hanami-db (3.0.0) sha256=01d25fd514896b355c9677730e2a45bc3a0b847e2d569a67cb50954c17b1d499
   hanami-reloader (2.3.0) sha256=0367250fd5a4d322ac055bae75612ed3babb4eb6c4a77be22321990479d3404d
   hanami-router (2.3.1) sha256=81b3665cb851de5703bd2fea3f375eccb2af871288cf130ab0fbc42b3b8ae31f
   hanami-rspec (2.3.1) sha256=03d06b8c0431354ee81acdd31ed9e418d86609e26b0cac321767c534d6cec553
@@ -770,7 +770,7 @@ CHECKSUMS
   ruby-lsp (0.26.11) sha256=4cc8f1587237ff8c9031680b5491df901a82559eeaa1ae96863ffe700b32583d
   ruby-openid (2.9.2) sha256=7f8e39426b9833172a79f4696bc63b66b0d2c766971919a69b3db5be400d17a4
   ruby-progressbar (1.13.0) sha256=80fc9c47a9b640d6834e0dc7b3c94c9df37f08cb072b7761e4a71e22cff29b33
-  sequel (5.105.0) sha256=4191d5e5d011b7229ff8a3401ca6beac047c4d35b1ec6703376513b4b25b2e67
+  sequel (5.110.0) sha256=c316335b352adb4109bb02ade237b1a6dbd493493def34542ce05893f62138ae
   shellany (0.0.1) sha256=0e127a9132698766d7e752e82cdac8250b6adbd09e6c0a7fbbb6f61964fedee7
   simplecov (0.22.0) sha256=fe2622c7834ff23b98066bb0a854284b2729a569ac659f82621fc22ef36213a5
   simplecov-html (0.13.2) sha256=bd0b8e54e7c2d7685927e8d6286466359b6f16b18cb0df47b508e8d73c777246
