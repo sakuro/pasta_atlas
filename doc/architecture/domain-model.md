@@ -7,6 +7,18 @@
 
 ## Entities
 
+```mermaid
+erDiagram
+    User ||--o| UserProfile : has
+    User ||--o| UserPreference : has
+    User ||--o{ Credential : has
+    User ||--o{ Map : owns
+    Map ||--o{ Generation : has
+    Generation ||--o| Upload : has
+    Upload ||--o{ UploadVerificationKey : expects
+    Upload ||--o{ UploadEvent : logs
+```
+
 ### User
 
 | Field | Notes |
