@@ -26,14 +26,14 @@ RSpec.describe PastaAtlas::Actions::API::Auth::Current do
 
   context "when a user is in session" do
     let(:env) { {"rack.session" => {"user_id" => 42}} }
-    let(:user) { double("User", name: "sakuro") }
+    let(:user) { double("User", name: "wube") }
     let(:preference) do
       double("UserPreference", locale: "ja", timezone: "Asia/Tokyo", relative_timestamps: true)
     end
 
     before do
       allow(find_user).to receive(:call).with(user_id: 42).and_return(Success(user))
-      allow(load_profile).to receive(:call).with(user_id: 42).and_return(Success({display_name: "Sakuro Ozawa", avatar_url: "https://cdn.example.com/avatars/42/abc.jpg"}))
+      allow(load_profile).to receive(:call).with(user_id: 42).and_return(Success({display_name: "Wube Ozawa", avatar_url: "https://cdn.example.com/avatars/42/abc.jpg"}))
       allow(load_preferences).to receive(:call).with(user_id: 42).and_return(Success(preference))
     end
 
@@ -43,8 +43,8 @@ RSpec.describe PastaAtlas::Actions::API::Auth::Current do
       expect(response.status).to eq(200)
       body = JSON.parse(response.body.join)
       expect(body["user"]).to include(
-        "name" => "sakuro",
-        "display_name" => "Sakuro Ozawa",
+        "name" => "wube",
+        "display_name" => "Wube Ozawa",
         "avatar_url" => "https://cdn.example.com/avatars/42/abc.jpg"
       )
       expect(body["preferences"]).to include(
@@ -63,13 +63,13 @@ RSpec.describe PastaAtlas::Actions::API::Auth::Current do
         response = action.call(env)
 
         body = JSON.parse(response.body.join)
-        expect(body["user"]).to include("display_name" => "sakuro")
+        expect(body["user"]).to include("display_name" => "wube")
       end
     end
 
     context "when the profile has no avatar" do
       before do
-        allow(load_profile).to receive(:call).with(user_id: 42).and_return(Success({display_name: "Sakuro", avatar_url: nil}))
+        allow(load_profile).to receive(:call).with(user_id: 42).and_return(Success({display_name: "Wube", avatar_url: nil}))
       end
 
       it "returns null avatar_url" do

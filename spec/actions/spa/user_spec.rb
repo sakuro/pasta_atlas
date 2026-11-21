@@ -7,10 +7,10 @@ RSpec.describe PastaAtlas::Actions::Spa::User do
   context "when the user exists" do
     let(:user) { double("User", public_profile?: true) }
 
-    before { allow(find_by_name).to receive(:call).with(user_name: "sakuro").and_return(Success(user)) }
+    before { allow(find_by_name).to receive(:call).with(user_name: "wube").and_return(Success(user)) }
 
     it "returns 200" do
-      response = action.call({user_name: "sakuro"})
+      response = action.call({user_name: "wube"})
 
       expect(response.status).to eq(200)
     end

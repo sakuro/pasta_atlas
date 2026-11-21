@@ -11,7 +11,7 @@
 
 | Field | Notes |
 |---|---|
-| name | unique; used as URL slug (e.g. `/@sakuro`) |
+| name | unique; used as URL slug (e.g. `/@wube`) |
 
 The seeds create two system users, `guest` and `compilatron`, and the names `guest`, `api`, `admin` and `compilatron` are reserved. `guest` is shared by all unauthenticated requests and cannot upload, rename or delete maps. System users have no public profile.
 

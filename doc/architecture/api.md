@@ -65,9 +65,9 @@ Returns the current user and preferences. Used by the SPA on load to initialize 
 ```json
 {
   "user": {
-    "name": "sakuro",
-    "display_name": "OZAWA Sakuro",
-    "avatar_url": "https://cdn.example.com/sakuro/avatar/01HXY....jpg"
+    "name": "wube",
+    "display_name": "Wube Software",
+    "avatar_url": "https://cdn.example.com/wube/avatar/01HXY....jpg"
   },
   "preferences": {
     "locale": "ja",
@@ -93,7 +93,7 @@ Returns pending OAuth data for the registration form. Requires `session[:pending
 **Response `200 OK`:**
 
 ```json
-{ "provider": "github", "login_name": "sakuro" }
+{ "provider": "github", "login_name": "wube" }
 ```
 
 **Error responses:**
@@ -115,9 +115,9 @@ Returns public user info.
 ```json
 {
   "user": {
-    "name": "sakuro",
-    "display_name": "OZAWA Sakuro",
-    "avatar_url": "https://cdn.example.com/sakuro/avatar/01HXY....jpg"
+    "name": "wube",
+    "display_name": "Wube Software",
+    "avatar_url": "https://cdn.example.com/wube/avatar/01HXY....jpg"
   }
 }
 ```
@@ -137,9 +137,9 @@ Returns the user's profile. Authenticated, own profile only.
 
 ```json
 {
-  "user_name": "sakuro",
-  "display_name": "OZAWA Sakuro",
-  "avatar_url": "https://cdn.example.com/sakuro/avatar/01HXY....jpg"
+  "user_name": "wube",
+  "display_name": "Wube Software",
+  "avatar_url": "https://cdn.example.com/wube/avatar/01HXY....jpg"
 }
 ```
 
@@ -163,7 +163,7 @@ Updates `display_name` (and optionally `avatar_s3_key`). Authenticated, own prof
 **Response `200 OK`:**
 
 ```json
-{ "display_name": "OZAWA Sakuro", "avatar_url": "https://cdn.example.com/..." }
+{ "display_name": "Wube Software", "avatar_url": "https://cdn.example.com/..." }
 ```
 
 **Error responses:**
@@ -280,8 +280,8 @@ Supported content types: `image/jpeg`, `image/png`, `image/webp`.
 
 ```json
 {
-  "presigned_url": "https://s3.amazonaws.com/bucket/sakuro/avatar/01HXY....jpg?...",
-  "s3_key": "sakuro/avatar/01HXY....jpg"
+  "presigned_url": "https://s3.amazonaws.com/bucket/wube/avatar/01HXY....jpg?...",
+  "s3_key": "wube/avatar/01HXY....jpg"
 }
 ```
 
@@ -304,8 +304,8 @@ Returns up to the 3 most recently updated maps of this user that have a complete
     {
       "ulid": "01HXYZ...",
       "display_name": "my-save",
-      "user_name": "sakuro",
-      "author_display_name": "OZAWA Sakuro",
+      "user_name": "wube",
+      "author_display_name": "Wube Software",
       "author_avatar_url": "https://cdn.example.com/...",
       "thumbnail_url": "https://cdn.example.com/...",
       "metadata_url": "https://cdn.example.com/.../mapshot.json",
@@ -366,8 +366,8 @@ Paginated list of maps with at least one `complete` generation, ordered by most 
     {
       "ulid": "01HXYZ...",
       "display_name": "my-save",
-      "user_name": "sakuro",
-      "author_display_name": "OZAWA Sakuro",
+      "user_name": "wube",
+      "author_display_name": "Wube Software",
       "author_avatar_url": "https://cdn.example.com/...",
       "thumbnail_url": "https://cdn.example.com/...",
       "metadata_url": "https://cdn.example.com/.../mapshot.json",
@@ -414,13 +414,13 @@ Map details with all complete generations.
 {
   "ulid": "01HXYZ...",
   "display_name": "my-save",
-  "owner": { "name": "sakuro", "display_name": "OZAWA Sakuro", "avatar_url": "https://cdn.example.com/..." },
+  "owner": { "name": "wube", "display_name": "Wube Software", "avatar_url": "https://cdn.example.com/..." },
   "updated_at": "2026-04-26T01:23:45Z",
   "generations": [
     {
       "ulid": "01HABC...",
       "tick": 29386437,
-      "metadata_url": "https://cdn.example.com/sakuro/maps/ae8ec3ab/550f41a9/mapshot.json"
+      "metadata_url": "https://cdn.example.com/wube/maps/ae8ec3ab/550f41a9/mapshot.json"
     }
   ]
 }

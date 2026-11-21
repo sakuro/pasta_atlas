@@ -5,8 +5,8 @@ RSpec.describe PastaAtlas::Actions::API::Users::Maps::Index do
   let(:list_recent_maps) { instance_double(PastaAtlas::Operations::Maps::ListRecentByUser) }
   let(:action) { PastaAtlas::Actions::API::Users::Maps::Index.new(find_by_name:, list_recent_maps:) }
 
-  let(:user) { double("User", id: 1, name: "sakuro", public_profile?: true) }
-  let(:user_info) { PastaAtlas::Values::UserInfo[name: "sakuro", display_name: "Sakuro", avatar_url: nil] }
+  let(:user) { double("User", id: 1, name: "wube", public_profile?: true) }
+  let(:user_info) { PastaAtlas::Values::UserInfo[name: "wube", display_name: "Wube", avatar_url: nil] }
   let(:map_info) do
     double(
       "MapInfo",
@@ -45,10 +45,10 @@ RSpec.describe PastaAtlas::Actions::API::Users::Maps::Index do
   end
 
   context "when the user exists" do
-    let(:env) { {"rack.session" => {}, :user_name => "sakuro"} }
+    let(:env) { {"rack.session" => {}, :user_name => "wube"} }
 
     before do
-      allow(find_by_name).to receive(:call).with(user_name: "sakuro").and_return(Success(user))
+      allow(find_by_name).to receive(:call).with(user_name: "wube").and_return(Success(user))
       allow(list_recent_maps).to receive(:call).with(user_id: 1).and_return(Success([map_info]))
     end
 
@@ -61,8 +61,8 @@ RSpec.describe PastaAtlas::Actions::API::Users::Maps::Index do
       expect(body["maps"].first).to include(
         "ulid" => "01MAP1",
         "display_name" => "Map 1",
-        "user_name" => "sakuro",
-        "author_display_name" => "Sakuro"
+        "user_name" => "wube",
+        "author_display_name" => "Wube"
       )
     end
 

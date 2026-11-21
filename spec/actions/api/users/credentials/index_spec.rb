@@ -7,15 +7,15 @@ RSpec.describe PastaAtlas::Actions::API::Users::Credentials::Index do
   let(:action) { PastaAtlas::Actions::API::Users::Credentials::Index.new(load_credentials:, verify_ownership:, user_resolver:) }
 
   let(:guest) { double("User", id: 0, name: "guest") }
-  let(:user) { double("User", id: 1, name: "sakuro") }
+  let(:user) { double("User", id: 1, name: "wube") }
 
   context "when not logged in" do
-    let(:env) { {"rack.session" => {}, :user_name => "sakuro"} }
+    let(:env) { {"rack.session" => {}, :user_name => "wube"} }
 
     before do
       allow(user_resolver).to receive(:call).with(nil).and_return(guest)
       allow(verify_ownership).to receive(:call)
-        .with(current_user: guest, user_name: "sakuro")
+        .with(current_user: guest, user_name: "wube")
         .and_return(Failure(:forbidden))
     end
 
@@ -28,12 +28,12 @@ RSpec.describe PastaAtlas::Actions::API::Users::Credentials::Index do
 
   context "when logged in as a different user" do
     let(:other_user) { double("User", id: 2, name: "bob") }
-    let(:env) { {"rack.session" => {"user_id" => 2}, :user_name => "sakuro"} }
+    let(:env) { {"rack.session" => {"user_id" => 2}, :user_name => "wube"} }
 
     before do
       allow(user_resolver).to receive(:call).with(2).and_return(other_user)
       allow(verify_ownership).to receive(:call)
-        .with(current_user: other_user, user_name: "sakuro")
+        .with(current_user: other_user, user_name: "wube")
         .and_return(Failure(:forbidden))
     end
 
@@ -45,12 +45,12 @@ RSpec.describe PastaAtlas::Actions::API::Users::Credentials::Index do
   end
 
   context "when logged in as the owner" do
-    let(:env) { {"rack.session" => {"user_id" => 1}, :user_name => "sakuro"} }
+    let(:env) { {"rack.session" => {"user_id" => 1}, :user_name => "wube"} }
 
     before do
       allow(user_resolver).to receive(:call).with(1).and_return(user)
       allow(verify_ownership).to receive(:call)
-        .with(current_user: user, user_name: "sakuro")
+        .with(current_user: user, user_name: "wube")
         .and_return(Success(user))
       allow(load_credentials).to receive(:call)
         .with(user_id: 1)
