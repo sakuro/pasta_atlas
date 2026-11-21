@@ -1,5 +1,5 @@
-import { createSignal, createMemo, Show, Loading, onSettled } from "solid-js";
-import { useNavigate } from "@solidjs/router";
+import { createSignal, createMemo, createEffect, Show, Loading, onSettled } from "solid-js";
+import { useLocation, useNavigate } from "@solidjs/router";
 import { useToast } from "../../contexts/ToastContext";
 
 const csrfToken = (): string =>
@@ -13,6 +13,7 @@ import { MapNameEditor } from "./MapNameEditor";
 import { ShareButtons } from "../../components/ShareButtons";
 import { LeafletMap, type Mapshot } from "./leaflet/LeafletMap";
 import { getParam, setParams } from "./url_params";
+import { uploadsCompleted } from "../../lib/upload-events";
 
 interface Generation {
   ulid: string;
@@ -41,11 +42,18 @@ export const MapViewer = (props: MapViewerProps) => {
   const navigate = useNavigate();
   const { showToast } = useToast();
 
-  const mapData = createMemo(() =>
-    fetch(`/api/v1/maps/${props.ulid}`).then((r) => r.json() as Promise<MapData>)
-  );
+  const location = useLocation();
+
+  // Reading uploadsCompleted refetches the generations after an upload from the layout.
+  const mapData = createMemo(() => {
+    uploadsCompleted();
+    return fetch(`/api/v1/maps/${props.ulid}`).then((r) => r.json() as Promise<MapData>);
+  });
 
   const [generationUlid, setGenerationUlid] = createSignal<string | null>(getParam("generation"));
+
+  // "View Map" after an upload navigates here with another generation while this page stays mounted.
+  createEffect(() => location.search, () => { setGenerationUlid(getParam("generation")); });
 
   const activeGeneration = createMemo(() => {
     const data = mapData();
@@ -56,16 +64,20 @@ export const MapViewer = (props: MapViewerProps) => {
       : data.generations[0];
   });
 
+  // A string, so that refetching the generations does not rebuild the map while the
+  // same generation stays selected.
+  const metadataUrl = createMemo(() => activeGeneration()?.metadata_url);
+
   const mapshot = createMemo(() => {
-    const url = activeGeneration()?.metadata_url;
+    const url = metadataUrl();
     return url ? fetch(url).then((r) => r.json() as Promise<Mapshot>) : undefined;
   });
 
   const activeMapData = createMemo(() => {
     const ms = mapshot();
-    const gen = activeGeneration();
-    if (!ms || !gen) return null;
-    return { mapshot: ms, assetBase: gen.metadata_url.replace(/mapshot\.json$/, "") };
+    const url = metadataUrl();
+    if (!ms || !url) return null;
+    return { mapshot: ms, assetBase: url.replace(/mapshot\.json$/, "") };
   });
 
   const [showInfo, setShowInfo] = createSignal(false);

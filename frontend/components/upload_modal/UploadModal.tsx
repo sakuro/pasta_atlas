@@ -3,6 +3,7 @@ import { Portal } from "@solidjs/web";
 import { useNavigate } from "@solidjs/router";
 import { adjectives, animals, colors, uniqueNamesGenerator } from "unique-names-generator";
 import "../../lib/l10n";
+import { notifyUploadCompleted } from "../../lib/upload-events";
 import { CopyButton } from "../CopyButton";
 import { HowToUploadModal } from "./HowToUploadModal";
 
@@ -186,7 +187,6 @@ export const UploadModal = (props: { isGuest: boolean }) => {
 
     // Step 2: Process each batch sequentially: presign → upload → verify
     let uploadedCount = 0;
-    let verifiedCount = 0;
 
     for (let i = 0; i < allFilenames.length; i += BATCH_SIZE) {
       const batch = allFilenames.slice(i, i + BATCH_SIZE);
@@ -211,7 +211,6 @@ export const UploadModal = (props: { isGuest: boolean }) => {
         setState({ type: "error", error: { msgId: "upload-error-urls-network" } });
         return;
       }
-      setState({ type: "preparing", prepared: i + batch.length, total: imageCount });
 
       // 2b. Upload this batch to S3
       setState({ type: "uploading", progress: uploadedCount, total: imageCount });
@@ -233,8 +232,9 @@ export const UploadModal = (props: { isGuest: boolean }) => {
       }
       uploadedCount += batch.length;
 
-      // 2c. Verify this batch
-      setState({ type: "verifying", progress: verifiedCount, total: imageCount });
+      // 2c. Verify this batch. The bar keeps the count reached by the upload so that it
+      // does not fall back while the batch is verified.
+      setState({ type: "verifying", progress: uploadedCount, total: imageCount });
       try {
         const resp = await fetch(`/api/v1/uploads/${uploadUlid}/verify_batch`, {
           method: "POST",
@@ -253,7 +253,6 @@ export const UploadModal = (props: { isGuest: boolean }) => {
         setState({ type: "error", error: { msgId: "upload-error-verify-network" } });
         return;
       }
-      verifiedCount += batch.length;
     }
 
     // Step 3: PATCH /api/v1/uploads/:ulid complete
@@ -274,6 +273,7 @@ export const UploadModal = (props: { isGuest: boolean }) => {
 
     const viewerUrl = `/maps/${mapUlid}?generation=${generationUlid}`;
     setState({ type: "done", viewerUrl });
+    notifyUploadCompleted();
   };
 
   const dismiss = () => {
