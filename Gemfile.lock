@@ -484,7 +484,7 @@ GEM
       rbs (>= 3, < 5)
     ruby-openid (2.9.2)
     ruby-progressbar (1.13.0)
-    sequel (5.105.0)
+    sequel (5.110.0)
       bigdecimal
     shellany (0.0.1)
     simplecov (1.3.2)
@@ -753,7 +753,7 @@ CHECKSUMS
   ruby-lsp (0.26.11) sha256=4cc8f1587237ff8c9031680b5491df901a82559eeaa1ae96863ffe700b32583d
   ruby-openid (2.9.2) sha256=7f8e39426b9833172a79f4696bc63b66b0d2c766971919a69b3db5be400d17a4
   ruby-progressbar (1.13.0) sha256=80fc9c47a9b640d6834e0dc7b3c94c9df37f08cb072b7761e4a71e22cff29b33
-  sequel (5.105.0) sha256=4191d5e5d011b7229ff8a3401ca6beac047c4d35b1ec6703376513b4b25b2e67
+  sequel (5.110.0) sha256=c316335b352adb4109bb02ade237b1a6dbd493493def34542ce05893f62138ae
   shellany (0.0.1) sha256=0e127a9132698766d7e752e82cdac8250b6adbd09e6c0a7fbbb6f61964fedee7
   simplecov (1.3.2) sha256=2a22ec1759f1b8db60881a2e038758956fc69ef93ed669be0bde0678de6d0e85
   snaky_hash (2.0.5) sha256=70e74137d6738aef067950a3bb9a4d2655778be4bc9725efc36e7607feb22cdd
