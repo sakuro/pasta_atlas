@@ -161,7 +161,7 @@ Updates `display_name` (and optionally `avatar_s3_key`). Authenticated, own prof
 
 | Field | Notes |
 |---|---|
-| `display_name` | Max 30 grapheme clusters; no control characters or whitespace other than a plain space; empty clears it |
+| `display_name` | Max 30 grapheme clusters; no control characters, no whitespace other than a plain space and no format characters other than ZWJ and variation selectors (the same character rule applies to map names); empty clears it |
 | `avatar_s3_key` | Optional; applied only if under `{user_name}/avatar/`, otherwise ignored |
 
 **Response `200 OK`:**
@@ -400,6 +400,8 @@ Looks up a map by `mapshot_map_id` for the current user (guest or logged in).
 { "name": "my-save" }
 ```
 
+`name` is `null` if the map has no user-set name.
+
 **Error responses:**
 
 | Status | Condition |
@@ -444,7 +446,7 @@ Updates the display name of a map. Authenticated, own map only.
 
 | Field | Notes |
 |---|---|
-| `name` | New display name; leading and trailing whitespace is stripped; max 30 grapheme clusters; no control characters |
+| `name` | New display name; leading and trailing whitespace is stripped; max 30 grapheme clusters; same character rule as the profile `display_name` |
 
 **Response `200 OK`:**
 
