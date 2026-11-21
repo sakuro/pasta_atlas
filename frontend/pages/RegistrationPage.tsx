@@ -11,7 +11,6 @@ type PendingAuth = {
 const csrfToken = (): string =>
   document.querySelector<HTMLMetaElement>('meta[name="csrf-token"]')?.content ?? "";
 
-// Rendered once the registration endpoint answers 401 (no pending OAuth data).
 const RedirectHome = () => {
   const navigate = useNavigate();
   // Navigating from onSettled keeps the write out of the async computation.
@@ -65,6 +64,7 @@ export const RegistrationPage = () => {
     <section class="section">
       <Errored fallback={<ErrorNotification l10nId="error-load-failed" />}>
         <Loading fallback={<SpinnerBlock />}>
+          {/* The registration endpoint answers 401 when no OAuth data is pending. */}
           <Show when={pending()} keyed fallback={<RedirectHome />}>
             {(auth) => {
               const [nameValue, setNameValue] = createSignal(auth.login_name);
