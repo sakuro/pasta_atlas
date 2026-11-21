@@ -7,7 +7,7 @@ RSpec.describe PastaAtlas::Operations::Uploads::Create, :db do
   let(:s3_client) { Hanami.app["s3.client"] }
 
   let(:user) { Factory[:user, name: "testuser"] }
-  let(:metadata) { {map_id: "ae8ec3ab", unique_id: "550f41a9", tick: "1000"} }
+  let(:metadata) { {"map_id" => "ae8ec3ab", "unique_id" => "550f41a9", "tick" => "1000"} }
 
   describe "#call" do
     context "when no generation exists" do
@@ -79,11 +79,11 @@ RSpec.describe PastaAtlas::Operations::Uploads::Create, :db do
         expect(result.failure).to eq(:s3_error)
 
         map = map_repo.find_or_create_by_user_and_mapshot_id(
-          user_id: user.id, mapshot_map_id: metadata[:map_id]
+          user_id: user.id, mapshot_map_id: metadata["map_id"]
         )
         expect(
           generation_repo.find_with_upload(
-            map_id: map.id, mapshot_unique_id: metadata[:unique_id]
+            map_id: map.id, mapshot_unique_id: metadata["unique_id"]
           )
         ).to be_nil
       end

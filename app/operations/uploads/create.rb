@@ -20,9 +20,9 @@ module PastaAtlas
         private_constant :MAP_NAME_MAX_GRAPHEME_CLUSTERS
 
         def call(user_id:, metadata:, total_image_count:, name: nil)
-          mapshot_map_id = metadata[:map_id]
-          mapshot_unique_id = metadata[:unique_id]
-          tick = Integer(metadata[:tick])
+          mapshot_map_id = metadata["map_id"]
+          mapshot_unique_id = metadata["unique_id"]
+          tick = Integer(metadata["tick"])
           user = user_repo.find_by_id!(user_id)
 
           step validate_name(name) if name
@@ -30,7 +30,7 @@ module PastaAtlas
           map = step find_or_create_map.call(
             user_id:,
             mapshot_map_id:,
-            savename: metadata.fetch(:savename, "").to_s,
+            savename: metadata.fetch("savename", "").to_s,
             name:,
             update_name_on_conflict: user.can_rename_map?
           )
