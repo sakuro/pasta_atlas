@@ -14,7 +14,7 @@ module PastaAtlas
     setting :aws_region, default: "ap-northeast-1", constructor: Types::String
     setting :s3_bucket, constructor: Types::String
     # Settings has its own Types constant (Hanami's), so the application's types are qualified.
-    cloudfront_base_url_type = Hanami.env?(:development, :test) ? PastaAtlas::Types::HTTPURL : PastaAtlas::Types::HTTPSURL
+    cloudfront_base_url_type = Hanami.env?(:development, :test) ? PastaAtlas::Types::LocalCloudFrontBaseURL : PastaAtlas::Types::CloudFrontBaseURL
     setting :cloudfront_base_url, constructor: cloudfront_base_url_type
     setting :presigned_url_expiry, default: 3600, constructor: Types::Params::Integer
     setting :stale_upload_days, default: 7, constructor: Types::Params::Integer
