@@ -53,6 +53,7 @@ export const UserPreferencesTab = (props: {
   });
 
   // Form drafts seeded from the fetched preferences; re-seeded if they are refetched.
+  const [selectedLocale, setSelectedLocale] = createSignal<string | null>(() => data()?.locale ?? null);
   const [selectedTz, setSelectedTz] = createSignal<string | null>(() => data()?.timezone ?? null);
   const [relativeTimestamps, setRelativeTimestamps] = createSignal(() => data()?.relative_timestamps ?? false);
   const [submitting, setSubmitting] = createSignal(false);
@@ -179,11 +180,16 @@ export const UserPreferencesTab = (props: {
                 <div class="pl-4">
                   <div class="control">
                     <div class="select">
-                      <select id="locale-select" name="locale">
-                        <option value="" selected={!pref.locale} data-l10n-id="edit-locale-use-browser" />
+                      <select
+                        id="locale-select"
+                        name="locale"
+                        value={selectedLocale() ?? ""}
+                        onChange={(e) => setSelectedLocale(e.currentTarget.value || null)}
+                      >
+                        <option value="" selected={selectedLocale() === null} data-l10n-id="edit-locale-use-browser" />
                         <For each={SUPPORTED_LOCALES}>
                           {(loc) => (
-                            <option value={loc} selected={pref.locale === loc}>
+                            <option value={loc} selected={selectedLocale() === loc}>
                               {localeDisplayName(loc)}
                             </option>
                           )}
