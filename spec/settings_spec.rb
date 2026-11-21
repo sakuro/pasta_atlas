@@ -28,25 +28,10 @@ RSpec.describe PastaAtlas::Settings do
       expect { build("not a url") }.to raise_error(Hanami::Settings::InvalidSettingsError, /cloudfront_base_url/)
     end
 
-    context "when HTTP is allowed (development and test)" do
-      it "accepts an http URL" do
-        expect(build("http://localhost:4566/bucket").cloudfront_base_url).to be_a(URI::HTTP)
-      end
-    end
-
-    context "when HTTPS is required (production)" do
-      before do
-        allow(Hanami).to receive(:env?).and_call_original
-        allow(Hanami).to receive(:env?).with(:development, :test).and_return(false)
-      end
-
-      it "accepts an https URL" do
-        expect(build("https://cdn.example.com").cloudfront_base_url).to be_a(URI::HTTPS)
-      end
-
-      it "rejects an http URL" do
-        expect { build("http://cdn.example.com") }.to raise_error(Hanami::Settings::InvalidSettingsError, /cloudfront_base_url/)
-      end
+    # The type is chosen when the class is loaded, so this runs against the HTTP-allowing type.
+    # The HTTPS requirement of production is covered by the HTTPSURL examples in types_spec.rb.
+    it "accepts an http URL in the test environment" do
+      expect(build("http://localhost:4566/bucket").cloudfront_base_url).to be_a(URI::HTTP)
     end
   end
 end
