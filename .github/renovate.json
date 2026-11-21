@@ -12,6 +12,12 @@
       "automerge": true
     },
     {
+      "description": "Node.js is pinned in mise.toml and in every workflow; update them together.",
+      "matchPackageNames": ["node"],
+      "matchDatasources": ["node-version"],
+      "groupName": "Node.js"
+    },
+    {
       "description": "The Lambda runtime in Terraform must change together with the build image minor version.",
       "matchPackageNames": ["public.ecr.aws/lambda/ruby"],
       "matchUpdateTypes": ["major", "minor"],
