@@ -44,7 +44,7 @@ Actions handle HTTP concerns (params, session, response codes). Operations conta
 
 ### Key base classes
 
-- `app/action.rb` — base action; provides `json_response`, `current_user_id`, `current_user_or_guest_id`, i18n helpers, shared Deps
+- `app/action.rb` — base action; provides `json_response`, `current_user`, `current_user_id` (falls back to the guest user's id), shared Deps
 - `app/operation.rb` — base operation; includes `Dry::Monads[:result]`
 - `app/db/repo.rb`, `app/db/relation.rb`, `app/db/struct.rb` — ROM wrappers
 
