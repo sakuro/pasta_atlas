@@ -34,7 +34,8 @@ const sortedMods = (mods: Record<string, string>): [string, string][] => {
 };
 
 
-// The explanation opens on click so that it also works without a hover, as on a touch screen.
+// The explanation shows as a tooltip on hover and focus, and toggles on click so that it
+// also works on a touch screen.
 const HelpLabel = (props: { icon: string; labelId: string; helpId: string }) => {
   const [open, setOpen] = createSignal(false);
 
@@ -43,18 +44,19 @@ const HelpLabel = (props: { icon: string; labelId: string; helpId: string }) => 
       <span class="icon-text">
         <span class="icon"><i class={props.icon} /></span>
         <span data-l10n-id={props.labelId} />
-        <button
-          type="button"
-          class="map-info-help-button"
-          aria-expanded={open() ? "true" : "false"}
-          onClick={() => setOpen((v: boolean) => !v)}
-        >
-          <span class="icon is-small"><i class="fa-regular fa-circle-question" /></span>
-        </button>
+        <span class={["map-info-help", { "is-open": open() }]}>
+          <button
+            type="button"
+            class="map-info-help-button"
+            aria-describedby={props.helpId}
+            onClick={() => setOpen((v: boolean) => !v)}
+            onBlur={() => setOpen(false)}
+          >
+            <span class="icon is-small"><i class="fa-regular fa-circle-question" /></span>
+          </button>
+          <span id={props.helpId} role="tooltip" class="map-info-help-text" data-l10n-id={props.helpId} />
+        </span>
       </span>
-      <Show when={open()}>
-        <p class="map-info-help" data-l10n-id={props.helpId} />
-      </Show>
     </th>
   );
 };

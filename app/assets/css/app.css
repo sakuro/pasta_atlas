@@ -62,10 +62,29 @@ body {
 }
 
 .map-info-help {
+  position: relative;
+}
+
+.map-info-help-text {
+  background: var(--bulma-scheme-invert);
+  border-radius: var(--bulma-radius);
+  color: var(--bulma-scheme-main);
+  display: none;
   font-size: 0.875rem;
   font-weight: normal;
-  max-width: 20rem;
+  left: 0;
+  padding: 0.5rem 0.75rem;
+  position: absolute;
+  top: 100%;
   white-space: normal;
+  width: 20rem;
+  z-index: 1;
+}
+
+.map-info-help:hover .map-info-help-text,
+.map-info-help:has(:focus-visible) .map-info-help-text,
+.map-info-help.is-open .map-info-help-text {
+  display: block;
 }
 
 .footer {
