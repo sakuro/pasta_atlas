@@ -40,8 +40,8 @@ module PastaAtlas
           .one
       end
 
-      def create(attrs)
-        generations.changeset(:create, attrs).commit
+      def create(ulid:, map_id:, mapshot_unique_id:, tick:, metadata_s3_key:)
+        generations.command(:create).call(ulid:, map_id:, mapshot_unique_id:, tick:, metadata_s3_key:)
       end
 
       def update_storage_bytes(id:, storage_bytes:)

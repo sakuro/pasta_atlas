@@ -12,6 +12,19 @@ RSpec.describe PastaAtlas::Repos::UploadRepo, :db do
     repo.find_stale_incomplete(before: now - (7 * 24 * 60 * 60)).map(&:generation_id)
   end
 
+  describe "#create" do
+    it "stores the upload as pending and returns it" do
+      generation = Factory[:generation]
+      ulid = ULID.generate
+
+      created = repo.create(ulid:, generation_id: generation.id, total_image_count: 7, verified_bytes: 123)
+
+      expect(repo.find_by_ulid(ulid)).to have_attributes(
+        id: created.id, generation_id: generation.id, total_image_count: 7, verified_bytes: 123, verification_status: "pending"
+      )
+    end
+  end
+
   describe "#find_stale_incomplete" do
     it "returns an old upload that has no status yet" do
       upload = upload_created(days_ago: 8)
