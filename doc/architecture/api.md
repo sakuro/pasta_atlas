@@ -169,7 +169,7 @@ Updates `display_name` (and optionally `avatar_s3_key`). Authenticated, own prof
 
 ### GET /api/v1/users/:user_name/preferences
 
-Returns the user's preferences. Authenticated, own profile only.
+Returns the user's preferences. Authenticated, own preferences only.
 
 **Response `200 OK`:**
 
@@ -184,7 +184,7 @@ Returns the user's preferences. Authenticated, own profile only.
 
 ### PATCH /api/v1/users/:user_name/preferences
 
-Updates timezone, locale, and relative_timestamps. Authenticated, own profile only.
+Updates timezone, locale, and relative_timestamps. Authenticated, own preferences only.
 
 **Request params:**
 
@@ -204,7 +204,7 @@ Updates timezone, locale, and relative_timestamps. Authenticated, own profile on
 
 | Status | Condition |
 |---|---|
-| `403 Forbidden` | Not logged in, or not own profile |
+| `403 Forbidden` | Not logged in, or not own preferences |
 
 ### PATCH /api/v1/users/:user_name/avatar
 
@@ -233,7 +233,7 @@ Clears `avatar_s3_key`. Authenticated, own profile only.
 
 ### GET /api/v1/users/:user_name/credentials
 
-Returns linked OAuth providers. Authenticated, own profile only.
+Returns linked OAuth providers. Authenticated, own credentials only.
 
 **Response `200 OK`:**
 
@@ -246,7 +246,7 @@ Returns linked OAuth providers. Authenticated, own profile only.
 
 ### DELETE /api/v1/users/:user_name/credentials/:provider
 
-Unlinks the OAuth credential for the given provider. Supported providers: `github`, `discord`, `steam`. Authenticated, own profile only.
+Unlinks the OAuth credential for the given provider. Supported providers: `github`, `discord`, `steam`. Authenticated, own credentials only.
 
 **Response:** `204 No Content`
 
@@ -254,7 +254,7 @@ Unlinks the OAuth credential for the given provider. Supported providers: `githu
 
 | Status | Body | Condition |
 |---|---|---|
-| `403 Forbidden` | — | Not authenticated or not own profile |
+| `403 Forbidden` | — | Not authenticated or not own credentials |
 | `404 Not Found` | — | Provider not in the allowed list |
 | `422 Unprocessable Entity` | `{"error": "error-credential-last"}` | Cannot unlink the last credential |
 
