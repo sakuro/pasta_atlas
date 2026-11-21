@@ -178,10 +178,10 @@ GEM
       shellany (~> 0.0)
       thor (>= 0.18.1)
     guard-compat (1.2.1)
-    guard-puma (0.9.2)
+    guard-puma (0.10.0)
       guard (~> 2.14)
       guard-compat (~> 1.2)
-      puma (>= 4.0, < 8)
+      puma (>= 4.0, < 9)
     hanami (3.0.2)
       bundler (>= 2.0)
       dry-configurable (~> 1.0, >= 1.2.0, < 2)
@@ -355,7 +355,7 @@ GEM
       date
       stringio
     public_suffix (7.0.5)
-    puma (7.2.3)
+    puma (8.1.2)
       nio4r (~> 2.0)
     racc (1.8.1)
     rack (3.2.8)
@@ -651,7 +651,7 @@ CHECKSUMS
   foxtail-tools (0.6.1) sha256=d7db73e8ecaf2e0d00ca79ca6ec27731a03160b1b8393e7b6ad0229b6d0ce20f
   guard (2.20.1) sha256=ab9cd7873854e6b76080c0589f781ff3e390e441bdda20165804df54f977015a
   guard-compat (1.2.1) sha256=3ad21ab0070107f92edfd82610b5cdc2fb8e368851e72362ada9703443d646fe
-  guard-puma (0.9.2) sha256=a8a9f7938b063737c6ed68cbc029cc05d8183426d65f877266fc0c243fe690d9
+  guard-puma (0.10.0) sha256=15d9e5621113b6fdf0f605677615d51038520640cd70e242d9e14d565ade5c31
   hanami (3.0.2) sha256=4fb9180c24fb1edd8932efc71848e9fe2e41e366286a0bf59a7938904a194e2b
   hanami-action (3.0.1) sha256=cacef6a80e366a0c9c3666dfd83365f3c07ac96bd7be444ceecd62df1488451d
   hanami-assets (3.0.0) sha256=b9ce246ca12ffa8e79f71194e312a484ffbb0d8fd28582b22869706c0afbd3da
@@ -718,7 +718,7 @@ CHECKSUMS
   pry (0.16.0) sha256=d76c69065698ed1f85e717bd33d7942c38a50868f6b0673c636192b3d1b6054e
   psych (5.5.0) sha256=4b245bbbd0f3238df8ccee766ebc1a6b062b10e4ee1d3284eb588739ba156a0a
   public_suffix (7.0.5) sha256=1a8bb08f1bbea19228d3bed6e5ed908d1cb4f7c2726d18bd9cadf60bc676f623
-  puma (7.2.3) sha256=8d83ed0bef78f9efa03db026d90fd89b6d2cdc003e4bb1c94d0530c3115730d4
+  puma (8.1.2) sha256=3a6d9a34c9a4d0175eabd11b703939b5d43ebe08bc2534ac7dfd4df33a6ceedc
   racc (1.8.1) sha256=4a7f6929691dbec8b5209a0b373bc2614882b55fc5d2e447a21aaa691303d62f
   rack (3.2.8) sha256=1fecc85e463ebc7a2a945fff829ffcd549babeb1556384796fad946c28dc4ec7
   rack-openid (1.4.2) sha256=8cd2305e738463a7da98791f9ac4df4cf3f6ed27908d982350430694ac2fe869
