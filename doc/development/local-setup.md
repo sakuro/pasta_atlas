@@ -16,6 +16,8 @@ Local development uses Docker-based substitutes for AWS services. No AWS account
 - [mise](https://mise.jdx.dev/) — manages Ruby, Node.js (with npm), Terraform, the AWS CLI and other tools; `mise install` installs the versions in `mise.toml`, so no global Node.js is needed
 - Docker
 
+`mise.toml` pins every tool to an exact version. Renovate updates the pins, and both Renovate (`minimumReleaseAge`) and mise (`minimum_release_age`) skip releases younger than three days.
+
 ## First-time setup
 
 ### 1. Add AWS profile
