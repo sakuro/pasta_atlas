@@ -44,8 +44,8 @@ export const MapViewer = (props: MapViewerProps) => {
 
   const location = useLocation();
 
-  // Reading uploadsCompleted refetches the generations after an upload from the layout.
   const mapData = createMemo(() => {
+    // Reading uploadsCompleted refetches the generations after an upload from the layout.
     uploadsCompleted();
     return fetch(`/api/v1/maps/${props.ulid}`).then((r) => r.json() as Promise<MapData>);
   });
