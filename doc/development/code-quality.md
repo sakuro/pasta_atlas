@@ -24,6 +24,19 @@
 | Vite + `@solidjs/vite-plugin` | `npm run build:frontend` | Build; compiles Solid JSX |
 | Prettier | — | Configured in `.prettierrc`; run manually, not part of CI |
 
+## Git hooks
+
+[hk](https://hk.jdx.dev/) runs the hooks configured in `hk.pkl`; `mise install` installs them (`hk install`). The steps come from hk's builtins and from [git-hooks](https://github.com/sakuro/git-hooks).
+
+| Hook | Steps |
+|---|---|
+| `commit-msg` | `emoji-enforced`: the subject starts with a `:gitmoji:` |
+| `prepare-commit-msg` | `merge-prefix`: prefixes merge commits with `:inbox_tray:` |
+| `pre-commit` | `gitleaks` (staged changes), `no-commit-to-branch`, `rubocop`, `eslint` (`frontend/`), `terraform fmt`, `tflint` |
+| `pre-push` | `case-conflict`, `newlines` |
+
+The hooks check only; they do not rewrite files. RSpec and the type check are not hooks: run `rake` and `npm run type-check` before committing.
+
 ## CI
 
 `.github/workflows/ci.yml` runs two jobs. `backend` prepares PostgreSQL 18, compiles the assets, loads the test database structure and seeds, then runs `bundle exec rake`. `frontend` runs the type check, the lint and the Vitest run.
