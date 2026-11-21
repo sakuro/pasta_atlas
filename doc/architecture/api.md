@@ -1,7 +1,5 @@
 # API Endpoints
 
----
-
 ## Auth
 
 Authentication uses OmniAuth. GitHub, Discord, and Steam OAuth are supported.
@@ -54,8 +52,6 @@ The SPA navigates to the returned path on success.
 
 Clears `session[:user_id]`. Redirects to `/`.
 
----
-
 ### GET /api/v1/auth/current
 
 Returns the current user and preferences. Used by the SPA on load to initialize `AuthContext`.
@@ -101,8 +97,6 @@ Returns pending OAuth data for the registration form. Requires `session[:pending
 | Status | Condition |
 |---|---|
 | `401 Unauthorized` | No `session[:pending_auth]` |
-
----
 
 ## User
 
@@ -344,8 +338,6 @@ Deletes the user account, queues the S3 prefixes of its maps and avatar for clea
 | `400 Bad Request` | `confirm_user_name` does not match |
 | `403 Forbidden` | Not logged in, or not own account |
 
----
-
 ## Maps
 
 ### GET /api/v1/maps
@@ -469,8 +461,6 @@ Deletes a map and queues its S3 prefix for cleanup. Authenticated, own map only.
 | `403 Forbidden` | Guest, or not own map |
 | `404 Not Found` | Map not found |
 
----
-
 ## Uploads
 
 ### POST /api/v1/uploads
@@ -509,8 +499,6 @@ Start an upload session. Creates Map (if new for this user), Generation, and Upl
 | `422 Unprocessable Entity` | `{"error": "error-map-name-too-long" \| "error-map-name-invalid-chars"}` |
 | `502 Bad Gateway` | S3 write of `mapshot.json` failed; DB records rolled back |
 
----
-
 ### POST /api/v1/uploads/:ulid/presigned_posts
 
 Request presigned S3 POSTs for image files. They are generated locally, without an S3 API call. Each POST policy requires `Content-Type: image/jpeg` and a size of 1 byte to 640 KB. Send at most 200 filenames per call; each must match `s<surface>zoom_<zoom>/tile_<x>_<y>.jpg`.
@@ -547,8 +535,6 @@ The client submits each file as `multipart/form-data` to `url`, with `fields` fi
 | `404 Not Found` | Upload with given ULID does not exist |
 | `422 Unprocessable Entity` | Upload status is `complete` or `failed` |
 
----
-
 ### POST /api/v1/uploads/:ulid/verify_batch
 
 Check that the files of one batch exist in S3 (one `HeadObject` call per file) and record their sizes.
@@ -566,8 +552,6 @@ Check that the files of one batch exist in S3 (one `HeadObject` call per file) a
 | `400 Bad Request` | `filenames` is empty or has more than 200 entries |
 | `422 Unprocessable Entity` | An object is missing (`{ "error": "verification_failed" }`); the generation is deleted and its S3 prefix is queued for cleanup |
 | `500 Internal Server Error` | The cleanup message could not be queued; the generation is kept |
-
----
 
 ### PATCH /api/v1/uploads/:ulid
 
@@ -601,8 +585,6 @@ Mark an upload as `complete` or `failed`. `complete` requires every expected fil
 | `403 Forbidden` | Guest, or the map belongs to another user |
 | `404 Not Found` | Upload with given ULID does not exist |
 | `422 Unprocessable Entity` | `status` is `complete` but not all files have been verified |
-
----
 
 ## Pages
 
