@@ -107,33 +107,4 @@ Vite rewrites these relative paths during bundling and emits the PNG files along
 
 ### Regenerating CSS
 
-Run from the project root after adding or removing sprites:
-
-```bash
-{
-  echo "/* Auto-generated from frontend/factorio-icons — do not edit manually */"
-  for dir in frontend/factorio-icons/*/; do
-    type="${dir%/}"; type="${type##*/}"
-    for file in "$dir"*.png; do
-      [ -f "$file" ] || continue
-      name="${file%.png}"; name="${name##*/}"
-      echo ".factorio-${type}--${name}{background-image:url('../../../factorio-icons/${type}/${name}.png')}"
-      echo ".factorio-img--${type}-${name}{background-image:url('../../../factorio-icons/${type}/${name}.png')}"
-      if [ "$type" = "space-location" ]; then
-        echo ".factorio-planet--${name}{background-image:url('../../../factorio-icons/space-location/${name}.png')}"
-        echo ".factorio-img--planet-${name}{background-image:url('../../../factorio-icons/space-location/${name}.png')}"
-      fi
-    done
-  done
-} > frontend/pages/map_viewer/richtext/richtext-icons.css
-```
-
-## Implementation Files
-
-| File | Role |
-|---|---|
-| `frontend/pages/map_viewer/richtext/index.ts` | Parser: `renderRichText(input: string): string` |
-| `frontend/pages/map_viewer/richtext/richtext.test.ts` | Vitest unit tests |
-| `frontend/pages/map_viewer/richtext/richtext.css` | Base `.factorio-icon` styles; imports `richtext-icons.css` |
-| `frontend/pages/map_viewer/richtext/richtext-icons.css` | Generated `background-image` mappings (do not edit manually) |
-| `frontend/factorio-icons/` | Sprite PNG source files (git-tracked; Vite processes at build time) |
+Run `scripts/generate-richtext-icons-css` after adding or removing sprites.

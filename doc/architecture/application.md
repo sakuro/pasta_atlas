@@ -108,12 +108,6 @@ Repositories are the only code that talks to the database; operations, actions a
 
 Introducing a `web` slice would place repos and operations in the app container while actions live in the slice container. Hanami does not share app container components with slices by default, requiring explicit enumeration of shared keys — a maintenance burden that outweighs the encapsulation benefit at the current scale.
 
-## When to introduce slices
-
-| Slice | Purpose | Trigger to add |
-|---|---|---|
-| `admin` | Administrative interface | When admin tooling is needed |
-
 ## Asset Pipeline
 
 Two build pipelines write to `public/assets/`:

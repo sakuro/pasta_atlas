@@ -9,7 +9,7 @@ Local development uses Docker-based substitutes for AWS services. No AWS account
 | S3 | Floci (S3-compatible emulator, port 4566) |
 | RDS (PostgreSQL) | PostgreSQL container (port 5432) |
 | CloudFront | Floci (images served directly from `http://localhost:4566`) |
-| Secrets Manager | `.env.development.local` |
+| SSM Parameter Store | `.env.development.local` |
 
 ## Prerequisites
 
