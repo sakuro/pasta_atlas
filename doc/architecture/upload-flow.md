@@ -20,8 +20,6 @@ The `metadata_s3_key` stored in DB points to `mapshot.json` within this prefix.
 
 Avatar images use a separate prefix: `{user_name}/avatar/{ulid}.{ext}`
 
----
-
 ## Client-Side Flow
 
 ```
@@ -75,8 +73,6 @@ Avatar images use a separate prefix: `{user_name}/avatar/{ulid}.{ext}`
 - S3 writes are atomic: each file either fully succeeds or fully fails. Re-uploading an existing key overwrites it.
 - The browser uploads directly to the S3 bucket, so its CORS policy must allow `POST` (see [infrastructure](../operations/infrastructure.md#s3-bucket-policy)).
 
----
-
 ## Server-Side Processing
 
 Parameter validation and error responses are specified in [api.md](api.md#uploads); this section covers what the server does.
@@ -115,8 +111,6 @@ Verification makes the size recorded in the database reflect what is actually in
 1. For `complete`: the number of verified keys must equal `total_image_count`
 2. Append an `upload_events` row (`complete` or `failed`)
 3. For `complete`: store `verified_bytes` as the generation's `storage_bytes` and mark the verification as passed
-
----
 
 ## Operation Sequence
 
@@ -186,8 +180,6 @@ sequenceDiagram
     UUS->>DB: INSERT upload_event, set storage_bytes
     UUS-->>Client: 200 OK
 ```
-
----
 
 ## Error Cases
 
