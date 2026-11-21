@@ -1,0 +1,40 @@
+amends "package://github.com/jdx/hk/releases/download/v2.13.0/hk@2.13.0#/Config.pkl"
+
+import "package://github.com/jdx/hk/releases/download/v2.13.0/hk@2.13.0#/Builtins.pkl"
+import "package://github.com/sakuro/git-hooks/releases/download/v0.3.1/git-hooks@0.3.1#/Steps.pkl" as GitHooks
+
+hooks {
+  ["commit-msg"] {
+    steps {
+      ["emoji-enforced"] = GitHooks.emoji_enforced
+    }
+  }
+  ["prepare-commit-msg"] {
+    steps {
+      ["merge-prefix"] = GitHooks.merge_prefix
+    }
+  }
+  ["pre-commit"] {
+    steps {
+      ["gitleaks"] = (Builtins.gitleaks) { scan = "staged" }
+      ["no-commit-to-branch"] = Builtins.no_commit_to_branch
+      ["rubocop"] {
+        glob = List("**/*.rb", "**/*.rake", "**/*.ru", "**/Gemfile", "**/Rakefile", "**/Guardfile")
+        check = "bundle exec rubocop --force-exclusion {{files}}"
+      }
+      ["eslint"] {
+        glob = List("frontend/**/*.ts", "frontend/**/*.tsx")
+        batch = true
+        check = "eslint {{files}}"
+      }
+      ["terraform"] = Builtins.terraform
+      ["tflint"] = (Builtins.tf_lint) { fix = null }
+    }
+  }
+  ["pre-push"] {
+    steps {
+      ["case-conflict"] = Builtins.check_case_conflict
+      ["newlines"] = Builtins.newlines
+    }
+  }
+}
