@@ -73,7 +73,7 @@ The Function URL therefore uses `AuthType NONE`. CloudFront adds the secret head
 
 ## Secrets
 
-Secrets stay in SSM Parameter Store and are never written to Terraform state, except the origin secret (see [Secrets Management](secrets.md)). Lambda cannot inject SSM parameters into the environment, so a small loader (`LambdaSupport::SecretsLoader`) fetches them with `ssm:GetParameters` at initialization and sets `ENV` before Hanami reads its settings. Every entry point calls it, including the event functions and `task`. Initialization adds one SSM call per cold start.
+Secrets are stored in SSM Parameter Store and loaded into `ENV` at initialization by every entry point, including the event functions and `task`; see [Secrets Management](secrets.md). This adds one SSM call per cold start.
 
 Non-secret configuration is set as ordinary Lambda environment variables from Terraform.
 
@@ -91,9 +91,7 @@ The function is invoked with `--cli-read-timeout 0` and without CLI retries, sin
 
 ## Scheduled cleanup
 
-EventBridge Scheduler invokes the `task` function every day at 03:00 JST with `{"task": "cleanup:stale_uploads"}` (`scheduler.tf`; the schedule's role may only invoke that function). `Operations::Uploads::CleanupStale` finds uploads that are not complete and have had no activity for `STALE_UPLOAD_DAYS` days (default 7). The last activity is the creation of the upload or its latest verified key, so an upload that is still being resumed is kept. For each one it queues the generation's S3 prefix on the `s3-cleanup` queue and then deletes the generation, which cascades to its uploads, events and verification keys. A prefix that cannot be queued leaves the generation in place for the next run, and the task exits with an error. The schedule does not retry; the next day's run is the retry.
-
-Maps that lose their last generation stay as rows: they are not listed or shown without a complete generation, and a new upload reuses them.
+EventBridge Scheduler invokes the `task` function every day at 03:00 JST with `{"task": "cleanup:stale_uploads"}` (`scheduler.tf`; the schedule's role may only invoke that function). The selection rules of `Operations::Uploads::CleanupStale` are in [Upload Flow](../architecture/upload-flow.md#stale-upload-cleanup). The task exits with an error when a prefix cannot be queued. The schedule does not retry; the next day's run is the retry.
 
 ## Deployment
 
