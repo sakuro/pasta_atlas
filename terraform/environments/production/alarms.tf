@@ -119,3 +119,81 @@ resource "aws_cloudwatch_metric_alarm" "task_errors" {
   alarm_actions = [aws_sns_topic.alarms.arn]
   ok_actions    = [aws_sns_topic.alarms.arn]
 }
+
+# The function retries a failed message until it reaches the dead-letter queue, so this
+# alarm fires before the DLQ alarm does.
+resource "aws_cloudwatch_metric_alarm" "s3_cleanup_errors" {
+  alarm_name          = "${var.app_name}-${var.environment}-s3-cleanup-errors"
+  alarm_description   = "The s3-cleanup function failed to process a message."
+  namespace           = "AWS/Lambda"
+  metric_name         = "Errors"
+  dimensions          = { FunctionName = aws_lambda_function.s3_cleanup.function_name }
+  statistic           = "Sum"
+  period              = 300
+  evaluation_periods  = 1
+  threshold           = 0
+  comparison_operator = "GreaterThanThreshold"
+  treat_missing_data  = "notBreaching"
+
+  alarm_actions = [aws_sns_topic.alarms.arn]
+  ok_actions    = [aws_sns_topic.alarms.arn]
+}
+
+# db.t4g.micro has 1 GiB of memory, which allows about 100 connections. Each Lambda
+# environment holds its own connection, so a count near the limit means the function
+# concurrency has outgrown the database.
+resource "aws_cloudwatch_metric_alarm" "rds_connections" {
+  alarm_name          = "${var.app_name}-${var.environment}-rds-connections"
+  alarm_description   = "The database has 80 or more connections open."
+  namespace           = "AWS/RDS"
+  metric_name         = "DatabaseConnections"
+  dimensions          = { DBInstanceIdentifier = aws_db_instance.main.identifier }
+  statistic           = "Maximum"
+  period              = 300
+  evaluation_periods  = 1
+  threshold           = 80
+  comparison_operator = "GreaterThanOrEqualToThreshold"
+  treat_missing_data  = "notBreaching"
+
+  alarm_actions = [aws_sns_topic.alarms.arn]
+  ok_actions    = [aws_sns_topic.alarms.arn]
+}
+
+# 10% of var.db_allocated_storage. RDS storage does not grow by itself here, so this leaves
+# time to raise the allocation.
+resource "aws_cloudwatch_metric_alarm" "rds_free_storage" {
+  alarm_name          = "${var.app_name}-${var.environment}-rds-free-storage"
+  alarm_description   = "The database has less than 10% of its allocated storage left."
+  namespace           = "AWS/RDS"
+  metric_name         = "FreeStorageSpace"
+  dimensions          = { DBInstanceIdentifier = aws_db_instance.main.identifier }
+  statistic           = "Minimum"
+  period              = 300
+  evaluation_periods  = 1
+  threshold           = var.db_allocated_storage * 0.1 * 1024 * 1024 * 1024
+  comparison_operator = "LessThanThreshold"
+  treat_missing_data  = "notBreaching"
+
+  alarm_actions = [aws_sns_topic.alarms.arn]
+  ok_actions    = [aws_sns_topic.alarms.arn]
+}
+
+# The NAT instance runs in an Auto Scaling group of one (fck-nat HA mode), which replaces
+# a failed instance. While none is in service, the Lambda functions cannot reach the
+# internet (OAuth providers, SSM). The group name is the module's `name`.
+resource "aws_cloudwatch_metric_alarm" "nat_in_service" {
+  alarm_name          = "${var.app_name}-${var.environment}-nat-in-service"
+  alarm_description   = "No NAT instance is in service."
+  namespace           = "AWS/AutoScaling"
+  metric_name         = "GroupInServiceInstances"
+  dimensions          = { AutoScalingGroupName = module.fck_nat.name }
+  statistic           = "Minimum"
+  period              = 300
+  evaluation_periods  = 1
+  threshold           = 1
+  comparison_operator = "LessThanThreshold"
+  treat_missing_data  = "breaching"
+
+  alarm_actions = [aws_sns_topic.alarms.arn]
+  ok_actions    = [aws_sns_topic.alarms.arn]
+}

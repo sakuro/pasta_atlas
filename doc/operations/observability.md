@@ -38,8 +38,10 @@ Every alarm notifies the `pasta-atlas-production-alarms` SNS topic, which emails
 | `…-app-errors` | Lambda `Errors` of the `app` function | above 0 |
 | `…-app-throttles` | Lambda `Throttles` of the `app` function | above 0 |
 | `…-task-errors` | Lambda `Errors` of the `task` function (migration, seed, map deletion, scheduled cleanup) | above 0 |
+| `…-s3-cleanup-errors` | Lambda `Errors` of the `s3-cleanup` function | above 0 |
+| `…-rds-connections` | RDS `DatabaseConnections` | 80 or more (the instance allows about 100) |
+| `…-rds-free-storage` | RDS `FreeStorageSpace` | below 10% of `db_allocated_storage` |
+| `…-nat-in-service` | Auto Scaling `GroupInServiceInstances` of the NAT group | below 1 (missing data alarms) |
 | `…-app-5xx-rate` | CloudFront `5xxErrorRate` of the application distribution | 5% or more |
 
-`Errors` counts unhandled exceptions and timeouts. A 500 that Puma returns normally is not an invocation error, so the CloudFront alarm is the one that sees it. With little traffic a single failed request exceeds 5%, which is intended. Missing data counts as healthy, so an idle site does not alarm.
-
-Not monitored yet: the `s3-cleanup` function's errors, RDS connections and free storage, and the NAT instance.
+`Errors` counts unhandled exceptions and timeouts. A 500 that Puma returns normally is not an invocation error, so the CloudFront alarm is the one that sees it. With little traffic a single failed request exceeds 5%, which is intended. Missing data counts as healthy, so an idle site does not alarm; the NAT alarm is the exception, because its metric is always published.
