@@ -19,7 +19,7 @@ fnox-env = "https://github.com/jdx/mise-env-fnox"
 
 [tools]
 aws-cli = "2.41.0"
-fnox = "1.48.0"
+fnox = "1.50.0"
 gitleaks = "8.30.1"
 hk = "2.13.0"
 node = "26.13.1"
