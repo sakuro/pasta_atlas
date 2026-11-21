@@ -1,10 +1,28 @@
 import "./richtext.css";
 
 const ICON_TAGS = new Set([
-  "item", "entity", "fluid", "technology", "recipe", "item-group",
-  "virtual-signal", "achievement", "tile", "quality", "planet", "space-location",
-  "img", "gps", "train-stop", "train", "space-platform",
-  "special-item", "armor", "shortcut", "tip", "space-age",
+  "item",
+  "entity",
+  "fluid",
+  "technology",
+  "recipe",
+  "item-group",
+  "virtual-signal",
+  "achievement",
+  "tile",
+  "quality",
+  "planet",
+  "space-location",
+  "img",
+  "gps",
+  "train-stop",
+  "train",
+  "space-platform",
+  "special-item",
+  "armor",
+  "shortcut",
+  "tip",
+  "space-age",
 ]);
 
 const WRAPPING_TAGS = new Set(["color", "font", "tooltip"]);
@@ -13,7 +31,11 @@ const WRAPPING_TAGS = new Set(["color", "font", "tooltip"]);
 const QUALITY_AWARE_TAGS = new Set(["item", "entity", "recipe", "fluid", "virtual-signal"]);
 
 const ESCAPE_MAP: Record<string, string> = {
-  "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;",
+  "&": "&amp;",
+  "<": "&lt;",
+  ">": "&gt;",
+  '"': "&quot;",
+  "'": "&#39;",
 };
 
 function escapeHtml(s: string): string {

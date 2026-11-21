@@ -16,17 +16,12 @@ interface GenerationSelectProps {
 export const GenerationSelect = (props: GenerationSelectProps) => (
   <div class="control has-icons-left" style={{ "flex-shrink": 0 }}>
     <div class="select is-small">
-      <select
-        value={props.value}
-        onChange={(e) => props.onChange(e.currentTarget.value)}
-      >
-        <For each={props.generations}>
-          {(gen) => (
-            <option value={gen.ulid}>{formatTicks(gen.tick, lang())}</option>
-          )}
-        </For>
+      <select value={props.value} onChange={(e) => props.onChange(e.currentTarget.value)}>
+        <For each={props.generations}>{(gen) => <option value={gen.ulid}>{formatTicks(gen.tick, lang())}</option>}</For>
       </select>
     </div>
-    <span class="icon is-small is-left"><i class="fa-solid fa-timeline" /></span>
+    <span class="icon is-small is-left">
+      <i class="fa-solid fa-timeline" />
+    </span>
   </div>
 );

@@ -1,13 +1,9 @@
 import { createSignal } from "solid-js";
 import "../../lib/l10n";
 
-const csrfToken = (): string =>
-  document.querySelector<HTMLMetaElement>('meta[name="csrf-token"]')?.content ?? "";
+const csrfToken = (): string => document.querySelector<HTMLMetaElement>('meta[name="csrf-token"]')?.content ?? "";
 
-export const UserDangerTab = (props: {
-  userName: string;
-  onError?: (msgKey: string) => void;
-}) => {
+export const UserDangerTab = (props: { userName: string; onError?: (msgKey: string) => void }) => {
   const [confirmValue, setConfirmValue] = createSignal("");
   const [submitting, setSubmitting] = createSignal(false);
 
@@ -51,12 +47,10 @@ export const UserDangerTab = (props: {
         </div>
         <div class="field">
           <div class="control">
-            <button
-              class="button is-danger"
-              type="submit"
-              disabled={confirmValue() !== props.userName || submitting()}
-            >
-              <span class="icon"><i class="fa-solid fa-trash" /></span>
+            <button class="button is-danger" type="submit" disabled={confirmValue() !== props.userName || submitting()}>
+              <span class="icon">
+                <i class="fa-solid fa-trash" />
+              </span>
               <span data-l10n-id="account-delete-button" />
             </button>
           </div>

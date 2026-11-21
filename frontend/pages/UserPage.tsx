@@ -17,10 +17,7 @@ type UserData = {
   avatar_url: string | null;
 };
 
-type UserFetchResult =
-  | { status: "ok"; user: UserData }
-  | { status: "not_found" }
-  | { status: "forbidden" };
+type UserFetchResult = { status: "ok"; user: UserData } | { status: "not_found" } | { status: "forbidden" };
 
 type TabDef = {
   id: string;
@@ -54,7 +51,7 @@ export const UserPage = () => {
     if (res.status === 404) return { status: "not_found" };
     if (res.status === 403) return { status: "forbidden" };
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    const json = await res.json() as { user: UserData };
+    const json = (await res.json()) as { user: UserData };
     return { status: "ok", user: json.user };
   });
 
@@ -86,7 +83,9 @@ export const UserPage = () => {
       const hash = location.hash.slice(1);
       return hash && isAvailableTab(hash) ? hash : null;
     },
-    (tabId) => { if (tabId) setActiveTab(tabId); }
+    (tabId) => {
+      if (tabId) setActiveTab(tabId);
+    }
   );
 
   return (
@@ -119,10 +118,7 @@ export const UserPage = () => {
                     <ul>
                       <For each={tabs()}>
                         {(tab) => (
-                          <li
-                            class={{ "is-active": activeTab() === tab.id }}
-                            onClick={() => activateTab(tab.id)}
-                          >
+                          <li class={{ "is-active": activeTab() === tab.id }} onClick={() => activateTab(tab.id)}>
                             <a>
                               <span class="icon-text">
                                 <span class={["icon", { "has-text-danger": !!tab.danger }]}>
@@ -147,7 +143,11 @@ export const UserPage = () => {
                       active={() => activeTab() === "tab-profile"}
                       onSuccess={({ displayName, avatarUrl }) => {
                         showToast("profile-saved");
-                        setUserData(prev => prev.status === "ok" ? { ...prev, user: { ...prev.user, display_name: displayName, avatar_url: avatarUrl } } : prev);
+                        setUserData((prev) =>
+                          prev.status === "ok"
+                            ? { ...prev, user: { ...prev.user, display_name: displayName, avatar_url: avatarUrl } }
+                            : prev
+                        );
                         updateCurrentUser({ display_name: displayName, avatar_url: avatarUrl });
                       }}
                       onError={(key) => showToast(key, "danger")}
@@ -171,10 +171,7 @@ export const UserPage = () => {
                     />
                   </Show>
                   <Show when={isOwner() && activeTab() === "tab-danger"}>
-                    <UserDangerTab
-                      userName={u.name}
-                      onError={(key) => showToast(key, "danger")}
-                    />
+                    <UserDangerTab userName={u.name} onError={(key) => showToast(key, "danger")} />
                   </Show>
                 </div>
               </>

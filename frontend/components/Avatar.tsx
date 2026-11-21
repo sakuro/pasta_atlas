@@ -6,10 +6,7 @@ type Props = {
 };
 
 export const Avatar = (props: Props) => (
-  <Show
-    when={props.url}
-    fallback={<i class="fa-solid fa-circle-user" style={{ "font-size": `${props.size}px` }} />}
-  >
+  <Show when={props.url} fallback={<i class="fa-solid fa-circle-user" style={{ "font-size": `${props.size}px` }} />}>
     {(url) => <img src={url()} width={props.size} height={props.size} style={{ "border-radius": "50%" }} />}
   </Show>
 );

@@ -10,8 +10,7 @@ import { HowToUploadModal } from "./HowToUploadModal";
 const segmenter = new Intl.Segmenter();
 const MAX_IMAGE_COUNT = 10_000;
 
-const csrfToken = (): string =>
-  document.querySelector<HTMLMetaElement>('meta[name="csrf-token"]')?.content ?? "";
+const csrfToken = (): string => document.querySelector<HTMLMetaElement>('meta[name="csrf-token"]')?.content ?? "";
 
 const jsonHeaders = (): HeadersInit => ({
   "Content-Type": "application/json",
@@ -76,9 +75,7 @@ const runConcurrent = async (
   await Promise.all(Array.from({ length: Math.min(limit, tasks.length) }, worker));
 };
 
-const relPath = (file: File): string =>
-  file.webkitRelativePath.split("/").slice(1).join("/");
-
+const relPath = (file: File): string => file.webkitRelativePath.split("/").slice(1).join("/");
 
 export const UploadModal = (props: { isGuest: boolean }) => {
   const navigate = useNavigate();
@@ -116,7 +113,10 @@ export const UploadModal = (props: { isGuest: boolean }) => {
 
     const imageFiles = allFiles.filter((f) => relPath(f).endsWith(".jpg"));
     if (imageFiles.length > MAX_IMAGE_COUNT) {
-      setState({ type: "error", error: { msgId: "upload-error-too-many-images", msgArgs: { count: imageFiles.length, max: MAX_IMAGE_COUNT } } });
+      setState({
+        type: "error",
+        error: { msgId: "upload-error-too-many-images", msgArgs: { count: imageFiles.length, max: MAX_IMAGE_COUNT } },
+      });
       return;
     }
     const fileMap = new Map<string, File>();
@@ -128,7 +128,7 @@ export const UploadModal = (props: { isGuest: boolean }) => {
       const resp = await fetch(`/api/v1/maps/lookup?mapshot_map_id=${encodeURIComponent(mapshotJson.map_id)}`);
       if (resp.ok) {
         existingMap = true;
-        const data = await resp.json() as { name: string | null };
+        const data = (await resp.json()) as { name: string | null };
         if (data.name) initialName = data.name;
       }
     } catch {
@@ -161,14 +161,18 @@ export const UploadModal = (props: { isGuest: boolean }) => {
       const resp = await fetch("/api/v1/uploads", {
         method: "POST",
         headers: jsonHeaders(),
-        body: JSON.stringify({ metadata: mapshotJson, total_image_count: imageCount, name: displayName() || s.mapName }),
+        body: JSON.stringify({
+          metadata: mapshotJson,
+          total_image_count: imageCount,
+          name: displayName() || s.mapName,
+        }),
       });
       if (resp.status === 409) {
         setState({ type: "error", error: { msgId: "upload-error-conflict" } });
         return;
       }
       if (resp.status === 422) {
-        const data = await resp.json() as { error?: string };
+        const data = (await resp.json()) as { error?: string };
         setState({ type: "error", error: { msgId: data.error ?? "error-unknown" } });
         return;
       }
@@ -176,7 +180,7 @@ export const UploadModal = (props: { isGuest: boolean }) => {
         setState({ type: "error", error: { msgId: "upload-error-http", msgArgs: { status: resp.status } } });
         return;
       }
-      const data = await resp.json() as { ulid: string; map_ulid: string; generation_ulid: string };
+      const data = (await resp.json()) as { ulid: string; map_ulid: string; generation_ulid: string };
       uploadUlid = data.ulid;
       mapUlid = data.map_ulid;
       generationUlid = data.generation_ulid;
@@ -205,7 +209,7 @@ export const UploadModal = (props: { isGuest: boolean }) => {
           setState({ type: "error", error: { msgId: "upload-error-urls-http", msgArgs: { status: resp.status } } });
           return;
         }
-        const data = await resp.json() as { presigned_posts: Record<string, PresignedEntry> };
+        const data = (await resp.json()) as { presigned_posts: Record<string, PresignedEntry> };
         presignedUrls = data.presigned_posts;
       } catch {
         setState({ type: "error", error: { msgId: "upload-error-urls-network" } });
@@ -227,7 +231,10 @@ export const UploadModal = (props: { isGuest: boolean }) => {
           setState({ type: "uploading", progress: uploadedCount + done, total: imageCount });
         });
       } catch (err) {
-        setState({ type: "error", error: { msgId: "upload-error-file", msgArgs: { details: (err as Error).message } } });
+        setState({
+          type: "error",
+          error: { msgId: "upload-error-file", msgArgs: { details: (err as Error).message } },
+        });
         return;
       }
       uploadedCount += batch.length;
@@ -322,15 +329,21 @@ export const UploadModal = (props: { isGuest: boolean }) => {
       <div class="buttons has-addons">
         <button
           class="button is-primary"
-          onClick={() => { if (!props.isGuest) openModal(); }}
+          onClick={() => {
+            if (!props.isGuest) openModal();
+          }}
           disabled={props.isGuest}
           data-l10n-id={props.isGuest ? "upload-button-guest" : undefined}
         >
-          <span class="icon"><i class="fa-solid fa-upload" /></span>
+          <span class="icon">
+            <i class="fa-solid fa-upload" />
+          </span>
           <span data-l10n-id="upload-button" />
         </button>
         <button class="button" data-l10n-id="how-to-upload-button" onClick={() => setShowHowTo(true)}>
-          <span class="icon"><i class="fa-solid fa-circle-question" /></span>
+          <span class="icon">
+            <i class="fa-solid fa-circle-question" />
+          </span>
         </button>
       </div>
       <Show when={showHowTo()}>
@@ -338,201 +351,288 @@ export const UploadModal = (props: { isGuest: boolean }) => {
       </Show>
       <Show when={state().type !== "idle"}>
         <Portal mount={document.body}>
-        <div class="modal is-active">
-          <div class="modal-background" onClick={dismiss} />
-          <div class="modal-card" style={{ width: "90vw", "max-width": "1000px" }}>
-            <header class="modal-card-head">
-              <p class="modal-card-title" data-l10n-id="upload-modal-title" />
-              <Show when={state().type !== "uploading" && state().type !== "preparing" && state().type !== "verifying"}>
-                <button class="delete" aria-label="close" onClick={dismiss} />
-              </Show>
-            </header>
-            <section class="modal-card-body">
-              <Show when={state().type === "instructions"}>
-                <div class="content">
-                  <p>
-                    <span class="icon-text">
-                      <span class="icon"><i class="fa-solid fa-folder-open" /></span>
-                      <span data-l10n-id="upload-instructions-folder"><code data-l10n-name="filename">mapshot.json</code></span>
-                    </span>
-                  </p>
-                  <div class="notification is-info is-light">
-                    <p class="has-text-weight-semibold mb-2" data-l10n-id="upload-instructions-folder-path" />
-                    <ul>
-                      <li>
-                        <span class="icon-text">
-                          <span class="icon"><i class="fa-brands fa-windows" /></span>
-                          <span>
-                            <code>%APPDATA%\Factorio\script-output\mapshot</code>
-                            <CopyButton text="%APPDATA%\Factorio\script-output\mapshot" l10nId="upload-copy-path-windows" class="is-ghost px-1" style={{ "vertical-align": "middle" }} />
-                          </span>
+          <div class="modal is-active">
+            <div class="modal-background" onClick={dismiss} />
+            <div class="modal-card" style={{ width: "90vw", "max-width": "1000px" }}>
+              <header class="modal-card-head">
+                <p class="modal-card-title" data-l10n-id="upload-modal-title" />
+                <Show
+                  when={state().type !== "uploading" && state().type !== "preparing" && state().type !== "verifying"}
+                >
+                  <button class="delete" aria-label="close" onClick={dismiss} />
+                </Show>
+              </header>
+              <section class="modal-card-body">
+                <Show when={state().type === "instructions"}>
+                  <div class="content">
+                    <p>
+                      <span class="icon-text">
+                        <span class="icon">
+                          <i class="fa-solid fa-folder-open" />
                         </span>
-                      </li>
-                      <li>
-                        <span class="icon-text">
-                          <span class="icon"><i class="fa-brands fa-apple" /></span>
-                          <span>
-                            <code>~/Library/Application Support/factorio/script-output/mapshot</code>
-                            <CopyButton text="~/Library/Application Support/factorio/script-output/mapshot" l10nId="upload-copy-path-macos" class="is-ghost px-1" style={{ "vertical-align": "middle" }} />
-                          </span>
+                        <span data-l10n-id="upload-instructions-folder">
+                          <code data-l10n-name="filename">mapshot.json</code>
                         </span>
-                      </li>
-                      <li>
-                        <span class="icon-text">
-                          <span class="icon"><i class="fa-brands fa-linux" /></span>
-                          <span>
-                            <code>~/.factorio/script-output/mapshot</code>
-                            <CopyButton text="~/.factorio/script-output/mapshot" l10nId="upload-copy-path-linux" class="is-ghost px-1" style={{ "vertical-align": "middle" }} />
-                          </span>
-                        </span>
-                      </li>
-                    </ul>
-                    <p class="mt-3"><span data-l10n-id="upload-instructions-folder-subfolder" /> <code><var>map-abcd1234</var>/<var>d-abcd1234</var></code></p>
-                  </div>
-                  <p>
-                    <span class="icon-text">
-                      <span class="icon"><i class="fa-solid fa-timeline" /></span>
-                      <span data-l10n-id="upload-instructions-generations" />
-                    </span>
-                  </p>
-                </div>
-              </Show>
-              <Show when={confirmingState()} keyed>
-                {(s) => (
-                  <table class="table is-fullwidth">
-                    <tbody>
-                      <tr>
-                        <th><span class="icon-text"><span class="icon"><i class="fa-solid fa-map" /></span><span data-l10n-id="upload-map-title" /></span></th>
-                        <td>
-                          <div class="field has-addons mb-0">
-                            <span class="control is-expanded">
-                              <input
-                                ref={(el) => { setTimeout(() => { el.focus(); el.select(); }, 0); }}
-                                class="input"
-                                type="text"
-                                value={displayName()}
-                                placeholder={s.mapName}
-                                onInput={(e) => setDisplayName(e.currentTarget.value)}
+                      </span>
+                    </p>
+                    <div class="notification is-info is-light">
+                      <p class="has-text-weight-semibold mb-2" data-l10n-id="upload-instructions-folder-path" />
+                      <ul>
+                        <li>
+                          <span class="icon-text">
+                            <span class="icon">
+                              <i class="fa-brands fa-windows" />
+                            </span>
+                            <span>
+                              <code>%APPDATA%\Factorio\script-output\mapshot</code>
+                              <CopyButton
+                                text="%APPDATA%\Factorio\script-output\mapshot"
+                                l10nId="upload-copy-path-windows"
+                                class="is-ghost px-1"
+                                style={{ "vertical-align": "middle" }}
                               />
                             </span>
-                            <div class="control">
-                              <span class={["button is-static", displayNameCount() > 30 ? "has-text-danger" : "has-text-grey-light"]}>
-                                {displayNameCount()} / 30
-                              </span>
-                            </div>
-                          </div>
-                        </td>
-                      </tr>
-                      <tr>
-                        <th><span class="icon-text"><span class="icon"><i class="fa-solid fa-layer-group" /></span><span data-l10n-id="upload-surfaces" /></span></th>
-                        <td>{s.surfaceCount}</td>
-                      </tr>
-                      <tr>
-                        <th><span class="icon-text"><span class="icon"><i class="fa-solid fa-images" /></span><span data-l10n-id="upload-images" /></span></th>
-                        <td>{s.imageCount}</td>
-                      </tr>
-                      <tr>
-                        <th><span class="icon-text"><span class="icon"><i class="fa-solid fa-chart-simple" /></span><span data-l10n-id="upload-total-size" /></span></th>
-                        <td>{formatBytes(s.totalBytes)}</td>
-                      </tr>
-                    </tbody>
-                  </table>
-                )}
-              </Show>
-              <Show when={preparingState()} keyed>
-                {(s) => (
-                  <>
-                    <p
-                      class="mb-2"
-                      data-l10n-id="upload-preparing"
-                      data-l10n-args={JSON.stringify({ prepared: s.prepared, total: s.total })}
-                    />
-                    <progress class="progress is-primary" value={s.prepared} max={s.total} />
-                  </>
-                )}
-              </Show>
-              <Show when={uploadingState()} keyed>
-                {(s) => (
-                  <>
-                    <p
-                      class="mb-2"
-                      data-l10n-id="upload-progress"
-                      data-l10n-args={JSON.stringify({ progress: s.progress, total: s.total })}
-                    />
-                    <progress class="progress is-primary" value={s.progress} max={s.total} />
-                  </>
-                )}
-              </Show>
-              <Show when={verifyingState()} keyed>
-                {(s) => (
-                  <>
-                    <p
-                      class="mb-2"
-                      data-l10n-id="upload-verifying"
-                      data-l10n-args={JSON.stringify({ progress: s.progress, total: s.total })}
-                    />
-                    <progress class="progress is-primary" value={s.progress} max={s.total} />
-                  </>
-                )}
-              </Show>
-              <Show when={doneState()}>
-                {(s) => (
-                  <div class="has-text-centered">
-                    <p class="mb-4" data-l10n-id="upload-complete" />
-                    <button class="button is-primary" data-l10n-id="upload-view-map" onClick={() => { onFlush(dismiss); navigate(s().viewerUrl); }} />
+                          </span>
+                        </li>
+                        <li>
+                          <span class="icon-text">
+                            <span class="icon">
+                              <i class="fa-brands fa-apple" />
+                            </span>
+                            <span>
+                              <code>~/Library/Application Support/factorio/script-output/mapshot</code>
+                              <CopyButton
+                                text="~/Library/Application Support/factorio/script-output/mapshot"
+                                l10nId="upload-copy-path-macos"
+                                class="is-ghost px-1"
+                                style={{ "vertical-align": "middle" }}
+                              />
+                            </span>
+                          </span>
+                        </li>
+                        <li>
+                          <span class="icon-text">
+                            <span class="icon">
+                              <i class="fa-brands fa-linux" />
+                            </span>
+                            <span>
+                              <code>~/.factorio/script-output/mapshot</code>
+                              <CopyButton
+                                text="~/.factorio/script-output/mapshot"
+                                l10nId="upload-copy-path-linux"
+                                class="is-ghost px-1"
+                                style={{ "vertical-align": "middle" }}
+                              />
+                            </span>
+                          </span>
+                        </li>
+                      </ul>
+                      <p class="mt-3">
+                        <span data-l10n-id="upload-instructions-folder-subfolder" />{" "}
+                        <code>
+                          <var>map-abcd1234</var>/<var>d-abcd1234</var>
+                        </code>
+                      </p>
+                    </div>
+                    <p>
+                      <span class="icon-text">
+                        <span class="icon">
+                          <i class="fa-solid fa-timeline" />
+                        </span>
+                        <span data-l10n-id="upload-instructions-generations" />
+                      </span>
+                    </p>
                   </div>
-                )}
-              </Show>
-              <Show when={errorState()} keyed>
-                {(s) => (
-                  <p
-                    class="has-text-danger"
-                    data-l10n-id={s.error.msgId}
-                    data-l10n-args={s.error.msgArgs ? JSON.stringify(s.error.msgArgs) : undefined}
-                  />
-                )}
-              </Show>
-            </section>
-            <footer class="modal-card-foot">
-              <Show when={state().type === "instructions"}>
-                <div class="buttons">
-                  <button class="button is-primary" onClick={openPicker}>
-                    <span class="icon"><i class="fa-solid fa-folder-open" /></span>
-                    <span data-l10n-id="upload-select-folder" />
-                  </button>
-                  <button class="button" data-l10n-id="upload-cancel" onClick={dismiss} />
-                </div>
-              </Show>
-              <Show when={state().type === "confirming"}>
-                <div class="buttons">
-                  <button class="button" onClick={openPicker}>
-                    <span class="icon"><i class="fa-solid fa-folder-open" /></span>
-                    <span data-l10n-id="upload-reselect-folder" />
-                  </button>
-                  <button class="button is-primary" onClick={startUpload} disabled={displayNameCount() > 30}>
-                    <span class="icon"><i class="fa-solid fa-upload" /></span>
-                    <span data-l10n-id="upload-start" />
-                  </button>
-                  <button class="button" data-l10n-id="upload-cancel" onClick={dismiss} />
-                </div>
-              </Show>
-              <Show when={state().type === "done"}>
-                <div class="buttons">
-                  <button class="button" data-l10n-id="upload-close" onClick={dismiss} />
-                </div>
-              </Show>
-              <Show when={state().type === "error"}>
-                <div class="buttons">
-                  <button class="button is-primary" onClick={openPicker}>
-                    <span class="icon"><i class="fa-solid fa-folder-open" /></span>
-                    <span data-l10n-id="upload-reselect-folder" />
-                  </button>
-                  <button class="button" data-l10n-id="upload-dismiss" onClick={dismiss} />
-                </div>
-              </Show>
-            </footer>
+                </Show>
+                <Show when={confirmingState()} keyed>
+                  {(s) => (
+                    <table class="table is-fullwidth">
+                      <tbody>
+                        <tr>
+                          <th>
+                            <span class="icon-text">
+                              <span class="icon">
+                                <i class="fa-solid fa-map" />
+                              </span>
+                              <span data-l10n-id="upload-map-title" />
+                            </span>
+                          </th>
+                          <td>
+                            <div class="field has-addons mb-0">
+                              <span class="control is-expanded">
+                                <input
+                                  ref={(el) => {
+                                    setTimeout(() => {
+                                      el.focus();
+                                      el.select();
+                                    }, 0);
+                                  }}
+                                  class="input"
+                                  type="text"
+                                  value={displayName()}
+                                  placeholder={s.mapName}
+                                  onInput={(e) => setDisplayName(e.currentTarget.value)}
+                                />
+                              </span>
+                              <div class="control">
+                                <span
+                                  class={[
+                                    "button is-static",
+                                    displayNameCount() > 30 ? "has-text-danger" : "has-text-grey-light",
+                                  ]}
+                                >
+                                  {displayNameCount()} / 30
+                                </span>
+                              </div>
+                            </div>
+                          </td>
+                        </tr>
+                        <tr>
+                          <th>
+                            <span class="icon-text">
+                              <span class="icon">
+                                <i class="fa-solid fa-layer-group" />
+                              </span>
+                              <span data-l10n-id="upload-surfaces" />
+                            </span>
+                          </th>
+                          <td>{s.surfaceCount}</td>
+                        </tr>
+                        <tr>
+                          <th>
+                            <span class="icon-text">
+                              <span class="icon">
+                                <i class="fa-solid fa-images" />
+                              </span>
+                              <span data-l10n-id="upload-images" />
+                            </span>
+                          </th>
+                          <td>{s.imageCount}</td>
+                        </tr>
+                        <tr>
+                          <th>
+                            <span class="icon-text">
+                              <span class="icon">
+                                <i class="fa-solid fa-chart-simple" />
+                              </span>
+                              <span data-l10n-id="upload-total-size" />
+                            </span>
+                          </th>
+                          <td>{formatBytes(s.totalBytes)}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  )}
+                </Show>
+                <Show when={preparingState()} keyed>
+                  {(s) => (
+                    <>
+                      <p
+                        class="mb-2"
+                        data-l10n-id="upload-preparing"
+                        data-l10n-args={JSON.stringify({ prepared: s.prepared, total: s.total })}
+                      />
+                      <progress class="progress is-primary" value={s.prepared} max={s.total} />
+                    </>
+                  )}
+                </Show>
+                <Show when={uploadingState()} keyed>
+                  {(s) => (
+                    <>
+                      <p
+                        class="mb-2"
+                        data-l10n-id="upload-progress"
+                        data-l10n-args={JSON.stringify({ progress: s.progress, total: s.total })}
+                      />
+                      <progress class="progress is-primary" value={s.progress} max={s.total} />
+                    </>
+                  )}
+                </Show>
+                <Show when={verifyingState()} keyed>
+                  {(s) => (
+                    <>
+                      <p
+                        class="mb-2"
+                        data-l10n-id="upload-verifying"
+                        data-l10n-args={JSON.stringify({ progress: s.progress, total: s.total })}
+                      />
+                      <progress class="progress is-primary" value={s.progress} max={s.total} />
+                    </>
+                  )}
+                </Show>
+                <Show when={doneState()}>
+                  {(s) => (
+                    <div class="has-text-centered">
+                      <p class="mb-4" data-l10n-id="upload-complete" />
+                      <button
+                        class="button is-primary"
+                        data-l10n-id="upload-view-map"
+                        onClick={() => {
+                          onFlush(dismiss);
+                          navigate(s().viewerUrl);
+                        }}
+                      />
+                    </div>
+                  )}
+                </Show>
+                <Show when={errorState()} keyed>
+                  {(s) => (
+                    <p
+                      class="has-text-danger"
+                      data-l10n-id={s.error.msgId}
+                      data-l10n-args={s.error.msgArgs ? JSON.stringify(s.error.msgArgs) : undefined}
+                    />
+                  )}
+                </Show>
+              </section>
+              <footer class="modal-card-foot">
+                <Show when={state().type === "instructions"}>
+                  <div class="buttons">
+                    <button class="button is-primary" onClick={openPicker}>
+                      <span class="icon">
+                        <i class="fa-solid fa-folder-open" />
+                      </span>
+                      <span data-l10n-id="upload-select-folder" />
+                    </button>
+                    <button class="button" data-l10n-id="upload-cancel" onClick={dismiss} />
+                  </div>
+                </Show>
+                <Show when={state().type === "confirming"}>
+                  <div class="buttons">
+                    <button class="button" onClick={openPicker}>
+                      <span class="icon">
+                        <i class="fa-solid fa-folder-open" />
+                      </span>
+                      <span data-l10n-id="upload-reselect-folder" />
+                    </button>
+                    <button class="button is-primary" onClick={startUpload} disabled={displayNameCount() > 30}>
+                      <span class="icon">
+                        <i class="fa-solid fa-upload" />
+                      </span>
+                      <span data-l10n-id="upload-start" />
+                    </button>
+                    <button class="button" data-l10n-id="upload-cancel" onClick={dismiss} />
+                  </div>
+                </Show>
+                <Show when={state().type === "done"}>
+                  <div class="buttons">
+                    <button class="button" data-l10n-id="upload-close" onClick={dismiss} />
+                  </div>
+                </Show>
+                <Show when={state().type === "error"}>
+                  <div class="buttons">
+                    <button class="button is-primary" onClick={openPicker}>
+                      <span class="icon">
+                        <i class="fa-solid fa-folder-open" />
+                      </span>
+                      <span data-l10n-id="upload-reselect-folder" />
+                    </button>
+                    <button class="button" data-l10n-id="upload-dismiss" onClick={dismiss} />
+                  </div>
+                </Show>
+              </footer>
+            </div>
           </div>
-        </div>
         </Portal>
       </Show>
     </>

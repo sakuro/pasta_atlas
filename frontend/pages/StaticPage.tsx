@@ -10,7 +10,7 @@ export const StaticPage = (props: { slug: string }) => {
     lang();
     const res = await fetch(`/api/v1/pages/${slug}`);
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    const json = await res.json() as { content: string };
+    const json = (await res.json()) as { content: string };
     return json.content;
   });
 

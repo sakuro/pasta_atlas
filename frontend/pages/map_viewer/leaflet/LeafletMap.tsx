@@ -64,7 +64,17 @@ export const LeafletMap = (props: { mapshot: Mapshot; assetBase: string }) => {
     if (!surfaces.length) return;
 
     const planetSurfaces = surfaces.filter((s) => s.is_planet);
-    const [trainStationsLabel, tagsLabel, planetsHeading, spacePlatformsHeading, otherHeading, boxZoomTitle, zoomInTitle, zoomOutTitle, ...ftlPlanetNames] = await l10n.formatValues([
+    const [
+      trainStationsLabel,
+      tagsLabel,
+      planetsHeading,
+      spacePlatformsHeading,
+      otherHeading,
+      boxZoomTitle,
+      zoomInTitle,
+      zoomOutTitle,
+      ...ftlPlanetNames
+    ] = await l10n.formatValues([
       { id: "map-layer-train-stations" },
       { id: "map-layer-tags" },
       { id: "map-layer-group-planets" },
@@ -76,12 +86,13 @@ export const LeafletMap = (props: { mapshot: Mapshot; assetBase: string }) => {
       ...planetSurfaces.map((s) => ({ id: `surface-${s.surface_name}` })),
     ]);
     const ftlNameBySurfaceName: Record<string, string> = {};
-    planetSurfaces.forEach((s, i) => { ftlNameBySurfaceName[s.surface_name] = ftlPlanetNames[i]; });
+    planetSurfaces.forEach((s, i) => {
+      ftlNameBySurfaceName[s.surface_name] = ftlPlanetNames[i];
+    });
 
     type SubsurfaceName = [string, [string], string];
     const isSubsurfaceName = (v: unknown): v is SubsurfaceName =>
-      Array.isArray(v) && v[0] === "subsurface.subsurface-name" &&
-      Array.isArray(v[1]) && typeof v[2] === "string";
+      Array.isArray(v) && v[0] === "subsurface.subsurface-name" && Array.isArray(v[1]) && typeof v[2] === "string";
 
     const subsurfaceEntries = surfaces.map((s, i) => {
       if (!isSubsurfaceName(s.surface_localised_name)) return null;
@@ -133,12 +144,15 @@ export const LeafletMap = (props: { mapshot: Mapshot; assetBase: string }) => {
     const trainLayerGroup = L.layerGroup();
     const tagLayerGroup = L.layerGroup();
 
-    const cmp = (a: number, b: number): -1 | 0 | 1 => a < b ? -1 : a > b ? 1 : 0;
+    const cmp = (a: number, b: number): -1 | 0 | 1 => (a < b ? -1 : a > b ? 1 : 0);
     // Sort indices: planets → space platforms → others
-    const groupOrder = (s: Surface): number => s.is_planet ? 0 : s.is_space_platform ? 1 : 2;
-    const sortedIndices = surfaces.map((_, i) => i).sort((a, b) =>
-      cmp(groupOrder(surfaces[a]), groupOrder(surfaces[b])) || cmp(surfaces[a].surface_idx, surfaces[b].surface_idx)
-    );
+    const groupOrder = (s: Surface): number => (s.is_planet ? 0 : s.is_space_platform ? 1 : 2);
+    const sortedIndices = surfaces
+      .map((_, i) => i)
+      .sort(
+        (a, b) =>
+          cmp(groupOrder(surfaces[a]), groupOrder(surfaces[b])) || cmp(surfaces[a].surface_idx, surfaces[b].surface_idx)
+      );
 
     // Build per-surface marker arrays and tile layers (in sorted display order)
     const baseLayers: Record<string, L.TileLayer> = {};
@@ -154,16 +168,13 @@ export const LeafletMap = (props: { mapshot: Mapshot; assetBase: string }) => {
         toLL(surface.world_max.x, surface.world_max.y)
       );
 
-      baseLayers[label] = L.tileLayer(
-        `${assetBase}${surface.file_prefix}{z}/tile_{x}_{y}.jpg`,
-        {
-          tileSize: surface.render_size,
-          bounds,
-          noWrap: true,
-          minNativeZoom: surface.zoom_min,
-          maxNativeZoom: surface.zoom_max,
-        }
-      );
+      baseLayers[label] = L.tileLayer(`${assetBase}${surface.file_prefix}{z}/tile_{x}_{y}.jpg`, {
+        tileSize: surface.render_size,
+        bounds,
+        noWrap: true,
+        minNativeZoom: surface.zoom_min,
+        maxNativeZoom: surface.zoom_max,
+      });
 
       const stationsArray = Array.isArray(surface.stations) ? surface.stations : [];
       stationMarkers[label] = stationsArray.map((s) => {
@@ -193,7 +204,10 @@ export const LeafletMap = (props: { mapshot: Mapshot; assetBase: string }) => {
     if (showTrains) trainLayerGroup.addTo(map);
     if (showTags) tagLayerGroup.addTo(map);
 
-    const groupedEntries: Record<"planets" | "spacePlatforms" | "other", Array<{ label: string; layer: L.TileLayer }>> = {
+    const groupedEntries: Record<
+      "planets" | "spacePlatforms" | "other",
+      Array<{ label: string; layer: L.TileLayer }>
+    > = {
       planets: [],
       spacePlatforms: [],
       other: [],
@@ -213,8 +227,18 @@ export const LeafletMap = (props: { mapshot: Mapshot; assetBase: string }) => {
         { heading: otherHeading, entries: groupedEntries.other },
       ],
       [
-        { label: trainStationsLabel, icon: { faClasses: "fa-solid fa-location-dot", color: "#4285F4" }, group: trainLayerGroup, visible: showTrains },
-        { label: tagsLabel, icon: { faClasses: "fa-solid fa-tag", color: "#34A853" }, group: tagLayerGroup, visible: showTags },
+        {
+          label: trainStationsLabel,
+          icon: { faClasses: "fa-solid fa-location-dot", color: "#4285F4" },
+          group: trainLayerGroup,
+          visible: showTrains,
+        },
+        {
+          label: tagsLabel,
+          icon: { faClasses: "fa-solid fa-tag", color: "#34A853" },
+          group: tagLayerGroup,
+          visible: showTags,
+        },
       ],
       initLabel,
       baseLayers[initLabel]

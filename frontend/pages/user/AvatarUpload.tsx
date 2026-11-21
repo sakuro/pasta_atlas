@@ -2,8 +2,7 @@ import { createSignal, onSettled, Show } from "solid-js";
 import "../../lib/l10n";
 import { Spinner } from "../../components/Spinner";
 
-const csrfToken = (): string =>
-  document.querySelector<HTMLMetaElement>('meta[name="csrf-token"]')?.content ?? "";
+const csrfToken = (): string => document.querySelector<HTMLMetaElement>('meta[name="csrf-token"]')?.content ?? "";
 
 const jsonHeaders = (): HeadersInit => ({
   "Content-Type": "application/json",
@@ -64,8 +63,14 @@ export const AvatarUpload = (props: Props) => {
   const [state, setState] = createSignal<State>({ type: "idle" });
   let inputRef!: HTMLInputElement;
 
-  const selectedState = () => { const s = state(); return s.type === "selected" ? s : null; };
-  const errorState = () => { const s = state(); return s.type === "error" ? s : null; };
+  const selectedState = () => {
+    const s = state();
+    return s.type === "selected" ? s : null;
+  };
+  const errorState = () => {
+    const s = state();
+    return s.type === "error" ? s : null;
+  };
 
   const openPicker = () => {
     inputRef.value = "";
@@ -111,7 +116,9 @@ export const AvatarUpload = (props: Props) => {
 
     const form = props.form;
     if (!form) return;
-    const handler = (e: SubmitEvent) => { void handleFormSubmit(e); };
+    const handler = (e: SubmitEvent) => {
+      void handleFormSubmit(e);
+    };
     form.addEventListener("submit", handler);
     return () => form.removeEventListener("submit", handler);
   });
@@ -147,7 +154,7 @@ export const AvatarUpload = (props: Props) => {
         setState({ type: "error", error: { msgId: "avatar-error-url-http", msgArgs: { status: resp.status } } });
         return null;
       }
-      const data = await resp.json() as { presigned_url: string; s3_key: string };
+      const data = (await resp.json()) as { presigned_url: string; s3_key: string };
       presignedUrl = data.presigned_url;
       s3Key = data.s3_key;
     } catch {
@@ -212,12 +219,16 @@ export const AvatarUpload = (props: Props) => {
   };
 
   const avatarStyle = "border-radius:50%;object-fit:cover";
-  const defaultIcon = <i class="fa-solid fa-circle-user" style={{"font-size":"64px","line-height":"1","display":"block"}} />;
+  const defaultIcon = (
+    <i class="fa-solid fa-circle-user" style={{ "font-size": "64px", "line-height": "1", display: "block" }} />
+  );
 
   return (
     <div>
       <input
-        ref={(el) => { inputRef = el; }}
+        ref={(el) => {
+          inputRef = el;
+        }}
         type="file"
         accept="image/jpeg,image/png,image/webp"
         style={{ display: "none" }}
@@ -228,30 +239,42 @@ export const AvatarUpload = (props: Props) => {
       />
 
       <div style={{ display: "flex", "align-items": "center", gap: "1rem" }}>
-        <Show when={selectedState()} keyed fallback={
-          state().type === "removing" || !props.currentAvatarUrl
-            ? defaultIcon
-            : <img src={props.currentAvatarUrl} width="64" height="64" style={avatarStyle} />
-        }>
+        <Show
+          when={selectedState()}
+          keyed
+          fallback={
+            state().type === "removing" || !props.currentAvatarUrl ? (
+              defaultIcon
+            ) : (
+              <img src={props.currentAvatarUrl} width="64" height="64" style={avatarStyle} />
+            )
+          }
+        >
           {(s) => <img src={s.previewUrl} width="64" height="64" style={avatarStyle} />}
         </Show>
 
         <div>
           <Show when={state().type === "idle" || state().type === "error"}>
             <button class="button is-small" type="button" onClick={openPicker}>
-              <span class="icon"><i class="fa-solid fa-image" /></span>
+              <span class="icon">
+                <i class="fa-solid fa-image" />
+              </span>
               <span data-l10n-id="avatar-change" />
             </button>
             <Show when={props.currentAvatarUrl}>
               <button class="button is-small ml-2" type="button" onClick={() => setState({ type: "removing" })}>
-                <span class="icon"><i class="fa-solid fa-trash" /></span>
+                <span class="icon">
+                  <i class="fa-solid fa-trash" />
+                </span>
                 <span data-l10n-id="avatar-remove" />
               </button>
             </Show>
           </Show>
           <Show when={state().type === "selected" || state().type === "removing"}>
             <button class="button is-small" type="button" onClick={cancel}>
-              <span class="icon"><i class="fa-solid fa-circle-xmark" /></span>
+              <span class="icon">
+                <i class="fa-solid fa-circle-xmark" />
+              </span>
               <span data-l10n-id="avatar-cancel" />
             </button>
           </Show>

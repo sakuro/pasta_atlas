@@ -27,6 +27,11 @@ hooks {
         batch = true
         check = "eslint {{files}}"
       }
+      ["prettier"] {
+        glob = List("frontend/**/*.ts", "frontend/**/*.tsx")
+        batch = true
+        check = "prettier --check {{files}}"
+      }
       ["terraform"] = Builtins.terraform
       ["tflint"] = (Builtins.tf_lint) { fix = null }
     }

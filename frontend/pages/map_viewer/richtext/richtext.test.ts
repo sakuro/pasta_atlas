@@ -103,9 +103,7 @@ describe("renderRichText", () => {
     });
 
     it("renders [space-age] with no value", () => {
-      expect(renderRichText("[space-age]")).toBe(
-        '<i class="factorio-icon factorio-space-age" aria-hidden="true"></i>'
-      );
+      expect(renderRichText("[space-age]")).toBe('<i class="factorio-icon factorio-space-age" aria-hidden="true"></i>');
     });
 
     it("renders [train-stop=5]", () => {
@@ -127,9 +125,7 @@ describe("renderRichText", () => {
     });
 
     it("handles empty value", () => {
-      expect(renderRichText("[item=]")).toBe(
-        '<i class="factorio-icon factorio-item--" aria-hidden="true"></i>'
-      );
+      expect(renderRichText("[item=]")).toBe('<i class="factorio-icon factorio-item--" aria-hidden="true"></i>');
     });
 
     it("is case-insensitive for tag names", () => {
@@ -141,18 +137,18 @@ describe("renderRichText", () => {
     it("renders [item=iron-ore,quality=legendary] as overlaid icons", () => {
       expect(renderRichText("[item=iron-ore,quality=legendary]")).toBe(
         '<span class="factorio-icon-with-quality">' +
-        '<i class="factorio-icon factorio-item--iron-ore" aria-hidden="true">iron-ore</i>' +
-        '<i class="factorio-icon factorio-quality--legendary factorio-quality-overlay" aria-hidden="true">legendary</i>' +
-        '</span>'
+          '<i class="factorio-icon factorio-item--iron-ore" aria-hidden="true">iron-ore</i>' +
+          '<i class="factorio-icon factorio-quality--legendary factorio-quality-overlay" aria-hidden="true">legendary</i>' +
+          "</span>"
       );
     });
 
     it("renders [entity=tank,quality=rare] as overlaid icons", () => {
       expect(renderRichText("[entity=tank,quality=rare]")).toBe(
         '<span class="factorio-icon-with-quality">' +
-        '<i class="factorio-icon factorio-entity--tank" aria-hidden="true">tank</i>' +
-        '<i class="factorio-icon factorio-quality--rare factorio-quality-overlay" aria-hidden="true">rare</i>' +
-        '</span>'
+          '<i class="factorio-icon factorio-entity--tank" aria-hidden="true">tank</i>' +
+          '<i class="factorio-icon factorio-quality--rare factorio-quality-overlay" aria-hidden="true">rare</i>' +
+          "</span>"
       );
     });
 
@@ -165,27 +161,19 @@ describe("renderRichText", () => {
 
   describe("color wrapping tag", () => {
     it("renders named color", () => {
-      expect(renderRichText("[color=red]text[/color]")).toBe(
-        '<span style="color:red">text</span>'
-      );
+      expect(renderRichText("[color=red]text[/color]")).toBe('<span style="color:red">text</span>');
     });
 
     it("renders float RGB color", () => {
-      expect(renderRichText("[color=0.5,0,0]text[/color]")).toBe(
-        '<span style="color:rgba(128,0,0,1)">text</span>'
-      );
+      expect(renderRichText("[color=0.5,0,0]text[/color]")).toBe('<span style="color:rgba(128,0,0,1)">text</span>');
     });
 
     it("renders float RGBA color", () => {
-      expect(renderRichText("[color=1,0,0,0.5]text[/color]")).toBe(
-        '<span style="color:rgba(255,0,0,0.5)">text</span>'
-      );
+      expect(renderRichText("[color=1,0,0,0.5]text[/color]")).toBe('<span style="color:rgba(255,0,0,0.5)">text</span>');
     });
 
     it("renders #rrggbb hex color", () => {
-      expect(renderRichText("[color=#ff0000]text[/color]")).toBe(
-        '<span style="color:#ff0000">text</span>'
-      );
+      expect(renderRichText("[color=#ff0000]text[/color]")).toBe('<span style="color:#ff0000">text</span>');
     });
 
     it("renders #aarrggbb Factorio ARGB hex color", () => {
@@ -196,21 +184,15 @@ describe("renderRichText", () => {
     });
 
     it("auto-closes unclosed color tag", () => {
-      expect(renderRichText("[color=red]text")).toBe(
-        '<span style="color:red">text</span>'
-      );
+      expect(renderRichText("[color=red]text")).toBe('<span style="color:red">text</span>');
     });
 
     it("uses plain span for unknown color format", () => {
-      expect(renderRichText("[color=not-a-color-123!]text[/color]")).toBe(
-        "<span>text</span>"
-      );
+      expect(renderRichText("[color=not-a-color-123!]text[/color]")).toBe("<span>text</span>");
     });
 
     it("escapes text content inside color span", () => {
-      expect(renderRichText("[color=red]<b>[/color]")).toBe(
-        '<span style="color:red">&lt;b&gt;</span>'
-      );
+      expect(renderRichText("[color=red]<b>[/color]")).toBe('<span style="color:red">&lt;b&gt;</span>');
     });
   });
 
@@ -222,17 +204,13 @@ describe("renderRichText", () => {
     });
 
     it("auto-closes unclosed font tag", () => {
-      expect(renderRichText("[font=default-semibold]x")).toBe(
-        '<span class="factorio-font--default-semibold">x</span>'
-      );
+      expect(renderRichText("[font=default-semibold]x")).toBe('<span class="factorio-font--default-semibold">x</span>');
     });
   });
 
   describe("tooltip wrapping tag", () => {
     it("wraps content in plain span", () => {
-      expect(renderRichText("[tooltip=some,tip.key]text[/tooltip]")).toBe(
-        "<span>text</span>"
-      );
+      expect(renderRichText("[tooltip=some,tip.key]text[/tooltip]")).toBe("<span>text</span>");
     });
   });
 
@@ -274,7 +252,7 @@ describe("renderRichText", () => {
     it("renders multiple consecutive icons", () => {
       expect(renderRichText("[item=iron-ore][item=copper-ore]")).toBe(
         '<i class="factorio-icon factorio-item--iron-ore" aria-hidden="true">iron-ore</i>' +
-        '<i class="factorio-icon factorio-item--copper-ore" aria-hidden="true">copper-ore</i>'
+          '<i class="factorio-icon factorio-item--copper-ore" aria-hidden="true">copper-ore</i>'
       );
     });
 

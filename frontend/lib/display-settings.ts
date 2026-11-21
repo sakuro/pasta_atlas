@@ -6,8 +6,7 @@ const resolveLocale = (locale: string | null): string => {
   return navigator.languages.find((l) => SUPPORTED_LOCALES.includes(l)) ?? "en";
 };
 
-const resolveTimezone = (tz: string | null): string =>
-  tz ?? Intl.DateTimeFormat().resolvedOptions().timeZone;
+const resolveTimezone = (tz: string | null): string => tz ?? Intl.DateTimeFormat().resolvedOptions().timeZone;
 
 export const [lang, setLang] = createSignal("en");
 export const [timezone, setTimezone] = createSignal(resolveTimezone(null));

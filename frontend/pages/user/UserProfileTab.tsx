@@ -12,8 +12,7 @@ type ProfileData = {
   avatar_url: string | null;
 };
 
-const csrfToken = (): string =>
-  document.querySelector<HTMLMetaElement>('meta[name="csrf-token"]')?.content ?? "";
+const csrfToken = (): string => document.querySelector<HTMLMetaElement>('meta[name="csrf-token"]')?.content ?? "";
 
 export type ProfileUpdate = { displayName: string; avatarUrl: string | null };
 
@@ -55,10 +54,10 @@ export const UserProfileTab = (props: {
         body: JSON.stringify(body),
       });
       if (res.ok) {
-        const data = await res.json() as { display_name: string; avatar_url: string | null };
+        const data = (await res.json()) as { display_name: string; avatar_url: string | null };
         props.onSuccess?.({ displayName: data.display_name, avatarUrl: data.avatar_url });
       } else {
-        const json = await res.json() as { error?: string };
+        const json = (await res.json()) as { error?: string };
         props.onError?.(json.error ?? "error-unknown");
       }
     } finally {
@@ -75,7 +74,9 @@ export const UserProfileTab = (props: {
               <div class="field">
                 <p class="label">
                   <span class="icon-text">
-                    <span class="icon"><i class="fa-solid fa-user" /></span>
+                    <span class="icon">
+                      <i class="fa-solid fa-user" />
+                    </span>
                     <span data-l10n-id="edit-avatar-label" />
                   </span>
                 </p>
@@ -84,7 +85,9 @@ export const UserProfileTab = (props: {
                     <AvatarUpload
                       userName={props.userName}
                       currentAvatarUrl={profile.avatar_url}
-                      onRef={(ref) => { avatarRef = ref; }}
+                      onRef={(ref) => {
+                        avatarRef = ref;
+                      }}
                     />
                   </div>
                 </div>
@@ -92,7 +95,9 @@ export const UserProfileTab = (props: {
               <div class="field">
                 <label class="label" for="display_name">
                   <span class="icon-text">
-                    <span class="icon"><i class="fa-solid fa-address-card" /></span>
+                    <span class="icon">
+                      <i class="fa-solid fa-address-card" />
+                    </span>
                     <span data-l10n-id="edit-display-name" />
                   </span>
                 </label>
@@ -109,7 +114,9 @@ export const UserProfileTab = (props: {
                       />
                     </div>
                     <div class="control">
-                      <span class={["button is-static", graphemeCount() > 30 ? "has-text-danger" : "has-text-grey-light"]}>
+                      <span
+                        class={["button is-static", graphemeCount() > 30 ? "has-text-danger" : "has-text-grey-light"]}
+                      >
                         {graphemeCount()} / 30
                       </span>
                     </div>
@@ -120,7 +127,9 @@ export const UserProfileTab = (props: {
               <div class="field">
                 <div class="control">
                   <button class="button is-primary" type="submit" disabled={submitting()}>
-                    <span class="icon"><i class="fa-solid fa-floppy-disk" /></span>
+                    <span class="icon">
+                      <i class="fa-solid fa-floppy-disk" />
+                    </span>
                     <span data-l10n-id="edit-save-profile" />
                   </button>
                   <a class="button ml-2" href="/" data-l10n-id="edit-cancel" />

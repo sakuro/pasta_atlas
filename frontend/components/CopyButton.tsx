@@ -12,10 +12,13 @@ export const CopyButton = (props: CopyButtonProps) => {
   const [copied, setCopied] = createSignal(false);
 
   const handleCopy = () => {
-    navigator.clipboard.writeText(props.text).then(() => {
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
-    }).catch(() => {});
+    navigator.clipboard
+      .writeText(props.text)
+      .then(() => {
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2000);
+      })
+      .catch(() => {});
   };
 
   return (

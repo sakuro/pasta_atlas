@@ -22,7 +22,7 @@
 | ESLint + `eslint-plugin-solid` | `npm run lint:frontend` | Static analysis for `frontend/**/*.{ts,tsx}`, with the `v2` configuration |
 | Vitest | `npm run test:frontend` | Unit tests (jsdom); add `-- --run` for a single run |
 | Vite + `@solidjs/vite-plugin` | `npm run build:frontend` | Build; compiles Solid JSX |
-| Prettier | — | Configured in `.prettierrc`; run manually, not part of CI |
+| Prettier | `npm run format:frontend` | Formats `frontend/**/*.{ts,tsx}` in place (`.prettierrc`, 120 columns); the `pre-commit` hook checks it, CI does not |
 
 ## Git hooks
 
@@ -32,7 +32,7 @@
 |---|---|
 | `commit-msg` | `emoji-enforced`: the subject starts with a `:gitmoji:` |
 | `prepare-commit-msg` | `merge-prefix`: prefixes merge commits with `:inbox_tray:` |
-| `pre-commit` | `gitleaks` (staged changes), `no-commit-to-branch`, `rubocop`, `eslint` (`frontend/`), `terraform fmt`, `tflint` |
+| `pre-commit` | `gitleaks` (staged changes), `no-commit-to-branch`, `rubocop`, `eslint` and `prettier` (`frontend/`), `terraform fmt`, `tflint` |
 | `pre-push` | `case-conflict`, `newlines` |
 
 The hooks check only; they do not rewrite files. RSpec and the type check are not hooks: run `rake` and `npm run type-check` before committing.

@@ -12,12 +12,7 @@ type MapsResponse = {
   total: number;
 };
 
-const Pagination = (props: {
-  page: number;
-  perPage: number;
-  total: number;
-  onPageChange: (page: number) => void;
-}) => {
+const Pagination = (props: { page: number; perPage: number; total: number; onPageChange: (page: number) => void }) => {
   const hasPrev = () => props.page > 1;
   const hasNext = () => props.page * props.perPage < props.total;
 
@@ -25,12 +20,18 @@ const Pagination = (props: {
     <Show when={hasPrev() || hasNext()}>
       <nav class="pagination is-centered mt-5" role="navigation" aria-label="pagination">
         <Show when={hasPrev()}>
-          <a class="pagination-previous" onClick={() => props.onPageChange(props.page - 1)}
-             data-l10n-id="pagination-previous" />
+          <a
+            class="pagination-previous"
+            onClick={() => props.onPageChange(props.page - 1)}
+            data-l10n-id="pagination-previous"
+          />
         </Show>
         <Show when={hasNext()}>
-          <a class="pagination-next" onClick={() => props.onPageChange(props.page + 1)}
-             data-l10n-id="pagination-next" />
+          <a
+            class="pagination-next"
+            onClick={() => props.onPageChange(props.page + 1)}
+            data-l10n-id="pagination-next"
+          />
         </Show>
       </nav>
     </Show>
@@ -56,7 +57,17 @@ export const MapsIndexPage = () => {
     <>
       <section class="hero">
         <div class="hero-body p-0">
-          <img src={heroSrc} alt="" style={{ width: "100%", height: "360px", "object-fit": "cover", "object-position": "bottom", display: "block" }} />
+          <img
+            src={heroSrc}
+            alt=""
+            style={{
+              width: "100%",
+              height: "360px",
+              "object-fit": "cover",
+              "object-position": "bottom",
+              display: "block",
+            }}
+          />
         </div>
       </section>
       <section class="section">

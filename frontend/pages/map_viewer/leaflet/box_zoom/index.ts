@@ -41,9 +41,9 @@ export class BoxZoomControl extends L.Control {
     const onMouseMove = (e: MouseEvent) => {
       if (!startPoint) return;
       const cur = map.mouseEventToContainerPoint(e);
-      rect.style.left   = `${Math.min(startPoint.x, cur.x)}px`;
-      rect.style.top    = `${Math.min(startPoint.y, cur.y)}px`;
-      rect.style.width  = `${Math.abs(cur.x - startPoint.x)}px`;
+      rect.style.left = `${Math.min(startPoint.x, cur.x)}px`;
+      rect.style.top = `${Math.min(startPoint.y, cur.y)}px`;
+      rect.style.width = `${Math.abs(cur.x - startPoint.x)}px`;
       rect.style.height = `${Math.abs(cur.y - startPoint.y)}px`;
       rect.style.display = "block";
     };

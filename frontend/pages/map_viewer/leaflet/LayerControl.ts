@@ -20,12 +20,7 @@ export class LayerControl extends L.Control {
   private _overlays: LayerControlOverlay[];
   private _initLabel: string;
 
-  constructor(
-    groups: LayerControlGroup[],
-    overlays: LayerControlOverlay[],
-    initLabel: string,
-    initLayer: L.TileLayer
-  ) {
+  constructor(groups: LayerControlGroup[], overlays: LayerControlOverlay[], initLabel: string, initLayer: L.TileLayer) {
     super({ position: "topright" });
     this._groups = groups;
     this._overlays = overlays;
