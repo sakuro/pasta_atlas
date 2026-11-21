@@ -1,24 +1,24 @@
 # frozen_string_literal: true
 
-SimpleCov.start do
-  add_filter "/frontend/"
-  add_filter "/node_modules/"
-  add_filter "/spec/"
-  add_filter "/vendor/"
+# Configuration only: spec/spec_helper.rb calls SimpleCov.start.
 
-  minimum_coverage 80.0
-  # minimum_coverage_by_file 70
+SimpleCov.skip "/frontend/"
+SimpleCov.skip "/node_modules/"
+SimpleCov.skip "/spec/"
+SimpleCov.skip "/vendor/"
 
-  enable_coverage :branch
+SimpleCov.minimum_coverage 80.0
+# SimpleCov.minimum_coverage_by_file 70
 
-  # Coverage formats
-  formatter SimpleCov::Formatter::MultiFormatter.new(
-    [
-      SimpleCov::Formatter::HTMLFormatter, # HTML report in coverage/
-      SimpleCov::Formatter::SimpleFormatter # Console output
-    ]
-  )
+SimpleCov.enable_coverage :branch
 
-  # Merge multiple test runs (useful for parallel testing)
-  merge_timeout 3600
-end
+# Coverage formats
+SimpleCov.formatter SimpleCov::Formatter::MultiFormatter.new(
+  [
+    SimpleCov::Formatter::HTMLFormatter, # HTML report in coverage/
+    SimpleCov::Formatter::SimpleFormatter # Console output
+  ]
+)
+
+# Merge multiple test runs (useful for parallel testing)
+SimpleCov.merge_timeout 3600
