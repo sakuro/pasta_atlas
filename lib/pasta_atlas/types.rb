@@ -25,10 +25,9 @@ module PastaAtlas
     HTTPSURL = HTTPURL.constrained(type: URI::HTTPS)
     public_constant :HTTPSURL
 
-    # Object keys are appended to the base URL as "#{base_url}/#{key}", so it must not end with a
-    # slash and must not carry a query or a fragment. A constructor that wraps HTTPURL or HTTPSURL
-    # would run before their coercion and see the raw input, so the check calls them first.
     def self.base_url(uri)
+      # Object keys are appended to the base URL as "#{base_url}/#{key}", so it must not end with a
+      # slash and must not carry a query or a fragment.
       return uri unless uri.query || uri.fragment || uri.path.end_with?("/")
 
       raise Dry::Types::CoercionError, "must not end with a slash or have a query or a fragment: #{uri}"
@@ -36,7 +35,11 @@ module PastaAtlas
     private_class_method :base_url
 
     # The URL under which the objects of the mapshots bucket are served by CloudFront.
-    CloudFrontBaseURL = Constructor(URI::HTTPS) {|value| base_url(HTTPSURL[value]) }
+    CloudFrontBaseURL = Constructor(URI::HTTPS) {|value|
+      # A Constructor wrapping HTTPSURL would run before its coercion and see the raw input, so
+      # the value is coerced first and base_url receives a URI.
+      base_url(HTTPSURL[value])
+    }
     public_constant :CloudFrontBaseURL
 
     # Development and test serve the objects from Floci, which is plain HTTP and addresses the
