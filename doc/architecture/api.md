@@ -1,9 +1,5 @@
 # API Endpoints
 
-Images and mapshot.json are served directly via CloudFront, not through the application server.
-
-Presigned POSTs are generated locally by the AWS SDK (no S3 API call). The verify_batch endpoint issues one S3 HeadObject call per file.
-
 ---
 
 ## Auth
@@ -424,7 +420,7 @@ Map details with all complete generations.
     {
       "ulid": "01HABC...",
       "tick": 29386437,
-      "metadata_url": "https://maps.pasta-atlas.layer8.works/sakuro/ae8ec3ab/550f41a9/mapshot.json"
+      "metadata_url": "https://cdn.example.com/sakuro/maps/ae8ec3ab/550f41a9/mapshot.json"
     }
   ]
 }
@@ -517,7 +513,7 @@ Start an upload session. Creates Map (if new for this user), Generation, and Upl
 
 ### POST /api/v1/uploads/:ulid/presigned_posts
 
-Request presigned S3 POSTs for image files. Each POST policy requires `Content-Type: image/jpeg` and a size of 1 byte to 640 KB. Send at most 200 filenames per call; each must match `s<surface>zoom_<zoom>/tile_<x>_<y>.jpg`.
+Request presigned S3 POSTs for image files. They are generated locally, without an S3 API call. Each POST policy requires `Content-Type: image/jpeg` and a size of 1 byte to 640 KB. Send at most 200 filenames per call; each must match `s<surface>zoom_<zoom>/tile_<x>_<y>.jpg`.
 
 **Request body:**
 
@@ -555,7 +551,7 @@ The client submits each file as `multipart/form-data` to `url`, with `fields` fi
 
 ### POST /api/v1/uploads/:ulid/verify_batch
 
-Check that the files of one batch exist in S3 and record their sizes.
+Check that the files of one batch exist in S3 (one `HeadObject` call per file) and record their sizes.
 
 **Request body:** `{ "filenames": [...] }` (1–200 entries)
 
@@ -594,6 +590,8 @@ Mark an upload as `complete` or `failed`. `complete` requires every expected fil
   "completed_at": "2026-04-26T01:23:45Z"
 }
 ```
+
+`completed_at` is `null` unless the upload is `complete`.
 
 **Error responses:**
 

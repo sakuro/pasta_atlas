@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+# Regenerates frontend/pages/map_viewer/richtext/richtext-icons.css from the sprites in
+# frontend/factorio-icons. Run it from anywhere after adding or removing sprites.
+set -euo pipefail
+
+cd "$(dirname "$0")/.."
+
+{
+  echo "/* Auto-generated from frontend/factorio-icons — do not edit manually */"
+  for dir in frontend/factorio-icons/*/; do
+    type="${dir%/}"; type="${type##*/}"
+    for file in "$dir"*.png; do
+      [ -f "$file" ] || continue
+      name="${file%.png}"; name="${name##*/}"
+      echo ".factorio-${type}--${name}{background-image:url('../../../factorio-icons/${type}/${name}.png')}"
+      echo ".factorio-img--${type}-${name}{background-image:url('../../../factorio-icons/${type}/${name}.png')}"
+      if [ "$type" = "space-location" ]; then
+        echo ".factorio-planet--${name}{background-image:url('../../../factorio-icons/space-location/${name}.png')}"
+        echo ".factorio-img--planet-${name}{background-image:url('../../../factorio-icons/space-location/${name}.png')}"
+      fi
+    done
+  done
+} > frontend/pages/map_viewer/richtext/richtext-icons.css

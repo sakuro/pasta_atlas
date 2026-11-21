@@ -37,12 +37,7 @@ ACM certificates for CloudFront must be provisioned in us-east-1 (AWS requiremen
 | production | `pasta-atlas-production-lambda-artifacts` | Deploy packages (90-day expiry) |
 | local | `pasta-atlas-local-mapshots` | Everything, in floci |
 
-### Key structure
-
-```
-{user_name}/maps/{mapshot_map_id}/{mapshot_unique_id}/{filename}
-{user_name}/avatar/{ulid}.{ext}
-```
+The key layout is described in [Upload Flow](../architecture/upload-flow.md#s3-key-structure).
 
 ## DNS
 
@@ -58,11 +53,7 @@ Gandi manages DNS (TTL 300); Route 53 is not used. The CNAMEs for the applicatio
 | `seed.yml` | Manual (`workflow_dispatch`) | Runs DB seed through the `task` function |
 | `delete-map.yml` | Manual (`workflow_dispatch`) | Deletes a map through the `task` function |
 
-`ci.yml` runs three parallel jobs:
-
-- **backend**: spins up PostgreSQL, compiles frontend assets, loads DB structure, then runs `bundle exec rake` (RuboCop + RSpec)
-- **frontend**: runs `npm run type-check`, `npm run lint:frontend`, and `npm run test:frontend`
-- **actions-lock**: verifies `.github/workflows/actions.lock` with `gh actions-lock --verify`; regenerate the lockfile after editing a workflow or bumping an action
+The jobs of `ci.yml` are described in [Code Quality](../development/code-quality.md#ci).
 
 The deploy sequence, rollback and one-off task invocation are described in [Lambda](lambda.md#deployment). When a release contains migrations, run `migrate.yml` after `deploy.yml`.
 

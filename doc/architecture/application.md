@@ -37,7 +37,7 @@ pasta_atlas/
   config/                  # Hanami config, routes, db/ (migrations, structure.sql), assets.js
   lambda_function.rb       # Handlers of the SQS and task Lambda functions
   run.sh                   # Starts Puma behind the Lambda Web Adapter
-  scripts/                 # Build and invocation scripts
+  scripts/                 # Build, invocation and generation scripts
   terraform/               # Infrastructure
   spec/                    # RSpec tests
   doc/                     # Documentation
@@ -107,12 +107,6 @@ Repositories are the only code that talks to the database; operations, actions a
 ## Why not slices
 
 Introducing a `web` slice would place repos and operations in the app container while actions live in the slice container. Hanami does not share app container components with slices by default, requiring explicit enumeration of shared keys — a maintenance burden that outweighs the encapsulation benefit at the current scale.
-
-## When to introduce slices
-
-| Slice | Purpose | Trigger to add |
-|---|---|---|
-| `admin` | Administrative interface | When admin tooling is needed |
 
 ## Asset Pipeline
 
