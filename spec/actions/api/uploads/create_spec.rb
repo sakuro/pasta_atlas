@@ -38,6 +38,18 @@ RSpec.describe PastaAtlas::Actions::API::Uploads::Create, :db do
         expect(body).to include("ulid" => "01UPLOAD", "map_ulid" => "01MAP", "generation_ulid" => "01GEN")
       end
 
+      it "accepts the string keys that a parsed JSON body has below the top level" do
+        metadata = {"map_id" => "ae8ec3ab", "unique_id" => "550f41a9", "tick" => 1000, "surfaces" => [{"name" => "nauvis"}]}
+        json_params = {metadata:, total_image_count: 5, name: "My Map"}
+
+        response = action.call(session.merge(json_params))
+
+        expect(response.status).to eq(201)
+        expect(create_upload).to have_received(:call).with(
+          hash_including(metadata: {map_id: "ae8ec3ab", unique_id: "550f41a9", tick: 1000, surfaces: [{name: "nauvis"}]})
+        )
+      end
+
       it "passes name to the operation" do
         action.call(session.merge(action_params))
 

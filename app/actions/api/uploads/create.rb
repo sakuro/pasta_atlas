@@ -15,7 +15,8 @@ module PastaAtlas
             end
 
             rule(:metadata) do
-              meta = values[:metadata]
+              # A parsed JSON body leaves the keys below the top level as strings.
+              meta = values[:metadata].transform_keys(&:to_sym)
               # gen_map_id / gen_unique_id produce 8 hex chars sliced from SHA-256:
               # https://github.com/Palats/mapshot/blob/ddad172f187d08e56df720efe2fe0bddfb65e347/mod/control.lua#L206-L222
               mapshot_id_pattern = /\A[0-9a-f]{8}\z/
@@ -36,7 +37,7 @@ module PastaAtlas
 
             result = create_upload.call(
               user_id: current_user_id(request),
-              metadata: request.params[:metadata].to_h,
+              metadata: Hanami::Utils::Hash.deep_symbolize(request.params[:metadata].to_h),
               total_image_count: request.params[:total_image_count],
               name: request.params[:name]
             )
