@@ -5,8 +5,8 @@ module PastaAtlas
     class UploadRepo < PastaAtlas::DB::Repo
       def find_by_ulid(ulid) = uploads.where(ulid:).combine(:current_upload_status).one
 
-      def create(attrs)
-        uploads.changeset(:create, attrs).commit
+      def create(ulid:, generation_id:, total_image_count:, verified_bytes:)
+        uploads.command(:create).call(ulid:, generation_id:, total_image_count:, verified_bytes:)
       end
 
       def find_stale_incomplete(before:)
