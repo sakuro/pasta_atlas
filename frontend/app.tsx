@@ -33,14 +33,17 @@ const Router = createRouter({
 });
 
 const App = () => {
-  createEffect(() => lang(), (l) => { document.documentElement.lang = l; });
+  createEffect(
+    () => lang(),
+    (l) => {
+      document.documentElement.lang = l;
+    }
+  );
 
   return (
     <AuthProvider>
       <ToastProvider>
-        <Router>
-          {(props) => <AppLayout {...props} />}
-        </Router>
+        <Router>{(props) => <AppLayout {...props} />}</Router>
       </ToastProvider>
     </AuthProvider>
   );

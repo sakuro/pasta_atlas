@@ -4,5 +4,8 @@ interface ErrorNotificationProps {
 }
 
 export const ErrorNotification = (props: ErrorNotificationProps) => (
-  <div class={["notification", props.type === "warning" ? "is-warning" : "is-danger", "is-light"]} data-l10n-id={props.l10nId} />
+  <div
+    class={["notification", props.type === "warning" ? "is-warning" : "is-danger", "is-light"]}
+    data-l10n-id={props.l10nId}
+  />
 );

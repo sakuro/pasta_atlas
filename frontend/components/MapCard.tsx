@@ -34,18 +34,20 @@ export const MapCard = (props: { map: MapData }) => {
       <div class="card-content">
         <div class="media">
           <div class="media-left">
-            {isGuest()
-              ? <Avatar url={props.map.author_avatar_url} size={32} />
-              : <a href={userHref()}><Avatar url={props.map.author_avatar_url} size={32} /></a>}
+            {isGuest() ? (
+              <Avatar url={props.map.author_avatar_url} size={32} />
+            ) : (
+              <a href={userHref()}>
+                <Avatar url={props.map.author_avatar_url} size={32} />
+              </a>
+            )}
           </div>
           <div class="media-content">
             <p class="title is-6">
               <a href={mapHref()}>{props.map.display_name}</a>
             </p>
             <p class="subtitle is-7">
-              {isGuest()
-                ? props.map.author_display_name
-                : <a href={userHref()}>{props.map.author_display_name}</a>}
+              {isGuest() ? props.map.author_display_name : <a href={userHref()}>{props.map.author_display_name}</a>}
             </p>
             <Show when={props.map.updated_at}>
               <p class="is-size-7 has-text-grey">
@@ -60,10 +62,7 @@ export const MapCard = (props: { map: MapData }) => {
           <Show when={props.map.metadata_url}>
             <MapInfoButton metadataUrl={props.map.metadata_url!} />
           </Show>
-          <ShareButtons
-            mapPath={mapHref()}
-            mapName={props.map.display_name}
-          />
+          <ShareButtons mapPath={mapHref()} mapName={props.map.display_name} />
         </div>
       </footer>
     </div>

@@ -18,11 +18,9 @@ export function connectRoot(): void {
 }
 
 function buildLocaleChain(): string[] {
-  const candidates = currentLocale
-    ? [currentLocale, ...navigator.languages]
-    : [...navigator.languages];
+  const candidates = currentLocale ? [currentLocale, ...navigator.languages] : [...navigator.languages];
   const seen = new Set<string>();
-  return candidates.filter(loc => {
+  return candidates.filter((loc) => {
     if (!SUPPORTED_LOCALES.includes(loc) || seen.has(loc)) return false;
     seen.add(loc);
     return true;
@@ -34,7 +32,7 @@ let ftlManifest: Record<string, { url: string }> | null = null;
 async function resolveAssetUrl(key: string): Promise<string> {
   if (!ftlManifest) {
     const res = await fetch("/assets/ftl-manifest.json");
-    ftlManifest = res.ok ? await res.json() as Record<string, { url: string }> : {};
+    ftlManifest = res.ok ? ((await res.json()) as Record<string, { url: string }>) : {};
   }
   return ftlManifest[key]?.url ?? `/assets/${key}`;
 }

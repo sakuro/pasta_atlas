@@ -11,8 +11,9 @@ describe("buildShareUrl", () => {
   });
 
   it("adds the position and zoom of the current location", () => {
-    expect(buildShareUrl(origin, mapPath, "?x=-109.05&y=57.83&z=1.9"))
-      .toBe("https://pasta-atlas.example/maps/01MAP?generation=01GEN&x=-109.05&y=57.83&z=1.9");
+    expect(buildShareUrl(origin, mapPath, "?x=-109.05&y=57.83&z=1.9")).toBe(
+      "https://pasta-atlas.example/maps/01MAP?generation=01GEN&x=-109.05&y=57.83&z=1.9"
+    );
   });
 
   it("uses a single question mark when the location already has a generation", () => {
@@ -22,7 +23,8 @@ describe("buildShareUrl", () => {
   });
 
   it("prefers the generation of the map path over the one in the location", () => {
-    expect(buildShareUrl(origin, mapPath, "?generation=OLD&x=1"))
-      .toBe("https://pasta-atlas.example/maps/01MAP?generation=01GEN&x=1");
+    expect(buildShareUrl(origin, mapPath, "?generation=OLD&x=1")).toBe(
+      "https://pasta-atlas.example/maps/01MAP?generation=01GEN&x=1"
+    );
   });
 });

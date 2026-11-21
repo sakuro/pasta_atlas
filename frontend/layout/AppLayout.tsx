@@ -29,7 +29,7 @@ export const AppLayout = (props: RouteSectionProps) => {
             class={["navbar-burger", { "is-active": menuActive() }]}
             aria-label="menu"
             aria-expanded={menuActive() ? "true" : "false"}
-            onClick={() => setMenuActive(v => !v)}
+            onClick={() => setMenuActive((v) => !v)}
           >
             <span aria-hidden="true" />
             <span aria-hidden="true" />
@@ -53,20 +53,18 @@ export const AppLayout = (props: RouteSectionProps) => {
           </div>
         </div>
       </nav>
-      <Show when={user() !== undefined} fallback={
-        <div class="has-text-centered py-6">
-          <Spinner size="large" />
-        </div>
-      }>
+      <Show
+        when={user() !== undefined}
+        fallback={
+          <div class="has-text-centered py-6">
+            <Spinner size="large" />
+          </div>
+        }
+      >
         {props.children}
       </Show>
       <footer class="footer">
-        <Footer
-          logoSrc={logoSrc}
-          aboutPath="/about"
-          privacyPolicyPath="/privacy"
-          termsOfServicePath="/terms"
-        />
+        <Footer logoSrc={logoSrc} aboutPath="/about" privacyPolicyPath="/privacy" termsOfServicePath="/terms" />
       </footer>
     </>
   );

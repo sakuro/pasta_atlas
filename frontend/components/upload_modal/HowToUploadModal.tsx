@@ -13,13 +13,25 @@ export const HowToUploadModal = (props: { onClose: () => void }) => (
           <div class="content">
             <h4 data-l10n-id="how-to-upload-step1-heading" />
             <p data-l10n-id="how-to-upload-step1-body">
-              <a data-l10n-name="mapshot-link" href="https://mods.factorio.com/mod/mapshot" target="_blank" rel="noopener noreferrer" />
-              <a data-l10n-name="mapshot-2-1-link" href="https://mods.factorio.com/mod/mapshot_2_1" target="_blank" rel="noopener noreferrer" />
+              <a
+                data-l10n-name="mapshot-link"
+                href="https://mods.factorio.com/mod/mapshot"
+                target="_blank"
+                rel="noopener noreferrer"
+              />
+              <a
+                data-l10n-name="mapshot-2-1-link"
+                href="https://mods.factorio.com/mod/mapshot_2_1"
+                target="_blank"
+                rel="noopener noreferrer"
+              />
             </p>
 
             <h4 data-l10n-id="how-to-upload-step2-heading" />
             <p data-l10n-id="how-to-upload-step2-open-console" />
-            <pre><code>/mapshot</code></pre>
+            <pre>
+              <code>/mapshot</code>
+            </pre>
             <p data-l10n-id="how-to-upload-step2-wait" />
             <div class="notification is-warning is-light">
               <p data-l10n-id="how-to-upload-achievement-warning" />

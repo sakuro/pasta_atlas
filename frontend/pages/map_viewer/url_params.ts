@@ -1,5 +1,4 @@
-export const getParam = (key: string): string | null =>
-  new URLSearchParams(window.location.search).get(key);
+export const getParam = (key: string): string | null => new URLSearchParams(window.location.search).get(key);
 
 export const setParams = (updates: Record<string, string | null>) => {
   const params = new URLSearchParams(window.location.search);

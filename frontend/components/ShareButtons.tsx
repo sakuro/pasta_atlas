@@ -22,14 +22,42 @@ export const ShareButtons = (props: Props) => {
 
   return (
     <div class="buttons has-addons">
-      <button class="button is-small" onClick={() => openShare(`https://x.com/intent/post?url=${encodeURIComponent(shareUrl())}&text=${encodeURIComponent(props.mapName)}&hashtags=Factorio,PastaAtlas`)} data-l10n-id="share-x">
-        <span class="icon is-small"><i class="fa-brands fa-x-twitter" /></span>
+      <button
+        class="button is-small"
+        onClick={() =>
+          openShare(
+            `https://x.com/intent/post?url=${encodeURIComponent(shareUrl())}&text=${encodeURIComponent(props.mapName)}&hashtags=Factorio,PastaAtlas`
+          )
+        }
+        data-l10n-id="share-x"
+      >
+        <span class="icon is-small">
+          <i class="fa-brands fa-x-twitter" />
+        </span>
       </button>
-      <button class="button is-small" onClick={() => openShare(`https://bsky.app/intent/compose?text=${encodeURIComponent(`${props.mapName} ${shareUrl()}`)}`)} data-l10n-id="share-bluesky">
-        <span class="icon is-small"><i class="fa-brands fa-bluesky" /></span>
+      <button
+        class="button is-small"
+        onClick={() =>
+          openShare(`https://bsky.app/intent/compose?text=${encodeURIComponent(`${props.mapName} ${shareUrl()}`)}`)
+        }
+        data-l10n-id="share-bluesky"
+      >
+        <span class="icon is-small">
+          <i class="fa-brands fa-bluesky" />
+        </span>
       </button>
-      <button class="button is-small" onClick={() => openShare(`https://www.reddit.com/submit?url=${encodeURIComponent(shareUrl())}&title=${encodeURIComponent(props.mapName)}`)} data-l10n-id="share-reddit">
-        <span class="icon is-small"><i class="fa-brands fa-reddit-alien" /></span>
+      <button
+        class="button is-small"
+        onClick={() =>
+          openShare(
+            `https://www.reddit.com/submit?url=${encodeURIComponent(shareUrl())}&title=${encodeURIComponent(props.mapName)}`
+          )
+        }
+        data-l10n-id="share-reddit"
+      >
+        <span class="icon is-small">
+          <i class="fa-brands fa-reddit-alien" />
+        </span>
       </button>
       <button class="button is-small" onClick={handleCopy} data-l10n-id="share-copy-link">
         <span class="icon is-small">

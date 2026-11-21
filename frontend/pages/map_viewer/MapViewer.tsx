@@ -2,8 +2,7 @@ import { createSignal, createMemo, createEffect, Show, Loading, onSettled } from
 import { useLocation, useNavigate } from "@solidjs/router";
 import { useToast } from "../../contexts/ToastContext";
 
-const csrfToken = (): string =>
-  document.querySelector<HTMLMetaElement>('meta[name="csrf-token"]')?.content ?? "";
+const csrfToken = (): string => document.querySelector<HTMLMetaElement>('meta[name="csrf-token"]')?.content ?? "";
 
 import { Avatar } from "../../components/Avatar";
 import { FormattedDateTime } from "../../components/FormattedDateTime";
@@ -53,15 +52,18 @@ export const MapViewer = (props: MapViewerProps) => {
   const [generationUlid, setGenerationUlid] = createSignal<string | null>(getParam("generation"));
 
   // "View Map" after an upload navigates here with another generation while this page stays mounted.
-  createEffect(() => location.search, () => { setGenerationUlid(getParam("generation")); });
+  createEffect(
+    () => location.search,
+    () => {
+      setGenerationUlid(getParam("generation"));
+    }
+  );
 
   const activeGeneration = createMemo(() => {
     const data = mapData();
     if (!data?.generations.length) return undefined;
     const ulid = generationUlid();
-    return ulid
-      ? (data.generations.find((g) => g.ulid === ulid) ?? data.generations[0])
-      : data.generations[0];
+    return ulid ? (data.generations.find((g) => g.ulid === ulid) ?? data.generations[0]) : data.generations[0];
   });
 
   // A string, so that refetching the generations does not rebuild the map while the
@@ -108,12 +110,16 @@ export const MapViewer = (props: MapViewerProps) => {
 
   return (
     <div style={{ display: "flex", "flex-direction": "column", height: "100%" }}>
-      <div style={{ padding: "0.25rem 0.5rem", "flex-shrink": 0, display: "flex", gap: "0.5rem", "align-items": "center" }}>
+      <div
+        style={{ padding: "0.25rem 0.5rem", "flex-shrink": 0, display: "flex", gap: "0.5rem", "align-items": "center" }}
+      >
         <MapNameEditor
           ulid={props.ulid}
           initialName={props.displayName}
           isOwner={isOwner()}
-          onSave={(prev, next) => { document.title = document.title.replace(prev, next); }}
+          onSave={(prev, next) => {
+            document.title = document.title.replace(prev, next);
+          }}
         />
         <Show
           when={props.authorName !== "guest"}
@@ -124,7 +130,11 @@ export const MapViewer = (props: MapViewerProps) => {
             </span>
           }
         >
-          <a href={`/@${props.authorName}`} class="is-flex is-align-items-center" style={{ "flex-shrink": 0, gap: "0.4rem" }}>
+          <a
+            href={`/@${props.authorName}`}
+            class="is-flex is-align-items-center"
+            style={{ "flex-shrink": 0, gap: "0.4rem" }}
+          >
             <Avatar url={props.authorAvatarUrl} size={24} />
             <span class="is-size-7">{props.authorDisplayName}</span>
           </a>
@@ -155,11 +165,19 @@ export const MapViewer = (props: MapViewerProps) => {
           <Show when={mapshot()}>
             <div class="buttons has-addons mb-0">
               <button class="button is-small" onClick={() => setShowInfo(true)} data-l10n-id="map-info-button">
-                <span class="icon is-small"><i class="fa-solid fa-circle-info" /></span>
+                <span class="icon is-small">
+                  <i class="fa-solid fa-circle-info" />
+                </span>
               </button>
               <Show when={isOwner()}>
-                <button class="button is-small" onClick={() => setShowDeleteConfirm(true)} data-l10n-id="map-delete-button">
-                  <span class="icon is-small has-text-danger"><i class="fa-solid fa-trash" /></span>
+                <button
+                  class="button is-small"
+                  onClick={() => setShowDeleteConfirm(true)}
+                  data-l10n-id="map-delete-button"
+                >
+                  <span class="icon is-small has-text-danger">
+                    <i class="fa-solid fa-trash" />
+                  </span>
                 </button>
               </Show>
             </div>
@@ -171,10 +189,7 @@ export const MapViewer = (props: MapViewerProps) => {
         <Loading>
           <Show when={activeGeneration()}>
             {(gen) => (
-              <ShareButtons
-                mapPath={`/maps/${props.ulid}?generation=${gen().ulid}`}
-                mapName={mapData().display_name}
-              />
+              <ShareButtons mapPath={`/maps/${props.ulid}?generation=${gen().ulid}`} mapName={mapData().display_name} />
             )}
           </Show>
         </Loading>
@@ -184,7 +199,9 @@ export const MapViewer = (props: MapViewerProps) => {
           <div class="modal-background" onClick={() => setShowDeleteConfirm(false)} />
           <div class="modal-card">
             <header class="modal-card-head">
-              <p class="modal-card-title"><span data-l10n-id="map-delete-confirm-title" /></p>
+              <p class="modal-card-title">
+                <span data-l10n-id="map-delete-confirm-title" />
+              </p>
               <button class="delete" aria-label="close" onClick={() => setShowDeleteConfirm(false)} />
             </header>
             <section class="modal-card-body">

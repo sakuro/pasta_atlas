@@ -2,8 +2,11 @@ import { lang, timezone, relativeTimestamps } from "../lib/display-settings";
 
 const formatAbsolute = (dateTime: string): string =>
   new Intl.DateTimeFormat(lang(), {
-    year: "numeric", month: "short", day: "numeric",
-    hour: "numeric", minute: "numeric",
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+    hour: "numeric",
+    minute: "numeric",
     timeZone: timezone(),
   }).format(new Date(dateTime));
 
@@ -23,12 +26,16 @@ const formatRelative = (dateTime: string): string => {
 type Props = { dateTime: string };
 
 export const FormattedDateTime = (props: Props) => {
-  const display = () => relativeTimestamps() ? formatRelative(props.dateTime) : formatAbsolute(props.dateTime);
-  const tooltip = () => relativeTimestamps() ? formatAbsolute(props.dateTime) : formatRelative(props.dateTime);
+  const display = () => (relativeTimestamps() ? formatRelative(props.dateTime) : formatAbsolute(props.dateTime));
+  const tooltip = () => (relativeTimestamps() ? formatAbsolute(props.dateTime) : formatRelative(props.dateTime));
   return (
     <span class="icon-text">
-      <span class="icon is-small"><i class="fa-regular fa-calendar" /></span>
-      <time datetime={props.dateTime} title={tooltip()}>{display()}</time>
+      <span class="icon is-small">
+        <i class="fa-regular fa-calendar" />
+      </span>
+      <time datetime={props.dateTime} title={tooltip()}>
+        {display()}
+      </time>
     </span>
   );
 };

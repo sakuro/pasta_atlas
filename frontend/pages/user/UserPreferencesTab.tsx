@@ -11,13 +11,17 @@ type PreferencesData = {
   relative_timestamps: boolean;
 };
 
-const csrfToken = (): string =>
-  document.querySelector<HTMLMetaElement>('meta[name="csrf-token"]')?.content ?? "";
+const csrfToken = (): string => document.querySelector<HTMLMetaElement>('meta[name="csrf-token"]')?.content ?? "";
 
 const browserTimezone = (): string => Intl.DateTimeFormat().resolvedOptions().timeZone;
 
 const currentTimeInTz = (tz: string | null): string =>
-  new Intl.DateTimeFormat("en", { timeZone: tz ?? browserTimezone(), hour: "2-digit", minute: "2-digit", hour12: false }).format(new Date());
+  new Intl.DateTimeFormat("en", {
+    timeZone: tz ?? browserTimezone(),
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+  }).format(new Date());
 
 const groupTimezones = (identifiers: string[]): { region: string; timezones: string[] }[] => {
   const groups = new Map<string, string[]>();
@@ -74,7 +78,10 @@ export const UserPreferencesTab = (props: {
       updateTzTime();
       intervalId = setInterval(updateTzTime, 60000);
     }, msUntilNextMinute);
-    return () => { clearTimeout(timeoutId); clearInterval(intervalId); };
+    return () => {
+      clearTimeout(timeoutId);
+      clearInterval(intervalId);
+    };
   });
 
   const onTzChange = (tz: string) => {
@@ -93,14 +100,14 @@ export const UserPreferencesTab = (props: {
         headers: { "Content-Type": "application/json", "X-CSRF-Token": csrfToken() },
         body: JSON.stringify({
           user_name: props.userName,
-          timezone: formData.get("timezone") as string || null,
-          locale: formData.get("locale") as string || null,
+          timezone: (formData.get("timezone") as string) || null,
+          locale: (formData.get("locale") as string) || null,
           relative_timestamps: String(relTs),
         }),
       });
       if (res.ok) {
-        const json = await res.json() as { locale: string | null };
-        const tz = formData.get("timezone") as string || null;
+        const json = (await res.json()) as { locale: string | null };
+        const tz = (formData.get("timezone") as string) || null;
         applyPreferences(json.locale, tz, relTs);
         l10n.onChange();
         props.onSuccess?.();
@@ -121,7 +128,9 @@ export const UserPreferencesTab = (props: {
               <div class="field">
                 <p class="label">
                   <span class="icon-text">
-                    <span class="icon"><i class="fa-solid fa-clock" /></span>
+                    <span class="icon">
+                      <i class="fa-solid fa-clock" />
+                    </span>
                     <span data-l10n-id="edit-time-display" />
                   </span>
                 </p>
@@ -137,12 +146,20 @@ export const UserPreferencesTab = (props: {
                             value={selectedTz() ?? ""}
                             onChange={(e) => onTzChange(e.currentTarget.value)}
                           >
-                            <option value="" selected={selectedTz() === null} data-l10n-id="edit-timezone-use-browser" />
+                            <option
+                              value=""
+                              selected={selectedTz() === null}
+                              data-l10n-id="edit-timezone-use-browser"
+                            />
                             <For each={groupTimezones(pref.timezone_identifiers)}>
                               {(group) => (
                                 <optgroup label={group.region}>
                                   <For each={group.timezones}>
-                                    {(tz) => <option value={tz} selected={tz === selectedTz()}>{tz}</option>}
+                                    {(tz) => (
+                                      <option value={tz} selected={tz === selectedTz()}>
+                                        {tz}
+                                      </option>
+                                    )}
                                   </For>
                                 </optgroup>
                               )}
@@ -162,8 +179,7 @@ export const UserPreferencesTab = (props: {
                           type="checkbox"
                           checked={relativeTimestamps()}
                           onChange={(e) => setRelativeTimestamps(e.currentTarget.checked)}
-                        />
-                        {" "}
+                        />{" "}
                         <span data-l10n-id="edit-time-display-relative" />
                       </label>
                     </div>
@@ -173,7 +189,9 @@ export const UserPreferencesTab = (props: {
               <div class="field">
                 <label class="label" for="locale-select">
                   <span class="icon-text">
-                    <span class="icon"><i class="fa-solid fa-language" /></span>
+                    <span class="icon">
+                      <i class="fa-solid fa-language" />
+                    </span>
                     <span data-l10n-id="edit-locale" />
                   </span>
                 </label>
@@ -202,7 +220,9 @@ export const UserPreferencesTab = (props: {
               <div class="field">
                 <div class="control">
                   <button class="button is-primary" type="submit" disabled={submitting()}>
-                    <span class="icon"><i class="fa-solid fa-floppy-disk" /></span>
+                    <span class="icon">
+                      <i class="fa-solid fa-floppy-disk" />
+                    </span>
                     <span data-l10n-id="edit-save-preferences" />
                   </button>
                   <a class="button ml-2" href="/" data-l10n-id="edit-cancel" />

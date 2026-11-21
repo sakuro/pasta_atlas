@@ -36,11 +36,13 @@ export const MapViewerPage = () => {
 
   return (
     <div class="map-viewer-page">
-      <Errored fallback={(err) => (
-        <Show when={err() instanceof NotFoundError} fallback={<ErrorNotification l10nId="error-load-failed" />}>
-          <ErrorNotification l10nId="error-map-not-found" type="warning" />
-        </Show>
-      )}>
+      <Errored
+        fallback={(err) => (
+          <Show when={err() instanceof NotFoundError} fallback={<ErrorNotification l10nId="error-load-failed" />}>
+            <ErrorNotification l10nId="error-map-not-found" type="warning" />
+          </Show>
+        )}
+      >
         <Loading fallback={<SpinnerBlock />} on={params.ulid}>
           <Show when={data()} keyed>
             {(mapData) => (

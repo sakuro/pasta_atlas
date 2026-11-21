@@ -8,8 +8,7 @@ type CredentialsData = {
   connected_providers: string[];
 };
 
-const csrfToken = (): string =>
-  document.querySelector<HTMLMetaElement>('meta[name="csrf-token"]')?.content ?? "";
+const csrfToken = (): string => document.querySelector<HTMLMetaElement>('meta[name="csrf-token"]')?.content ?? "";
 
 export const UserCredentialsTab = (props: {
   userName: string;
@@ -41,7 +40,7 @@ export const UserCredentialsTab = (props: {
         void refresh(data);
         props.onSuccess?.();
       } else {
-        const json = await res.json() as { error?: string };
+        const json = (await res.json()) as { error?: string };
         props.onError?.(json.error ?? "error-unknown");
       }
     } finally {
@@ -69,7 +68,9 @@ export const UserCredentialsTab = (props: {
                                 <form action={`/auth/${provider}`} method="post">
                                   <input type="hidden" name="authenticity_token" value={props.omniauthToken} />
                                   <button class="button" type="submit">
-                                    <span class="icon"><i class={`fa-brands fa-${provider}`} /></span>
+                                    <span class="icon">
+                                      <i class={`fa-brands fa-${provider}`} />
+                                    </span>
                                     <span data-l10n-id={`credential-connect-${provider}`} />
                                   </button>
                                 </form>
@@ -81,7 +82,9 @@ export const UserCredentialsTab = (props: {
                                 disabled={onlyOne() || disconnecting() === provider}
                                 onClick={() => void handleDisconnect(provider)}
                               >
-                                <span class="icon"><i class={`fa-brands fa-${provider}`} /></span>
+                                <span class="icon">
+                                  <i class={`fa-brands fa-${provider}`} />
+                                </span>
                                 <span data-l10n-id={`credential-disconnect-${provider}`} />
                               </button>
                             </Show>

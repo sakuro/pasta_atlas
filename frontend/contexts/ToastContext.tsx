@@ -22,11 +22,11 @@ export const ToastProvider: ParentComponent = (props) => {
 
   const showToast = (message: string, type: ToastType = "success") => {
     const id = nextId++;
-    setToasts(prev => [...prev, { id, message, type }]);
-    setTimeout(() => setToasts(prev => prev.filter(t => t.id !== id)), AUTO_DISMISS_MS);
+    setToasts((prev) => [...prev, { id, message, type }]);
+    setTimeout(() => setToasts((prev) => prev.filter((t) => t.id !== id)), AUTO_DISMISS_MS);
   };
 
-  const dismiss = (id: number) => setToasts(prev => prev.filter(t => t.id !== id));
+  const dismiss = (id: number) => setToasts((prev) => prev.filter((t) => t.id !== id));
 
   return (
     <ToastContext value={{ showToast }}>
