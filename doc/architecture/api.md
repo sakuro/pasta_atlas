@@ -591,6 +591,8 @@ Mark an upload as `complete` or `failed`. `complete` requires every expected fil
 }
 ```
 
+`completed_at` is `null` unless the upload is `complete`.
+
 **Error responses:**
 
 | Status | Condition |

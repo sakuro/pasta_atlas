@@ -37,7 +37,7 @@ pasta_atlas/
   config/                  # Hanami config, routes, db/ (migrations, structure.sql), assets.js
   lambda_function.rb       # Handlers of the SQS and task Lambda functions
   run.sh                   # Starts Puma behind the Lambda Web Adapter
-  scripts/                 # Build and invocation scripts
+  scripts/                 # Build, invocation and generation scripts
   terraform/               # Infrastructure
   spec/                    # RSpec tests
   doc/                     # Documentation
