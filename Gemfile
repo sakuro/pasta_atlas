@@ -36,7 +36,7 @@ group :development do
   gem "docquet", "~> 1.2"
   gem "foxtail-tools"
   gem "rubocop", "~> 1.86"
-  gem "rubocop-capybara", "~> 2.22"
+  gem "rubocop-capybara", "~> 3.0"
   gem "rubocop-performance", "~> 1.26"
   gem "rubocop-rake", "~> 0.7.1"
   gem "rubocop-rspec"
