@@ -6,6 +6,8 @@ Database: PostgreSQL
 
 - All timestamps use `timestamptz`. Stored internally as UTC.
 - Timezone conversion for display is the frontend's responsibility.
+- Internal IDs are `bigserial`. Entities exposed in public URLs also have a unique `ulid varchar(26)` column.
+- PostgreSQL native ENUM types are not used due to ROM.rb limitations (no schema DSL, `.in()` filtering unsupported). A `text` column with a `CHECK` constraint is used instead.
 
 ## Tables
 
