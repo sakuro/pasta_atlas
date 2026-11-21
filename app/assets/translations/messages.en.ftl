@@ -187,7 +187,7 @@ how-to-upload-achievement-warning = To avoid affecting achievements, do not save
 how-to-upload-step3-heading = 3. Upload
 how-to-upload-step3-click-upload = Click "Upload" in the navigation bar.
 how-to-upload-step3-select-folder = Click "Select Folder" and select the subfolder containing <code data-l10n-name="filename">mapshot.json</code> (not the file itself).
-how-to-upload-step3-confirm = Confirm the map title and details, then click "Start Upload".
+how-to-upload-step3-confirm = Give the map a title and check the details, then click "Start Upload".
 how-to-upload-step3-view = When the upload completes, click "View Map".
 how-to-upload-tip = You can upload the same map at different game ticks — each upload becomes a separate generation you can switch between in the map viewer.
 

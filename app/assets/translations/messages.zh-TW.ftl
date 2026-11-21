@@ -187,7 +187,7 @@ how-to-upload-achievement-warning = 為避免影響成就，請勿在安裝 { -m
 how-to-upload-step3-heading = 3. 上傳
 how-to-upload-step3-click-upload = 點擊導覽列中的「上傳」。
 how-to-upload-step3-select-folder = 點擊「選取資料夾」並選擇包含 <code data-l10n-name="filename">mapshot.json</code> 的子資料夾（請選擇資料夾，而非檔案本身）。
-how-to-upload-step3-confirm = 確認地圖標題和詳細資訊後，點擊「開始上傳」。
+how-to-upload-step3-confirm = 為地圖設定標題並確認詳細資訊後，點擊「開始上傳」。
 how-to-upload-step3-view = 上傳完成後，點擊「查看地圖」。
 how-to-upload-tip = 您可以在不同遊戲刻上傳同一張地圖，每次上傳會成為獨立的世代，可在地圖檢視器中切換。
 

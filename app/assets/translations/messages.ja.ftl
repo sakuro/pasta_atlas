@@ -187,7 +187,7 @@ how-to-upload-achievement-warning = 実績への影響を避けたい場合は�
 how-to-upload-step3-heading = 3. アップロードする
 how-to-upload-step3-click-upload = ナビゲーションバーの「アップロード」をクリックします。
 how-to-upload-step3-select-folder = 「フォルダーを選択」をクリックし、<code data-l10n-name="filename">mapshot.json</code> を含むサブフォルダーを選択します（ファイル自体ではなくフォルダーを選択してください）。
-how-to-upload-step3-confirm = マップタイトルと内容を確認し、「アップロード開始」をクリックします。
+how-to-upload-step3-confirm = マップにタイトルを付け、内容を確認し、「アップロード開始」をクリックします。
 how-to-upload-step3-view = アップロードが完了したら「マップを表示」をクリックします。
 how-to-upload-tip = 同じマップを異なるゲームティックでアップロードできます。各アップロードは個別の「世代」となり、マップビューアーで切り替えられます。
 

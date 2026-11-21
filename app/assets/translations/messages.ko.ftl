@@ -187,7 +187,7 @@ how-to-upload-achievement-warning = 업적에 영향을 주지 않으려면 { -m
 how-to-upload-step3-heading = 3. 업로드
 how-to-upload-step3-click-upload = 내비게이션 바에서 "업로드"를 클릭하세요.
 how-to-upload-step3-select-folder = "폴더 선택"을 클릭하고 <code data-l10n-name="filename">mapshot.json</code>이 포함된 하위 폴더를 선택하세요(파일 자체가 아닌 폴더를 선택하세요).
-how-to-upload-step3-confirm = 맵 제목과 세부 정보를 확인한 후 "업로드 시작"을 클릭하세요.
+how-to-upload-step3-confirm = 맵에 제목을 붙이고 세부 정보를 확인한 후 "업로드 시작"을 클릭하세요.
 how-to-upload-step3-view = 업로드가 완료되면 "맵 보기"를 클릭하세요.
 how-to-upload-tip = 같은 맵을 다른 게임 틱에서 업로드할 수 있습니다. 각 업로드는 별도의 세대가 되며 맵 뷰어에서 전환할 수 있습니다.
 
