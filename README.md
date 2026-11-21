@@ -8,7 +8,7 @@ The production site runs on AWS Lambda behind CloudFront.
 
 | Layer | Technology |
 |-------|-----------|
-| Backend | [Ruby](https://www.ruby-lang.org/) / [Hanami](https://hanamirb.org/), ROM |
+| Backend | [Ruby](https://www.ruby-lang.org/) / [Hanami](https://hanakai.org/hanami), [ROM](https://hanakai.org/rom) |
 | Frontend | [SolidJS](https://www.solidjs.com/) / [Vite](https://vitejs.dev/), [Leaflet](https://leafletjs.com/), [Bulma](https://bulma.io/) |
 | Database | PostgreSQL |
 | Storage and queue | AWS S3 and SQS (local: [floci](https://floci.io/)) |
