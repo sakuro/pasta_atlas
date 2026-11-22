@@ -7,7 +7,7 @@ Local development uses Docker-based substitutes for AWS services. No AWS account
 | Production | Local substitute |
 |---|---|
 | S3 | Floci (S3-compatible emulator, port 4566) |
-| RDS (PostgreSQL) | PostgreSQL container (port 5432) |
+| RDS (PostgreSQL) | Floci RDS (PostgreSQL container started by Floci, proxy port 7001) |
 | CloudFront | Floci (images served directly from `http://localhost:4566`) |
 | SSM Parameter Store | `.env.development.local` |
 
@@ -52,10 +52,13 @@ This creates the following resources in Floci:
 
 - `pasta-atlas-local-mapshots` S3 bucket
 - `pasta-atlas-local-s3-cleanup` SQS queue
+- `pasta-atlas-local` RDS instance (PostgreSQL 18, master user `pasta_atlas`)
 
 The bucket's CORS rule must allow `POST` because the browser uploads tiles with presigned POSTs (see [Upload Flow](../architecture/upload-flow.md)). After changing `s3.tf` or `sqs.tf`, run `terraform apply` again.
 
-Floci keeps its data in the `floci_data` volume, while the Terraform state (`terraform.tfstate`) is a gitignored local file. If the state file is missing but the volume still has the resources, `terraform apply` fails because the bucket and queue already exist. Either import them:
+Floci starts the PostgreSQL container through the Docker socket and keeps its data in a Docker volume of its own, named `floci-aws-rds-*`. `docker compose down -v` does not remove that volume, so remove it with `docker volume rm` to reset the database.
+
+Floci keeps its other data in the `floci_data` volume, while the Terraform state (`terraform.tfstate`) is a gitignored local file. If the state file is missing but the volume still has the resources, `terraform apply` fails because the bucket and queue already exist. Either import them:
 
 ```bash
 cd terraform/environments/local
@@ -124,14 +127,14 @@ This runs `bundle install`, `npm install`, and `hanami db prepare`.
 bin/dev
 ```
 
-Starts all services concurrently via mise. The web server and the queue worker first wait for PostgreSQL (the `wait-postgres` task), and the queue worker also waits until Floci serves its queue (`wait-floci`):
+Starts all services concurrently via mise. The web server and the queue worker first wait for the RDS proxy port (the `wait-postgres` task), and the queue worker also waits until Floci serves its queue (`wait-floci`):
 
 | Process | Command |
 |---|---|
 | Hanami web server | `bundle exec hanami server` |
 | Asset watch (esbuild) | `bundle exec hanami assets watch` |
 | Frontend watch (Vite) | `npm run dev:frontend` |
-| Docker Compose (Floci + PostgreSQL) | `docker compose up` |
+| Docker Compose (Floci) | `docker compose up` |
 | SQS queue worker (S3 cleanup) | `bundle exec rake s3:process_queues` |
 
 Production runs the same message handling in Lambda functions triggered by SQS (see [Lambda](../operations/lambda.md)).

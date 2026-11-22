@@ -33,9 +33,9 @@ depends = ["dev"]
 [tasks.dev]
 depends = ["web", "assets", "frontend", "floci", "s3-queue-worker"]
 
-# `floci` starts PostgreSQL in parallel with the tasks that need it, so they wait here.
+# The RDS instance is created by `terraform apply` and served by Floci, so the tasks that need it wait for its proxy port.
 [tasks.wait-postgres]
-run = "until docker compose exec -T postgres pg_isready -U pasta_atlas -q; do sleep 1; done"
+run = "until nc -z localhost 7001; do sleep 1; done"
 
 # Floci answers before it has loaded its stored queues, and the worker would get "queue does not exist".
 [tasks.wait-floci]
