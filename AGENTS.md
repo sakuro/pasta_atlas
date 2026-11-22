@@ -62,7 +62,7 @@ GitHub, Discord and Steam are supported. On first login, `session[:pending_auth]
 
 ### S3 integration
 
-The server issues presigned POSTs; the frontend uploads tile images directly to S3 (avatars use a presigned POST too). CloudFront serves the images. Deleted maps' S3 prefixes are removed asynchronously through an SQS queue (`rake s3:process_queues` in development, a Lambda function in production). floci (AWS emulator) is used in development.
+The server issues presigned POSTs; the frontend uploads tile images directly to S3. CloudFront serves the images. Deleted maps' S3 prefixes are removed asynchronously through an SQS queue (`rake s3:process_queues` in development, a Lambda function in production). floci (AWS emulator) is used in development.
 
 ### Frontend
 
