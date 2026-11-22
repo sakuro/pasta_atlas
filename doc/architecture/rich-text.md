@@ -105,6 +105,12 @@ Sprites are tracked in `frontend/factorio-icons/{type}/{name}.png` and processed
 
 Vite rewrites these relative paths during bundling and emits the PNG files alongside the built CSS. `vite.config.ts` sets `assetsInlineLimit: 0` to prevent small sprites from being base64-inlined.
 
+### Updating the sprites
+
+The sprites are the output of Factorio's `--dump-icon-sprites`. Run it with only the official mods enabled (`base`, `elevated-rails`, `quality`, `recycler`, `space-age`); other mods add or change icons. Delete the sprite directories of the previous dump from the script output directory first; the import takes everything it finds there, so removed icons would otherwise stay. The Steam build restarts itself through Steam and drops the arguments, so start it in a way that keeps them.
+
+Then replace `frontend/factorio-icons` with the dump using the `factorio:import_icons` rake task, and regenerate the CSS. The task reads the script output directory reported by factorix unless given another directory. It takes the subdirectories that hold PNG files directly and ignores the rest.
+
 ### Regenerating CSS
 
 Run `scripts/generate-richtext-icons-css` after adding or removing sprites.
