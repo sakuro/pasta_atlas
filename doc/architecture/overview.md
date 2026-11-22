@@ -4,7 +4,7 @@ Pasta Atlas is a web application for uploading and browsing Factorio map screens
 
 ## Features
 
-- Upload mapshot output (tile images + `mapshot.json`) directly from the browser
+- Upload mapshot output (tile images + `mapshot.json`) from the browser
 - Browse maps uploaded by any user on the top page
 - View a map with pan, zoom, surface switching, generation switching, train station overlay, and tags overlay
 
