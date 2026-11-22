@@ -9,6 +9,8 @@ const jsonHeaders = (): HeadersInit => ({
   "X-CSRF-Token": csrfToken(),
 });
 
+type PresignedPost = { url: string; fields: Record<string, string> };
+
 type I18nError = { msgId: string; msgArgs?: Record<string, string | number> };
 
 type State =
@@ -143,9 +145,9 @@ export const AvatarUpload = (props: Props) => {
 
   const uploadAvatar = async (file: File): Promise<string | null> => {
     setState({ type: "uploading" });
-    let presignedUrl: string, s3Key: string;
+    let presignedPost: PresignedPost, s3Key: string;
     try {
-      const resp = await fetch(`/api/v1/users/${props.userName}/profile/avatar_presigned_url`, {
+      const resp = await fetch(`/api/v1/users/${props.userName}/profile/avatar_presigned_post`, {
         method: "POST",
         headers: jsonHeaders(),
         body: JSON.stringify({ content_type: file.type }),
@@ -154,19 +156,19 @@ export const AvatarUpload = (props: Props) => {
         setState({ type: "error", error: { msgId: "avatar-error-url-http", msgArgs: { status: resp.status } } });
         return null;
       }
-      const data = (await resp.json()) as { presigned_url: string; s3_key: string };
-      presignedUrl = data.presigned_url;
+      const data = (await resp.json()) as { presigned_post: PresignedPost; s3_key: string };
+      presignedPost = data.presigned_post;
       s3Key = data.s3_key;
     } catch {
       setState({ type: "error", error: { msgId: "avatar-error-network" } });
       return null;
     }
     try {
-      const resp = await fetch(presignedUrl, {
-        method: "PUT",
-        headers: { "Content-Type": file.type },
-        body: file,
-      });
+      // S3 requires the file field to come last; fetch sets the multipart Content-Type itself.
+      const form = new FormData();
+      for (const [k, v] of Object.entries(presignedPost.fields)) form.append(k, v);
+      form.append("file", file);
+      const resp = await fetch(presignedPost.url, { method: "POST", body: form });
       if (!resp.ok) {
         setState({ type: "error", error: { msgId: "avatar-error-upload-http", msgArgs: { status: resp.status } } });
         return null;

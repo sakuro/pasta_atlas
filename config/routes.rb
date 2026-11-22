@@ -38,7 +38,7 @@ module PastaAtlas
     get "/api/v1/users/:user_name/maps",                  to: "api.users.maps.index"
     get "/api/v1/users/:user_name/preferences",           to: "api.users.preferences.show"
     patch "/api/v1/users/:user_name/preferences", to: "api.users.preferences.update"
-    post "/api/v1/users/:user_name/profile/avatar_presigned_url", to: "api.users.profile.avatar_presigned_url.create"
+    post "/api/v1/users/:user_name/profile/avatar_presigned_post", to: "api.users.profile.avatar_presigned_post.create"
     get "/api/v1/users/:user_name/profile", to: "api.users.profile.show"
     patch "/api/v1/users/:user_name/profile", to: "api.users.profile.update"
 
