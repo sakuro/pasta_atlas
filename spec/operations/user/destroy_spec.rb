@@ -80,24 +80,60 @@ RSpec.describe PastaAtlas::Operations::User::Destroy do
       end
     end
 
+    context "when the cleanup messages are queued" do
+      let(:calls) { [] }
+
+      before do
+        allow(map_repo).to receive(:find_all_by_user_id).with(1).and_return([map_abc])
+        allow(sqs_client).to receive(:send_message) {|**args| calls << [:queued, args[:message_body]] }
+        allow(user_repo).to receive(:destroy) {|id| calls << [:destroyed, id] }
+      end
+
+      it "queues every prefix before it destroys the user" do
+        operation.call(user:)
+
+        expect(calls).to eq([[:queued, "alice/maps/map-abc/"], [:queued, "alice/avatar/"], [:destroyed, 1]])
+      end
+    end
+
     context "when SQS send fails" do
       before do
         allow(map_repo).to receive(:find_all_by_user_id).with(1).and_return([map_abc])
-        allow(user_repo).to receive(:destroy).with(1)
+        allow(user_repo).to receive(:destroy)
         allow(sqs_client).to receive(:send_message)
           .and_raise(Aws::SQS::Errors::ServiceError.new(nil, "error"))
       end
 
-      it "still returns success" do
+      it "returns Failure(:bad_gateway)" do
         result = operation.call(user:)
 
-        expect(result).to be_success
+        expect(result).to be_failure
+        expect(result.failure).to eq(:bad_gateway)
       end
 
-      it "still destroys the user record" do
+      it "keeps the user record so that deleting again retries" do
         operation.call(user:)
 
-        expect(user_repo).to have_received(:destroy).with(1)
+        expect(user_repo).not_to have_received(:destroy)
+      end
+    end
+
+    context "when SQS fails after some prefixes were queued" do
+      before do
+        allow(map_repo).to receive(:find_all_by_user_id).with(1).and_return([map_abc, map_xyz])
+        allow(user_repo).to receive(:destroy)
+        allow(sqs_client).to receive(:send_message)
+          .and_invoke(
+            ->(**) {},
+            ->(**) { raise Aws::SQS::Errors::ServiceError.new(nil, "error") }
+          )
+      end
+
+      it "keeps the user record" do
+        result = operation.call(user:)
+
+        expect(result.failure).to eq(:bad_gateway)
+        expect(user_repo).not_to have_received(:destroy)
       end
     end
   end

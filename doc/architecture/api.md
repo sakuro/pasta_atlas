@@ -324,7 +324,7 @@ Returns up to the 3 most recently updated maps of this user that have a complete
 
 ### DELETE /api/v1/users/:user_name
 
-Deletes the user account, queues the S3 prefixes of its maps and avatar for cleanup, clears the session, and returns a redirect target. Authenticated, own account only.
+Queues the S3 prefixes of the user's maps and avatar for cleanup, deletes the user account, clears the session, and returns a redirect target. The prefixes are queued first: if one cannot be queued, the account is kept and the request can be repeated. Authenticated, own account only.
 
 **Request params:**
 
@@ -344,6 +344,7 @@ Deletes the user account, queues the S3 prefixes of its maps and avatar for clea
 |---|---|
 | `400 Bad Request` | `confirm_user_name` does not match |
 | `403 Forbidden` | Not logged in, or not own account |
+| `502 Bad Gateway` | A cleanup message could not be queued; the account is kept |
 
 ## Maps
 

@@ -13,8 +13,12 @@ module PastaAtlas
 
         def call(user:)
           s3_prefixes = map_s3_prefixes(user) + ["#{user.name}/avatar/"]
+          # Queued before the user is deleted: no cleanup sweeps the prefixes of a user missing from
+          # the database, so a message that cannot be queued must keep the user, and deleting again
+          # retries. Objects removed for a user whose deletion then fails are no loss, as the user
+          # asked for the deletion and repeats it.
+          step schedule_s3_cleanup(s3_prefixes)
           user_repo.destroy(user.id)
-          s3_prefixes.each {|prefix| schedule_s3_cleanup(prefix) }
           user
         end
 
@@ -22,14 +26,13 @@ module PastaAtlas
           map_repo.find_all_by_user_id(user.id).map {|m| "#{user.name}/maps/#{m.mapshot_map_id}/" }
         end
 
-        private def schedule_s3_cleanup(prefix)
-          sqs_client.send_message(
-            queue_url: settings.sqs_s3_cleanup_queue_url,
-            message_body: prefix
-          )
+        private def schedule_s3_cleanup(prefixes)
+          prefixes.each do |prefix|
+            sqs_client.send_message(queue_url: settings.sqs_s3_cleanup_queue_url, message_body: prefix)
+          end
+          Success()
         rescue Aws::SQS::Errors::ServiceError
-          # Best effort: the user is already deleted, so a failed enqueue leaves the objects in S3.
-          # The orphan cleanups skip prefixes of users missing from the database.
+          Failure(:bad_gateway)
         end
       end
     end
