@@ -20,10 +20,13 @@ require_relative "lib/workers/s3_cleanup_processor"
 # runs Puma through run.sh and the Lambda Web Adapter.
 module LambdaFunction
   module S3Cleanup
-    PROCESSOR = S3CleanupProcessor.new(operation: Hanami.app["operations.delete_s3_prefix"])
-    private_constant :PROCESSOR
-
-    def self.process(event:, **) = LambdaSupport::SqsBatch.process(event) {|body| PROCESSOR.call(body) }
+    def self.process(event:, **)
+      # Built per invocation, not when this file loads. The task function loads this file too, and
+      # resolving the operation starts the database, which fails while a relation's table is
+      # missing: the task function must still start so that it can run the migration creating it.
+      processor = S3CleanupProcessor.new(operation: Hanami.app["operations.delete_s3_prefix"])
+      LambdaSupport::SqsBatch.process(event) {|body| processor.call(body) }
+    end
   end
 
   module Task
