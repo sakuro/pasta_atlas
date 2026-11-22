@@ -51,7 +51,7 @@ pasta_atlas/
 |---|---|---|
 | SPA shell delivery | `app/actions/spa/` + `app/views/spa/` | Validate the route (map exists, user exists and is public), set 404 or 403 if needed, render `<div id="app"></div>` |
 | JSON delivery | `app/actions/api/` | Parse request, call operation, render JSON |
-| Use cases | `app/operations/` | Find or create a map, start an upload, issue presigned POSTs, verify upload batches, issue an avatar upload URL |
+| Use cases | `app/operations/` | Find or create a map, start an upload, issue presigned POSTs, verify upload batches, issue an avatar presigned POST |
 | Data access | `app/repos/` | Find/persist domain entities |
 | DB mapping | `app/relations/` | ROM relation definitions |
 

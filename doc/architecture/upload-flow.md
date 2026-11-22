@@ -69,7 +69,7 @@ Avatar images use a separate prefix: `{user_name}/avatar/{ulid}.{ext}`
 
 - `mapshot.json` is sent in Step 1 body; the server writes it to S3 directly. The client does not request a presigned POST for it.
 - File paths are relative paths within the selected directory (e.g. `s1zoom_4/tile_0_0.jpg`).
-- Presigned POSTs are used instead of presigned PUTs because a POST policy can bound the object: `Content-Type` must be `image/jpeg` and the size must be 1 byte to 640 KB (`content-length-range`). A presigned PUT URL cannot enforce a size limit.
+- Presigned POSTs are used instead of presigned PUTs because a POST policy can bound the object: `Content-Type` must be `image/jpeg` and the size must be 1 byte to 640 KB (`content-length-range`). A presigned PUT URL cannot enforce a size limit. Avatar uploads use a presigned POST for the same reason, with the requested image type and a size of 1 byte to 5 MiB.
 - S3 writes are atomic: each file either fully succeeds or fully fails. Re-uploading an existing key overwrites it.
 - The browser uploads directly to the S3 bucket, so its CORS policy must allow `POST` (see [infrastructure](../operations/infrastructure.md#s3-bucket-policy)).
 
