@@ -93,8 +93,12 @@ jobs:
               --s3-key "$GITHUB_SHA.zip" \
               --no-cli-pager > /dev/null
           done
+          # Tag only after the update succeeded so the tag never names code that is not deployed.
           for FUNCTION in $FUNCTIONS; do
             aws lambda wait function-updated --function-name "$FUNCTION"
+            aws lambda tag-resource \
+              --resource "$(aws lambda get-function-configuration --function-name "$FUNCTION" --query FunctionArn --output text)" \
+              --tags "GitSha=$GITHUB_SHA"
             echo "Updated: $FUNCTION"
           done
 

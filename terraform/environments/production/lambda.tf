@@ -62,7 +62,7 @@ resource "aws_lambda_function" "app" {
   depends_on = [aws_cloudwatch_log_group.lambda, aws_iam_role_policy_attachment.app_lambda_vpc]
 
   lifecycle {
-    ignore_changes = [filename, source_code_hash]
+    ignore_changes = [filename, source_code_hash, tags["GitSha"]]
   }
 }
 
@@ -112,7 +112,7 @@ resource "aws_lambda_function" "s3_cleanup" {
   depends_on = [aws_cloudwatch_log_group.lambda, aws_iam_role_policy_attachment.app_lambda_vpc]
 
   lifecycle {
-    ignore_changes = [filename, source_code_hash]
+    ignore_changes = [filename, source_code_hash, tags["GitSha"]]
   }
 }
 
@@ -140,7 +140,7 @@ resource "aws_lambda_function" "task" {
   depends_on = [aws_cloudwatch_log_group.lambda, aws_iam_role_policy_attachment.app_lambda_vpc]
 
   lifecycle {
-    ignore_changes = [filename, source_code_hash]
+    ignore_changes = [filename, source_code_hash, tags["GitSha"]]
   }
 }
 
