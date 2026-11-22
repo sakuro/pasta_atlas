@@ -214,7 +214,7 @@ how-to-upload-step1-body = Nainstalujte <a data-l10n-name="mapshot-link">{ -maps
 how-to-upload-step2-heading = 2. Zachyťte svou mapu
 how-to-upload-step2-open-console = Otevřete herní konzoli a spusťte:
 how-to-upload-step2-wait = Během snímání hra dočasně přestane reagovat — počkejte, dokud se nevrátí do normálního stavu.
-how-to-upload-achievement-warning = Chcete-li se vyhnout ovlivnění úspěchů, neukládejte hru, pokud máte { -mapshot } nainstalovaný. Po snímání { -mapshot(case: "accusative") } odinstalujte.
+how-to-upload-achievement-warning = Chcete-li se vyhnout ovlivnění úspěchů, neukládejte hru, pokud máte { -mapshot } povolený. Po snímání { -mapshot(case: "accusative") } zakažte nebo odinstalujte.
 how-to-upload-step3-heading = 3. Nahrajte
 how-to-upload-step3-click-upload = Klikněte na „Nahrát" v navigační liště.
 how-to-upload-step3-select-folder = Klikněte na „Vybrat složku" a vyberte podsložku obsahující <code data-l10n-name="filename">mapshot.json</code> (ne samotný soubor).
