@@ -541,7 +541,7 @@ The client submits each file as `multipart/form-data` to `url`, with `fields` fi
 | `400 Bad Request` | Invalid or too many filenames |
 | `403 Forbidden` | The map belongs to another user |
 | `404 Not Found` | Upload with given ULID does not exist |
-| `422 Unprocessable Entity` | Upload status is `complete` or `failed` |
+| `422 Unprocessable Entity` | Upload status is `complete` or `failed`, or the filenames would take the number of files requested for the upload above its `total_image_count` (asking again for a file already requested does not count) |
 
 ### POST /api/v1/uploads/:ulid/verify_batch
 

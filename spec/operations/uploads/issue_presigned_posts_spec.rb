@@ -28,6 +28,45 @@ RSpec.describe PastaAtlas::Operations::Uploads::IssuePresignedPosts, :db do
       expect(posts.values).to all(match(url: be_a(String), fields: be_a(Hash)))
     end
 
+    context "when the filenames would exceed the total image count of the upload" do
+      let!(:upload) { Factory[:upload, generation:, total_image_count: 3] }
+      let(:key_repo) { Hanami.app["repos.upload_verification_key_repo"] }
+
+      def tiles(range) = range.map {|x| "s1zoom_4/tile_#{x}_0.jpg" }
+
+      it "issues the files up to the total, across several requests" do
+        expect(operation.call(upload_ulid: upload.ulid, filenames: tiles(0..1), user_id: user.id)).to be_success
+        expect(operation.call(upload_ulid: upload.ulid, filenames: tiles(2..2), user_id: user.id)).to be_success
+        expect(key_repo.count(upload_id: upload.id)).to eq(3)
+      end
+
+      it "rejects a request that would go over the total and records nothing from it" do
+        operation.call(upload_ulid: upload.ulid, filenames: tiles(0..1), user_id: user.id)
+
+        result = operation.call(upload_ulid: upload.ulid, filenames: tiles(2..3), user_id: user.id)
+
+        expect(result).to be_failure
+        expect(result.failure).to eq(:unprocessable_entity)
+        expect(key_repo.count(upload_id: upload.id)).to eq(2)
+      end
+
+      it "does not count a file that is asked for again" do
+        operation.call(upload_ulid: upload.ulid, filenames: tiles(0..2), user_id: user.id)
+
+        result = operation.call(upload_ulid: upload.ulid, filenames: tiles(0..2), user_id: user.id)
+
+        expect(result).to be_success
+        expect(key_repo.count(upload_id: upload.id)).to eq(3)
+      end
+
+      it "counts a filename repeated in one request once" do
+        result = operation.call(upload_ulid: upload.ulid, filenames: tiles(0..1) + tiles(0..1), user_id: user.id)
+
+        expect(result).to be_success
+        expect(key_repo.count(upload_id: upload.id)).to eq(2)
+      end
+    end
+
     context "when the upload does not exist" do
       it "returns a not_found failure" do
         result = operation.call(upload_ulid: "nonexistent", filenames:, user_id: user.id)

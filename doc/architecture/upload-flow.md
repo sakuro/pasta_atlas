@@ -95,7 +95,7 @@ Steps 2–4 run inside a single transaction. Step 1 runs before it; if the trans
 ### POST /api/v1/uploads/:ulid/presigned_posts
 
 1. Reject the request unless the upload is `pending` and its Map belongs to the current user
-2. Record each S3 key in `upload_verification_keys` (the set of keys expected for this upload)
+2. Reject the request if its new S3 keys would take the number of keys of the upload above `total_image_count`; otherwise record each key in `upload_verification_keys` (the set of keys expected for this upload)
 3. Generate a presigned POST per filename (expiry: `PRESIGNED_URL_EXPIRY`, default 1 hour) with conditions `Content-Type: image/jpeg` and `content-length-range` 1..640 KB
 
 ### POST /api/v1/uploads/:ulid/verify_batch

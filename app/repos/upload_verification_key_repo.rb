@@ -23,6 +23,10 @@ module PastaAtlas
         end
       end
 
+      def count(upload_id:) = upload_verification_keys.where(upload_id:).count
+
+      def count_among(upload_id:, s3_keys:) = upload_verification_keys.where(upload_id:, s3_key: s3_keys).count
+
       def count_verified(upload_id:)
         upload_verification_keys.where(upload_id:).exclude(verified_at: nil).count
       end

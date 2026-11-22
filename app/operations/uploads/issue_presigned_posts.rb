@@ -31,10 +31,22 @@ module PastaAtlas
 
           prefix = "#{user.name}/maps/#{map.mapshot_map_id}/#{generation.mapshot_unique_id}/"
 
+          filenames = filenames.uniq
           s3_keys = filenames.map {|f| "#{prefix}#{f}" }
+          step validate_within_total(upload, s3_keys)
           upload_verification_key_repo.create_many(upload_id: upload.id, s3_keys:)
 
           presigned_posts_for(filenames:, prefix:)
+        end
+
+        private def validate_within_total(upload, s3_keys)
+          recorded = upload_verification_key_repo.count(upload_id: upload.id)
+          # Asking again for a file already issued is a retry and adds nothing, so only the keys
+          # new to the upload count.
+          new_keys = s3_keys.size - upload_verification_key_repo.count_among(upload_id: upload.id, s3_keys:)
+          # Not locked: two concurrent requests can pass together and overshoot by one batch,
+          # which the 200 filenames per request bound.
+          recorded + new_keys <= upload.total_image_count ? Success() : Failure(:unprocessable_entity)
         end
 
         private def validate_ownership(map, user_id) = map.user_id == user_id ? Success() : Failure(:forbidden)

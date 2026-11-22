@@ -13,6 +13,19 @@ RSpec.describe PastaAtlas::Repos::UploadVerificationKeyRepo, :db do
     end
   end
 
+  describe "#count and #count_among" do
+    before { repo.create_many(upload_id: upload.id, s3_keys: keys) }
+
+    it "counts the keys of the upload" do
+      expect(repo.count(upload_id: upload.id)).to eq(2)
+      expect(repo.count(upload_id: Factory[:upload].id)).to eq(0)
+    end
+
+    it "counts how many of the given keys the upload already has" do
+      expect(repo.count_among(upload_id: upload.id, s3_keys: [keys.first, "a/tile_9_9.jpg"])).to eq(1)
+    end
+  end
+
   describe "#mark_verified_batch" do
     before { repo.create_many(upload_id: upload.id, s3_keys: keys) }
 
