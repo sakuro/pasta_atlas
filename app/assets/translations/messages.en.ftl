@@ -114,6 +114,7 @@ error-credential-conflict = That account is already linked to another user.
 error-credential-last = At least one connected account is required.
 error-profile-display-name-too-long = Display name must be 30 characters or fewer.
 error-profile-display-name-invalid-chars = Display name contains disallowed characters.
+error-profile-avatar-invalid = The avatar could not be used. Choose the image again.
 
 ### Maps
 

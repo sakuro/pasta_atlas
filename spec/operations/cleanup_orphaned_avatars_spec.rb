@@ -3,12 +3,13 @@
 require "aws-sdk-s3"
 
 RSpec.describe PastaAtlas::Operations::CleanupOrphanedAvatars do
+  let(:avatar_upload_repo) { instance_double(PastaAtlas::Repos::AvatarUploadRepo) }
   let(:user_repo) { instance_double(PastaAtlas::Repos::UserRepo) }
   let(:user_profile_repo) { instance_double(PastaAtlas::Repos::UserProfileRepo) }
   let(:settings) { double("Settings", s3_bucket: "test-bucket") }
   let(:s3_client) { instance_double(Aws::S3::Client) }
   let(:operation) do
-    PastaAtlas::Operations::CleanupOrphanedAvatars.new(user_repo:, user_profile_repo:, settings:, s3_client:)
+    PastaAtlas::Operations::CleanupOrphanedAvatars.new(avatar_upload_repo:, user_repo:, user_profile_repo:, settings:, s3_client:)
   end
 
   let(:now) { Time.utc(2026, 11, 22, 12, 0, 0) }
@@ -34,14 +35,31 @@ RSpec.describe PastaAtlas::Operations::CleanupOrphanedAvatars do
       .and_return(result)
   end
 
-  before { allow(s3_client).to receive(:delete_objects) }
+  before do
+    allow(s3_client).to receive(:delete_objects)
+    allow(avatar_upload_repo).to receive(:delete_expired_before).and_return(0)
+  end
 
   describe "#call" do
     context "when there are no user prefixes" do
       before { stub_user_prefixes([]) }
 
       it "returns success with zero deleted" do
-        expect(operation.call(now:).value!).to eq({deleted_count: 0})
+        expect(operation.call(now:).value!).to eq({deleted_count: 0, deleted_uploads: 0})
+      end
+    end
+
+    context "when issued avatar keys are well past their expiry" do
+      before do
+        stub_user_prefixes([])
+        allow(avatar_upload_repo).to receive(:delete_expired_before).and_return(3)
+      end
+
+      it "deletes their records and reports how many" do
+        result = operation.call(now:)
+
+        expect(result.value!).to eq({deleted_count: 0, deleted_uploads: 3})
+        expect(avatar_upload_repo).to have_received(:delete_expired_before).with(now - (24 * 60 * 60))
       end
     end
 
@@ -68,7 +86,7 @@ RSpec.describe PastaAtlas::Operations::CleanupOrphanedAvatars do
       end
 
       it "returns the number of deleted objects" do
-        expect(operation.call(now:).value!).to eq({deleted_count: 1})
+        expect(operation.call(now:).value!).to eq({deleted_count: 1, deleted_uploads: 0})
       end
     end
 
@@ -100,7 +118,7 @@ RSpec.describe PastaAtlas::Operations::CleanupOrphanedAvatars do
       it "leaves the prefix alone" do
         result = operation.call(now:)
 
-        expect(result.value!).to eq({deleted_count: 0})
+        expect(result.value!).to eq({deleted_count: 0, deleted_uploads: 0})
         expect(s3_client).not_to have_received(:delete_objects)
       end
     end
@@ -117,7 +135,7 @@ RSpec.describe PastaAtlas::Operations::CleanupOrphanedAvatars do
       it "deletes them in batches of 1000" do
         result = operation.call(now:)
 
-        expect(result.value!).to eq({deleted_count: 1001})
+        expect(result.value!).to eq({deleted_count: 1001, deleted_uploads: 0})
         expect(s3_client).to have_received(:delete_objects).twice
       end
     end

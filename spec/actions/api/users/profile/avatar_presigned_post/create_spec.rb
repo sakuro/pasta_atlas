@@ -50,6 +50,19 @@ RSpec.describe PastaAtlas::Actions::API::Users::Profile::AvatarPresignedPost::Cr
     end
   end
 
+  context "when the user has too many issued keys that were not applied" do
+    before do
+      allow(verify_ownership).to receive(:call).and_return(Success(user))
+      allow(create_avatar_presigned_post).to receive(:call).and_return(Failure(:too_many_requests))
+    end
+
+    it "returns 429" do
+      response = action.call(env)
+
+      expect(response.status).to eq(429)
+    end
+  end
+
   context "when the content type is unsupported" do
     before { allow(verify_ownership).to receive(:call) }
 

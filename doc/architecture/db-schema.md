@@ -129,6 +129,26 @@ The S3 keys expected for an upload. A key is marked verified once the object is 
 Indexes:
 - UNIQUE on `(upload_id, s3_key)`
 
+### avatar_uploads
+
+The avatar keys issued to a user by `avatar_presigned_post`. Only a key recorded here, unexpired and not consumed, can become the user's avatar; applying it sets `consumed_at`.
+
+| Column | Type | Constraints |
+|---|---|---|
+| id | bigserial | PRIMARY KEY |
+| user_id | bigint | NOT NULL, REFERENCES users(id) ON DELETE CASCADE |
+| s3_key | text | NOT NULL |
+| content_type | text | NOT NULL |
+| expires_at | timestamptz | NOT NULL |
+| consumed_at | timestamptz | |
+| created_at | timestamptz | NOT NULL, DEFAULT now() |
+
+Indexes:
+- UNIQUE on `s3_key`
+- on `(user_id, consumed_at)`
+
+Rows are deleted by `cleanup:orphaned_avatars` a day after they expire.
+
 ### upload_events
 
 Append-only log of status transitions. Never updated, only inserted.
@@ -163,7 +183,7 @@ ORDER BY upload_id, occurred_at DESC, id DESC;
 
 | Delete | Cascades to |
 |---|---|
-| users | user_profiles, user_preferences, credentials, maps |
+| users | user_profiles, user_preferences, credentials, maps, avatar_uploads |
 | maps | generations |
 | generations | uploads |
 | uploads | upload_events, upload_verification_keys |

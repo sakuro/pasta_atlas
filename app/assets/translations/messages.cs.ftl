@@ -144,6 +144,7 @@ error-credential-conflict = Tento účet je již propojen s jiným uživatelem.
 error-credential-last = Je vyžadován alespoň jeden propojený účet.
 error-profile-display-name-too-long = Zobrazované jméno musí mít nejvýše 30 znaků.
 error-profile-display-name-invalid-chars = Zobrazované jméno obsahuje nepovoleé znaky.
+error-profile-avatar-invalid = Avatar se nepodařilo použít. Vyberte obrázek znovu.
 
 ### Maps
 

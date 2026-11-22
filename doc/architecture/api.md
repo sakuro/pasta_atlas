@@ -152,7 +152,7 @@ Updates `display_name` (and optionally `avatar_s3_key`). Authenticated, own prof
 | Field | Notes |
 |---|---|
 | `display_name` | Max 30 grapheme clusters; no control characters, no whitespace other than a plain space and no format characters other than ZWJ and variation selectors (the same character rule applies to map names); empty clears it |
-| `avatar_s3_key` | Optional; applied only if under `{user_name}/avatar/`, otherwise ignored |
+| `avatar_s3_key` | Optional; a key from `avatar_presigned_post` that is unexpired, not applied yet and whose object is an image of the issued type within 5 MiB (see [PATCH avatar](#patch-apiv1usersuser_nameavatar)). Empty leaves the avatar as it is |
 
 **Response `200 OK`:**
 
@@ -166,6 +166,8 @@ Updates `display_name` (and optionally `avatar_s3_key`). Authenticated, own prof
 |---|---|
 | `403 Forbidden` | Not logged in, or not own profile |
 | `422 Unprocessable Entity` | `{"error": "error-profile-display-name-too-long" \| "error-profile-display-name-invalid-chars"}` |
+| `422 Unprocessable Entity` | `{"error": "error-profile-avatar-invalid"}`: `avatar_s3_key` was not accepted; nothing is changed |
+| `502 Bad Gateway` | S3 could not be reached to check the object |
 
 ### GET /api/v1/users/:user_name/preferences
 
@@ -208,13 +210,13 @@ Updates timezone, locale, and relative_timestamps. Authenticated, own preference
 
 ### PATCH /api/v1/users/:user_name/avatar
 
-Sets `avatar_s3_key` on the UserProfile. The S3 key must be under `{user_name}/avatar/`. The previous avatar object is queued for S3 cleanup. Authenticated, own profile only.
+Sets `avatar_s3_key` on the UserProfile. The key must have been issued to the user by `avatar_presigned_post` and be unexpired and not applied yet, and its object must exist, be at most 5 MiB, have the issued content type and start with the signature of that image format. The key is consumed. The previous avatar object is queued for S3 cleanup. Authenticated, own profile only.
 
 **Request params:**
 
 | Field | Notes |
 |---|---|
-| `s3_key` | S3 key under `{user_name}/avatar/` |
+| `s3_key` | A key issued to the user by `avatar_presigned_post` |
 
 **Response:** `204 No Content`
 
@@ -223,7 +225,8 @@ Sets `avatar_s3_key` on the UserProfile. The S3 key must be under `{user_name}/a
 | Status | Condition |
 |---|---|
 | `403 Forbidden` | Not authenticated or not own profile |
-| `422 Unprocessable Entity` | S3 key not under `{user_name}/avatar/` |
+| `422 Unprocessable Entity` | The key was not issued to the user, has expired or was applied, or the object is missing, too large, of another type or not an image |
+| `502 Bad Gateway` | S3 could not be reached to check the object |
 
 ### DELETE /api/v1/users/:user_name/avatar
 
@@ -260,7 +263,7 @@ Unlinks the OAuth credential for the given provider. Supported providers: `githu
 
 ### POST /api/v1/users/:user_name/profile/avatar_presigned_post
 
-Issues a presigned S3 POST for an avatar image. The policy fixes the content type and limits the object size to 5 MiB. Authenticated, own profile only.
+Issues a presigned S3 POST for an avatar image. The policy fixes the content type and limits the object size to 5 MiB. The key is recorded for the user and is valid for `PRESIGNED_URL_EXPIRY` seconds; only a recorded key can be applied as the avatar, once. A user can hold 10 keys that were not applied. Authenticated, own profile only.
 
 **Request body:**
 
@@ -288,6 +291,7 @@ Supported content types: `image/jpeg`, `image/png`, `image/webp`.
 |---|---|
 | `403 Forbidden` | Not authenticated or not own profile |
 | `400 Bad Request` | Missing or unsupported content type |
+| `429 Too Many Requests` | The user already holds 10 keys that were not applied and have not expired |
 
 ### GET /api/v1/users/:user_name/maps
 

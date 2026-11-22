@@ -24,7 +24,7 @@ namespace :cleanup do
   task orphaned_avatars: :environment do
     case Hanami.app["operations.cleanup_orphaned_avatars"].call
     in Success(stats)
-      puts "Deleted #{stats[:deleted_count]} orphaned avatar object(s)"
+      puts "Deleted #{stats[:deleted_count]} orphaned avatar object(s) and #{stats[:deleted_uploads]} expired upload record(s)"
     in Failure(reason)
       warn "Cleanup failed: #{reason}"
       exit 1

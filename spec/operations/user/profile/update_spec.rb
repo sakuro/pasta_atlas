@@ -3,9 +3,14 @@
 RSpec.describe PastaAtlas::Operations::User::Profile::Update do
   let(:user_profile_repo) { instance_double(PastaAtlas::Repos::UserProfileRepo) }
   let(:schedule_avatar_cleanup) { instance_double(PastaAtlas::Operations::User::Avatar::ScheduleCleanup) }
-  let(:operation) { PastaAtlas::Operations::User::Profile::Update.new(user_profile_repo:, schedule_avatar_cleanup:) }
+  let(:verify_avatar_upload) { instance_double(PastaAtlas::Operations::User::Avatar::VerifyUpload) }
+  let(:operation) do
+    PastaAtlas::Operations::User::Profile::Update.new(user_profile_repo:, schedule_avatar_cleanup:, verify_avatar_upload:)
+  end
 
   let(:user) { double("User", id: 1, name: "wube") }
+
+  before { allow(verify_avatar_upload).to receive(:call) }
 
   describe "#call" do
     context "when display_name is valid" do
@@ -51,10 +56,57 @@ RSpec.describe PastaAtlas::Operations::User::Profile::Update do
       end
     end
 
-    context "when a valid avatar_s3_key is provided" do
+    context "when avatar_s3_key is blank" do
+      before do
+        allow(user_profile_repo).to receive(:update_profile)
+        allow(user_profile_repo).to receive(:update_avatar)
+      end
+
+      it "leaves the avatar alone without verifying anything" do
+        operation.call(user:, display_name: "Wube", avatar_s3_key: "")
+
+        expect(verify_avatar_upload).not_to have_received(:call)
+        expect(user_profile_repo).not_to have_received(:update_avatar)
+      end
+    end
+
+    context "when avatar_s3_key cannot be verified" do
+      before do
+        allow(verify_avatar_upload).to receive(:call).and_return(Failure(:unprocessable_entity))
+        allow(user_profile_repo).to receive(:update_profile)
+        allow(user_profile_repo).to receive(:update_avatar)
+      end
+
+      it "returns Failure([:invalid, message]) and changes neither the display name nor the avatar" do
+        result = operation.call(user:, display_name: "Wube", avatar_s3_key: "wube/avatar/abc.jpg")
+
+        expect(result).to be_failure
+        expect(result.failure).to eq([:invalid, "error-profile-avatar-invalid"])
+        expect(user_profile_repo).not_to have_received(:update_profile)
+        expect(user_profile_repo).not_to have_received(:update_avatar)
+      end
+    end
+
+    context "when S3 cannot be reached to verify the avatar" do
+      before do
+        allow(verify_avatar_upload).to receive(:call).and_return(Failure(:bad_gateway))
+        allow(user_profile_repo).to receive(:update_profile)
+      end
+
+      it "returns the failure as it is" do
+        result = operation.call(user:, display_name: "Wube", avatar_s3_key: "wube/avatar/abc.jpg")
+
+        expect(result.failure).to eq(:bad_gateway)
+        expect(user_profile_repo).not_to have_received(:update_profile)
+      end
+    end
+
+    context "when avatar_s3_key is verified" do
       let(:current_avatar_s3_key) { nil }
 
       before do
+        allow(verify_avatar_upload).to receive(:call).with(user:, s3_key: "wube/avatar/abc.jpg")
+          .and_return(Success("wube/avatar/abc.jpg"))
         allow(user_profile_repo).to receive(:update_profile)
         allow(user_profile_repo).to receive(:update_avatar)
         allow(user_profile_repo).to receive(:find_by_user_id!).with(1)
@@ -76,7 +128,7 @@ RSpec.describe PastaAtlas::Operations::User::Profile::Update do
         end
       end
 
-      context "when the user has a different current avatar" do
+      context "when the user has a current avatar" do
         let(:current_avatar_s3_key) { "wube/avatar/old.jpg" }
 
         it "schedules a cleanup of the previous key" do
@@ -92,32 +144,6 @@ RSpec.describe PastaAtlas::Operations::User::Profile::Update do
 
           expect(result).to be_success
         end
-      end
-
-      context "when the key is already the current avatar" do
-        let(:current_avatar_s3_key) { "wube/avatar/abc.jpg" }
-
-        it "does not schedule a cleanup" do
-          operation.call(user:, display_name: "Wube", avatar_s3_key: "wube/avatar/abc.jpg")
-
-          expect(schedule_avatar_cleanup).not_to have_received(:call)
-        end
-      end
-    end
-
-    context "when avatar_s3_key is blank or outside the user's prefix" do
-      before do
-        allow(user_profile_repo).to receive(:update_profile)
-        allow(user_profile_repo).to receive(:update_avatar)
-        allow(schedule_avatar_cleanup).to receive(:call)
-      end
-
-      it "leaves the avatar alone" do
-        operation.call(user:, display_name: "Wube", avatar_s3_key: "")
-        operation.call(user:, display_name: "Wube", avatar_s3_key: "bob/avatar/abc.jpg")
-
-        expect(user_profile_repo).not_to have_received(:update_avatar)
-        expect(schedule_avatar_cleanup).not_to have_received(:call)
       end
     end
   end
