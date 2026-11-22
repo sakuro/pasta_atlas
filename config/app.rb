@@ -27,6 +27,13 @@ module PastaAtlas
     # JSON bodies of the API are ignored.
     config.actions.formats.accept :html, :json
 
+    # Every action response can carry the session cookie, a per-session CSRF token or a login
+    # redirect, so none of them may be stored by a shared cache. CloudFront is configured not to
+    # cache the app, but that must not be the only protection. Default headers also reach halted
+    # and failed responses, which a per-response header would miss. Hanami drops the header from
+    # 204 and 304 responses; the 204s here answer PATCH and DELETE, which caches do not store.
+    config.actions.default_headers["Cache-Control"] = "no-store, private"
+
     config.actions.sessions = :cookie, {
       key: "pasta_atlas.session",
       secret: settings.session_secret,
