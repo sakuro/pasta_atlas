@@ -258,9 +258,9 @@ Unlinks the OAuth credential for the given provider. Supported providers: `githu
 | `404 Not Found` | — | Provider not in the allowed list |
 | `422 Unprocessable Entity` | `{"error": "error-credential-last"}` | Cannot unlink the last credential |
 
-### POST /api/v1/users/:user_name/profile/avatar_presigned_url
+### POST /api/v1/users/:user_name/profile/avatar_presigned_post
 
-Issues a presigned S3 PUT URL for an avatar image. Authenticated, own profile only.
+Issues a presigned S3 POST for an avatar image. The policy fixes the content type and limits the object size to 5 MiB. Authenticated, own profile only.
 
 **Request body:**
 
@@ -274,7 +274,10 @@ Supported content types: `image/jpeg`, `image/png`, `image/webp`.
 
 ```json
 {
-  "presigned_url": "https://s3.amazonaws.com/bucket/wube/avatar/01HXY....jpg?...",
+  "presigned_post": {
+    "url": "https://bucket.s3.amazonaws.com",
+    "fields": { "key": "wube/avatar/01HXY....jpg", "policy": "...", "...": "..." }
+  },
   "s3_key": "wube/avatar/01HXY....jpg"
 }
 ```

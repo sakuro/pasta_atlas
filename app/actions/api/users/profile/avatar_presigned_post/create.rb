@@ -5,11 +5,11 @@ module PastaAtlas
     module API
       module Users
         module Profile
-          module AvatarPresignedUrl
+          module AvatarPresignedPost
             class Create < PastaAtlas::Action
               include Deps[
                 "operations.user.verify_ownership",
-                create_avatar_presigned_url: "operations.user.avatar_presigned_url.create"
+                create_avatar_presigned_post: "operations.user.avatar_presigned_post.create"
               ]
 
               params do
@@ -28,15 +28,15 @@ module PastaAtlas
                 in Failure(Symbol => status)
                   halt status
                 in Success(user)
-                  result = create_avatar_presigned_url.call(
+                  result = create_avatar_presigned_post.call(
                     user_id: user.id,
                     content_type: request.params[:content_type]
                   )
                   case result
                   in Failure(Symbol => status)
                     halt status
-                  in Success({presigned_url:, s3_key:})
-                    json_response(response, {presigned_url:, s3_key:})
+                  in Success({presigned_post:, s3_key:})
+                    json_response(response, {presigned_post:, s3_key:})
                   end
                 end
               end
