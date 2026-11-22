@@ -24,7 +24,8 @@ class SqsQueueWorker
       break if @stop.set?
 
       warn "#{e.message}, retrying in 5 seconds..."
-      sleep 5
+      # Wake up as soon as a stop is requested instead of finishing the retry delay.
+      @stop.wait(5)
     end
   end
 end

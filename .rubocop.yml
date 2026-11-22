@@ -76,6 +76,7 @@ RSpec/VerifiedDoubles:
 
 ThreadSafety/NewThread:
   Exclude:
+    - lib/tasks/s3.rake
     - lib/workers/sqs_queue_worker.rb
 
 Style/Documentation:
@@ -83,4 +84,3 @@ Style/Documentation:
 
 Style/DocumentationMethod:
   Enabled: false
-

@@ -9,8 +9,9 @@ namespace :s3 do
     $stdout.sync = true
     stop = Concurrent::Event.new
 
-    trap("SIGTERM") { stop.set }
-    trap("SIGINT")  { stop.set }
+    # Concurrent::Event#set takes a mutex, which Ruby forbids inside a trap handler.
+    trap("SIGTERM") { Thread.new { stop.set } }
+    trap("SIGINT")  { Thread.new { stop.set } }
 
     sqs_client = Hanami.app["sqs.client"]
     settings = Hanami.app["settings"]
