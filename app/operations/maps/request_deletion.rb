@@ -36,7 +36,8 @@ module PastaAtlas
             message_body: s3_prefix
           )
         rescue Aws::SQS::Errors::ServiceError
-          # Objects will be cleaned up by the periodic orphan cleanup job
+          # Best effort: the map is already deleted, so a failed enqueue leaves the objects for
+          # `rake cleanup:orphaned_maps` to remove when it is run.
         end
       end
     end
