@@ -16,6 +16,7 @@ module PastaAtlas
 
           def call(user:, display_name:, avatar_s3_key:)
             step validate_display_name(display_name)
+            # Verified before anything is written, so that a rejected avatar does not leave the display name changed.
             step verify_avatar(user, avatar_s3_key)
             user_profile_repo.update_profile(user.id, display_name: display_name.empty? ? nil : display_name)
             replace_avatar(user, avatar_s3_key) unless avatar_s3_key.empty?
@@ -30,7 +31,6 @@ module PastaAtlas
             Success()
           end
 
-          # Verified before anything is written, so that a rejected avatar does not leave the display name changed.
           private def verify_avatar(user, s3_key)
             return Success() if s3_key.empty?
 

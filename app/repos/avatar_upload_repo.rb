@@ -13,9 +13,11 @@ module PastaAtlas
 
       def find_pending(user_id:, s3_key:, now:) = pending(user_id, now).where(s3_key:).one
 
-      # Returns how many uploads this call consumed: 0 when it was already applied, so that concurrent
-      # requests cannot both apply it.
-      def consume(id:, now:) = avatar_uploads.dataset.where(id:, consumed_at: nil).update(consumed_at: now)
+      def consume(id:, now:)
+        # Conditional on consumed_at, so that of two concurrent requests only one updates the row.
+        # The returned count (1 or 0) tells the caller whether it won.
+        avatar_uploads.dataset.where(id:, consumed_at: nil).update(consumed_at: now)
+      end
 
       def delete_expired_before(time) = avatar_uploads.dataset.where(Sequel[:expires_at] < time).delete
 
