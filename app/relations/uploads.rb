@@ -13,19 +13,21 @@ module PastaAtlas
       end
 
       # The generation and the owner of every upload that is not complete and has had no activity
-      # since +before+. The last activity is the creation of the upload or its latest verified
-      # key, whichever is newer. The joins span several tables, so the rows are plain hashes.
+      # since +before+.
       def stale_incomplete_rows(before)
         db = dataset.db
         last_verified_at = db[:upload_verification_keys]
           .where(upload_id: Sequel[:uploads][:id])
           .select(Sequel.function(:max, :verified_at))
+        # The last activity is the creation of the upload or its latest verified key, whichever
+        # is newer.
         last_activity = Sequel.function(
           :greatest,
           Sequel[:uploads][:created_at],
           Sequel.function(:coalesce, last_verified_at, Sequel[:uploads][:created_at])
         )
 
+        # The joins span several tables, so the rows are plain hashes.
         db[:uploads]
           .join(:generations, id: :generation_id)
           .join(:maps, id: Sequel[:generations][:map_id])
