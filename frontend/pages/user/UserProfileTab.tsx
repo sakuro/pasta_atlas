@@ -33,6 +33,9 @@ export const UserProfileTab = (props: {
   const [displayName, setDisplayName] = createSignal(() => data()?.display_name ?? "");
   const graphemeCount = () => [...segmenter.segment(displayName())].length;
   const [submitting, setSubmitting] = createSignal(false);
+  // The fetched profile is not reloaded after a save, so the saved avatar is kept here to keep
+  // the form from falling back to the URL it was loaded with. undefined means not saved yet.
+  const [savedAvatarUrl, setSavedAvatarUrl] = createSignal<string | null | undefined>(undefined);
   let avatarRef: AvatarUploadRef | undefined;
 
   const handleSubmit = async (e: SubmitEvent) => {
@@ -55,12 +58,14 @@ export const UserProfileTab = (props: {
       });
       if (res.ok) {
         const data = (await res.json()) as { display_name: string; avatar_url: string | null };
+        setSavedAvatarUrl(data.avatar_url);
         props.onSuccess?.({ displayName: data.display_name, avatarUrl: data.avatar_url });
       } else {
         const json = (await res.json()) as { error?: string };
         props.onError?.(json.error ?? "error-unknown");
       }
     } finally {
+      avatarRef?.settle();
       setSubmitting(false);
     }
   };
@@ -84,7 +89,9 @@ export const UserProfileTab = (props: {
                   <div class="control">
                     <AvatarUpload
                       userName={props.userName}
-                      currentAvatarUrl={profile.avatar_url}
+                      currentAvatarUrl={
+                        savedAvatarUrl() === undefined ? profile.avatar_url : (savedAvatarUrl() ?? null)
+                      }
                       onRef={(ref) => {
                         avatarRef = ref;
                       }}

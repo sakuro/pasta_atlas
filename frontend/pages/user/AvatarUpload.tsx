@@ -17,7 +17,8 @@ type State =
   | { type: "idle" }
   | { type: "selected"; file: File; previewUrl: string }
   | { type: "removing" }
-  | { type: "uploading" }
+  // previewUrl is kept so the new image stays on screen until the caller has saved it.
+  | { type: "uploading"; previewUrl: string | null }
   | { type: "error"; error: I18nError };
 
 const MAX_BYTES = 5 * 1024 * 1024;
@@ -51,6 +52,8 @@ const validateImage = (file: File): Promise<I18nError | null> =>
 
 export type AvatarUploadRef = {
   prepareForSubmit: () => Promise<string | null | false>;
+  // Called once the caller has saved the result of prepareForSubmit and updated currentAvatarUrl.
+  settle: () => void;
 };
 
 interface Props {
@@ -65,9 +68,9 @@ export const AvatarUpload = (props: Props) => {
   const [state, setState] = createSignal<State>({ type: "idle" });
   let inputRef!: HTMLInputElement;
 
-  const selectedState = () => {
+  const previewUrl = () => {
     const s = state();
-    return s.type === "selected" ? s : null;
+    return s.type === "selected" || s.type === "uploading" ? s.previewUrl : null;
   };
   const errorState = () => {
     const s = state();
@@ -100,19 +103,20 @@ export const AvatarUpload = (props: Props) => {
         const s = state();
         if (s.type === "removing") {
           const ok = await removeAvatar();
-          if (!ok) return false;
-          setState({ type: "idle" });
-          return null;
+          return ok ? null : false;
         }
         if (s.type === "selected") {
           const { file, previewUrl } = s;
-          const s3Key = await uploadAvatar(file);
-          if (!s3Key) return false;
-          URL.revokeObjectURL(previewUrl);
-          setState({ type: "idle" });
-          return s3Key;
+          const s3Key = await uploadAvatar(file, previewUrl);
+          return s3Key ?? false;
         }
         return null;
+      },
+      settle: () => {
+        const s = state();
+        if (s.type !== "uploading") return;
+        if (s.previewUrl) URL.revokeObjectURL(s.previewUrl);
+        setState({ type: "idle" });
       },
     });
 
@@ -126,7 +130,7 @@ export const AvatarUpload = (props: Props) => {
   });
 
   const removeAvatar = async (): Promise<boolean> => {
-    setState({ type: "uploading" });
+    setState({ type: "uploading", previewUrl: null });
     try {
       const resp = await fetch(`/api/v1/users/${props.userName}/avatar`, {
         method: "DELETE",
@@ -143,8 +147,8 @@ export const AvatarUpload = (props: Props) => {
     }
   };
 
-  const uploadAvatar = async (file: File): Promise<string | null> => {
-    setState({ type: "uploading" });
+  const uploadAvatar = async (file: File, previewUrl: string): Promise<string | null> => {
+    setState({ type: "uploading", previewUrl });
     let presignedPost: PresignedPost, s3Key: string;
     try {
       const resp = await fetch(`/api/v1/users/${props.userName}/profile/avatar_presigned_post`, {
@@ -200,7 +204,7 @@ export const AvatarUpload = (props: Props) => {
 
     e.preventDefault();
     const { file, previewUrl } = s;
-    const s3Key = await uploadAvatar(file);
+    const s3Key = await uploadAvatar(file, previewUrl);
     if (!s3Key) return;
 
     URL.revokeObjectURL(previewUrl);
@@ -242,17 +246,17 @@ export const AvatarUpload = (props: Props) => {
 
       <div style={{ display: "flex", "align-items": "center", gap: "1rem" }}>
         <Show
-          when={selectedState()}
+          when={previewUrl()}
           keyed
           fallback={
-            state().type === "removing" || !props.currentAvatarUrl ? (
+            state().type === "removing" || state().type === "uploading" || !props.currentAvatarUrl ? (
               defaultIcon
             ) : (
               <img src={props.currentAvatarUrl} width="64" height="64" style={avatarStyle} />
             )
           }
         >
-          {(s) => <img src={s.previewUrl} width="64" height="64" style={avatarStyle} />}
+          {(url) => <img src={url} width="64" height="64" style={avatarStyle} />}
         </Show>
 
         <div>
