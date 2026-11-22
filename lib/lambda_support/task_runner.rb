@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module LambdaSupport
-  # Runs the one-off tasks (migrate, seed, delete map) and the scheduled cleanup. Only the tasks listed
+  # Runs the one-off tasks (migrate, seed, delete map) and the scheduled cleanups. Only the tasks listed
   # here can be run, whatever the invoker sends.
   class TaskRunner
     class UnknownTask < StandardError; end
@@ -26,6 +26,7 @@ module LambdaSupport
       in "db:seed" then @cli.call(%w[db seed])
       in "maps:delete" then delete_map(event["map_ulid"])
       in "cleanup:stale_uploads" then @rake.call("cleanup:stale_uploads")
+      in "cleanup:orphaned_avatars" then @rake.call("cleanup:orphaned_avatars")
       in name then raise UnknownTask, "unknown task: #{name}"
       end
     end

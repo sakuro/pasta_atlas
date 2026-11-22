@@ -8,7 +8,8 @@ module PastaAtlas
           include Deps["settings", sqs_client: "sqs.client"]
 
           # Callers have already switched the avatar by the time they call this, so they treat a
-          # failure as best effort: the unreferenced object just stays in S3.
+          # failure as best effort: the unreferenced object stays in S3 until
+          # CleanupOrphanedAvatars removes it.
           def call(s3_key:)
             step enqueue(s3_key)
           end
