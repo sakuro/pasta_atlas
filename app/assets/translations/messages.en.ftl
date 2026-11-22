@@ -179,8 +179,8 @@ how-to-upload-button =
     .title = How to upload
 how-to-upload-title = How to upload
 how-to-upload-close = Close
-how-to-upload-step1-heading = 1. Install the { -mapshot } MOD
-how-to-upload-step1-body = Install <a data-l10n-name="mapshot-link">{ -mapshot }</a> (or <a data-l10n-name="mapshot-2-1-link">{ -mapshot } 2.1</a> for { -factorio } 2.1) from { -factorio }'s in-game Mod menu and restart the game.
+how-to-upload-step1-heading = 1. Install the { -mapshot } mod
+how-to-upload-step1-body = Install <a data-l10n-name="mapshot-link">{ -mapshot }</a> (or <a data-l10n-name="mapshot-2-1-link">{ -mapshot } 2.1</a> for { -factorio } 2.1) from { -factorio }'s in-game mod menu and restart the game.
 how-to-upload-step2-heading = 2. Capture your map
 how-to-upload-step2-open-console = Open the in-game console and run:
 how-to-upload-step2-wait = The game may appear unresponsive while { -mapshot } is working — wait until it returns to normal.
@@ -236,11 +236,11 @@ map-info-exchange-hide =
 map-info-tick = Tick
 map-info-ticks-played = Ticks played
 map-info-game-version = Game version
-map-info-mods = MODs
+map-info-mods = Mods
 map-info-mods-count =
     { $count ->
-        [one] { $count } MOD
-       *[other] { $count } MODs
+        [one] { $count } mod
+       *[other] { $count } mods
     }
 map-info-close = Close
 

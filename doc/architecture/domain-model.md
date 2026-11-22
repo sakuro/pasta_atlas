@@ -154,4 +154,4 @@ The following data exists only in mapshot.json stored on S3 and is read by the f
 - Surface (name, bounds, zoom levels, tile size)
 - Station (name, position)
 - Player positions
-- MOD list and game version
+- Mod list and game version
