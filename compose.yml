@@ -5,22 +5,16 @@ services:
     image: floci/floci:2.5.0
     ports:
       - "4566:4566"
+      - "7001:7001"
     environment:
+      FLOCI_SERVICES_RDS_DEFAULT_POSTGRES_IMAGE: postgres:18-alpine
+      FLOCI_SERVICES_RDS_PROXY_MAX_PORT: "7001"
+      FLOCI_SERVICES_DOCKER_NETWORK: pasta_atlas_default
       FLOCI_STORAGE_MODE: persistent
     volumes:
+      # Floci starts the RDS PostgreSQL container through the Docker daemon.
+      - /var/run/docker.sock:/var/run/docker.sock
       - floci_data:/app/data
-
-  postgres:
-    image: postgres:18-alpine
-    ports:
-      - "5432:5432"
-    environment:
-      POSTGRES_USER: pasta_atlas
-      POSTGRES_PASSWORD: pasta_atlas
-      POSTGRES_HOST_AUTH_METHOD: trust
-    volumes:
-      - pgdata:/var/lib/postgresql
 
 volumes:
   floci_data:
-  pgdata:
