@@ -14,6 +14,17 @@ namespace :cleanup do
     end
   end
 
+  desc "Delete avatar objects that no profile refers to"
+  task orphaned_avatars: :environment do
+    case Hanami.app["operations.cleanup_orphaned_avatars"].call
+    in Success(stats)
+      puts "Deleted #{stats[:deleted_count]} orphaned avatar object(s)"
+    in Failure(reason)
+      warn "Cleanup failed: #{reason}"
+      exit 1
+    end
+  end
+
   desc "Delete generations of uploads that were started and then abandoned"
   task stale_uploads: :environment do
     stats = Hanami.app["operations.uploads.cleanup_stale"].call.value!

@@ -36,6 +36,12 @@ RSpec.describe LambdaSupport::TaskRunner do
       expect(rake_calls).to eq(["cleanup:stale_uploads"])
     end
 
+    it "runs the orphaned avatar cleanup through its rake task" do
+      runner.call("task" => "cleanup:orphaned_avatars")
+
+      expect(rake_calls).to eq(["cleanup:orphaned_avatars"])
+    end
+
     it "rejects tasks that are not allow-listed" do
       expect { runner.call("task" => "db:drop") }
         .to raise_error(LambdaSupport::TaskRunner::UnknownTask, "unknown task: db:drop")

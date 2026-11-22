@@ -28,7 +28,8 @@ module PastaAtlas
             message_body: prefix
           )
         rescue Aws::SQS::Errors::ServiceError
-          # Objects will be cleaned up by the periodic orphan cleanup job
+          # Best effort: the user is already deleted, so a failed enqueue leaves the objects in S3.
+          # The orphan cleanups skip prefixes of users missing from the database.
         end
       end
     end
