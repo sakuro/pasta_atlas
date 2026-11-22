@@ -79,6 +79,9 @@ module PastaAtlas
           content_length = Integer(response["Content-Length"], 10) if response["Content-Length"]
           return nil if content_length && content_length > MAX_RESPONSE_SIZE
 
+          # Net::HTTP has read the whole body by now, so a missing or false Content-Length is only
+          # caught here. Streaming the body to stop at the limit was left out: the hosts are the
+          # providers' avatar CDNs and the read timeout bounds the download, so the memory at risk is small.
           body = response.body
           return nil if body.bytesize > MAX_RESPONSE_SIZE
 
