@@ -24,10 +24,10 @@ module PastaAtlas
           {found: stale.size, deleted:, failed: stale.size - deleted}
         end
 
-        # The prefix is queued before the records are deleted, as VerifyBatch does: if queuing
-        # fails the records stay and the next run tries again.
         private def delete_generation(row)
           prefix = "#{row.user_name}/maps/#{row.mapshot_map_id}/#{row.mapshot_unique_id}/"
+          # The prefix is queued before the records are deleted, as VerifyBatch does: if queuing
+          # fails the records stay and the next run tries again.
           sqs_client.send_message(queue_url: settings.sqs_s3_cleanup_queue_url, message_body: prefix)
           generation_repo.delete_by_id(row.generation_id)
           true

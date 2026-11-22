@@ -33,9 +33,10 @@ module LambdaSupport
     end
 
     # The task deletes whole map prefixes, so it only lists them unless the event says
-    # "dry_run": false. The variable is reset on every call because a warm function keeps its
-    # environment between invocations.
+    # "dry_run": false.
     private def cleanup_orphaned_maps(dry_run)
+      # The variable is reset on every call because a warm function keeps its environment
+      # between invocations.
       if dry_run == false
         @env.delete("DRY_RUN")
       else

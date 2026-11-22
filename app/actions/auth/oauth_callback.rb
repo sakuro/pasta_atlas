@@ -40,13 +40,14 @@ module PastaAtlas
         private def login_name_from(info) = info["nickname"].to_s.downcase
 
         # A session can outlive its user, for example when the account is deleted from another
-        # device. Treat that as signed out; otherwise the sign-in would fail with a 500 for as
-        # long as the cookie lives.
+        # device.
         private def find_logged_in_user(request)
           user_id = request.session[:user_id]
           return unless user_id
 
           find_by_id.call(user_id:).value_or do
+            # Treat a vanished user as signed out; otherwise the sign-in would fail with a 500
+            # for as long as the cookie lives.
             request.session.delete("user_id")
             nil
           end
