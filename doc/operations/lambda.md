@@ -85,7 +85,7 @@ Non-secret configuration is set as ordinary Lambda environment variables from Te
 
 ## One-off tasks
 
-`migrate.yml` (`db:migrate`), `seed.yml` (`db:seed`) and `delete-map.yml` (`maps:delete`, workflow input `ulid`, event key `map_ulid`) are manual (`workflow_dispatch`) workflows that invoke the `task` function through `scripts/invoke-lambda-task`; `scripts/seed-db` does the same with `AWS_PROFILE=terraform`. The function accepts an event naming one of these allow-listed tasks and runs it in-process (`lib/lambda_support/task_runner.rb`); the fourth and fifth, `cleanup:stale_uploads` and `cleanup:orphaned_avatars`, are run by the schedules below. `cleanup:orphaned_maps` is run by hand: it only lists the S3 prefixes of maps missing from the database, and deletes them when the event sets `"dry_run": false`. The 15-minute maximum timeout applies. The structure dump after migration is skipped because the image has no `pg_dump`.
+`migrate.yml` (`db:migrate`), `seed.yml` (`db:seed`) and `delete-map.yml` (`maps:delete`, workflow input `ulid`, event key `map_ulid`) are manual (`workflow_dispatch`) workflows that invoke the `task` function through `scripts/invoke-lambda-task`; `scripts/seed-db` does the same with `AWS_PROFILE=terraform`. The function accepts an event naming one of these allow-listed tasks and runs it in-process (`lib/lambda_support/task_runner.rb`); the fourth to sixth, `cleanup:stale_uploads`, `cleanup:orphaned_avatars` and `cleanup:orphaned_maps`, are run by the schedules below. `cleanup:orphaned_maps` only lists the S3 prefixes of maps missing from the database unless the event sets `"dry_run": false`, so a manual invocation without it is a dry run. The 15-minute maximum timeout applies. The structure dump after migration is skipped because the image has no `pg_dump`.
 
 The function is invoked with `--cli-read-timeout 0` and without CLI retries, since a retry after a client timeout would run the task, for example a migration, a second time.
 
@@ -94,6 +94,8 @@ The function is invoked with `--cli-read-timeout 0` and without CLI retries, sin
 EventBridge Scheduler invokes the `task` function every day at 03:00 JST with `{"task": "cleanup:stale_uploads"}` (`scheduler.tf`; the schedule's role may only invoke that function). The selection rules of `Operations::Uploads::CleanupStale` are in [Upload Flow](../architecture/upload-flow.md#stale-upload-cleanup). The task exits with an error when a prefix cannot be queued. The schedule does not retry; the next day's run is the retry.
 
 At 03:30 JST the same function runs `{"task": "cleanup:orphaned_avatars"}`. `Operations::CleanupOrphanedAvatars` deletes the objects under `{user_name}/avatar/` that the user's profile does not refer to and that are more than a day old; the grace period covers an avatar uploaded just before the profile is updated. Prefixes of users missing from the database are skipped. The task exits with an error on an S3 failure, and the next day's run is the retry.
+
+At 04:00 JST the same function runs `{"task": "cleanup:orphaned_maps", "dry_run": false}`. `Operations::CleanupOrphanedMaps` deletes the `{user_name}/maps/{map_id}/` prefixes that have no map record. A map record is created before any object under its prefix is written, so an upload in progress is not affected. Prefixes of users missing from the database are skipped. The task exits with an error on an S3 failure, and the next day's run is the retry.
 
 ## Deployment
 

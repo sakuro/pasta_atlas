@@ -29,7 +29,7 @@ terraform/
 | `ci_role.tf` | GitHub Actions OIDC role and its policies |
 | `alarms.tf` | SNS topics and CloudWatch alarms (Lambda, SQS, RDS, NAT and CloudFront) |
 | `ssm.tf` | SSM parameters (secrets) |
-| `scheduler.tf` | EventBridge Scheduler schedule for the stale upload cleanup and its role |
+| `scheduler.tf` | EventBridge Scheduler schedules for the stale upload, orphaned avatar and orphaned map cleanups, and their role |
 | `sqs.tf` | SQS queue for S3 cleanup and its dead-letter queue |
 | `outputs.tf` | Bucket, distribution, queue and RDS outputs |
 
