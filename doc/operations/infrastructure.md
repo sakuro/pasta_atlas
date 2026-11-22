@@ -68,7 +68,7 @@ Condition: AWS:SourceArn == <mapshots distribution ARN>
 
 The Lambda execution role holds `s3:GetObject`, `s3:PutObject`, `s3:DeleteObject`, and `s3:ListBucket` for generating presigned URLs and managing objects.
 
-CORS allows `POST` and `PUT` from `allowed_origins` (presigned uploads) and exposes the `ETag` header.
+CORS allows `POST` from `allowed_origins` (presigned uploads) and exposes the `ETag` header.
 
 ## CloudFront Distributions
 
