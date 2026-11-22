@@ -106,7 +106,7 @@ At 04:00 JST the same function runs `{"task": "cleanup:orphaned_maps", "dry_run"
 3. Updates the code of all three functions from the zip, waiting for each update to finish. No Lambda versions are published.
 4. Invalidates `/assets/ftl-manifest.json` on the distribution that carries the application domain.
 
-Run `deploy.yml` first and then `migrate.yml`, because only `deploy.yml` updates the code of the `task` function. Migrations must be backward compatible with the previously deployed application code, since the new code runs briefly before the schema change. After dropping or renaming a column, deploy again: warm environments cache the ROM-inferred schema. Rolling back means re-running the code update with the zip of an earlier commit from the artifacts bucket.
+Run `deploy.yml` first and then `migrate.yml`, because only `deploy.yml` updates the code of the `task` function. Migrations must be backward compatible with the previously deployed application code, since the new code runs briefly before the schema change. A relation whose table the migration creates is the exception: the schema is inferred from the table, so the `app` and `s3-cleanup` functions fail to start until `migrate.yml` has run, and the migration should follow the deployment at once. The `task` function still starts, because `lambda_function.rb` builds the S3 cleanup processor on each invocation instead of when the file loads. After dropping or renaming a column, deploy again: warm environments cache the ROM-inferred schema. Rolling back means re-running the code update with the zip of an earlier commit from the artifacts bucket.
 
 ## Local development
 
