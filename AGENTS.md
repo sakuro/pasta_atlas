@@ -4,7 +4,7 @@ This file provides guidance to AI coding agents when working with code in this r
 
 ## Overview
 
-pasta_atlas is a Hanami 3.0 (Ruby) web application for viewing screenshots captured by the Factorio MOD "mapshot". Users upload mapshot tile sets to S3; the app stores metadata in PostgreSQL and serves a SolidJS-based map viewer.
+pasta_atlas is a Hanami 3.0 (Ruby) web application for viewing screenshots captured by the Factorio mod "mapshot". Users upload mapshot tile sets to S3; the app stores metadata in PostgreSQL and serves a SolidJS-based map viewer.
 
 ## Commands
 
