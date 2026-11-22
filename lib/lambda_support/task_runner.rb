@@ -27,8 +27,21 @@ module LambdaSupport
       in "maps:delete" then delete_map(event["map_ulid"])
       in "cleanup:stale_uploads" then @rake.call("cleanup:stale_uploads")
       in "cleanup:orphaned_avatars" then @rake.call("cleanup:orphaned_avatars")
+      in "cleanup:orphaned_maps" then cleanup_orphaned_maps(event["dry_run"])
       in name then raise UnknownTask, "unknown task: #{name}"
       end
+    end
+
+    # The task deletes whole map prefixes, so it only lists them unless the event says
+    # "dry_run": false. The variable is reset on every call because a warm function keeps its
+    # environment between invocations.
+    private def cleanup_orphaned_maps(dry_run)
+      if dry_run == false
+        @env.delete("DRY_RUN")
+      else
+        @env["DRY_RUN"] = "1"
+      end
+      @rake.call("cleanup:orphaned_maps")
     end
 
     private def delete_map(ulid)

@@ -3,11 +3,17 @@
 include Dry::Monads[:result]
 
 namespace :cleanup do
-  desc "Delete the S3 objects of maps that no longer exist in the database"
+  desc "Delete the S3 objects of maps that no longer exist in the database (DRY_RUN=1 only lists them)"
   task orphaned_maps: :environment do
-    case Hanami.app["operations.cleanup_orphaned_maps"].call
+    dry_run = ENV.key?("DRY_RUN")
+    case Hanami.app["operations.cleanup_orphaned_maps"].call(dry_run:)
     in Success(stats)
-      puts "Deleted #{stats[:deleted_count]} orphaned map prefix(es)"
+      if dry_run
+        stats[:prefixes].each {|prefix| puts prefix }
+        puts "Found #{stats[:prefixes].size} orphaned map prefix(es); nothing was deleted"
+      else
+        puts "Deleted #{stats[:deleted_count]} orphaned map prefix(es)"
+      end
     in Failure(reason)
       warn "Cleanup failed: #{reason}"
       exit 1

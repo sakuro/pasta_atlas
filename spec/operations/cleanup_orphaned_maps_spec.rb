@@ -37,7 +37,7 @@ RSpec.describe PastaAtlas::Operations::CleanupOrphanedMaps do
         result = operation.call
 
         expect(result).to be_success
-        expect(result.value!).to eq({deleted_count: 0})
+        expect(result.value!).to eq({prefixes: [], deleted_count: 0})
       end
     end
 
@@ -51,7 +51,7 @@ RSpec.describe PastaAtlas::Operations::CleanupOrphanedMaps do
         result = operation.call
 
         expect(result).to be_success
-        expect(result.value!).to eq({deleted_count: 0})
+        expect(result.value!).to eq({prefixes: [], deleted_count: 0})
       end
     end
 
@@ -80,7 +80,16 @@ RSpec.describe PastaAtlas::Operations::CleanupOrphanedMaps do
         result = operation.call
 
         expect(result).to be_success
-        expect(result.value!).to eq({deleted_count: 1})
+        expect(result.value!).to eq({prefixes: ["alice/maps/map-abc/"], deleted_count: 1})
+      end
+
+      context "with dry_run" do
+        it "lists the orphaned prefix without deleting anything" do
+          result = operation.call(dry_run: true)
+
+          expect(result.value!).to eq({prefixes: ["alice/maps/map-abc/"], deleted_count: 0})
+          expect(s3_client).not_to have_received(:delete_objects)
+        end
       end
     end
 
@@ -105,7 +114,7 @@ RSpec.describe PastaAtlas::Operations::CleanupOrphanedMaps do
         result = operation.call
 
         expect(result).to be_success
-        expect(result.value!).to eq({deleted_count: 0})
+        expect(result.value!).to eq({prefixes: [], deleted_count: 0})
       end
     end
 
