@@ -4,7 +4,7 @@ module PastaAtlas
   module Operations
     # Deletes avatar objects that no profile refers to: replaced or removed avatars whose cleanup
     # was not queued or failed, and uploads that were never applied. Users missing from the
-    # database are skipped, as CleanupOrphanedS3Objects does.
+    # database are skipped, as CleanupOrphanedMaps does.
     class CleanupOrphanedAvatars < PastaAtlas::Operation
       include Deps["repos.user_profile_repo", "repos.user_repo", "settings", s3_client: "s3.client"]
 

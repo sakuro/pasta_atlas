@@ -2,12 +2,12 @@
 
 require "aws-sdk-s3"
 
-RSpec.describe PastaAtlas::Operations::CleanupOrphanedS3Objects do
+RSpec.describe PastaAtlas::Operations::CleanupOrphanedMaps do
   let(:map_repo) { instance_double(PastaAtlas::Repos::MapRepo) }
   let(:user_repo) { instance_double(PastaAtlas::Repos::UserRepo) }
   let(:settings) { double("Settings", s3_bucket: "test-bucket") }
   let(:s3_client) { instance_double(Aws::S3::Client) }
-  let(:operation) { PastaAtlas::Operations::CleanupOrphanedS3Objects.new(map_repo:, user_repo:, settings:, s3_client:) }
+  let(:operation) { PastaAtlas::Operations::CleanupOrphanedMaps.new(map_repo:, user_repo:, settings:, s3_client:) }
 
   let(:user) { double("User", id: 1, name: "alice") }
 

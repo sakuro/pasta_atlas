@@ -2,7 +2,7 @@
 
 module PastaAtlas
   module Operations
-    class CleanupOrphanedS3Objects < PastaAtlas::Operation
+    class CleanupOrphanedMaps < PastaAtlas::Operation
       include Deps["repos.map_repo", "repos.user_repo", "settings", s3_client: "s3.client"]
 
       def call
