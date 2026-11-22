@@ -17,7 +17,7 @@ export interface Mapshot {
 
 export const formatNumber = (n: number, locale: string): string => new Intl.NumberFormat(locale).format(n);
 
-const PINNED_MODS = ["elevated-rails", "quality", "space-age"];
+const PINNED_MODS = ["elevated-rails", "quality", "recycler", "space-age"];
 
 const sortedMods = (mods: Record<string, string>): [string, string][] => {
   const entries = Object.entries(mods);
