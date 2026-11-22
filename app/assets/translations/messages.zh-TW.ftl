@@ -184,7 +184,7 @@ how-to-upload-step1-body = 從 { -factorio } 遊戲內的 MOD 選單安裝 <a da
 how-to-upload-step2-heading = 2. 擷取地圖
 how-to-upload-step2-open-console = 開啟遊戲內主控台並執行：
 how-to-upload-step2-wait = 擷取期間遊戲可能暫時無回應，請等待其恢復正常。
-how-to-upload-achievement-warning = 為避免影響成就，請勿在安裝 { -mapshot } 的狀態下儲存遊戲，擷取後請解除安裝 { -mapshot }。
+how-to-upload-achievement-warning = 為避免影響成就，請勿在啟用 { -mapshot } 的狀態下儲存遊戲，擷取後請停用或解除安裝 { -mapshot }。
 how-to-upload-step3-heading = 3. 上傳
 how-to-upload-step3-click-upload = 點擊導覽列中的「上傳」。
 how-to-upload-step3-select-folder = 點擊「選取資料夾」並選擇包含 <code data-l10n-name="filename">mapshot.json</code> 的子資料夾（請選擇資料夾，而非檔案本身）。

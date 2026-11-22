@@ -184,7 +184,7 @@ how-to-upload-step1-body = { -factorio } 게임 내 MOD 메뉴에서 <a data-l10
 how-to-upload-step2-heading = 2. 맵 캡처
 how-to-upload-step2-open-console = 게임 내 콘솔을 열고 다음 명령어를 실행하세요:
 how-to-upload-step2-wait = 캡처 중에는 게임이 잠시 응답하지 않을 수 있습니다 — 정상으로 돌아올 때까지 기다려 주세요.
-how-to-upload-achievement-warning = 업적에 영향을 주지 않으려면 { -mapshot }이 설치된 상태에서 게임을 저장하지 마세요. 캡처 후 { -mapshot }을 제거하세요.
+how-to-upload-achievement-warning = 업적에 영향을 주지 않으려면 { -mapshot }이 활성화된 상태에서 게임을 저장하지 마세요. 캡처 후 { -mapshot }을 비활성화하거나 제거하세요.
 how-to-upload-step3-heading = 3. 업로드
 how-to-upload-step3-click-upload = 내비게이션 바에서 "업로드"를 클릭하세요.
 how-to-upload-step3-select-folder = "폴더 선택"을 클릭하고 <code data-l10n-name="filename">mapshot.json</code>이 포함된 하위 폴더를 선택하세요(파일 자체가 아닌 폴더를 선택하세요).
