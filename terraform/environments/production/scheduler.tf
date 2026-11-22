@@ -45,6 +45,30 @@ resource "aws_scheduler_schedule" "orphaned_avatars_cleanup" {
   }
 }
 
+# The S3 prefixes of maps that are missing from the database remain when a cleanup could not
+# be queued after a map was deleted. The event sets dry_run to false because the task only
+# lists the prefixes otherwise (see Operations::CleanupOrphanedMaps).
+resource "aws_scheduler_schedule" "orphaned_maps_cleanup" {
+  name                         = "${var.app_name}-${var.environment}-orphaned-maps-cleanup"
+  schedule_expression          = "cron(0 4 * * ? *)"
+  schedule_expression_timezone = "Asia/Tokyo"
+
+  flexible_time_window {
+    mode = "OFF"
+  }
+
+  target {
+    arn      = aws_lambda_function.task.arn
+    role_arn = aws_iam_role.scheduler.arn
+    input    = jsonencode({ task = "cleanup:orphaned_maps", dry_run = false })
+
+    # The task is safe to repeat, and a failure raises the task function's error alarm.
+    retry_policy {
+      maximum_retry_attempts = 0
+    }
+  }
+}
+
 resource "aws_iam_role" "scheduler" {
   name = "${var.app_name}-${var.environment}-scheduler"
 
