@@ -2,16 +2,20 @@
 
 module PastaAtlas
   module Operations
+    # Deletes the S3 prefixes of maps that are missing from the database. A map record is created
+    # before any object under its prefix is written, so a prefix without a record is not in use.
+    # With dry_run, the prefixes are only listed.
     class CleanupOrphanedMaps < PastaAtlas::Operation
       include Deps["repos.map_repo", "repos.user_repo", "settings", s3_client: "s3.client"]
 
-      def call
-        deleted_count = step cleanup_orphaned_prefixes
-        {deleted_count:}
+      def call(dry_run: false)
+        prefixes = step find_orphaned_prefixes
+        step delete_prefixes(prefixes) unless dry_run
+        {prefixes:, deleted_count: dry_run ? 0 : prefixes.size}
       end
 
-      private def cleanup_orphaned_prefixes
-        deleted_count = 0
+      private def find_orphaned_prefixes
+        prefixes = []
         list_prefixes("").each do |user_prefix|
           user_name = user_prefix.chomp("/")
           user = user_repo.find_by_name(user_name)
@@ -20,13 +24,17 @@ module PastaAtlas
           maps_prefix = "#{user_prefix}maps/"
           list_prefixes(maps_prefix).each do |map_prefix|
             mapshot_map_id = map_prefix.delete_prefix(maps_prefix).chomp("/")
-            unless map_repo.find_by_user_and_mapshot_id(user_id: user.id, mapshot_map_id:)
-              delete_objects(map_prefix)
-              deleted_count += 1
-            end
+            prefixes << map_prefix unless map_repo.find_by_user_and_mapshot_id(user_id: user.id, mapshot_map_id:)
           end
         end
-        Success(deleted_count)
+        Success(prefixes)
+      rescue Aws::S3::Errors::ServiceError
+        Failure(:s3_error)
+      end
+
+      private def delete_prefixes(prefixes)
+        prefixes.each {|prefix| delete_objects(prefix) }
+        Success()
       rescue Aws::S3::Errors::ServiceError
         Failure(:s3_error)
       end

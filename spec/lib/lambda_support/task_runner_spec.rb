@@ -42,6 +42,28 @@ RSpec.describe LambdaSupport::TaskRunner do
       expect(rake_calls).to eq(["cleanup:orphaned_avatars"])
     end
 
+    describe "cleanup:orphaned_maps" do
+      it "only lists the maps by default" do
+        runner.call("task" => "cleanup:orphaned_maps")
+
+        expect([rake_calls, env]).to eq([["cleanup:orphaned_maps"], {"DRY_RUN" => "1"}])
+      end
+
+      it "deletes them when the event sets dry_run to false" do
+        env["DRY_RUN"] = "1"
+
+        runner.call("task" => "cleanup:orphaned_maps", "dry_run" => false)
+
+        expect([rake_calls, env]).to eq([["cleanup:orphaned_maps"], {}])
+      end
+
+      it "treats any other dry_run value as a dry run" do
+        runner.call("task" => "cleanup:orphaned_maps", "dry_run" => "no")
+
+        expect(env).to eq({"DRY_RUN" => "1"})
+      end
+    end
+
     it "rejects tasks that are not allow-listed" do
       expect { runner.call("task" => "db:drop") }
         .to raise_error(LambdaSupport::TaskRunner::UnknownTask, "unknown task: db:drop")
