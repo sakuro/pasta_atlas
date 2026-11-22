@@ -12,6 +12,7 @@ erDiagram
     User ||--o| UserProfile : has
     User ||--o| UserPreference : has
     User ||--o{ Credential : has
+    User ||--o{ AvatarUpload : issued
     User ||--o{ Map : owns
     Map ||--o{ Generation : has
     Generation ||--o| Upload : has
@@ -36,6 +37,18 @@ Public-facing identity information.
 | user_id | FK → User (1:1) |
 | display_name | nullable; human-readable name shown in the UI |
 | avatar_s3_key | nullable; S3 key for the user's avatar image |
+
+### AvatarUpload
+
+An avatar key issued to a user for an upload. A key can become the user's avatar only if it is recorded here, has not expired and has not been consumed; applying it consumes it.
+
+| Field | Notes |
+|---|---|
+| user_id | FK → User |
+| s3_key | unique |
+| content_type | the type the presigned POST fixes |
+| expires_at | the presigned POST's expiry |
+| consumed_at | nullable; set when the key is applied |
 
 ### UserPreference
 

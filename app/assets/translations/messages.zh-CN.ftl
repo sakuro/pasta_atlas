@@ -114,6 +114,7 @@ error-credential-conflict = 该账号已关联至其他用户。
 error-credential-last = 至少需要一个已关联账号。
 error-profile-display-name-too-long = 显示名称不得超过 30 个字符。
 error-profile-display-name-invalid-chars = 显示名称包含不允许的字符。
+error-profile-avatar-invalid = 无法使用该头像。请重新选择图片。
 
 ### Maps
 

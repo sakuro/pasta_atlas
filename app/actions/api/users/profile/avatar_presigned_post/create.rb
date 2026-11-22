@@ -14,7 +14,7 @@ module PastaAtlas
 
               params do
                 required(:user_name).filled(:string)
-                required(:content_type).filled(:string, included_in?: %w[image/jpeg image/png image/webp])
+                required(:content_type).filled(:string, included_in?: AvatarPolicy::CONTENT_TYPES.keys)
               end
 
               def handle(request, response)

@@ -114,6 +114,7 @@ error-credential-conflict = 해당 계정은 이미 다른 사용자에게 연�
 error-credential-last = 최소 하나의 연결된 계정이 필요합니다.
 error-profile-display-name-too-long = 표시 이름은 30자 이하이어야 합니다.
 error-profile-display-name-invalid-chars = 표시 이름에 허용되지 않는 문자가 포함되어 있습니다.
+error-profile-avatar-invalid = 아바타를 사용할 수 없습니다. 이미지를 다시 선택해 주세요.
 
 ### Maps
 

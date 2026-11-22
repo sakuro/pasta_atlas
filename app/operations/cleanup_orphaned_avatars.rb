@@ -4,9 +4,16 @@ module PastaAtlas
   module Operations
     # Deletes avatar objects that no profile refers to: replaced or removed avatars whose cleanup
     # was not queued or failed, and uploads that were never applied. Users missing from the
-    # database are skipped, as CleanupOrphanedMaps does.
+    # database are skipped, as CleanupOrphanedMaps does. It also deletes the records of issued
+    # avatar keys once they are well past their expiry.
     class CleanupOrphanedAvatars < PastaAtlas::Operation
-      include Deps["repos.user_profile_repo", "repos.user_repo", "settings", s3_client: "s3.client"]
+      include Deps[
+        "repos.avatar_upload_repo",
+        "repos.user_profile_repo",
+        "repos.user_repo",
+        "settings",
+        s3_client: "s3.client"
+      ]
 
       # An avatar is uploaded before the profile points at it, so recent objects are not orphans yet.
       GRACE_PERIOD_SECONDS = 24 * 60 * 60
@@ -17,8 +24,10 @@ module PastaAtlas
       private_constant :DELETE_BATCH_SIZE
 
       def call(now: Time.now)
-        deleted_count = step cleanup_orphaned_avatars(now - GRACE_PERIOD_SECONDS)
-        {deleted_count:}
+        cutoff = now - GRACE_PERIOD_SECONDS
+        deleted_count = step cleanup_orphaned_avatars(cutoff)
+        deleted_uploads = avatar_upload_repo.delete_expired_before(cutoff)
+        {deleted_count:, deleted_uploads:}
       end
 
       private def cleanup_orphaned_avatars(cutoff)

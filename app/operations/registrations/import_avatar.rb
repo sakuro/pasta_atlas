@@ -9,13 +9,6 @@ module PastaAtlas
       class ImportAvatar < PastaAtlas::Operation
         include Deps["settings", s3_client: "s3.client"]
 
-        CONTENT_TYPE_TO_EXT = {
-          "image/jpeg" => "jpg",
-          "image/png" => "png",
-          "image/webp" => "webp"
-        }.freeze
-        private_constant :CONTENT_TYPE_TO_EXT
-
         MAX_REDIRECTS = 5
         private_constant :MAX_REDIRECTS
 
@@ -58,7 +51,7 @@ module PastaAtlas
         end
 
         private def resolve_ext(content_type)
-          ext = CONTENT_TYPE_TO_EXT[content_type]
+          ext = AvatarPolicy::CONTENT_TYPES[content_type]
           ext ? Success(ext) : Failure(:unsupported_type)
         end
 

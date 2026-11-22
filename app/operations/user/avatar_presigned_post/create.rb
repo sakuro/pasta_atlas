@@ -7,38 +7,34 @@ module PastaAtlas
     module User
       module AvatarPresignedPost
         class Create < PastaAtlas::Operation
-          ALLOWED_CONTENT_TYPES = {
-            "image/jpeg" => "jpg",
-            "image/png" => "png",
-            "image/webp" => "webp"
-          }.freeze
-          private_constant :ALLOWED_CONTENT_TYPES
+          include Deps["repos.avatar_upload_repo", "repos.user_repo", "settings", s3_client: "s3.client"]
 
-          # Keep in sync with MAX_BYTES in frontend/pages/user/AvatarUpload.tsx.
-          MAX_AVATAR_SIZE_BYTES = 5 * 1024 * 1024
-          private_constant :MAX_AVATAR_SIZE_BYTES
-
-          include Deps["repos.user_repo", "settings", s3_client: "s3.client"]
-
-          def call(user_id:, content_type:)
+          def call(user_id:, content_type:, now: Time.now)
             user_id = step require_authentication(user_id)
             user = user_repo.find_by_id!(user_id)
-            ext = ALLOWED_CONTENT_TYPES[content_type]
-            key = "#{user.name}/avatar/#{ULID.generate}.#{ext}"
-            {presigned_post: presigned_post_for(key:, content_type:), s3_key: key}
+            step check_pending_limit(user.id, now)
+            key = "#{user.name}/avatar/#{ULID.generate}.#{AvatarPolicy::CONTENT_TYPES[content_type]}"
+            expires_at = now + settings.presigned_url_expiry
+            avatar_upload_repo.create(user_id: user.id, s3_key: key, content_type:, expires_at:)
+            {presigned_post: presigned_post_for(key:, content_type:, expires_at:), s3_key: key}
           end
 
           private def require_authentication(user_id)
             user_id ? Success(user_id) : Failure(:forbidden)
           end
 
-          private def presigned_post_for(key:, content_type:)
+          private def check_pending_limit(user_id, now)
+            pending = avatar_upload_repo.count_pending(user_id:, now:)
+            pending < AvatarPolicy::MAX_PENDING_UPLOADS ? Success() : Failure(:too_many_requests)
+          end
+
+          private def presigned_post_for(key:, content_type:, expires_at:)
             bucket = Aws::S3::Bucket.new(name: settings.s3_bucket, client: s3_client)
             post = bucket.presigned_post(
               key:,
               content_type:,
-              content_length_range: 1..MAX_AVATAR_SIZE_BYTES,
-              expires: Time.now + settings.presigned_url_expiry
+              content_length_range: 1..AvatarPolicy::MAX_SIZE_BYTES,
+              expires: expires_at
             )
             {url: post.url, fields: post.fields}
           end

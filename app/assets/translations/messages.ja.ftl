@@ -114,6 +114,7 @@ error-credential-conflict = そのアカウントはすでに別のユーザー�
 error-credential-last = 少なくとも1つの連携済アカウントが必要です。
 error-profile-display-name-too-long = 表示名は30文字以内にしてください。
 error-profile-display-name-invalid-chars = 表示名に使用できない文字が含まれています。
+error-profile-avatar-invalid = アバターを設定できませんでした。画像をもう一度選んでください。
 
 ### Maps
 
