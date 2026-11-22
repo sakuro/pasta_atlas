@@ -303,8 +303,12 @@
 .factorio-img--decorative-floating-iceberg-small{background-image:url('../../../factorio-icons/decorative/floating-iceberg-small.png')}
 .factorio-decorative--fuchsia-pita{background-image:url('../../../factorio-icons/decorative/fuchsia-pita.png')}
 .factorio-img--decorative-fuchsia-pita{background-image:url('../../../factorio-icons/decorative/fuchsia-pita.png')}
-.factorio-decorative--fulgoran-gravewort{background-image:url('../../../factorio-icons/decorative/fulgoran-gravewort.png')}
-.factorio-img--decorative-fulgoran-gravewort{background-image:url('../../../factorio-icons/decorative/fulgoran-gravewort.png')}
+.factorio-decorative--fulgora-sunk-ruin-big-decal{background-image:url('../../../factorio-icons/decorative/fulgora-sunk-ruin-big-decal.png')}
+.factorio-img--decorative-fulgora-sunk-ruin-big-decal{background-image:url('../../../factorio-icons/decorative/fulgora-sunk-ruin-big-decal.png')}
+.factorio-decorative--fulgora-sunk-ruin-medium{background-image:url('../../../factorio-icons/decorative/fulgora-sunk-ruin-medium.png')}
+.factorio-img--decorative-fulgora-sunk-ruin-medium{background-image:url('../../../factorio-icons/decorative/fulgora-sunk-ruin-medium.png')}
+.factorio-decorative--fulgora-sunk-ruin-small{background-image:url('../../../factorio-icons/decorative/fulgora-sunk-ruin-small.png')}
+.factorio-img--decorative-fulgora-sunk-ruin-small{background-image:url('../../../factorio-icons/decorative/fulgora-sunk-ruin-small.png')}
 .factorio-decorative--fulgoran-ruin-tiny{background-image:url('../../../factorio-icons/decorative/fulgoran-ruin-tiny.png')}
 .factorio-img--decorative-fulgoran-ruin-tiny{background-image:url('../../../factorio-icons/decorative/fulgoran-ruin-tiny.png')}
 .factorio-decorative--garballo-mini-dry{background-image:url('../../../factorio-icons/decorative/garballo-mini-dry.png')}
@@ -373,6 +377,8 @@
 .factorio-img--decorative-matches-small{background-image:url('../../../factorio-icons/decorative/matches-small.png')}
 .factorio-decorative--medium-fulgora-rock{background-image:url('../../../factorio-icons/decorative/medium-fulgora-rock.png')}
 .factorio-img--decorative-medium-fulgora-rock{background-image:url('../../../factorio-icons/decorative/medium-fulgora-rock.png')}
+.factorio-decorative--medium-fulgoran-gravewort{background-image:url('../../../factorio-icons/decorative/medium-fulgoran-gravewort.png')}
+.factorio-img--decorative-medium-fulgoran-gravewort{background-image:url('../../../factorio-icons/decorative/medium-fulgoran-gravewort.png')}
 .factorio-decorative--medium-rock{background-image:url('../../../factorio-icons/decorative/medium-rock.png')}
 .factorio-img--decorative-medium-rock{background-image:url('../../../factorio-icons/decorative/medium-rock.png')}
 .factorio-decorative--medium-sand-rock{background-image:url('../../../factorio-icons/decorative/medium-sand-rock.png')}
@@ -445,6 +451,8 @@
 .factorio-img--decorative-shroom-decal{background-image:url('../../../factorio-icons/decorative/shroom-decal.png')}
 .factorio-decorative--small-fulgora-rock{background-image:url('../../../factorio-icons/decorative/small-fulgora-rock.png')}
 .factorio-img--decorative-small-fulgora-rock{background-image:url('../../../factorio-icons/decorative/small-fulgora-rock.png')}
+.factorio-decorative--small-fulgoran-gravewort{background-image:url('../../../factorio-icons/decorative/small-fulgoran-gravewort.png')}
+.factorio-img--decorative-small-fulgoran-gravewort{background-image:url('../../../factorio-icons/decorative/small-fulgoran-gravewort.png')}
 .factorio-decorative--small-rock{background-image:url('../../../factorio-icons/decorative/small-rock.png')}
 .factorio-img--decorative-small-rock{background-image:url('../../../factorio-icons/decorative/small-rock.png')}
 .factorio-decorative--small-sand-rock{background-image:url('../../../factorio-icons/decorative/small-sand-rock.png')}
@@ -745,6 +753,8 @@
 .factorio-img--entity-big-strafer-pentapod-leg{background-image:url('../../../factorio-icons/entity/big-strafer-pentapod-leg.png')}
 .factorio-entity--big-strafer-pentapod{background-image:url('../../../factorio-icons/entity/big-strafer-pentapod.png')}
 .factorio-img--entity-big-strafer-pentapod{background-image:url('../../../factorio-icons/entity/big-strafer-pentapod.png')}
+.factorio-entity--big-volcanic-rock-hot{background-image:url('../../../factorio-icons/entity/big-volcanic-rock-hot.png')}
+.factorio-img--entity-big-volcanic-rock-hot{background-image:url('../../../factorio-icons/entity/big-volcanic-rock-hot.png')}
 .factorio-entity--big-volcanic-rock{background-image:url('../../../factorio-icons/entity/big-volcanic-rock.png')}
 .factorio-img--entity-big-volcanic-rock{background-image:url('../../../factorio-icons/entity/big-volcanic-rock.png')}
 .factorio-entity--big-worm-corpse-burrowed{background-image:url('../../../factorio-icons/entity/big-worm-corpse-burrowed.png')}
@@ -989,12 +999,16 @@
 .factorio-img--entity-decider-combinator-remnants{background-image:url('../../../factorio-icons/entity/decider-combinator-remnants.png')}
 .factorio-entity--decider-combinator{background-image:url('../../../factorio-icons/entity/decider-combinator.png')}
 .factorio-img--entity-decider-combinator{background-image:url('../../../factorio-icons/entity/decider-combinator.png')}
+.factorio-entity--deconstructible-tile-proxy{background-image:url('../../../factorio-icons/entity/deconstructible-tile-proxy.png')}
+.factorio-img--entity-deconstructible-tile-proxy{background-image:url('../../../factorio-icons/entity/deconstructible-tile-proxy.png')}
 .factorio-entity--defender-remnants{background-image:url('../../../factorio-icons/entity/defender-remnants.png')}
 .factorio-img--entity-defender-remnants{background-image:url('../../../factorio-icons/entity/defender-remnants.png')}
 .factorio-entity--defender-robot-explosion{background-image:url('../../../factorio-icons/entity/defender-robot-explosion.png')}
 .factorio-img--entity-defender-robot-explosion{background-image:url('../../../factorio-icons/entity/defender-robot-explosion.png')}
 .factorio-entity--defender{background-image:url('../../../factorio-icons/entity/defender.png')}
 .factorio-img--entity-defender{background-image:url('../../../factorio-icons/entity/defender.png')}
+.factorio-entity--depleted-mining-drill-proxy{background-image:url('../../../factorio-icons/entity/depleted-mining-drill-proxy.png')}
+.factorio-img--entity-depleted-mining-drill-proxy{background-image:url('../../../factorio-icons/entity/depleted-mining-drill-proxy.png')}
 .factorio-entity--destroyer-remnants{background-image:url('../../../factorio-icons/entity/destroyer-remnants.png')}
 .factorio-img--entity-destroyer-remnants{background-image:url('../../../factorio-icons/entity/destroyer-remnants.png')}
 .factorio-entity--destroyer-robot-explosion{background-image:url('../../../factorio-icons/entity/destroyer-robot-explosion.png')}
@@ -1161,6 +1175,10 @@
 .factorio-img--entity-foundry-remnants{background-image:url('../../../factorio-icons/entity/foundry-remnants.png')}
 .factorio-entity--foundry{background-image:url('../../../factorio-icons/entity/foundry.png')}
 .factorio-img--entity-foundry{background-image:url('../../../factorio-icons/entity/foundry.png')}
+.factorio-entity--fulgora-sunk-ruin-big{background-image:url('../../../factorio-icons/entity/fulgora-sunk-ruin-big.png')}
+.factorio-img--entity-fulgora-sunk-ruin-big{background-image:url('../../../factorio-icons/entity/fulgora-sunk-ruin-big.png')}
+.factorio-entity--fulgora-sunk-ruin-medium-tall{background-image:url('../../../factorio-icons/entity/fulgora-sunk-ruin-medium-tall.png')}
+.factorio-img--entity-fulgora-sunk-ruin-medium-tall{background-image:url('../../../factorio-icons/entity/fulgora-sunk-ruin-medium-tall.png')}
 .factorio-entity--fulgoran-ruin-attractor{background-image:url('../../../factorio-icons/entity/fulgoran-ruin-attractor.png')}
 .factorio-img--entity-fulgoran-ruin-attractor{background-image:url('../../../factorio-icons/entity/fulgoran-ruin-attractor.png')}
 .factorio-entity--fulgoran-ruin-big{background-image:url('../../../factorio-icons/entity/fulgoran-ruin-big.png')}
@@ -1275,6 +1293,8 @@
 .factorio-img--entity-huge-scorchmark-tintable{background-image:url('../../../factorio-icons/entity/huge-scorchmark-tintable.png')}
 .factorio-entity--huge-scorchmark{background-image:url('../../../factorio-icons/entity/huge-scorchmark.png')}
 .factorio-img--entity-huge-scorchmark{background-image:url('../../../factorio-icons/entity/huge-scorchmark.png')}
+.factorio-entity--huge-volcanic-rock-hot{background-image:url('../../../factorio-icons/entity/huge-volcanic-rock-hot.png')}
+.factorio-img--entity-huge-volcanic-rock-hot{background-image:url('../../../factorio-icons/entity/huge-volcanic-rock-hot.png')}
 .factorio-entity--huge-volcanic-rock{background-image:url('../../../factorio-icons/entity/huge-volcanic-rock.png')}
 .factorio-img--entity-huge-volcanic-rock{background-image:url('../../../factorio-icons/entity/huge-volcanic-rock.png')}
 .factorio-entity--infinity-cargo-wagon{background-image:url('../../../factorio-icons/entity/infinity-cargo-wagon.png')}
@@ -1321,6 +1341,8 @@
 .factorio-img--entity-land-mine-remnants{background-image:url('../../../factorio-icons/entity/land-mine-remnants.png')}
 .factorio-entity--land-mine{background-image:url('../../../factorio-icons/entity/land-mine.png')}
 .factorio-img--entity-land-mine{background-image:url('../../../factorio-icons/entity/land-mine.png')}
+.factorio-entity--landing-pad-unloading-bay{background-image:url('../../../factorio-icons/entity/landing-pad-unloading-bay.png')}
+.factorio-img--entity-landing-pad-unloading-bay{background-image:url('../../../factorio-icons/entity/landing-pad-unloading-bay.png')}
 .factorio-entity--lane-splitter{background-image:url('../../../factorio-icons/entity/lane-splitter.png')}
 .factorio-img--entity-lane-splitter{background-image:url('../../../factorio-icons/entity/lane-splitter.png')}
 .factorio-entity--laser-bubble{background-image:url('../../../factorio-icons/entity/laser-bubble.png')}
@@ -1647,6 +1669,8 @@
 .factorio-img--entity-rail-support-remnants{background-image:url('../../../factorio-icons/entity/rail-support-remnants.png')}
 .factorio-entity--rail-support{background-image:url('../../../factorio-icons/entity/rail-support.png')}
 .factorio-img--entity-rail-support{background-image:url('../../../factorio-icons/entity/rail-support.png')}
+.factorio-entity--railgun-turret-explosion{background-image:url('../../../factorio-icons/entity/railgun-turret-explosion.png')}
+.factorio-img--entity-railgun-turret-explosion{background-image:url('../../../factorio-icons/entity/railgun-turret-explosion.png')}
 .factorio-entity--railgun-turret-remnants{background-image:url('../../../factorio-icons/entity/railgun-turret-remnants.png')}
 .factorio-img--entity-railgun-turret-remnants{background-image:url('../../../factorio-icons/entity/railgun-turret-remnants.png')}
 .factorio-entity--railgun-turret{background-image:url('../../../factorio-icons/entity/railgun-turret.png')}
@@ -1679,6 +1703,8 @@
 .factorio-img--entity-rocket-silo-remnants{background-image:url('../../../factorio-icons/entity/rocket-silo-remnants.png')}
 .factorio-entity--rocket-silo{background-image:url('../../../factorio-icons/entity/rocket-silo.png')}
 .factorio-img--entity-rocket-silo{background-image:url('../../../factorio-icons/entity/rocket-silo.png')}
+.factorio-entity--rocket-turret-explosion{background-image:url('../../../factorio-icons/entity/rocket-turret-explosion.png')}
+.factorio-img--entity-rocket-turret-explosion{background-image:url('../../../factorio-icons/entity/rocket-turret-explosion.png')}
 .factorio-entity--rocket-turret-remnants{background-image:url('../../../factorio-icons/entity/rocket-turret-remnants.png')}
 .factorio-img--entity-rocket-turret-remnants{background-image:url('../../../factorio-icons/entity/rocket-turret-remnants.png')}
 .factorio-entity--rocket-turret{background-image:url('../../../factorio-icons/entity/rocket-turret.png')}
@@ -1729,6 +1755,8 @@
 .factorio-img--entity-small-electric-pole-remnants{background-image:url('../../../factorio-icons/entity/small-electric-pole-remnants.png')}
 .factorio-entity--small-electric-pole{background-image:url('../../../factorio-icons/entity/small-electric-pole.png')}
 .factorio-img--entity-small-electric-pole{background-image:url('../../../factorio-icons/entity/small-electric-pole.png')}
+.factorio-entity--small-explosion-hit{background-image:url('../../../factorio-icons/entity/small-explosion-hit.png')}
+.factorio-img--entity-small-explosion-hit{background-image:url('../../../factorio-icons/entity/small-explosion-hit.png')}
 .factorio-entity--small-lamp{background-image:url('../../../factorio-icons/entity/small-lamp.png')}
 .factorio-img--entity-small-lamp{background-image:url('../../../factorio-icons/entity/small-lamp.png')}
 .factorio-entity--small-metallic-asteroid{background-image:url('../../../factorio-icons/entity/small-metallic-asteroid.png')}
@@ -1911,6 +1939,8 @@
 .factorio-img--entity-tank{background-image:url('../../../factorio-icons/entity/tank.png')}
 .factorio-entity--teflilly{background-image:url('../../../factorio-icons/entity/teflilly.png')}
 .factorio-img--entity-teflilly{background-image:url('../../../factorio-icons/entity/teflilly.png')}
+.factorio-entity--tesla-turret-explosion{background-image:url('../../../factorio-icons/entity/tesla-turret-explosion.png')}
+.factorio-img--entity-tesla-turret-explosion{background-image:url('../../../factorio-icons/entity/tesla-turret-explosion.png')}
 .factorio-entity--tesla-turret-remnants{background-image:url('../../../factorio-icons/entity/tesla-turret-remnants.png')}
 .factorio-img--entity-tesla-turret-remnants{background-image:url('../../../factorio-icons/entity/tesla-turret-remnants.png')}
 .factorio-entity--tesla-turret{background-image:url('../../../factorio-icons/entity/tesla-turret.png')}
@@ -2077,6 +2107,8 @@
 .factorio-img--equipment-belt-immunity-equipment{background-image:url('../../../factorio-icons/equipment/belt-immunity-equipment.png')}
 .factorio-equipment--discharge-defense-equipment{background-image:url('../../../factorio-icons/equipment/discharge-defense-equipment.png')}
 .factorio-img--equipment-discharge-defense-equipment{background-image:url('../../../factorio-icons/equipment/discharge-defense-equipment.png')}
+.factorio-equipment--electric-energy-interface-equipment{background-image:url('../../../factorio-icons/equipment/electric-energy-interface-equipment.png')}
+.factorio-img--equipment-electric-energy-interface-equipment{background-image:url('../../../factorio-icons/equipment/electric-energy-interface-equipment.png')}
 .factorio-equipment--energy-shield-equipment{background-image:url('../../../factorio-icons/equipment/energy-shield-equipment.png')}
 .factorio-img--equipment-energy-shield-equipment{background-image:url('../../../factorio-icons/equipment/energy-shield-equipment.png')}
 .factorio-equipment--energy-shield-mk2-equipment{background-image:url('../../../factorio-icons/equipment/energy-shield-mk2-equipment.png')}
@@ -2363,6 +2395,8 @@
 .factorio-img--item-efficiency-module-3{background-image:url('../../../factorio-icons/item/efficiency-module-3.png')}
 .factorio-item--efficiency-module{background-image:url('../../../factorio-icons/item/efficiency-module.png')}
 .factorio-img--item-efficiency-module{background-image:url('../../../factorio-icons/item/efficiency-module.png')}
+.factorio-item--electric-energy-interface-equipment{background-image:url('../../../factorio-icons/item/electric-energy-interface-equipment.png')}
+.factorio-img--item-electric-energy-interface-equipment{background-image:url('../../../factorio-icons/item/electric-energy-interface-equipment.png')}
 .factorio-item--electric-energy-interface{background-image:url('../../../factorio-icons/item/electric-energy-interface.png')}
 .factorio-img--item-electric-energy-interface{background-image:url('../../../factorio-icons/item/electric-energy-interface.png')}
 .factorio-item--electric-engine-unit{background-image:url('../../../factorio-icons/item/electric-engine-unit.png')}
@@ -2507,6 +2541,8 @@
 .factorio-img--item-land-mine{background-image:url('../../../factorio-icons/item/land-mine.png')}
 .factorio-item--landfill{background-image:url('../../../factorio-icons/item/landfill.png')}
 .factorio-img--item-landfill{background-image:url('../../../factorio-icons/item/landfill.png')}
+.factorio-item--landing-pad-unloading-bay{background-image:url('../../../factorio-icons/item/landing-pad-unloading-bay.png')}
+.factorio-img--item-landing-pad-unloading-bay{background-image:url('../../../factorio-icons/item/landing-pad-unloading-bay.png')}
 .factorio-item--lane-splitter{background-image:url('../../../factorio-icons/item/lane-splitter.png')}
 .factorio-img--item-lane-splitter{background-image:url('../../../factorio-icons/item/lane-splitter.png')}
 .factorio-item--laser-turret{background-image:url('../../../factorio-icons/item/laser-turret.png')}
@@ -3177,6 +3213,8 @@
 .factorio-img--recipe-copper-cable-recycling{background-image:url('../../../factorio-icons/recipe/copper-cable-recycling.png')}
 .factorio-recipe--copper-cable{background-image:url('../../../factorio-icons/recipe/copper-cable.png')}
 .factorio-img--recipe-copper-cable{background-image:url('../../../factorio-icons/recipe/copper-cable.png')}
+.factorio-recipe--copper-ore-melting{background-image:url('../../../factorio-icons/recipe/copper-ore-melting.png')}
+.factorio-img--recipe-copper-ore-melting{background-image:url('../../../factorio-icons/recipe/copper-ore-melting.png')}
 .factorio-recipe--copper-ore-recycling{background-image:url('../../../factorio-icons/recipe/copper-ore-recycling.png')}
 .factorio-img--recipe-copper-ore-recycling{background-image:url('../../../factorio-icons/recipe/copper-ore-recycling.png')}
 .factorio-recipe--copper-plate-recycling{background-image:url('../../../factorio-icons/recipe/copper-plate-recycling.png')}
@@ -3239,6 +3277,8 @@
 .factorio-img--recipe-efficiency-module-recycling{background-image:url('../../../factorio-icons/recipe/efficiency-module-recycling.png')}
 .factorio-recipe--efficiency-module{background-image:url('../../../factorio-icons/recipe/efficiency-module.png')}
 .factorio-img--recipe-efficiency-module{background-image:url('../../../factorio-icons/recipe/efficiency-module.png')}
+.factorio-recipe--electric-energy-interface-equipment-recycling{background-image:url('../../../factorio-icons/recipe/electric-energy-interface-equipment-recycling.png')}
+.factorio-img--recipe-electric-energy-interface-equipment-recycling{background-image:url('../../../factorio-icons/recipe/electric-energy-interface-equipment-recycling.png')}
 .factorio-recipe--electric-energy-interface-recycling{background-image:url('../../../factorio-icons/recipe/electric-energy-interface-recycling.png')}
 .factorio-img--recipe-electric-energy-interface-recycling{background-image:url('../../../factorio-icons/recipe/electric-energy-interface-recycling.png')}
 .factorio-recipe--electric-engine-unit-recycling{background-image:url('../../../factorio-icons/recipe/electric-engine-unit-recycling.png')}
@@ -3507,6 +3547,8 @@
 .factorio-img--recipe-iron-gear-wheel-recycling{background-image:url('../../../factorio-icons/recipe/iron-gear-wheel-recycling.png')}
 .factorio-recipe--iron-gear-wheel{background-image:url('../../../factorio-icons/recipe/iron-gear-wheel.png')}
 .factorio-img--recipe-iron-gear-wheel{background-image:url('../../../factorio-icons/recipe/iron-gear-wheel.png')}
+.factorio-recipe--iron-ore-melting{background-image:url('../../../factorio-icons/recipe/iron-ore-melting.png')}
+.factorio-img--recipe-iron-ore-melting{background-image:url('../../../factorio-icons/recipe/iron-ore-melting.png')}
 .factorio-recipe--iron-ore-recycling{background-image:url('../../../factorio-icons/recipe/iron-ore-recycling.png')}
 .factorio-img--recipe-iron-ore-recycling{background-image:url('../../../factorio-icons/recipe/iron-ore-recycling.png')}
 .factorio-recipe--iron-plate-recycling{background-image:url('../../../factorio-icons/recipe/iron-plate-recycling.png')}
@@ -3541,6 +3583,10 @@
 .factorio-img--recipe-landfill-recycling{background-image:url('../../../factorio-icons/recipe/landfill-recycling.png')}
 .factorio-recipe--landfill{background-image:url('../../../factorio-icons/recipe/landfill.png')}
 .factorio-img--recipe-landfill{background-image:url('../../../factorio-icons/recipe/landfill.png')}
+.factorio-recipe--landing-pad-unloading-bay-recycling{background-image:url('../../../factorio-icons/recipe/landing-pad-unloading-bay-recycling.png')}
+.factorio-img--recipe-landing-pad-unloading-bay-recycling{background-image:url('../../../factorio-icons/recipe/landing-pad-unloading-bay-recycling.png')}
+.factorio-recipe--landing-pad-unloading-bay{background-image:url('../../../factorio-icons/recipe/landing-pad-unloading-bay.png')}
+.factorio-img--recipe-landing-pad-unloading-bay{background-image:url('../../../factorio-icons/recipe/landing-pad-unloading-bay.png')}
 .factorio-recipe--lane-splitter-recycling{background-image:url('../../../factorio-icons/recipe/lane-splitter-recycling.png')}
 .factorio-img--recipe-lane-splitter-recycling{background-image:url('../../../factorio-icons/recipe/lane-splitter-recycling.png')}
 .factorio-recipe--laser-turret-recycling{background-image:url('../../../factorio-icons/recipe/laser-turret-recycling.png')}
@@ -3635,12 +3681,8 @@
 .factorio-img--recipe-modular-armor{background-image:url('../../../factorio-icons/recipe/modular-armor.png')}
 .factorio-recipe--molten-copper-from-lava{background-image:url('../../../factorio-icons/recipe/molten-copper-from-lava.png')}
 .factorio-img--recipe-molten-copper-from-lava{background-image:url('../../../factorio-icons/recipe/molten-copper-from-lava.png')}
-.factorio-recipe--molten-copper{background-image:url('../../../factorio-icons/recipe/molten-copper.png')}
-.factorio-img--recipe-molten-copper{background-image:url('../../../factorio-icons/recipe/molten-copper.png')}
 .factorio-recipe--molten-iron-from-lava{background-image:url('../../../factorio-icons/recipe/molten-iron-from-lava.png')}
 .factorio-img--recipe-molten-iron-from-lava{background-image:url('../../../factorio-icons/recipe/molten-iron-from-lava.png')}
-.factorio-recipe--molten-iron{background-image:url('../../../factorio-icons/recipe/molten-iron.png')}
-.factorio-img--recipe-molten-iron{background-image:url('../../../factorio-icons/recipe/molten-iron.png')}
 .factorio-recipe--night-vision-equipment-recycling{background-image:url('../../../factorio-icons/recipe/night-vision-equipment-recycling.png')}
 .factorio-img--recipe-night-vision-equipment-recycling{background-image:url('../../../factorio-icons/recipe/night-vision-equipment-recycling.png')}
 .factorio-recipe--night-vision-equipment{background-image:url('../../../factorio-icons/recipe/night-vision-equipment.png')}
@@ -4125,6 +4167,8 @@
 .factorio-img--recipe-transport-belt{background-image:url('../../../factorio-icons/recipe/transport-belt.png')}
 .factorio-recipe--tree-seed-recycling{background-image:url('../../../factorio-icons/recipe/tree-seed-recycling.png')}
 .factorio-img--recipe-tree-seed-recycling{background-image:url('../../../factorio-icons/recipe/tree-seed-recycling.png')}
+.factorio-recipe--tree-seed{background-image:url('../../../factorio-icons/recipe/tree-seed.png')}
+.factorio-img--recipe-tree-seed{background-image:url('../../../factorio-icons/recipe/tree-seed.png')}
 .factorio-recipe--tungsten-carbide-recycling{background-image:url('../../../factorio-icons/recipe/tungsten-carbide-recycling.png')}
 .factorio-img--recipe-tungsten-carbide-recycling{background-image:url('../../../factorio-icons/recipe/tungsten-carbide-recycling.png')}
 .factorio-recipe--tungsten-carbide{background-image:url('../../../factorio-icons/recipe/tungsten-carbide.png')}
@@ -4185,8 +4229,6 @@
 .factorio-img--recipe-water-barrel-recycling{background-image:url('../../../factorio-icons/recipe/water-barrel-recycling.png')}
 .factorio-recipe--water-barrel{background-image:url('../../../factorio-icons/recipe/water-barrel.png')}
 .factorio-img--recipe-water-barrel{background-image:url('../../../factorio-icons/recipe/water-barrel.png')}
-.factorio-recipe--wood-processing{background-image:url('../../../factorio-icons/recipe/wood-processing.png')}
-.factorio-img--recipe-wood-processing{background-image:url('../../../factorio-icons/recipe/wood-processing.png')}
 .factorio-recipe--wood-recycling{background-image:url('../../../factorio-icons/recipe/wood-recycling.png')}
 .factorio-img--recipe-wood-recycling{background-image:url('../../../factorio-icons/recipe/wood-recycling.png')}
 .factorio-recipe--wooden-chest-recycling{background-image:url('../../../factorio-icons/recipe/wooden-chest-recycling.png')}
@@ -4237,6 +4279,8 @@
 .factorio-img--shortcut-toggle-equipment-movement-bonus{background-image:url('../../../factorio-icons/shortcut/toggle-equipment-movement-bonus.png')}
 .factorio-shortcut--toggle-personal-roboport{background-image:url('../../../factorio-icons/shortcut/toggle-personal-roboport.png')}
 .factorio-img--shortcut-toggle-personal-roboport{background-image:url('../../../factorio-icons/shortcut/toggle-personal-roboport.png')}
+.factorio-shortcut--toggle-tall-entity-visibility{background-image:url('../../../factorio-icons/shortcut/toggle-tall-entity-visibility.png')}
+.factorio-img--shortcut-toggle-tall-entity-visibility{background-image:url('../../../factorio-icons/shortcut/toggle-tall-entity-visibility.png')}
 .factorio-shortcut--undo{background-image:url('../../../factorio-icons/shortcut/undo.png')}
 .factorio-img--shortcut-undo{background-image:url('../../../factorio-icons/shortcut/undo.png')}
 .factorio-space-connection--aquilo-solar-system-edge{background-image:url('../../../factorio-icons/space-connection/aquilo-solar-system-edge.png')}
@@ -4523,6 +4567,8 @@
 .factorio-img--technology-land-mine{background-image:url('../../../factorio-icons/technology/land-mine.png')}
 .factorio-technology--landfill{background-image:url('../../../factorio-icons/technology/landfill.png')}
 .factorio-img--technology-landfill{background-image:url('../../../factorio-icons/technology/landfill.png')}
+.factorio-technology--landing-pad-unloading-bay{background-image:url('../../../factorio-icons/technology/landing-pad-unloading-bay.png')}
+.factorio-img--technology-landing-pad-unloading-bay{background-image:url('../../../factorio-icons/technology/landing-pad-unloading-bay.png')}
 .factorio-technology--laser-shooting-speed-1{background-image:url('../../../factorio-icons/technology/laser-shooting-speed-1.png')}
 .factorio-img--technology-laser-shooting-speed-1{background-image:url('../../../factorio-icons/technology/laser-shooting-speed-1.png')}
 .factorio-technology--laser-shooting-speed-2{background-image:url('../../../factorio-icons/technology/laser-shooting-speed-2.png')}
@@ -4761,6 +4807,8 @@
 .factorio-img--technology-steel-plate-productivity{background-image:url('../../../factorio-icons/technology/steel-plate-productivity.png')}
 .factorio-technology--steel-processing{background-image:url('../../../factorio-icons/technology/steel-processing.png')}
 .factorio-img--technology-steel-processing{background-image:url('../../../factorio-icons/technology/steel-processing.png')}
+.factorio-technology--stellar-discovery-solar-system-edge{background-image:url('../../../factorio-icons/technology/stellar-discovery-solar-system-edge.png')}
+.factorio-img--technology-stellar-discovery-solar-system-edge{background-image:url('../../../factorio-icons/technology/stellar-discovery-solar-system-edge.png')}
 .factorio-technology--stone-wall{background-image:url('../../../factorio-icons/technology/stone-wall.png')}
 .factorio-img--technology-stone-wall{background-image:url('../../../factorio-icons/technology/stone-wall.png')}
 .factorio-technology--stronger-explosives-1{background-image:url('../../../factorio-icons/technology/stronger-explosives-1.png')}
@@ -4897,6 +4945,8 @@
 .factorio-img--tile-foundation{background-image:url('../../../factorio-icons/tile/foundation.png')}
 .factorio-tile--frozen-concrete{background-image:url('../../../factorio-icons/tile/frozen-concrete.png')}
 .factorio-img--tile-frozen-concrete{background-image:url('../../../factorio-icons/tile/frozen-concrete.png')}
+.factorio-tile--frozen-foundation{background-image:url('../../../factorio-icons/tile/frozen-foundation.png')}
+.factorio-img--tile-frozen-foundation{background-image:url('../../../factorio-icons/tile/frozen-foundation.png')}
 .factorio-tile--frozen-hazard-concrete-left{background-image:url('../../../factorio-icons/tile/frozen-hazard-concrete-left.png')}
 .factorio-img--tile-frozen-hazard-concrete-left{background-image:url('../../../factorio-icons/tile/frozen-hazard-concrete-left.png')}
 .factorio-tile--frozen-hazard-concrete-right{background-image:url('../../../factorio-icons/tile/frozen-hazard-concrete-right.png')}
@@ -5021,8 +5071,12 @@
 .factorio-img--tile-natural-yumako-soil{background-image:url('../../../factorio-icons/tile/natural-yumako-soil.png')}
 .factorio-tile--nuclear-ground{background-image:url('../../../factorio-icons/tile/nuclear-ground.png')}
 .factorio-img--tile-nuclear-ground{background-image:url('../../../factorio-icons/tile/nuclear-ground.png')}
+.factorio-tile--oil-ocean-deep-2{background-image:url('../../../factorio-icons/tile/oil-ocean-deep-2.png')}
+.factorio-img--tile-oil-ocean-deep-2{background-image:url('../../../factorio-icons/tile/oil-ocean-deep-2.png')}
 .factorio-tile--oil-ocean-deep{background-image:url('../../../factorio-icons/tile/oil-ocean-deep.png')}
 .factorio-img--tile-oil-ocean-deep{background-image:url('../../../factorio-icons/tile/oil-ocean-deep.png')}
+.factorio-tile--oil-ocean-shallow-2{background-image:url('../../../factorio-icons/tile/oil-ocean-shallow-2.png')}
+.factorio-img--tile-oil-ocean-shallow-2{background-image:url('../../../factorio-icons/tile/oil-ocean-shallow-2.png')}
 .factorio-tile--oil-ocean-shallow{background-image:url('../../../factorio-icons/tile/oil-ocean-shallow.png')}
 .factorio-img--tile-oil-ocean-shallow{background-image:url('../../../factorio-icons/tile/oil-ocean-shallow.png')}
 .factorio-tile--orange-refined-concrete{background-image:url('../../../factorio-icons/tile/orange-refined-concrete.png')}
