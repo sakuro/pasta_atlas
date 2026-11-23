@@ -1,6 +1,6 @@
 openapi: 3.1.0
 info:
-  title: pasta_atlas JSON API
+  title: Pasta Atlas JSON API
   version: "1"
   description: |
     The JSON API used by the SPA. The authentication endpoints that redirect instead of answering JSON
