@@ -31,7 +31,7 @@ export type MapSummary = {
    */
   metadata_url: string;
   /**
-   * The creation time of the newest complete generation
+   * When the last upload of the map completed, the time the map lists are ordered by. It belongs to another generation than the one shown when an older save (lower tick) was uploaded later.
    */
   updated_at: string;
 };
@@ -41,11 +41,11 @@ export type MapDetail = {
   display_name: string;
   owner: UserInfo;
   /**
-   * The creation time of the newest complete generation
+   * The same as MapSummary.updated_at
    */
   updated_at: string;
   /**
-   * Sorted by tick, descending
+   * Sorted by tick, descending; the viewer opens the first, as the map lists show it
    */
   generations: Array<Generation>;
 };

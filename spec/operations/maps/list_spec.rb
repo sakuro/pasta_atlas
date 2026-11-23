@@ -21,7 +21,7 @@ RSpec.describe PastaAtlas::Operations::Maps::List do
       allow(user_repo).to receive(:find_by_ids).with([1]).and_return([user])
       allow(user_profile_repo).to receive(:find_by_user_ids).with([1]).and_return([profile])
       allow(generation_repo).to receive(:find_latest_complete_by_map_ids).with([1]).and_return({1 => generation})
-      allow(generation_repo).to receive(:find_max_complete_created_at_by_map_ids).with([1]).and_return({1 => updated_at})
+      allow(generation_repo).to receive(:find_last_completed_at_by_map_ids).with([1]).and_return({1 => updated_at})
       allow(generation).to receive(:thumbnail_url).with("http://cdn.example.com").and_return("http://cdn.example.com/guest/map1/gen1/s1zoom_4/tile_0_0.jpg")
       allow(generation).to receive(:metadata_url).with("http://cdn.example.com").and_return("http://cdn.example.com/guest/map1/gen1/mapshot.json")
     end
@@ -51,7 +51,7 @@ RSpec.describe PastaAtlas::Operations::Maps::List do
     context "when a map has no complete generation any more" do
       before do
         allow(generation_repo).to receive(:find_latest_complete_by_map_ids).with([1]).and_return({})
-        allow(generation_repo).to receive(:find_max_complete_created_at_by_map_ids).with([1]).and_return({})
+        allow(generation_repo).to receive(:find_last_completed_at_by_map_ids).with([1]).and_return({})
       end
 
       it "leaves the map out and keeps the total" do
