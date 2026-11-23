@@ -21,6 +21,7 @@ RSpec.describe PastaAtlas::Actions::API::Maps::DeletionRequests::Create do
 
       expect(response.status).to eq(302)
       expect(response.headers["Location"]).to eq("/")
+      expect(response).to conform_to_openapi("POST /api/v1/maps/{ulid}/deletion_requests")
     end
   end
 
@@ -35,6 +36,7 @@ RSpec.describe PastaAtlas::Actions::API::Maps::DeletionRequests::Create do
       response = action.call({ulid: "01MAP"})
 
       expect(response.status).to eq(403)
+      expect(response).to conform_to_openapi("POST /api/v1/maps/{ulid}/deletion_requests")
     end
   end
 
@@ -49,6 +51,7 @@ RSpec.describe PastaAtlas::Actions::API::Maps::DeletionRequests::Create do
       response = action.call(action_params)
 
       expect(response.status).to eq(403)
+      expect(response).to conform_to_openapi("POST /api/v1/maps/{ulid}/deletion_requests")
     end
   end
 
@@ -63,6 +66,7 @@ RSpec.describe PastaAtlas::Actions::API::Maps::DeletionRequests::Create do
       response = action.call(action_params)
 
       expect(response.status).to eq(404)
+      expect(response).to conform_to_openapi("POST /api/v1/maps/{ulid}/deletion_requests")
     end
   end
 end

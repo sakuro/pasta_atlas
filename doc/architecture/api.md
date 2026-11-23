@@ -1,5 +1,7 @@
 # API Endpoints
 
+The JSON endpoints in [openapi.yaml](../../openapi.yaml) are specified there and not repeated here.
+
 ## Auth
 
 Authentication uses OmniAuth. GitHub, Discord, and Steam OAuth are supported.
@@ -293,35 +295,6 @@ Supported content types: `image/jpeg`, `image/png`, `image/webp`.
 | `400 Bad Request` | Missing or unsupported content type |
 | `429 Too Many Requests` | The user already holds 10 keys that were not applied and have not expired |
 
-### GET /api/v1/users/:user_name/maps
-
-Returns up to the 3 most recently updated maps of this user that have a complete generation.
-
-**Response `200 OK`:**
-
-```json
-{
-  "maps": [
-    {
-      "ulid": "01HXYZ...",
-      "display_name": "my-save",
-      "user_name": "wube",
-      "author_display_name": "Wube Software",
-      "author_avatar_url": "https://cdn.example.com/...",
-      "thumbnail_url": "https://cdn.example.com/...",
-      "metadata_url": "https://cdn.example.com/.../mapshot.json",
-      "updated_at": "2026-04-26T01:23:45Z"
-    }
-  ]
-}
-```
-
-**Error responses:**
-
-| Status | Condition |
-|---|---|
-| `404 Not Found` | User not found, or is a system account (guest or compilatron) |
-
 ### DELETE /api/v1/users/:user_name
 
 Queues the S3 prefixes of the user's maps and avatar for cleanup, deletes the user account, clears the session, and returns a redirect target. The prefixes are queued first: if one cannot be queued, the account is kept and the request can be repeated. Authenticated, own account only.
@@ -345,129 +318,6 @@ Queues the S3 prefixes of the user's maps and avatar for cleanup, deletes the us
 | `400 Bad Request` | `confirm_user_name` does not match |
 | `403 Forbidden` | Not logged in, or not own account |
 | `502 Bad Gateway` | A cleanup message could not be queued; the account is kept |
-
-## Maps
-
-### GET /api/v1/maps
-
-Paginated list of maps with at least one `complete` generation, ordered by most recent generation upload.
-
-**Query params:**
-
-| Param | Notes |
-|---|---|
-| `page` | Page number (default: 1) |
-
-**Response `200 OK`:**
-
-```json
-{
-  "maps": [
-    {
-      "ulid": "01HXYZ...",
-      "display_name": "my-save",
-      "user_name": "wube",
-      "author_display_name": "Wube Software",
-      "author_avatar_url": "https://cdn.example.com/...",
-      "thumbnail_url": "https://cdn.example.com/...",
-      "metadata_url": "https://cdn.example.com/.../mapshot.json",
-      "updated_at": "2026-04-26T01:23:45Z"
-    }
-  ],
-  "page": 1,
-  "per_page": 20,
-  "total": 42
-}
-```
-
-### GET /api/v1/maps/lookup
-
-Looks up a map by `mapshot_map_id` for the current user (guest or logged in).
-
-**Query params:**
-
-| Param | Notes |
-|---|---|
-| `mapshot_map_id` | mapshot internal map identifier |
-
-**Response `200 OK`:**
-
-```json
-{ "name": "my-save" }
-```
-
-`name` is `null` if the map has no user-set name.
-
-**Error responses:**
-
-| Status | Condition |
-|---|---|
-| `404 Not Found` | No map found for this user + mapshot_map_id |
-
-### GET /api/v1/maps/:ulid
-
-Map details with all complete generations.
-
-**Response `200 OK`:**
-
-```json
-{
-  "ulid": "01HXYZ...",
-  "display_name": "my-save",
-  "owner": { "name": "wube", "display_name": "Wube Software", "avatar_url": "https://cdn.example.com/..." },
-  "updated_at": "2026-04-26T01:23:45Z",
-  "generations": [
-    {
-      "ulid": "01HABC...",
-      "tick": 29386437,
-      "metadata_url": "https://cdn.example.com/wube/maps/ae8ec3ab/550f41a9/mapshot.json"
-    }
-  ]
-}
-```
-
-`avatar_url` may be null. `updated_at` is the creation time of the latest generation. `generations` is sorted by `tick` descending. `metadata_url` is the CloudFront URL for the generation's mapshot.json.
-
-**Error responses:**
-
-| Status | Condition |
-|---|---|
-| `404 Not Found` | Map does not exist or has no complete generation |
-
-### PATCH /api/v1/maps/:ulid/name
-
-Updates the display name of a map. Authenticated, own map only.
-
-**Request params:**
-
-| Field | Notes |
-|---|---|
-| `name` | New display name; leading and trailing whitespace is stripped; max 30 grapheme clusters; same character rule as the profile `display_name` |
-
-**Response `200 OK`:**
-
-```json
-{ "display_name": "new-name" }
-```
-
-**Error responses:**
-
-| Status | Condition |
-|---|---|
-| `403 Forbidden` | Guest, or not own map |
-| `404 Not Found` | Map not found |
-| `422 Unprocessable Entity` | `{"error": "error-map-name-too-long" \| "error-map-name-invalid-chars"}` |
-
-### POST /api/v1/maps/:ulid/deletion_requests
-
-Deletes a map and queues its S3 prefix for cleanup. Authenticated, own map only. On success, sets the flash `map-deletion-requested` and redirects to `/`.
-
-**Error responses:**
-
-| Status | Condition |
-|---|---|
-| `403 Forbidden` | Guest, or not own map |
-| `404 Not Found` | Map not found |
 
 ## Uploads
 

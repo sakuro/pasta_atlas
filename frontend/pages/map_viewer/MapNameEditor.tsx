@@ -1,10 +1,9 @@
 import { createEffect, createSignal, Show } from "solid-js";
 import { useToast } from "../../contexts/ToastContext";
+import { errorKey, updateMapName } from "../../lib/api/client";
 
 const segmenter = new Intl.Segmenter();
 const MAX_GRAPHEMES = 30;
-
-const csrfToken = (): string => document.querySelector<HTMLMetaElement>('meta[name="csrf-token"]')?.content ?? "";
 
 interface MapNameEditorProps {
   ulid: string;
@@ -42,20 +41,15 @@ export const MapNameEditor = (props: MapNameEditorProps) => {
 
   const saveEdit = async () => {
     const name = editValue().trim();
-    const res = await fetch(`/api/v1/maps/${props.ulid}/name`, {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json", "X-CSRF-Token": csrfToken() },
-      body: JSON.stringify({ name }),
-    });
-    if (res.ok) {
-      const data = (await res.json()) as { display_name: string };
+    const { data, error, response } = await updateMapName({ path: { ulid: props.ulid }, body: { name } });
+    if (data) {
       const prev = displayName();
       setDisplayName(data.display_name);
       setIsEditing(false);
       props.onSave(prev, data.display_name);
-    } else if (res.status === 422) {
-      const data = (await res.json()) as { error: string };
-      showToast(data.error, "danger");
+    } else if (response?.status === 422) {
+      const key = errorKey(error);
+      if (key) showToast(key, "danger");
     }
   };
 

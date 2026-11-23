@@ -1,9 +1,7 @@
 import { createSignal, createMemo, createEffect, Show, Loading, onSettled } from "solid-js";
 import { useLocation, useNavigate } from "@solidjs/router";
 import { useToast } from "../../contexts/ToastContext";
-
-const csrfToken = (): string => document.querySelector<HTMLMetaElement>('meta[name="csrf-token"]')?.content ?? "";
-
+import { csrfToken, showMap } from "../../lib/api/client";
 import { Avatar } from "../../components/Avatar";
 import { FormattedDateTime } from "../../components/FormattedDateTime";
 import { MapInfoModal } from "../../components/MapInfoModal";
@@ -14,26 +12,13 @@ import { LeafletMap, type Mapshot } from "./leaflet/LeafletMap";
 import { getParam, setParams } from "./url_params";
 import { uploadsCompleted } from "../../lib/upload-events";
 
-interface Generation {
-  ulid: string;
-  tick: number;
-  metadata_url: string;
-}
-
-interface MapData {
-  ulid: string;
-  display_name: string;
-  owner: { name: string };
-  generations: Generation[];
-}
-
 interface MapViewerProps {
   ulid: string;
   displayName: string;
   authorName: string;
   authorDisplayName: string;
   authorAvatarUrl: string | null;
-  updatedAt: string | null;
+  updatedAt: string;
   viewerName: string | null;
 }
 
@@ -43,10 +28,12 @@ export const MapViewer = (props: MapViewerProps) => {
 
   const location = useLocation();
 
-  const mapData = createMemo(() => {
+  const mapData = createMemo(async () => {
     // Reading uploadsCompleted refetches the generations after an upload from the layout.
     uploadsCompleted();
-    return fetch(`/api/v1/maps/${props.ulid}`).then((r) => r.json() as Promise<MapData>);
+    const { data, error, response } = await showMap({ path: { ulid: props.ulid } });
+    if (!data) throw new Error(`HTTP ${response?.status}`, { cause: error });
+    return data;
   });
 
   const [generationUlid, setGenerationUlid] = createSignal<string | null>(getParam("generation"));
@@ -139,13 +126,9 @@ export const MapViewer = (props: MapViewerProps) => {
             <span class="is-size-7">{props.authorDisplayName}</span>
           </a>
         </Show>
-        <Show when={props.updatedAt}>
-          {(iso) => (
-            <span class="is-size-7 has-text-grey" style={{ "flex-shrink": 0 }}>
-              <FormattedDateTime dateTime={iso()} />
-            </span>
-          )}
-        </Show>
+        <span class="is-size-7 has-text-grey" style={{ "flex-shrink": 0 }}>
+          <FormattedDateTime dateTime={props.updatedAt} />
+        </span>
         <div style={{ flex: 1 }} />
         {/* Each async slot has its own boundary (without a fallback) so the toolbar renders
             right away and fills in as data arrives. `on` re-arms the mapshot boundaries when

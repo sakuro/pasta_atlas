@@ -1,17 +1,16 @@
 import { createMemo, Errored, For, Loading, Show } from "solid-js";
-import { MapCard, type MapData } from "../../components/MapCard";
+import { MapCard } from "../../components/MapCard";
+import { listRecentMapsOfUser } from "../../lib/api/client";
 import "../../lib/l10n";
 import { SpinnerBlock } from "../../components/SpinnerBlock";
 import { ErrorNotification } from "../../components/ErrorNotification";
 
-type MapsResponse = { maps: MapData[] };
-
 export const UserMapsTab = (props: { userName: string; active: () => boolean }) => {
-  const data = createMemo(async (): Promise<MapsResponse | undefined> => {
+  const data = createMemo(async () => {
     if (!props.active()) return undefined;
-    const res = await fetch(`/api/v1/users/${props.userName}/maps`);
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    return res.json() as Promise<MapsResponse>;
+    const { data: body, error, response } = await listRecentMapsOfUser({ path: { user_name: props.userName } });
+    if (!body) throw new Error(`HTTP ${response?.status}`, { cause: error });
+    return body;
   });
 
   return (

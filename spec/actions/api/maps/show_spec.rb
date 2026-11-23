@@ -9,7 +9,7 @@ RSpec.describe PastaAtlas::Actions::API::Maps::Show do
   context "when the map is found" do
     let(:updated_at) { Time.new(2024, 1, 15, 12, 0, 0, "+00:00") }
     let(:user_info) { PastaAtlas::Values::UserInfo[name: "wube", display_name: "Wube", avatar_url: nil] }
-    let(:map_info) { PastaAtlas::Values::MapInfo[ulid: "01MAP", display_name: "my-save", user_info:, thumbnail_url: nil, metadata_url: nil, updated_at:] }
+    let(:map_info) { PastaAtlas::Values::MapInfo[ulid: "01MAP", display_name: "my-save", user_info:, thumbnail_url: "https://cdn.example.com/wube/maps/ae8ec3ab/550f41a9/thumbnail.jpg", metadata_url: "https://cdn.example.com/wube/maps/ae8ec3ab/550f41a9/mapshot.json", updated_at:] }
     let(:generations) { [{ulid: "01GEN", tick: 1000, metadata_url: "https://cdn.example.com/ae8ec3ab/550f41a9/mapshot.json"}] }
 
     before do
@@ -38,6 +38,7 @@ RSpec.describe PastaAtlas::Actions::API::Maps::Show do
         "tick" => 1000
       )
       expect(body["generations"].first["metadata_url"]).to end_with("ae8ec3ab/550f41a9/mapshot.json")
+      expect(response).to conform_to_openapi("GET /api/v1/maps/{ulid}")
     end
   end
 
@@ -48,6 +49,7 @@ RSpec.describe PastaAtlas::Actions::API::Maps::Show do
       response = action.call(action_params)
 
       expect(response.status).to eq(404)
+      expect(response).to conform_to_openapi("GET /api/v1/maps/{ulid}")
     end
   end
 end

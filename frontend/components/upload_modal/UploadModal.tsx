@@ -3,6 +3,7 @@ import { Portal } from "@solidjs/web";
 import { useNavigate } from "@solidjs/router";
 import { adjectives, animals, colors, uniqueNamesGenerator } from "unique-names-generator";
 import "../../lib/l10n";
+import { lookupMap } from "../../lib/api/client";
 import { notifyUploadCompleted } from "../../lib/upload-events";
 import { CopyButton } from "../CopyButton";
 import { HowToUploadModal } from "./HowToUploadModal";
@@ -124,15 +125,11 @@ export const UploadModal = (props: { isGuest: boolean }) => {
 
     let initialName = mapshotJson.name || mapshotJson.savename || generateMapName();
     let existingMap = false;
-    try {
-      const resp = await fetch(`/api/v1/maps/lookup?mapshot_map_id=${encodeURIComponent(mapshotJson.map_id)}`);
-      if (resp.ok) {
-        existingMap = true;
-        const data = (await resp.json()) as { name: string | null };
-        if (data.name) initialName = data.name;
-      }
-    } catch {
-      // Use JSON-derived name if lookup fails
+    // On any failure the name from mapshot.json stays.
+    const { data } = await lookupMap({ query: { mapshot_map_id: mapshotJson.map_id } });
+    if (data) {
+      existingMap = true;
+      if (data.name) initialName = data.name;
     }
     setDisplayName(initialName);
     setState({

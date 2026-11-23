@@ -6,8 +6,9 @@
     "build:frontend": "vite build",
     "dev:frontend": "vite build --watch",
     "type-check": "tsc --noEmit",
-    "lint:frontend": "find frontend \\( -name '*.ts' -o -name '*.tsx' \\) | xargs -r eslint",
+    "lint:frontend": "find frontend -path frontend/lib/api/gen -prune -o \\( -name '*.ts' -o -name '*.tsx' \\) -print | xargs -r eslint",
     "format:frontend": "prettier --write \"frontend/**/*.{ts,tsx}\"",
+    "generate:api": "openapi-ts && prettier --write frontend/lib/api/gen",
     "test:frontend": "vitest"
   },
   "dependencies": {
@@ -24,6 +25,7 @@
     "unique-names-generator": "^4.7.1"
   },
   "devDependencies": {
+    "@hey-api/openapi-ts": "^0.99.0",
     "@solidjs/vite-plugin": "^3.0.1",
     "@types/leaflet": "^1.9.21",
     "@types/node": "^26.0.0",

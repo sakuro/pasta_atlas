@@ -26,6 +26,7 @@ npm run dev:frontend      # Watch mode for development
 npm run type-check        # TypeScript type checking
 npm run lint:frontend     # ESLint on .ts/.tsx files
 npm run format:frontend   # Prettier on .ts/.tsx files (rewrites them)
+npm run generate:api      # Regenerate frontend/lib/api/gen/ from openapi.yaml
 npm run test:frontend -- --run   # Run Vitest tests once
 ```
 
@@ -41,7 +42,7 @@ bin/dev   # Start all dev services via mise: Hanami server, hanami assets watch,
 
 HTTP request → **Action** (`app/actions/`) → **Operation** (`app/operations/`) → **Repo** (`app/repos/`) → **Relation** (`app/relations/`) → PostgreSQL
 
-Actions handle HTTP concerns (params, session, response codes). Operations contain business logic using `Dry::Operation` with `Success`/`Failure` monads. Repos abstract DB access via ROM/Sequel. Structs (`app/structs/`) are immutable value objects returned from the DB layer.
+Actions handle HTTP concerns (params, session, response codes). The JSON API contract is [openapi.yaml](openapi.yaml); the frontend client is generated from it. Operations contain business logic using `Dry::Operation` with `Success`/`Failure` monads. Repos abstract DB access via ROM/Sequel. Structs (`app/structs/`) are immutable value objects returned from the DB layer.
 
 ### Key base classes
 

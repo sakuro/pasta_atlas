@@ -11,6 +11,7 @@
 | simplecov | Code coverage with branch coverage; the run fails below 80% line coverage (`.simplecov`) |
 | YARD + redcarpet | API documentation (`rake doc`, output in `doc/api/`) |
 | gitleaks | Secret scanning (`.gitleaks.toml`) |
+| json_schemer | Checks action responses against `openapi.yaml` (`conform_to_openapi` in `spec/support/openapi.rb`); `spec/open_api_document_spec.rb` checks that the document is valid and covers the JSON routes |
 
 `rake` runs `spec` and then `rubocop`. `rake rubocop:autocorrect` applies the safe corrections.
 
@@ -23,6 +24,7 @@
 | Vitest | `npm run test:frontend` | Unit tests (jsdom); add `-- --run` for a single run |
 | Vite + `@solidjs/vite-plugin` | `npm run build:frontend` | Build; compiles Solid JSX |
 | Prettier | `npm run format:frontend` | Formats `frontend/**/*.{ts,tsx}` in place (`.prettierrc`, 120 columns); the `pre-commit` hook checks it, CI does not |
+| Hey API (`@hey-api/openapi-ts`) | `npm run generate:api` | Generates the typed client in `frontend/lib/api/gen/` from `openapi.yaml` (`openapi-ts.config.ts`); commit the result. ESLint skips the generated files |
 
 ## Git hooks
 
@@ -39,4 +41,4 @@ The hooks check only; they do not rewrite files. RSpec and the type check are no
 
 ## CI
 
-`.github/workflows/ci.yml` runs three jobs. `backend` prepares PostgreSQL 18, compiles the assets, loads the test database structure and seeds, then runs `bundle exec rake`. `frontend` runs the type check, the lint and the Vitest run. `actions-lock` verifies `.github/workflows/actions.lock` with `gh actions-lock --verify`, so regenerate the lockfile after editing a workflow or bumping an action.
+`.github/workflows/ci.yml` runs three jobs. `backend` prepares PostgreSQL 18, compiles the assets, loads the test database structure and seeds, then runs `bundle exec rake`. `frontend` checks that the generated API client is current, then runs the type check, the lint and the Vitest run. `actions-lock` verifies `.github/workflows/actions.lock` with `gh actions-lock --verify`, so regenerate the lockfile after editing a workflow or bumping an action.

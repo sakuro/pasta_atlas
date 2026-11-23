@@ -16,6 +16,44 @@ RSpec.describe PastaAtlas::Repos::GenerationRepo, :db do
     end
   end
 
+  describe "#find_max_complete_created_at_by_map_ids" do
+    def generation_with_status(map, event_type, created_at)
+      gen = Factory[:generation, map:, created_at:]
+      upload = Factory[:upload, generation: gen]
+      Factory[:upload_event, upload:, event_type:]
+      gen
+    end
+
+    let(:map) { Factory[:map] }
+    let(:old_time) { Time.at(Time.now.to_i - 7200) }
+    let(:new_time) { Time.at(Time.now.to_i - 3600) }
+
+    it "returns an empty hash for no map ids" do
+      expect(repo.find_max_complete_created_at_by_map_ids([])).to eq({})
+    end
+
+    it "ignores pending and failed generations newer than the complete one" do
+      generation_with_status(map, "complete", old_time)
+      generation_with_status(map, "pending", new_time)
+      generation_with_status(map, "failed", new_time)
+
+      expect(repo.find_max_complete_created_at_by_map_ids([map.id])).to eq({map.id => old_time})
+    end
+
+    it "uses the newest complete generation" do
+      generation_with_status(map, "complete", old_time)
+      generation_with_status(map, "complete", new_time)
+
+      expect(repo.find_max_complete_created_at_by_map_ids([map.id])).to eq({map.id => new_time})
+    end
+
+    it "omits maps without a complete generation" do
+      generation_with_status(map, "pending", new_time)
+
+      expect(repo.find_max_complete_created_at_by_map_ids([map.id])).to eq({})
+    end
+  end
+
   describe "#update_storage_bytes" do
     it "stores the size" do
       repo.update_storage_bytes(id: generation.id, storage_bytes: 12_345)

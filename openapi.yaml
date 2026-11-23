@@ -1,0 +1,268 @@
+openapi: 3.1.0
+info:
+  title: pasta_atlas JSON API
+  version: "1"
+  description: |
+    The JSON API used by the SPA. Endpoints that are not listed here yet are described in doc/architecture/api.md.
+    Write responses inline under each operation (no `$ref` to `components/responses`): the RSpec
+    matcher `conform_to_openapi` reads them by JSON pointer.
+servers:
+  - url: /
+    description: The same origin as the SPA
+paths:
+  /api/v1/maps:
+    get:
+      operationId: listMaps
+      summary: Maps with at least one complete generation, most recently completed upload first
+      parameters:
+        - name: page
+          in: query
+          description: Page number; values below 1 or not an integer are treated as 1
+          schema:
+            type: integer
+            default: 1
+      responses:
+        "200":
+          description: One page of maps
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: false
+                required: [maps, page, per_page, total]
+                properties:
+                  maps:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/MapSummary"
+                  page:
+                    type: integer
+                  per_page:
+                    type: integer
+                  total:
+                    type: integer
+  /api/v1/maps/lookup:
+    get:
+      operationId: lookupMap
+      summary: Finds a map of the current user (guest or logged in) by its mapshot map id
+      parameters:
+        - name: mapshot_map_id
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: The map exists
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: false
+                required: [name]
+                properties:
+                  name:
+                    description: null if the map has no user-set name
+                    type: [string, "null"]
+        "404":
+          description: No map for this user and mapshot map id
+  /api/v1/maps/{ulid}:
+    parameters:
+      - $ref: "#/components/parameters/MapUlid"
+    get:
+      operationId: showMap
+      summary: Map details with all complete generations
+      responses:
+        "200":
+          description: The map
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MapDetail"
+        "404":
+          description: The map does not exist or has no complete generation
+  /api/v1/maps/{ulid}/name:
+    parameters:
+      - $ref: "#/components/parameters/MapUlid"
+    patch:
+      operationId: updateMapName
+      summary: Renames a map (own map only)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              required: [name]
+              properties:
+                name:
+                  description: >-
+                    Leading and trailing whitespace is stripped; at most 30 grapheme clusters; the same
+                    character rule as the profile display name. An empty name clears the user-set name,
+                    and display_name falls back to the savename or the mapshot map id.
+                  type: string
+      responses:
+        "200":
+          description: The map was renamed
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: false
+                required: [display_name]
+                properties:
+                  display_name:
+                    type: string
+        "400":
+          description: The body is not valid JSON
+        "403":
+          description: Guest, or not the own map
+        "404":
+          description: The map does not exist
+        "422":
+          description: The name was rejected
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MapNameError"
+  /api/v1/maps/{ulid}/deletion_requests:
+    parameters:
+      - $ref: "#/components/parameters/MapUlid"
+    post:
+      operationId: requestMapDeletion
+      summary: Deletes a map and queues its S3 prefix for cleanup (own map only)
+      responses:
+        "302":
+          description: Deleted; the flash `map-deletion-requested` is set
+          headers:
+            Location:
+              schema:
+                type: string
+                const: /
+        "403":
+          description: Guest, or not the own map
+        "404":
+          description: The map does not exist
+  /api/v1/users/{user_name}/maps:
+    parameters:
+      - name: user_name
+        in: path
+        required: true
+        schema:
+          type: string
+    get:
+      operationId: listRecentMapsOfUser
+      summary: Up to 3 maps of the user that have a complete generation, most recently completed upload first
+      responses:
+        "200":
+          description: The maps
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: false
+                required: [maps]
+                properties:
+                  maps:
+                    type: array
+                    maxItems: 3
+                    items:
+                      $ref: "#/components/schemas/MapSummary"
+        "404":
+          description: The user does not exist or is a system account (guest or compilatron)
+components:
+  parameters:
+    MapUlid:
+      name: ulid
+      in: path
+      required: true
+      schema:
+        type: string
+  schemas:
+    MapSummary:
+      type: object
+      additionalProperties: false
+      required:
+        - ulid
+        - display_name
+        - user_name
+        - author_display_name
+        - author_avatar_url
+        - thumbnail_url
+        - metadata_url
+        - updated_at
+      properties:
+        ulid:
+          type: string
+        display_name:
+          type: string
+        user_name:
+          type: string
+        author_display_name:
+          type: string
+        author_avatar_url:
+          type: [string, "null"]
+        thumbnail_url:
+          description: The CloudFront URL of the thumbnail of the complete generation with the highest tick
+          type: string
+        metadata_url:
+          description: The CloudFront URL of the mapshot.json of the complete generation with the highest tick
+          type: string
+        updated_at:
+          description: The creation time of the newest complete generation
+          type: string
+          format: date-time
+    MapDetail:
+      type: object
+      additionalProperties: false
+      required: [ulid, display_name, owner, updated_at, generations]
+      properties:
+        ulid:
+          type: string
+        display_name:
+          type: string
+        owner:
+          $ref: "#/components/schemas/UserInfo"
+        updated_at:
+          description: The creation time of the newest complete generation
+          type: string
+          format: date-time
+        generations:
+          description: Sorted by tick, descending
+          type: array
+          items:
+            $ref: "#/components/schemas/Generation"
+    Generation:
+      type: object
+      additionalProperties: false
+      required: [ulid, tick, metadata_url]
+      properties:
+        ulid:
+          type: string
+        tick:
+          type: integer
+        metadata_url:
+          description: The CloudFront URL of the generation's mapshot.json
+          type: string
+    UserInfo:
+      type: object
+      additionalProperties: false
+      required: [name, display_name, avatar_url]
+      properties:
+        name:
+          type: string
+        display_name:
+          type: string
+        avatar_url:
+          type: [string, "null"]
+    MapNameError:
+      type: object
+      additionalProperties: false
+      required: [error]
+      properties:
+        error:
+          type: string
+          enum:
+            - error-map-name-too-long
+            - error-map-name-invalid-chars
