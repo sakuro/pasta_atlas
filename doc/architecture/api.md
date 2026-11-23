@@ -32,7 +32,7 @@ Creates a new User, UserProfile, UserPreference, and Credential. Validates usern
 |---|---|
 | `name` | New username |
 | `timezone` | IANA timezone identifier (optional; `UTC` if empty or invalid) |
-| `terms` | Must be `"1"` (terms acceptance) |
+| `terms` | Boolean; must be `true` (terms acceptance) |
 
 **Response `200 OK`:**
 
@@ -46,6 +46,7 @@ The SPA navigates to the returned path on success.
 
 | Status | Body | Condition |
 |---|---|---|
+| `400 Bad Request` | — | `name` is missing or not a string, or `terms` is missing or not a boolean |
 | `403 Forbidden` | — | No `session[:pending_auth]` |
 | `422 Unprocessable Entity` | `{"error": "error-terms-required"}` | Terms not accepted |
 | `422 Unprocessable Entity` | `{"error": "error-username-empty" \| "error-username-too-long" \| "error-username-invalid-chars" \| "error-username-reserved" \| "error-username-taken"}` | Invalid username |

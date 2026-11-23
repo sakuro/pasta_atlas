@@ -45,7 +45,7 @@ export const RegistrationPage = () => {
         body: JSON.stringify({
           name: formData.get("name") as string,
           timezone,
-          terms: formData.get("terms") as string,
+          terms: formData.has("terms"),
         }),
       });
       if (res.ok) {
