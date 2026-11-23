@@ -69,7 +69,7 @@ The Function URL therefore uses `AuthType NONE`. CloudFront adds the secret head
 
 - The bucket `pasta-atlas-production-assets` is served through the `app` distribution for `/assets/*`, using OAC and `CachingOptimized`.
 - Deployment runs `aws s3 sync` of `public/assets` before the function code is updated, without `--delete`, so previous fingerprinted files remain valid during and after a rollout.
-- Fingerprinted files get `Cache-Control: public, max-age=31536000, immutable`. `ftl-manifest.json` gets `max-age=300` and is invalidated on each deployment.
+- Fingerprinted files get `Cache-Control: public, max-age=31536000, immutable`. `ftl-manifest.json` and `favicon.ico` (a copy under a fixed name, linked by `public/500.html`) get `max-age=300` and are invalidated on each deployment.
 
 ## Secrets
 
@@ -102,9 +102,9 @@ At 04:00 JST the same function runs `{"task": "cleanup:orphaned_maps", "dry_run"
 `deploy.yml` is run manually on `ubuntu-24.04-arm`; `mise run deploy` starts it after checking that CI passed for `HEAD`, and `mise run deploy:latest_hash` prints the commit of the last successful deployment. It:
 
 1. Compiles the assets and builds the zip in the Lambda base image, then uploads it to `pasta-atlas-production-lambda-artifacts` as `<sha>.zip` (90-day lifecycle).
-2. Syncs assets to `pasta-atlas-production-assets/assets/` without `--delete`, and uploads `ftl-manifest.json` with `max-age=300`.
+2. Syncs assets to `pasta-atlas-production-assets/assets/` without `--delete`, and uploads `ftl-manifest.json` and a fixed-name `favicon.ico` with `max-age=300`.
 3. Updates the code of all three functions from the zip, waiting for each update to finish. No Lambda versions are published.
-4. Invalidates `/assets/ftl-manifest.json` on the distribution that carries the application domain.
+4. Invalidates `/assets/ftl-manifest.json` and `/assets/favicon.ico` on the distribution that carries the application domain.
 
 Run `deploy.yml` first and then `migrate.yml`, because only `deploy.yml` updates the code of the `task` function. Migrations must be backward compatible with the previously deployed application code, since the new code runs briefly before the schema change. A relation whose table the migration creates is the exception: the schema is inferred from the table, so the `app` and `s3-cleanup` functions fail to start until `migrate.yml` has run, and the migration should follow the deployment at once. The `task` function still starts, because `lambda_function.rb` builds the S3 cleanup processor on each invocation instead of when the file loads. After dropping or renaming a column, deploy again: warm environments cache the ROM-inferred schema. Rolling back means re-running the code update with the zip of an earlier commit from the artifacts bucket.
 

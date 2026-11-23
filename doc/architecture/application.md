@@ -82,6 +82,7 @@ end
 Actions handle HTTP concerns. Parameter validation (`:bad_request`) and checks that need only the request or session (pending OAuth data, rejecting the guest) stay in the Action; ownership and domain rules belong to Operations.
 
 - Pass `current_user_id(request)` directly to the Operation
+- In production, Hanami answers an unhandled exception with `public/500.html` (`render_errors`), or with a JSON body to a JSON request. The page stands alone, without the app's assets, and follows the light or dark color scheme. Unknown `GET` paths do not reach it: `get "/*path"` renders the SPA's not-found page.
 - `PastaAtlas::Action` answers 400 before `handle` when the JSON body is not valid JSON, or when it repeats a path or query parameter. hanami-action merges the body last, so the body's value would otherwise win.
 - `halt` accepts only status names known to Rack, plus Hanami's `:unprocessable_entity` and `:unprocessable_content`. Any other symbol raises `Hanami::Action::UnknownHttpStatusError` and the client gets a 500.
 - Failures that name a status can therefore go straight to `halt`: `:forbidden`, `:unauthorized`, `:not_found`, `:conflict`, `:unprocessable_entity`, `:bad_gateway`. Domain failures (`:incomplete`, `:s3_error`, `[:invalid, error_key]`, …) must be matched by the Action before the generic branch and mapped to a status.
