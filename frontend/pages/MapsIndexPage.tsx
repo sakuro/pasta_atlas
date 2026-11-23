@@ -1,16 +1,10 @@
 import { createMemo, Errored, For, isPending, Loading, Show } from "solid-js";
 import { useSearchParams } from "@solidjs/router";
-import { MapCard, type MapData } from "../components/MapCard";
+import { MapCard } from "../components/MapCard";
 import { SpinnerBlock } from "../components/SpinnerBlock";
 import { ErrorNotification } from "../components/ErrorNotification";
+import { listMaps } from "../lib/api/client";
 import heroSrc from "../../app/assets/images/hero.webp";
-
-type MapsResponse = {
-  maps: MapData[];
-  page: number;
-  per_page: number;
-  total: number;
-};
 
 const Pagination = (props: { page: number; perPage: number; total: number; onPageChange: (page: number) => void }) => {
   const hasPrev = () => props.page > 1;
@@ -43,9 +37,9 @@ export const MapsIndexPage = () => {
   const page = () => Math.max(Number(searchParams.page || 1), 1);
 
   const data = createMemo(async () => {
-    const res = await fetch(`/api/v1/maps?page=${page()}`);
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    return res.json() as Promise<MapsResponse>;
+    const { data: body, error, response } = await listMaps({ query: { page: page() } });
+    if (!body) throw new Error(`HTTP ${response?.status}`, { cause: error });
+    return body;
   });
 
   const handlePageChange = (newPage: number) => {

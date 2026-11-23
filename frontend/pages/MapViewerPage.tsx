@@ -4,29 +4,19 @@ import { useAuth } from "../contexts/AuthContext";
 import { MapViewer } from "./map_viewer/MapViewer";
 import { SpinnerBlock } from "../components/SpinnerBlock";
 import { ErrorNotification } from "../components/ErrorNotification";
-
-interface MapViewerData {
-  ulid: string;
-  display_name: string;
-  owner: {
-    name: string;
-    display_name: string;
-    avatar_url: string | null;
-  };
-  updated_at: string | null;
-}
+import { showMap } from "../lib/api/client";
 
 class NotFoundError extends Error {}
 
 export const MapViewerPage = () => {
-  const params = useParams();
+  const params = useParams<{ ulid: string }>();
   const { currentUser } = useAuth();
 
   const data = createMemo(async () => {
-    const res = await fetch(`/api/v1/maps/${params.ulid}`);
-    if (res.status === 404) throw new NotFoundError();
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    return res.json() as Promise<MapViewerData>;
+    const { data: map, error, response } = await showMap({ path: { ulid: params.ulid } });
+    if (response?.status === 404) throw new NotFoundError();
+    if (!map) throw new Error(`HTTP ${response?.status}`, { cause: error });
+    return map;
   });
 
   const viewerName = () => {
