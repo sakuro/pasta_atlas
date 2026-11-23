@@ -17,6 +17,12 @@ fi
 kvs_use_production
 kvs_load
 
+# Running on again would delete the settings whose flags are not given; set changes only the given ones.
+if [ "$(kvs_get maintenance)" = on ]; then
+  echo "Maintenance mode is already on. Use ops:maintenance:set to change the message or the end time." >&2
+  exit 1
+fi
+
 # A message or end time from an earlier maintenance is deleted when the flag is not given.
 wanted=$(jq -cn --arg message "$message" --arg ends_at "$ends_at" \
   '{maintenance: "on", message: $message, ends_at: $ends_at}')

@@ -21,8 +21,9 @@ The code is in `terraform/environments/production/functions/`. Terraform builds 
 
 | Task | Effect |
 |---|---|
-| `mise run ops:maintenance:on [--ends-at <time>] [--message <text>]` | Sets `maintenance=on`, and `message` and `ends_at` from the flags; a flag that is not given deletes its key |
-| `mise run ops:maintenance:off` | Deletes all four keys |
+| `mise run ops:maintenance:on [--ends-at <time>] [--message <text>]` | Sets `maintenance=on`, and `message` and `ends_at` from the flags; a flag that is not given deletes its key, so nothing is left from an earlier maintenance. Fails when maintenance mode is already on |
+| `mise run ops:maintenance:set [--ends-at <time> \| --clear-ends-at] [--message <text> \| --clear-message]` | While maintenance mode is on, changes only the given settings, e.g. to extend the end time. Fails when it is off |
+| `mise run ops:maintenance:off` | Deletes all four keys. Running it again changes nothing |
 | `mise run ops:maintenance:allow <ip>` | Adds an address to `allow_ips` |
 | `mise run ops:maintenance:deny <ip>` | Removes an address from `allow_ips` |
 | `mise run ops:maintenance:status` | Shows whether maintenance mode is on and every key |
@@ -32,6 +33,8 @@ A typical maintenance:
 ```bash
 mise run ops:maintenance:allow 203.0.113.10
 mise run ops:maintenance:on --ends-at 2026-11-24T15:00+09:00 --message "Upgrading the database."
+# ...
+mise run ops:maintenance:set --ends-at 2026-11-24T16:00+09:00   # it takes longer
 # ...
 mise run ops:maintenance:off
 ```

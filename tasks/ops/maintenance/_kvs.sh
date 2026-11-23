@@ -35,9 +35,10 @@ kvs_plan() {
 }
 
 # Changes the keys to those in $1 (as for kvs_plan) with one UpdateKeys call. It applies all puts
-# and deletes or none, so no request sees half a change.
+# and deletes or none, so no request sees half a change. Sets KVS_CHANGED to true or false.
 kvs_update() {
   local plan puts deletes
+  KVS_CHANGED=false
   # Assigned on their own lines so that set -e stops on a failure.
   plan=$(kvs_plan "$KVS_ITEMS" "$1")
   puts=$(jq -c .puts <<<"$plan")
@@ -51,6 +52,7 @@ kvs_update() {
   [ "$puts" = "[]" ] || args+=(--puts "$puts")
   [ "$deletes" = "[]" ] || args+=(--deletes "$deletes")
   aws cloudfront-keyvaluestore update-keys "${args[@]}" >/dev/null
+  KVS_CHANGED=true
 }
 
 # Prints the value of a key, or nothing when it is absent.

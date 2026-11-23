@@ -1,0 +1,53 @@
+#!/usr/bin/env bash
+#MISE description="Change the message or the end time while the maintenance mode is on"
+#USAGE flag "--ends-at <ends_at>" help="Expected end, ISO 8601 with a time zone (2026-11-24T16:00+09:00)"
+#USAGE flag "--message <message>" help="Message in English"
+#USAGE flag "--clear-ends-at" help="Stop showing an end time"
+#USAGE flag "--clear-message" help="Go back to the default message"
+set -euo pipefail
+source "$(dirname "${BASH_SOURCE[0]}")/_kvs.sh"
+
+ends_at=${usage_ends_at:-}
+message=${usage_message:-}
+clear_ends_at=${usage_clear_ends_at:-false}
+clear_message=${usage_clear_message:-false}
+
+if [ -n "$ends_at" ] && [ "$clear_ends_at" = true ]; then
+  echo "--ends-at and --clear-ends-at cannot be given together." >&2
+  exit 1
+fi
+if [ -n "$message" ] && [ "$clear_message" = true ]; then
+  echo "--message and --clear-message cannot be given together." >&2
+  exit 1
+fi
+if [ -n "$ends_at" ]; then
+  kvs_validate_ends_at "$ends_at"
+  if [ "$(date -d "$ends_at" +%s)" -le "$(date +%s)" ]; then
+    echo "Warning: --ends-at is in the past; the page shows it anyway." >&2
+  fi
+fi
+
+# Only the given settings are in wanted; kvs_update leaves the other keys as they are.
+wanted=$(jq -cn \
+  --arg ends_at "$ends_at" --arg message "$message" \
+  --argjson clear_ends_at "$clear_ends_at" --argjson clear_message "$clear_message" '
+  {}
+  | if $ends_at != "" then .ends_at = $ends_at elif $clear_ends_at then .ends_at = null else . end
+  | if $message != "" then .message = $message elif $clear_message then .message = null else . end')
+if [ "$wanted" = "{}" ]; then
+  echo "Nothing to set: give --ends-at, --message, --clear-ends-at or --clear-message." >&2
+  exit 1
+fi
+
+kvs_use_production
+kvs_load
+
+if [ "$(kvs_get maintenance)" != on ]; then
+  echo "Maintenance mode is off. Use ops:maintenance:on to turn it on with these settings." >&2
+  exit 1
+fi
+
+kvs_update "$wanted"
+if [ "$KVS_CHANGED" = true ]; then
+  echo "Maintenance settings updated."
+fi
