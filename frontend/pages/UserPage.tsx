@@ -1,5 +1,5 @@
-import { createEffect, createSignal, Errored, For, isPending, Loading, Show } from "solid-js";
-import { useLocation, useParams } from "@solidjs/router";
+import { createSignal, Errored, For, isPending, Loading, Show } from "solid-js";
+import { useLocation, useNavigate, useParams } from "@solidjs/router";
 import { Avatar } from "../components/Avatar";
 import { SpinnerBlock } from "../components/SpinnerBlock";
 import { ErrorNotification } from "../components/ErrorNotification";
@@ -59,27 +59,23 @@ export const UserPage = () => {
   };
 
   const location = useLocation();
+  const navigate = useNavigate();
   const tabs = () => (isOwner() ? OWNER_TABS : GUEST_TABS);
-  const [activeTab, setActiveTab] = createSignal("tab-recent-maps");
 
   const isAvailableTab = (tabId: string) => tabs().some((t) => t.id === tabId);
 
-  const activateTab = (tabId: string) => {
-    if (isAvailableTab(tabId)) setActiveTab(tabId);
+  // The URL hash is the only state of the active tab. A separate signal went stale when a tab was
+  // clicked without changing the hash, and the old hash won again whenever tabs() was recomputed
+  // (e.g. after a profile save updated the current user). An owner-only tab in the hash becomes
+  // active once the current user is known.
+  const activeTab = () => {
+    const hash = location.hash.slice(1);
+    return isAvailableTab(hash) ? hash : MAPS_TAB.id;
   };
 
-  // Tracks both location.hash and tabs() (which depends on isOwner()/currentUser()).
-  // When auth resolves and tabs() changes to OWNER_TABS, this effect re-runs and
-  // can activate the owner-only tab that was initially rejected.
-  createEffect(
-    () => {
-      const hash = location.hash.slice(1);
-      return hash && isAvailableTab(hash) ? hash : null;
-    },
-    (tabId) => {
-      if (tabId) setActiveTab(tabId);
-    }
-  );
+  const activateTab = (tabId: string) => {
+    navigate(`${location.pathname}${location.search}#${tabId}`, { replace: true, scroll: false });
+  };
 
   return (
     <section class="section">
