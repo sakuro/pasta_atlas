@@ -155,13 +155,15 @@ export const UploadModal = (props: { isGuest: boolean }) => {
     const fileMap = new Map<string, File>();
     for (const f of imageFiles) fileMap.set(relPath(f), f);
 
-    let initialName = mapshotJson.name || mapshotJson.savename || generateMapName();
+    // The server strips the name and rejects an empty one, so a name of spaces must not be prefilled.
+    let initialName = mapshotJson.name?.trim() || mapshotJson.savename?.trim() || generateMapName();
     let existingMap = false;
     // On any failure the name from mapshot.json stays.
     const { data } = await lookupMap({ query: { mapshot_map_id: mapshotJson.map_id } });
     if (data) {
       existingMap = true;
-      if (data.name) initialName = data.name;
+      const storedName = data.name?.trim();
+      if (storedName) initialName = storedName;
     }
     setDisplayName(initialName);
     setState({
