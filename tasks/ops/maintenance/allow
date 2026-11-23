@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+#MISE description="Let an IP address through the maintenance mode"
+#USAGE arg "<ip>" help="Viewer IP address as CloudFront sees it (no CIDR)"
+set -euo pipefail
+source "$(dirname "${BASH_SOURCE[0]}")/_kvs.sh"
+
+kvs_validate_ip "$usage_ip"
+
+kvs_use_production
+kvs_load
+
+ips=$(kvs_edit_allow_ips + "$usage_ip")
+kvs_update "$(jq -cn --arg ips "$ips" '{allow_ips: $ips}')"
+echo "allow_ips=$ips"

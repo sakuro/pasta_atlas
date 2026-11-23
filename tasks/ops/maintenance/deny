@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+#MISE description="Stop letting an IP address through the maintenance mode"
+#USAGE arg "<ip>" help="IP address to remove from allow_ips"
+set -euo pipefail
+source "$(dirname "${BASH_SOURCE[0]}")/_kvs.sh"
+
+kvs_use_production
+kvs_load
+
+ips=$(kvs_edit_allow_ips - "$usage_ip")
+kvs_update "$(jq -cn --arg ips "$ips" '{allow_ips: $ips}')"
+echo "allow_ips=$ips"
