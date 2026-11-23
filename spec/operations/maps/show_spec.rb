@@ -22,47 +22,58 @@ RSpec.describe PastaAtlas::Operations::Maps::Show do
         allow(user_repo).to receive(:find_by_id!).with(1).and_return(user)
         allow(user_profile_repo).to receive(:find_by_user_id!).with(1).and_return(profile)
         allow(generation_repo).to receive(:find_complete_by_map_id).with(1).and_return(generations)
-        allow(generation).to receive(:thumbnail_url).with("https://cdn.example.com").and_return("https://cdn.example.com/alice/map1/gen1/s1zoom_4/tile_0_0.jpg")
         allow(generation).to receive(:metadata_url).with("https://cdn.example.com").and_return("https://cdn.example.com/alice/map1/gen1/mapshot.json")
       end
 
-      it "returns success with map_info and generations" do
+      it "returns success with the map, its owner and its generations" do
         result = operation.call(ulid: "01MAP1")
 
         expect(result).to be_success
         payload = result.value!
-        map_info = payload[:map_info]
-        expect(map_info).to be_a(PastaAtlas::Values::MapInfo)
-        expect(map_info.ulid).to eq("01MAP1")
-        expect(map_info.display_name).to eq("Test Map")
-        expect(map_info.thumbnail_url).to eq("https://cdn.example.com/alice/map1/gen1/s1zoom_4/tile_0_0.jpg")
-        expect(map_info.metadata_url).to eq("https://cdn.example.com/alice/map1/gen1/mapshot.json")
-        expect(map_info.updated_at).to eq(generation_time)
-        user_info = map_info.user_info
-        expect(user_info).to be_a(PastaAtlas::Values::UserInfo)
-        expect(user_info.name).to eq("alice")
-        expect(user_info.display_name).to eq("Alice")
-        expect(user_info.avatar_url).to be_nil
+        expect(payload[:map]).to eq(map)
+        expect(payload[:updated_at]).to eq(generation_time)
+        owner = payload[:owner]
+        expect(owner).to be_a(PastaAtlas::Values::UserInfo)
+        expect(owner.name).to eq("alice")
+        expect(owner.display_name).to eq("Alice")
+        expect(owner.avatar_url).to be_nil
         expect(payload[:generations]).to eq([{ulid: "01GEN1", tick: 100, metadata_url: "https://cdn.example.com/alice/map1/gen1/mapshot.json"}])
+      end
+
+      context "when an older save was uploaded after a newer one" do
+        let(:older_save_time) { generation_time + 60 }
+        let(:older_save) { double("Generation", ulid: "01GEN0", tick: 50, created_at: older_save_time) }
+        let(:generations) { [generation, older_save] }
+
+        before do
+          allow(older_save).to receive(:metadata_url).with("https://cdn.example.com").and_return("https://cdn.example.com/alice/map1/gen0/mapshot.json")
+        end
+
+        it "keeps the highest tick first and takes updated_at from the newest upload" do
+          payload = operation.call(ulid: "01MAP1").value!
+
+          expect(payload[:generations].map {|g| g[:ulid] }).to eq(%w[01GEN1 01GEN0])
+          expect(payload[:updated_at]).to eq(older_save_time)
+        end
       end
 
       context "when profile has no display name" do
         let(:profile) { double("UserProfile", display_name: nil, avatar_s3_key: nil) }
 
-        it "falls back to user name in user_info" do
+        it "falls back to user name in the owner" do
           result = operation.call(ulid: "01MAP1")
 
-          expect(result.value![:map_info].user_info.display_name).to eq("alice")
+          expect(result.value![:owner].display_name).to eq("alice")
         end
       end
 
       context "when profile has an avatar" do
         let(:profile) { double("UserProfile", display_name: "Alice", avatar_s3_key: "avatars/42/abc.jpg") }
 
-        it "resolves avatar_url in user_info" do
+        it "resolves avatar_url in the owner" do
           result = operation.call(ulid: "01MAP1")
 
-          expect(result.value![:map_info].user_info.avatar_url).to eq("https://cdn.example.com/avatars/42/abc.jpg")
+          expect(result.value![:owner].avatar_url).to eq("https://cdn.example.com/avatars/42/abc.jpg")
         end
       end
     end

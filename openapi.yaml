@@ -931,7 +931,9 @@ components:
           description: The CloudFront URL of the mapshot.json of the complete generation with the highest tick
           type: string
         updated_at:
-          description: The creation time of the newest complete generation
+          description: >-
+            The creation time of the newest complete generation, which is not the one shown when an older
+            save (lower tick) was uploaded later
           type: string
           format: date-time
     MapDetail:
@@ -946,11 +948,11 @@ components:
         owner:
           $ref: "#/components/schemas/UserInfo"
         updated_at:
-          description: The creation time of the newest complete generation
+          description: The same as MapSummary.updated_at
           type: string
           format: date-time
         generations:
-          description: Sorted by tick, descending
+          description: Sorted by tick, descending; the viewer opens the first, as the map lists show it
           type: array
           items:
             $ref: "#/components/schemas/Generation"
