@@ -3,8 +3,9 @@
 RSpec.describe PastaAtlas::Operations::User::VerifyOwnership do
   let(:operation) { PastaAtlas::Operations::User::VerifyOwnership.new }
 
-  let(:user) { double("User", id: 1, name: "wube") }
-  let(:guest) { double("User", id: 0, name: "guest") }
+  let(:user) { double("User", id: 1, name: "wube", public_profile?: true) }
+  let(:guest) { double("User", id: 0, name: "guest", public_profile?: false) }
+  let(:compilatron) { double("User", id: 2, name: "compilatron", public_profile?: false) }
 
   describe "#call" do
     context "when current_user owns the resource" do
@@ -19,6 +20,22 @@ RSpec.describe PastaAtlas::Operations::User::VerifyOwnership do
     context "when current_user does not own the resource" do
       it "returns Failure(:forbidden)" do
         result = operation.call(current_user: guest, user_name: "wube")
+
+        expect(result).to be_failure
+        expect(result.failure).to eq(:forbidden)
+      end
+    end
+
+    context "when current_user is a system user named in the request" do
+      it "returns Failure(:forbidden) for the guest, which is the user of a request without a session" do
+        result = operation.call(current_user: guest, user_name: "guest")
+
+        expect(result).to be_failure
+        expect(result.failure).to eq(:forbidden)
+      end
+
+      it "returns Failure(:forbidden) for compilatron" do
+        result = operation.call(current_user: compilatron, user_name: "compilatron")
 
         expect(result).to be_failure
         expect(result.failure).to eq(:forbidden)
