@@ -15,7 +15,7 @@ module PastaAtlas
                 ulid: map_info.ulid,
                 display_name: map_info.display_name,
                 owner: map_info.user_info.to_h,
-                updated_at: map_info.updated_at&.iso8601,
+                updated_at: map_info.updated_at.iso8601,
                 generations:
               })
             in Failure(Symbol => status)

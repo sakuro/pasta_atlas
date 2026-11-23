@@ -18,12 +18,15 @@ module PastaAtlas
           recent_maps = map_repo.list_with_complete_generation_by_user(user_id:, limit: LIMIT)
           map_ids = recent_maps.map(&:id)
           latest_generations = generation_repo.find_latest_complete_by_map_ids(map_ids)
-          max_created_at_by_map_id = generation_repo.find_max_created_at_by_map_ids(map_ids)
-          recent_maps.map {|m|
+          max_created_at_by_map_id = generation_repo.find_max_complete_created_at_by_map_ids(map_ids)
+          recent_maps.filter_map {|m|
             g = latest_generations[m.id]
-            thumbnail_url = g&.thumbnail_url(settings.cloudfront_base_url)
-            metadata_url = g&.metadata_url(settings.cloudfront_base_url)
             updated_at = max_created_at_by_map_id[m.id]
+            # A generation can vanish between the queries above; the map is then left out.
+            next unless g && updated_at
+
+            thumbnail_url = g.thumbnail_url(settings.cloudfront_base_url)
+            metadata_url = g.metadata_url(settings.cloudfront_base_url)
             Values::MapInfo[ulid: m.ulid, display_name: m.display_name, user_info:, thumbnail_url:, metadata_url:, updated_at:]
           }
         end

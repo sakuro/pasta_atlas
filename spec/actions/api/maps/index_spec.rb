@@ -6,7 +6,7 @@ RSpec.describe PastaAtlas::Actions::API::Maps::Index do
 
   let(:payload) do
     user_info = PastaAtlas::Values::UserInfo[name: "wube", display_name: "Wube", avatar_url: nil]
-    map_info = PastaAtlas::Values::MapInfo[ulid: "01MAP", display_name: "My Map", user_info:, thumbnail_url: nil, metadata_url: nil, updated_at: nil]
+    map_info = PastaAtlas::Values::MapInfo[ulid: "01MAP", display_name: "My Map", user_info:, thumbnail_url: "https://cdn.example.com/wube/maps/ae8ec3ab/550f41a9/thumbnail.jpg", metadata_url: "https://cdn.example.com/wube/maps/ae8ec3ab/550f41a9/mapshot.json", updated_at: Time.new(2024, 1, 15, 12, 0, 0, "+00:00")]
     {map_infos: [map_info], page: 1, per_page: 20, total: 1}
   end
 
