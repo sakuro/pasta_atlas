@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 #MISE description="Run terraform apply for an environment"
+#MISE raw=true
 #USAGE arg "<env>" help="local or production" {
 #USAGE   choices "local" "production"
 #USAGE }
