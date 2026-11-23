@@ -3,7 +3,14 @@ import { Portal } from "@solidjs/web";
 import { useNavigate } from "@solidjs/router";
 import { adjectives, animals, colors, uniqueNamesGenerator } from "unique-names-generator";
 import "../../lib/l10n";
-import { lookupMap } from "../../lib/api/client";
+import {
+  completeUpload,
+  createUpload,
+  errorKey,
+  issuePresignedPosts,
+  lookupMap,
+  verifyUploadBatch,
+} from "../../lib/api/client";
 import { notifyUploadCompleted } from "../../lib/upload-events";
 import { CopyButton } from "../CopyButton";
 import { HowToUploadModal } from "./HowToUploadModal";
@@ -11,23 +18,48 @@ import { HowToUploadModal } from "./HowToUploadModal";
 const segmenter = new Intl.Segmenter();
 const MAX_IMAGE_COUNT = 10_000;
 
-const csrfToken = (): string => document.querySelector<HTMLMetaElement>('meta[name="csrf-token"]')?.content ?? "";
-
-const jsonHeaders = (): HeadersInit => ({
-  "Content-Type": "application/json",
-  "X-CSRF-Token": csrfToken(),
-});
-
 interface MapshotJson {
   map_id: string;
   unique_id: string;
+  tick: number;
   name?: string;
   savename?: string;
-  surfaces?: { surface_localised_name?: string }[];
+  surfaces?: unknown[];
   [key: string]: unknown;
 }
 
+// Checks only what the modal reads and what createUpload requires; the server checks the formats.
+const parseMapshotJson = (text: string): MapshotJson | undefined => {
+  let value: unknown;
+  try {
+    value = JSON.parse(text);
+  } catch {
+    return undefined;
+  }
+  if (typeof value !== "object" || value === null || Array.isArray(value)) return undefined;
+  const fields: Map<string, unknown> = new Map(Object.entries(value));
+  const mapId = fields.get("map_id");
+  const uniqueId = fields.get("unique_id");
+  const tick = fields.get("tick");
+  const name = fields.get("name");
+  const savename = fields.get("savename");
+  const surfaces = fields.get("surfaces");
+  if (typeof mapId !== "string" || typeof uniqueId !== "string") return undefined;
+  if (typeof tick !== "number" || !Number.isInteger(tick)) return undefined;
+  if (name !== undefined && typeof name !== "string") return undefined;
+  if (savename !== undefined && typeof savename !== "string") return undefined;
+  if (surfaces !== undefined && !Array.isArray(surfaces)) return undefined;
+  return { ...value, map_id: mapId, unique_id: uniqueId, tick, name, savename, surfaces };
+};
+
 type I18nError = { msgId: string; msgArgs?: Record<string, string | number> };
+
+const createUploadError = (response: Response | undefined, error: unknown): I18nError => {
+  if (!response) return { msgId: "upload-error-network" };
+  if (response.status === 409) return { msgId: "upload-error-conflict" };
+  if (response.status === 422) return { msgId: errorKey(error) ?? "error-unknown" };
+  return { msgId: "upload-error-http", msgArgs: { status: response.status } };
+};
 
 type State =
   | { type: "idle" }
@@ -82,7 +114,9 @@ export const UploadModal = (props: { isGuest: boolean }) => {
   const navigate = useNavigate();
   const [state, setState] = createSignal<State>({ type: "idle" });
   const [displayName, setDisplayName] = createSignal("");
-  const displayNameCount = () => [...segmenter.segment(displayName())].length;
+  // The server strips the name and rejects an empty one, so an empty input falls back to the prefilled name.
+  const uploadName = () => displayName().trim() || (confirmingState()?.mapName ?? "");
+  const uploadNameCount = () => [...segmenter.segment(uploadName())].length;
   const [showHowTo, setShowHowTo] = createSignal(false);
   let inputRef!: HTMLInputElement;
 
@@ -104,10 +138,8 @@ export const UploadModal = (props: { isGuest: boolean }) => {
       return;
     }
 
-    let mapshotJson: MapshotJson;
-    try {
-      mapshotJson = JSON.parse(await mapshotFile.text()) as MapshotJson;
-    } catch {
+    const mapshotJson = parseMapshotJson(await mapshotFile.text());
+    if (!mapshotJson) {
       setState({ type: "error", error: { msgId: "upload-error-parse" } });
       return;
     }
@@ -153,38 +185,18 @@ export const UploadModal = (props: { isGuest: boolean }) => {
     const allFilenames = Array.from(fileMap.keys());
 
     // Step 1: POST /api/v1/uploads
-    let uploadUlid: string, mapUlid: string, generationUlid: string;
-    try {
-      const resp = await fetch("/api/v1/uploads", {
-        method: "POST",
-        headers: jsonHeaders(),
-        body: JSON.stringify({
-          metadata: mapshotJson,
-          total_image_count: imageCount,
-          name: displayName() || s.mapName,
-        }),
-      });
-      if (resp.status === 409) {
-        setState({ type: "error", error: { msgId: "upload-error-conflict" } });
-        return;
-      }
-      if (resp.status === 422) {
-        const data = (await resp.json()) as { error?: string };
-        setState({ type: "error", error: { msgId: data.error ?? "error-unknown" } });
-        return;
-      }
-      if (!resp.ok) {
-        setState({ type: "error", error: { msgId: "upload-error-http", msgArgs: { status: resp.status } } });
-        return;
-      }
-      const data = (await resp.json()) as { ulid: string; map_ulid: string; generation_ulid: string };
-      uploadUlid = data.ulid;
-      mapUlid = data.map_ulid;
-      generationUlid = data.generation_ulid;
-    } catch {
-      setState({ type: "error", error: { msgId: "upload-error-network" } });
+    const {
+      data: upload,
+      error,
+      response,
+    } = await createUpload({
+      body: { metadata: mapshotJson, total_image_count: imageCount, name: uploadName() },
+    });
+    if (!upload) {
+      setState({ type: "error", error: createUploadError(response, error) });
       return;
     }
+    const { ulid: uploadUlid, map_ulid: mapUlid, generation_ulid: generationUlid } = upload;
 
     // Step 2: Process each batch sequentially: presign → upload → verify
     let uploadedCount = 0;
@@ -194,28 +206,23 @@ export const UploadModal = (props: { isGuest: boolean }) => {
 
       // 2a. Get presigned URLs for this batch
       setState({ type: "preparing", prepared: i, total: imageCount });
-      type PresignedEntry = { url: string; fields: Record<string, string> };
-      let presignedUrls: Record<string, PresignedEntry>;
-      try {
-        const resp = await fetch(`/api/v1/uploads/${uploadUlid}/presigned_posts`, {
-          method: "POST",
-          headers: jsonHeaders(),
-          body: JSON.stringify({ filenames: batch }),
+      const { data: presigned, response: presignedResponse } = await issuePresignedPosts({
+        path: { ulid: uploadUlid },
+        body: { filenames: batch },
+      });
+      if (!presigned) {
+        setState({
+          type: "error",
+          error: presignedResponse
+            ? { msgId: "upload-error-urls-http", msgArgs: { status: presignedResponse.status } }
+            : { msgId: "upload-error-urls-network" },
         });
-        if (!resp.ok) {
-          setState({ type: "error", error: { msgId: "upload-error-urls-http", msgArgs: { status: resp.status } } });
-          return;
-        }
-        const data = (await resp.json()) as { presigned_posts: Record<string, PresignedEntry> };
-        presignedUrls = data.presigned_posts;
-      } catch {
-        setState({ type: "error", error: { msgId: "upload-error-urls-network" } });
         return;
       }
 
       // 2b. Upload this batch to S3
       setState({ type: "uploading", progress: uploadedCount, total: imageCount });
-      const tasks = Object.entries(presignedUrls).map(([filename, { url, fields }]) => async () => {
+      const tasks = Object.entries(presigned.presigned_posts).map(([filename, { url, fields }]) => async () => {
         const file = fileMap.get(filename)!;
         const form = new FormData();
         for (const [k, v] of Object.entries(fields)) form.append(k, v);
@@ -239,39 +246,31 @@ export const UploadModal = (props: { isGuest: boolean }) => {
       // 2c. Verify this batch. The bar keeps the count reached by the upload so that it
       // does not fall back while the batch is verified.
       setState({ type: "verifying", progress: uploadedCount, total: imageCount });
-      try {
-        const resp = await fetch(`/api/v1/uploads/${uploadUlid}/verify_batch`, {
-          method: "POST",
-          headers: jsonHeaders(),
-          body: JSON.stringify({ filenames: batch }),
+      const { data: verified, response: verifyResponse } = await verifyUploadBatch({
+        path: { ulid: uploadUlid },
+        body: { filenames: batch },
+      });
+      if (!verified) {
+        setState({
+          type: "error",
+          error: verifyResponse
+            ? { msgId: "upload-error-verify-http", msgArgs: { status: verifyResponse.status } }
+            : { msgId: "upload-error-verify-network" },
         });
-        if (resp.status === 422) {
-          setState({ type: "error", error: { msgId: "upload-error-verify-http", msgArgs: { status: resp.status } } });
-          return;
-        }
-        if (!resp.ok) {
-          setState({ type: "error", error: { msgId: "upload-error-verify-http", msgArgs: { status: resp.status } } });
-          return;
-        }
-      } catch {
-        setState({ type: "error", error: { msgId: "upload-error-verify-network" } });
         return;
       }
     }
 
     // Step 3: PATCH /api/v1/uploads/:ulid complete
-    try {
-      const resp = await fetch(`/api/v1/uploads/${uploadUlid}`, {
-        method: "PATCH",
-        headers: jsonHeaders(),
-        body: JSON.stringify({ status: "complete" }),
+    const { data: completed, response: completeResponse } = await completeUpload({
+      path: { ulid: uploadUlid },
+      body: { status: "complete" },
+    });
+    if (!completed) {
+      setState({
+        type: "error",
+        error: { msgId: completeResponse ? "upload-error-finalize" : "upload-error-finalize-network" },
       });
-      if (!resp.ok) {
-        setState({ type: "error", error: { msgId: "upload-error-finalize" } });
-        return;
-      }
-    } catch {
-      setState({ type: "error", error: { msgId: "upload-error-finalize-network" } });
       return;
     }
 
@@ -475,10 +474,10 @@ export const UploadModal = (props: { isGuest: boolean }) => {
                                 <span
                                   class={[
                                     "button is-static",
-                                    displayNameCount() > 30 ? "has-text-danger" : "has-text-grey-light",
+                                    uploadNameCount() > 30 ? "has-text-danger" : "has-text-grey-light",
                                   ]}
                                 >
-                                  {displayNameCount()} / 30
+                                  {uploadNameCount()} / 30
                                 </span>
                               </div>
                             </div>
@@ -602,7 +601,7 @@ export const UploadModal = (props: { isGuest: boolean }) => {
                       </span>
                       <span data-l10n-id="upload-reselect-folder" />
                     </button>
-                    <button class="button is-primary" onClick={startUpload} disabled={displayNameCount() > 30}>
+                    <button class="button is-primary" onClick={startUpload} disabled={uploadNameCount() > 30}>
                       <span class="icon">
                         <i class="fa-solid fa-upload" />
                       </span>
