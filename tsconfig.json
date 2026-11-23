@@ -11,5 +11,5 @@
     "resolveJsonModule": true,
     "skipLibCheck": true
   },
-  "include": ["frontend/**/*", "app/assets/js/**/*", "vite.config.ts"]
+  "include": ["frontend/**/*", "app/assets/js/**/*", "vite.config.ts", "openapi-ts.config.ts"]
 }

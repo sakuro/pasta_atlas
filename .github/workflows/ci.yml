@@ -72,6 +72,12 @@ jobs:
 
       - run: npm ci
 
+      - name: Check the generated API client
+        run: |
+          npm run generate:api
+          git add --intent-to-add frontend/lib/api/gen
+          git diff --exit-code frontend/lib/api/gen
+
       - name: Type check
         run: npm run type-check
 

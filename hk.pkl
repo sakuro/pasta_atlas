@@ -24,6 +24,7 @@ hooks {
       }
       ["eslint"] {
         glob = List("frontend/**/*.ts", "frontend/**/*.tsx")
+        exclude = List("frontend/lib/api/gen/**")
         batch = true
         check = "eslint {{files}}"
       }

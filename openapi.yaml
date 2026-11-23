@@ -6,6 +6,9 @@ info:
     The JSON API used by the SPA. Endpoints that are not listed here yet are described in doc/architecture/api.md.
     Write responses inline under each operation (no `$ref` to `components/responses`): the RSpec
     matcher `conform_to_openapi` reads them by JSON pointer.
+servers:
+  - url: /
+    description: The same origin as the SPA
 paths:
   /api/v1/maps:
     get:
