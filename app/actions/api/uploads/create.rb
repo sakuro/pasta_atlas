@@ -26,8 +26,7 @@ module PastaAtlas
 
               key(%i[metadata map_id]).failure("is invalid") unless meta["map_id"].is_a?(String) && mapshot_id_pattern.match?(meta["map_id"])
               key(%i[metadata unique_id]).failure("is invalid") unless meta["unique_id"].is_a?(String) && mapshot_id_pattern.match?(meta["unique_id"])
-              tick_int = Integer(meta["tick"], exception: false)
-              key(%i[metadata tick]).failure("is invalid") unless tick_int&.between?(0, tick_max)
+              key(%i[metadata tick]).failure("is invalid") unless meta["tick"].is_a?(Integer) && meta["tick"].between?(0, tick_max)
             end
           end
 

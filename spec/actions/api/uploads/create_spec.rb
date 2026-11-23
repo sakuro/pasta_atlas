@@ -9,7 +9,7 @@ RSpec.describe PastaAtlas::Actions::API::Uploads::Create, :db do
 
   let(:session) { {"rack.session" => {"user_id" => 1}} }
   let(:action_params) do
-    {metadata: {"map_id" => "ae8ec3ab", "unique_id" => "550f41a9", "tick" => "1000"}, total_image_count: 5, name: "My Map"}
+    {metadata: {"map_id" => "ae8ec3ab", "unique_id" => "550f41a9", "tick" => 1000}, total_image_count: 5, name: "My Map"}
   end
 
   let(:upload) { double("Upload", ulid: "01UPLOAD") }
@@ -96,6 +96,20 @@ RSpec.describe PastaAtlas::Actions::API::Uploads::Create, :db do
 
       it "returns 400 for non-integer tick without calling the operation" do
         params = action_params.merge(metadata: action_params[:metadata].merge("tick" => "abc"))
+        response = action.call(session.merge(params))
+        expect(response.status).to eq(400)
+        expect(create_upload).not_to have_received(:call)
+      end
+
+      it "returns 400 for a tick given as a string without calling the operation" do
+        params = action_params.merge(metadata: action_params[:metadata].merge("tick" => "1000"))
+        response = action.call(session.merge(params))
+        expect(response.status).to eq(400)
+        expect(create_upload).not_to have_received(:call)
+      end
+
+      it "returns 400 for a negative tick without calling the operation" do
+        params = action_params.merge(metadata: action_params[:metadata].merge("tick" => -1))
         response = action.call(session.merge(params))
         expect(response.status).to eq(400)
         expect(create_upload).not_to have_received(:call)

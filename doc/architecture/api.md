@@ -116,7 +116,7 @@ Start an upload session. Creates Map (if new for this user), Generation, and Upl
 }
 ```
 
-`name` is required (max 30 grapheme clusters). It is the map's display name; if the map already exists, it replaces the stored name. `total_image_count` must be 1–10000, `metadata.map_id` and `metadata.unique_id` must be 8 lowercase hex characters, and `metadata.tick` an integer in 0..4294967295. If a pending upload already exists for the same generation, it is returned again with `201`.
+`name` is required (max 30 grapheme clusters). It is the map's display name; if the map already exists, it replaces the stored name. `total_image_count` must be 1–10000, `metadata.map_id` and `metadata.unique_id` must be 8 lowercase hex characters, and `metadata.tick` a JSON integer in 0..4294967295 (a string such as `"1000"` is rejected). If a pending upload already exists for the same generation, it is returned again with `201`.
 
 **Response `201 Created`:**
 
