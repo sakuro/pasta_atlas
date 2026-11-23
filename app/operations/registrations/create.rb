@@ -55,7 +55,16 @@ module PastaAtlas
             credential_repo.create(user_id: user.id, provider:, uid:)
           end
           Success(user)
+        rescue ROM::SQL::UniqueConstraintError => e
+          # check_availability and the INSERT are not atomic, so a concurrent registration of the same
+          # name can commit in between. A violation of the credentials index (the same OAuth identity
+          # registered concurrently) is a different case and is left to raise.
+          raise unless constraint_name(e) == "users_name_index"
+
+          Failure([:invalid, "error-username-taken"])
         end
+
+        private def constraint_name(error) = error.original_exception.wrapped_exception.result.error_field(PG::PG_DIAG_CONSTRAINT_NAME)
 
         private def import_avatar_for(user, avatar_url)
           avatar_result = import_avatar.call(user:, avatar_url:)

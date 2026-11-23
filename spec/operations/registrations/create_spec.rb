@@ -87,4 +87,45 @@ RSpec.describe PastaAtlas::Operations::Registrations::Create do
       end
     end
   end
+
+  describe "#call against the database", :db do
+    let(:user_repo) { Hanami.app["repos.user_repo"] }
+    let(:operation) { PastaAtlas::Operations::Registrations::Create.new(user_repo:) }
+    let(:credential_repo) { Hanami.app["repos.credential_repo"] }
+
+    def row_counts = %w[users user_profiles user_preferences credentials].to_h {|name| [name, Hanami.app["relations.#{name}"].count] }
+
+    def register = operation.call(name: "alice", timezone: "UTC", provider: "github", uid: "123", avatar_url: "")
+
+    context "when the name is registered between the check and the insert" do
+      before do
+        Factory[:user, name: "alice"]
+        # Lets the check pass as if the other registration had not committed yet.
+        allow(user_repo).to receive(:find_by_name).with("alice").and_return(nil)
+      end
+
+      it "returns failure with :invalid and error-username-taken, leaving no rows behind" do
+        counts = row_counts
+        result = register
+
+        expect(result).to be_failure
+        expect(result.failure).to eq([:invalid, "error-username-taken"])
+        expect(row_counts).to eq(counts)
+      end
+    end
+
+    context "when the OAuth identity is registered between the check and the insert" do
+      before do
+        other = Factory[:user, name: "bob"]
+        credential_repo.create(user_id: other.id, provider: "github", uid: "123")
+      end
+
+      it "raises the unique constraint error, leaving no rows behind" do
+        counts = row_counts
+
+        expect { register }.to raise_error(ROM::SQL::UniqueConstraintError)
+        expect(row_counts).to eq(counts)
+      end
+    end
+  end
 end
