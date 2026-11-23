@@ -29,7 +29,7 @@ Avatar images use a separate prefix: `{user_name}/avatar/{ulid}.{ext}`
   → User selects a directory; browser delivers all files as a FileList
   → If user cancels: stay in instructions state (modal remains open)
   → If mapshot.json not found in FileList: show error state
-  → If mapshot.json is not valid JSON: show error state
+  → If mapshot.json is not valid JSON, or lacks string map_id/unique_id or an integer tick: show error state
   → If more than 10,000 images: show error state
   → If mapshot.json found: parse and proceed to confirming
 
@@ -45,7 +45,7 @@ Avatar images use a separate prefix: `{user_name}/avatar/{ulid}.{ext}`
 
 [preparing → uploading → verifying]
   Step 1: POST /api/v1/uploads
-    Body: { metadata: <mapshot.json content>, total_image_count: N, name: <display name> }
+    Body: { metadata: <mapshot.json content>, total_image_count: N, name: <display name, trimmed; the prefilled name if empty> }
     → Receive: { ulid, map_ulid, generation_ulid }
 
   Step 2: For each batch of up to 200 image files (sequential):
@@ -75,7 +75,7 @@ Avatar images use a separate prefix: `{user_name}/avatar/{ulid}.{ext}`
 
 ## Server-Side Processing
 
-Parameter validation and error responses are specified in [api.md](api.md#uploads); this section covers what the server does.
+Parameter validation and error responses are specified by the Uploads operations of [openapi.yaml](../../openapi.yaml); this section covers what the server does.
 
 ### POST /api/v1/uploads
 
@@ -179,7 +179,7 @@ sequenceDiagram
     Note over Client,S3: Step 3 — PATCH /api/v1/uploads/:ulid
 
     Client->>Action: PATCH /uploads/:ulid {status: "complete"}
-    Action->>UUS: call(upload_ulid, status, user_id)
+    Action->>UUS: call(upload_ulid, user_id)
     UUS->>DB: count verified keys == total_image_count
     UUS->>DB: INSERT upload_event, set storage_bytes (metadata + verified key sizes)
     UUS-->>Client: 200 OK
