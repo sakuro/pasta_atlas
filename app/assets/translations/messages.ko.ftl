@@ -252,7 +252,6 @@ share-copy-link =
 avatar-change = 변경
 avatar-remove = 삭제
 avatar-cancel = 취소
-avatar-dismiss = 닫기
 avatar-error-too-large-file-size = 파일 크기는 5 MiB 이하여야 합니다.
 avatar-error-too-small-pixel-size = 이미지는 { $min }×{ $min } 픽셀 이상이어야 합니다.
 avatar-error-too-large-pixel-size = 이미지는 { $max }×{ $max } 픽셀 이하여야 합니다.
