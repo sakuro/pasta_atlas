@@ -107,7 +107,7 @@ Indexes:
 | total_image_count | integer | NOT NULL |
 | created_at | timestamptz | NOT NULL DEFAULT now() |
 | verification_status | text | NOT NULL DEFAULT 'pending', CHECK (verification_status IN ('pending', 'passed', 'failed')) |
-| verified_bytes | bigint | NOT NULL DEFAULT 0 |
+| metadata_bytes | bigint | NOT NULL DEFAULT 0 |
 | verified_at | timestamptz | |
 
 Indexes:

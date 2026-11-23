@@ -90,7 +90,7 @@ module PastaAtlas
             ulid: ULID.generate,
             generation_id: generation.id,
             total_image_count:,
-            verified_bytes: metadata_json.bytesize
+            metadata_bytes: metadata_json.bytesize
           )
           upload_event_repo.create(upload_id: upload.id, event_type: "pending")
           upload = upload_repo.find_by_ulid(upload.ulid)

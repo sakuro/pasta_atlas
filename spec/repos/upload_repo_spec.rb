@@ -17,10 +17,10 @@ RSpec.describe PastaAtlas::Repos::UploadRepo, :db do
       generation = Factory[:generation]
       ulid = ULID.generate
 
-      created = repo.create(ulid:, generation_id: generation.id, total_image_count: 7, verified_bytes: 123)
+      created = repo.create(ulid:, generation_id: generation.id, total_image_count: 7, metadata_bytes: 123)
 
       expect(repo.find_by_ulid(ulid)).to have_attributes(
-        id: created.id, generation_id: generation.id, total_image_count: 7, verified_bytes: 123, verification_status: "pending"
+        id: created.id, generation_id: generation.id, total_image_count: 7, metadata_bytes: 123, verification_status: "pending"
       )
     end
   end
@@ -89,17 +89,6 @@ RSpec.describe PastaAtlas::Repos::UploadRepo, :db do
       repo.update_verification(id: upload.id, verification_status: "passed", verified_at:)
 
       expect(repo.find_by_ulid(upload.ulid)).to have_attributes(verification_status: "passed", verified_at:)
-    end
-  end
-
-  describe "#accumulate_verified_bytes" do
-    it "adds to the verified bytes" do
-      upload = Factory[:upload]
-
-      repo.accumulate_verified_bytes(id: upload.id, bytes: 100)
-      repo.accumulate_verified_bytes(id: upload.id, bytes: 50)
-
-      expect(repo.find_by_ulid(upload.ulid).verified_bytes).to eq(150)
     end
   end
 end

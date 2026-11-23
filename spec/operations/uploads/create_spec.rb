@@ -19,6 +19,12 @@ RSpec.describe PastaAtlas::Operations::Uploads::Create, :db do
         expect(upload.status).to eq("pending")
         expect(upload.total_image_count).to eq(5)
       end
+
+      it "records the size of mapshot.json as the metadata bytes" do
+        result = operation.call(user_id: user.id, metadata:, total_image_count: 5)
+
+        expect(result.value![:upload].metadata_bytes).to eq(metadata.to_json.bytesize)
+      end
     end
 
     context "when a pending upload already exists for the generation" do
