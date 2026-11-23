@@ -24,6 +24,19 @@ function escapeHtml(text) {
     .replace(/'/g, "&#39;");
 }
 
+// The format ops:maintenance:on and :set accept. Date.parse is not used: in CloudFront Functions it
+// returned NaN for values with an offset such as 2026-11-24T10:00:00+09:00.
+const ENDS_AT_FORMAT = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})(?::(\d{2})(?:\.(\d{3}))?)?(?:Z|([+-])(\d{2}):(\d{2}))$/;
+
+// Returns the time in milliseconds, or NaN when the text is not in ENDS_AT_FORMAT.
+function parseEndsAt(text) {
+  const m = ENDS_AT_FORMAT.exec(text);
+  if (!m) return NaN;
+  const wallClock = Date.UTC(+m[1], +m[2] - 1, +m[3], +m[4], +m[5], +(m[6] || 0), +(m[7] || 0));
+  const offsetMinutes = m[8] ? (m[8] === "+" ? 1 : -1) * (+m[9] * 60 + +m[10]) : 0;
+  return wallClock - offsetMinutes * 60000;
+}
+
 // split/join instead of replace() so that `$` patterns in the message are not interpreted.
 function fill(template, placeholder, value) {
   return template.split(placeholder).join(value);
@@ -41,7 +54,7 @@ async function handler(event) {
 
   const message = (await read("message")) || DEFAULT_MESSAGE;
   let endsAt = await read("ends_at");
-  const endsAtTime = endsAt ? Date.parse(endsAt) : NaN;
+  const endsAtTime = endsAt ? parseEndsAt(endsAt) : NaN;
   if (isNaN(endsAtTime)) endsAt = null;
 
   const headers = { "cache-control": { value: "no-store" } };

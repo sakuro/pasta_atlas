@@ -51,7 +51,7 @@ mise run ops:maintenance:off
 Every response from maintenance mode is `503 Service Unavailable` with `Cache-Control: no-store`. When `ends_at` is in the future, `Retry-After` gives the seconds until it.
 
 - A URI under `/api/` gets JSON: `{"error":"maintenance","message":…,"ends_at":…}`, with `ends_at` as stored or `null`.
-- Any other URI gets the HTML page with the message (HTML-escaped) and the end time. A script shows the end time in the viewer's time zone; without JavaScript the ISO 8601 text stays. The end time is still shown after it has passed. An `ends_at` that does not parse is treated as absent.
+- Any other URI gets the HTML page with the message (HTML-escaped) and the end time. A script shows the end time in the viewer's time zone; without JavaScript the ISO 8601 text stays. The end time is still shown after it has passed. An `ends_at` outside the format the tasks accept is treated as absent: the function parses that format itself, because `Date.parse` in CloudFront Functions rejects values with an offset such as `+09:00`.
 
 ## What it does not stop
 
