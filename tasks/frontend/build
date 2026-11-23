@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+#MISE description="Build the SPA bundle with Vite"
+set -euo pipefail
+
+exec vite build "$@"

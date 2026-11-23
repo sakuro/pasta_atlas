@@ -3,4 +3,4 @@
 #MISE hide=true
 set -euo pipefail
 
-exec npm run dev:frontend
+exec vite build --watch

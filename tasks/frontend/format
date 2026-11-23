@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+#MISE description="Format the frontend with Prettier (rewrites the files)"
+set -euo pipefail
+
+exec prettier --write "frontend/**/*.{ts,tsx}" "$@"

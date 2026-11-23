@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+#MISE description="Type-check the frontend with tsc"
+set -euo pipefail
+
+exec tsc --noEmit "$@"

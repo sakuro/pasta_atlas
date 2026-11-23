@@ -36,6 +36,9 @@ jobs:
 
       - run: npm ci
 
+      # Lets the steps run the commands of the mise tasks; CI does not install mise.
+      - run: echo "$PWD/node_modules/.bin" >> "$GITHUB_PATH"
+
       - uses: ruby/setup-ruby@v1.343.0
         with:
           ruby-version: "4.0"
@@ -44,7 +47,7 @@ jobs:
       - name: Compile assets
         run: |
           bundle exec hanami assets compile
-          npm run build:frontend
+          vite build
           rm -f public/assets/vite-entries.json
         env:
           SESSION_SECRET: dummy

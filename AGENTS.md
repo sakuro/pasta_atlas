@@ -26,13 +26,12 @@ mise run rubocop:autocorrect          # Auto-fix safe offenses
 ### Frontend (TypeScript/SolidJS)
 
 ```bash
-npm run build:frontend    # Production build
-npm run dev:frontend      # Watch mode for development
-npm run type-check        # TypeScript type checking
-npm run lint:frontend     # ESLint on .ts/.tsx files
-npm run format:frontend   # Prettier on .ts/.tsx files (rewrites them)
-npm run generate:api      # Regenerate frontend/lib/api/gen/ from openapi.yaml
-npm run test:frontend -- --run   # Run Vitest tests once
+mise run frontend:build         # Production build
+mise run frontend:type-check    # TypeScript type checking
+mise run frontend:lint          # ESLint on .ts/.tsx files
+mise run frontend:format        # Prettier on .ts/.tsx files (rewrites them)
+mise run frontend:generate-api  # Regenerate frontend/lib/api/gen/ from openapi.yaml
+mise run frontend:test          # Run Vitest tests once (--watch keeps watching)
 ```
 
 ### Development server

@@ -76,20 +76,24 @@ jobs:
 
       - run: npm ci
 
+      # The steps below run the commands of the frontend:* mise tasks; CI does not install mise.
+      - run: echo "$PWD/node_modules/.bin" >> "$GITHUB_PATH"
+
       - name: Check the generated API client
         run: |
-          npm run generate:api
+          openapi-ts
+          prettier --write frontend/lib/api/gen
           git add --intent-to-add frontend/lib/api/gen
           git diff --exit-code frontend/lib/api/gen
 
       - name: Type check
-        run: npm run type-check
+        run: tsc --noEmit
 
       - name: Lint
-        run: npm run lint:frontend
+        run: eslint frontend
 
       - name: Test
-        run: npm run test:frontend -- --run
+        run: vitest run
 
   actions-lock:
     runs-on: ubuntu-latest
