@@ -45,6 +45,7 @@ mise run ops:maintenance:off
 - `off` also deletes `allow_ips`, because the allowed addresses are usually those of a dynamic connection.
 - The address to allow is the one CloudFront sees. The distribution accepts IPv6, so it may be an IPv6 address.
 - Each task changes the keys with one `UpdateKeys` call, which applies all changes or none, with the store's ETag. When the store changed after the task read it, the call fails; run the task again.
+- A change reaches the edge servers one by one. After `off` in production, some requests still got the maintenance page for about a minute. Wait about a minute after `on` before starting the work, and expect the same after `off` and `set`.
 
 ## Response
 
