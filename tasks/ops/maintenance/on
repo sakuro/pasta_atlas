@@ -1,0 +1,34 @@
+#!/usr/bin/env bash
+#MISE description="Turn the maintenance mode on"
+#USAGE flag "--ends-at <ends_at>" help="Expected end, ISO 8601 with a time zone (2026-11-24T15:00+09:00)"
+#USAGE flag "--message <message>" help="Message in English instead of the default one"
+set -euo pipefail
+source "$(dirname "${BASH_SOURCE[0]}")/_kvs.sh"
+
+ends_at=${usage_ends_at:-}
+message=${usage_message:-}
+if [ -n "$ends_at" ]; then
+  kvs_validate_ends_at "$ends_at"
+  if [ "$(date -d "$ends_at" +%s)" -le "$(date +%s)" ]; then
+    echo "Warning: --ends-at is in the past; the page shows it anyway." >&2
+  fi
+fi
+
+kvs_use_production
+kvs_load
+
+# Running on again would delete the settings whose flags are not given; set changes only the given ones.
+if [ "$(kvs_get maintenance)" = on ]; then
+  echo "Maintenance mode is already on. Use ops:maintenance:set to change the message or the end time." >&2
+  exit 1
+fi
+
+# A message or end time from an earlier maintenance is deleted when the flag is not given.
+wanted=$(jq -cn --arg message "$message" --arg ends_at "$ends_at" \
+  '{maintenance: "on", message: $message, ends_at: $ends_at}')
+kvs_update "$wanted"
+
+if [ -z "$(kvs_get allow_ips)" ]; then
+  echo "Warning: allow_ips is empty, so nobody gets through. Add an address with ops:maintenance:allow." >&2
+fi
+echo "Maintenance mode is on."

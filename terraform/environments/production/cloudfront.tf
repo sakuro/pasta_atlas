@@ -58,6 +58,11 @@ resource "aws_cloudfront_distribution" "app" {
     cache_policy_id        = data.aws_cloudfront_cache_policy.caching_disabled.id
     # The viewer Host header must not be forwarded: the Function URL answers 404 for it.
     origin_request_policy_id = data.aws_cloudfront_origin_request_policy.all_viewer_except_host_header.id
+
+    function_association {
+      event_type   = "viewer-request"
+      function_arn = aws_cloudfront_function.maintenance.arn
+    }
   }
 
   restrictions {

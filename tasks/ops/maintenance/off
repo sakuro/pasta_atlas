@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+#MISE description="Turn the maintenance mode off and delete its settings"
+set -euo pipefail
+source "$(dirname "${BASH_SOURCE[0]}")/_kvs.sh"
+
+kvs_use_production
+kvs_load
+
+# allow_ips is deleted too: the addresses are those of a dynamic connection and may differ next time.
+kvs_update '{"maintenance": null, "message": null, "ends_at": null, "allow_ips": null}'
+echo "Maintenance mode is off."

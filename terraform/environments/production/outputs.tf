@@ -21,6 +21,18 @@ output "app_cloudfront_domain_name" {
   value = aws_cloudfront_distribution.app.domain_name
 }
 
+output "maintenance_kvs_arn" {
+  value = aws_cloudfront_key_value_store.maintenance.arn
+}
+
+output "maintenance_kvs_name" {
+  value = aws_cloudfront_key_value_store.maintenance.name
+}
+
+output "maintenance_function_name" {
+  value = aws_cloudfront_function.maintenance.name
+}
+
 output "lambda_artifacts_bucket" {
   value = aws_s3_bucket.lambda_artifacts.bucket
 }

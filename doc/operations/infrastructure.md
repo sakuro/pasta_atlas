@@ -83,6 +83,8 @@ Two distributions are provisioned:
 
 Static assets are safe to cache long-term because Vite fingerprints filenames with a content hash. Dynamic responses are not cached. See [Lambda](lambda.md#origin-protection) for how the Function URL is protected.
 
+The default behavior runs the `maintenance` CloudFront Function on viewer requests; see [Maintenance Mode](maintenance.md).
+
 ### `mapshots` — CDN domain (`maps.pasta-atlas.layer8.works`)
 
 Single origin: S3 bucket via OAC. All requests use CachingOptimized. A CORS response headers policy adds `Access-Control-Allow-Origin` for allowed origins.

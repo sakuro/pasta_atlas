@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+#MISE description="Show the maintenance mode and its settings"
+set -euo pipefail
+source "$(dirname "${BASH_SOURCE[0]}")/_kvs.sh"
+
+kvs_use_production
+kvs_load
+
+if [ "$(kvs_get maintenance)" = on ]; then
+  echo "Maintenance mode is on."
+else
+  echo "Maintenance mode is off."
+fi
+jq -r 'to_entries[] | "\(.key)=\(.value)"' <<<"$KVS_ITEMS"
