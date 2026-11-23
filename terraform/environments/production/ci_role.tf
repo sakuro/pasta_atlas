@@ -5,21 +5,6 @@ data "aws_iam_openid_connect_provider" "github" {
   url = "https://token.actions.githubusercontent.com"
 }
 
-import {
-  to = aws_iam_role.github_actions
-  id = "github-actions-cicd"
-}
-
-import {
-  to = aws_iam_role_policy.github_actions_cloudfront
-  id = "github-actions-cicd:github-actions-cicd"
-}
-
-import {
-  to = aws_iam_role_policy.github_actions_lambda_deploy
-  id = "github-actions-cicd:lambda-deploy"
-}
-
 data "aws_iam_policy_document" "github_actions_trust" {
   statement {
     actions = ["sts:AssumeRoleWithWebIdentity"]
