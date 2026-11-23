@@ -15,7 +15,7 @@ terraform/
 |---|---|
 | `main.tf` | HCP Terraform backend and providers |
 | `variables.tf` | Production configuration inputs |
-| `s3.tf` | mapshots bucket, CORS, default avatar objects |
+| `s3.tf` | mapshots bucket, CORS, the Compilatron avatar object |
 | `assets.tf` | Assets bucket |
 | `cloudfront.tf` | CloudFront distributions |
 | `acm.tf` | ACM certificates (us-east-1) and their Gandi validation records |
