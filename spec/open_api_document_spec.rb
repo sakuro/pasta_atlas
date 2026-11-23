@@ -68,7 +68,7 @@ RSpec.describe OpenAPIDocument do
         "PATCH /api/v1/uploads/{ulid}",
         "POST /api/v1/uploads/{ulid}/presigned_posts",
         "POST /api/v1/uploads/{ulid}/verify_batch",
-        "GET /api/v1/users/{name}",
+        "GET /api/v1/users/{user_name}",
         "DELETE /api/v1/users/{user_name}",
         "DELETE /api/v1/users/{user_name}/avatar",
         "GET /api/v1/users/{user_name}/credentials",

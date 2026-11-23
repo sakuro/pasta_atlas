@@ -102,7 +102,7 @@ Returns pending OAuth data for the registration form. Requires `session[:pending
 
 ## User
 
-### GET /api/v1/users/:name
+### GET /api/v1/users/:user_name
 
 Returns public user info.
 

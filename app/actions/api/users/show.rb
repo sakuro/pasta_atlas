@@ -11,7 +11,7 @@ module PastaAtlas
           ]
 
           def handle(request, response)
-            result = find_by_name.call(user_name: request.params[:name])
+            result = find_by_name.call(user_name: request.params[:user_name])
             case result
             in Failure(Symbol => status)
               halt status

@@ -29,7 +29,7 @@ module PastaAtlas
     post "/api/v1/uploads/:ulid/presigned_posts", to: "api.uploads.presigned_posts.create"
     post "/api/v1/uploads/:ulid/verify_batch", to: "api.uploads.verify_batches.create"
 
-    get "/api/v1/users/:name", to: "api.users.show"
+    get "/api/v1/users/:user_name", to: "api.users.show"
     delete "/api/v1/users/:user_name", to: "api.users.destroy"
     delete "/api/v1/users/:user_name/avatar", to: "api.users.avatar.destroy"
     get "/api/v1/users/:user_name/credentials", to: "api.users.credentials.index"
