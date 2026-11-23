@@ -23,6 +23,7 @@ RSpec.describe PastaAtlas::Actions::API::Users::Credentials::Index do
       response = action.call(env)
 
       expect(response.status).to eq(403)
+      expect(response).to conform_to_openapi("GET /api/v1/users/{user_name}/credentials")
     end
   end
 
@@ -41,6 +42,7 @@ RSpec.describe PastaAtlas::Actions::API::Users::Credentials::Index do
       response = action.call(env)
 
       expect(response.status).to eq(403)
+      expect(response).to conform_to_openapi("GET /api/v1/users/{user_name}/credentials")
     end
   end
 
@@ -61,6 +63,7 @@ RSpec.describe PastaAtlas::Actions::API::Users::Credentials::Index do
       response = action.call(env)
 
       expect(response.status).to eq(200)
+      expect(response).to conform_to_openapi("GET /api/v1/users/{user_name}/credentials")
       body = JSON.parse(response.body.join)
       expect(body["providers"]).to eq(%w[discord github steam])
       expect(body["connected_providers"]).to eq(["github"])
@@ -76,6 +79,8 @@ RSpec.describe PastaAtlas::Actions::API::Users::Credentials::Index do
       it "returns an empty connected_providers array" do
         response = action.call(env)
 
+        expect(response.status).to eq(200)
+        expect(response).to conform_to_openapi("GET /api/v1/users/{user_name}/credentials")
         body = JSON.parse(response.body.join)
         expect(body["connected_providers"]).to eq([])
       end

@@ -23,6 +23,7 @@ RSpec.describe PastaAtlas::Actions::API::Users::Profile::Show do
       response = action.call(env)
 
       expect(response.status).to eq(403)
+      expect(response).to conform_to_openapi("GET /api/v1/users/{user_name}/profile")
     end
   end
 
@@ -41,6 +42,7 @@ RSpec.describe PastaAtlas::Actions::API::Users::Profile::Show do
       response = action.call(env)
 
       expect(response.status).to eq(403)
+      expect(response).to conform_to_openapi("GET /api/v1/users/{user_name}/profile")
     end
   end
 
@@ -61,6 +63,7 @@ RSpec.describe PastaAtlas::Actions::API::Users::Profile::Show do
       response = action.call(env)
 
       expect(response.status).to eq(200)
+      expect(response).to conform_to_openapi("GET /api/v1/users/{user_name}/profile")
       body = JSON.parse(response.body.join)
       expect(body).to include(
         "user_name" => "wube",
@@ -79,6 +82,8 @@ RSpec.describe PastaAtlas::Actions::API::Users::Profile::Show do
       it "returns nil values" do
         response = action.call(env)
 
+        expect(response.status).to eq(200)
+        expect(response).to conform_to_openapi("GET /api/v1/users/{user_name}/profile")
         body = JSON.parse(response.body.join)
         expect(body).to include("display_name" => nil, "avatar_url" => nil)
       end

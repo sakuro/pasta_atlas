@@ -23,6 +23,7 @@ RSpec.describe PastaAtlas::Actions::API::Users::Preferences::Update do
       response = action.call(env)
 
       expect(response.status).to eq(403)
+      expect(response).to conform_to_openapi("PATCH /api/v1/users/{user_name}/preferences")
     end
   end
 
@@ -41,6 +42,7 @@ RSpec.describe PastaAtlas::Actions::API::Users::Preferences::Update do
       response = action.call(env)
 
       expect(response.status).to eq(403)
+      expect(response).to conform_to_openapi("PATCH /api/v1/users/{user_name}/preferences")
     end
   end
 
@@ -63,6 +65,7 @@ RSpec.describe PastaAtlas::Actions::API::Users::Preferences::Update do
       response = action.call(env)
 
       expect(response.status).to eq(200)
+      expect(response).to conform_to_openapi("PATCH /api/v1/users/{user_name}/preferences")
       body = JSON.parse(response.body.join)
       expect(body["locale"]).to eq("ja")
     end
@@ -71,12 +74,14 @@ RSpec.describe PastaAtlas::Actions::API::Users::Preferences::Update do
       response = action.call(env.except(:relative_timestamps))
 
       expect(response.status).to eq(400)
+      expect(response).to conform_to_openapi("PATCH /api/v1/users/{user_name}/preferences")
     end
 
     it "returns 400 when relative_timestamps is not a boolean" do
       response = action.call(env.merge(relative_timestamps: "true"))
 
       expect(response.status).to eq(400)
+      expect(response).to conform_to_openapi("PATCH /api/v1/users/{user_name}/preferences")
     end
   end
 end

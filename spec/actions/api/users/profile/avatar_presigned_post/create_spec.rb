@@ -29,6 +29,7 @@ RSpec.describe PastaAtlas::Actions::API::Users::Profile::AvatarPresignedPost::Cr
       response = action.call(env)
 
       expect(response.status).to eq(200)
+      expect(response).to conform_to_openapi("POST /api/v1/users/{user_name}/profile/avatar_presigned_post")
       expect(JSON.parse(response.body.join)).to eq(
         "presigned_post" => {"url" => "https://s3.example/", "fields" => {"key" => "wube/avatar/01HXY.png"}},
         "s3_key" => "wube/avatar/01HXY.png"
@@ -46,6 +47,7 @@ RSpec.describe PastaAtlas::Actions::API::Users::Profile::AvatarPresignedPost::Cr
       response = action.call(env)
 
       expect(response.status).to eq(403)
+      expect(response).to conform_to_openapi("POST /api/v1/users/{user_name}/profile/avatar_presigned_post")
       expect(create_avatar_presigned_post).not_to have_received(:call)
     end
   end
@@ -60,6 +62,7 @@ RSpec.describe PastaAtlas::Actions::API::Users::Profile::AvatarPresignedPost::Cr
       response = action.call(env)
 
       expect(response.status).to eq(429)
+      expect(response).to conform_to_openapi("POST /api/v1/users/{user_name}/profile/avatar_presigned_post")
     end
   end
 
@@ -70,6 +73,7 @@ RSpec.describe PastaAtlas::Actions::API::Users::Profile::AvatarPresignedPost::Cr
       response = action.call(env.merge(content_type: "image/gif"))
 
       expect(response.status).to eq(400)
+      expect(response).to conform_to_openapi("POST /api/v1/users/{user_name}/profile/avatar_presigned_post")
       expect(verify_ownership).not_to have_received(:call)
     end
   end

@@ -29,6 +29,7 @@ RSpec.describe PastaAtlas::Actions::API::Users::Profile::Update do
       response = action.call(env)
 
       expect(response.status).to eq(403)
+      expect(response).to conform_to_openapi("PATCH /api/v1/users/{user_name}/profile")
     end
   end
 
@@ -47,6 +48,7 @@ RSpec.describe PastaAtlas::Actions::API::Users::Profile::Update do
       response = action.call(env)
 
       expect(response.status).to eq(403)
+      expect(response).to conform_to_openapi("PATCH /api/v1/users/{user_name}/profile")
     end
   end
 
@@ -67,6 +69,7 @@ RSpec.describe PastaAtlas::Actions::API::Users::Profile::Update do
       response = action.call(env)
 
       expect(response.status).to eq(200)
+      expect(response).to conform_to_openapi("PATCH /api/v1/users/{user_name}/profile")
       body = JSON.parse(response.body.join)
       expect(body["display_name"]).to eq("Wube")
       expect(body["avatar_url"]).to be_nil
@@ -85,8 +88,44 @@ RSpec.describe PastaAtlas::Actions::API::Users::Profile::Update do
         response = action.call(env)
 
         expect(response.status).to eq(422)
+        expect(response).to conform_to_openapi("PATCH /api/v1/users/{user_name}/profile")
         body = JSON.parse(response.body.join)
         expect(body["error"]).to eq("error-profile-display-name-too-long")
+      end
+    end
+
+    context "when the avatar is rejected" do
+      let(:env) { {"rack.session" => {"user_id" => 1}, :user_name => "wube", :display_name => "Wube", :avatar_s3_key => "wube/avatar/01HXY.png"} }
+
+      before do
+        allow(update_profile).to receive(:call)
+          .with(user:, display_name: "Wube", avatar_s3_key: "wube/avatar/01HXY.png")
+          .and_return(Failure([:invalid, "error-profile-avatar-invalid"]))
+      end
+
+      it "returns 422 with error" do
+        response = action.call(env)
+
+        expect(response.status).to eq(422)
+        expect(response).to conform_to_openapi("PATCH /api/v1/users/{user_name}/profile")
+        expect(JSON.parse(response.body.join)).to eq("error" => "error-profile-avatar-invalid")
+      end
+    end
+
+    context "when S3 cannot be reached to check the avatar" do
+      let(:env) { {"rack.session" => {"user_id" => 1}, :user_name => "wube", :display_name => "Wube", :avatar_s3_key => "wube/avatar/01HXY.png"} }
+
+      before do
+        allow(update_profile).to receive(:call)
+          .with(user:, display_name: "Wube", avatar_s3_key: "wube/avatar/01HXY.png")
+          .and_return(Failure(:bad_gateway))
+      end
+
+      it "returns 502" do
+        response = action.call(env)
+
+        expect(response.status).to eq(502)
+        expect(response).to conform_to_openapi("PATCH /api/v1/users/{user_name}/profile")
       end
     end
   end

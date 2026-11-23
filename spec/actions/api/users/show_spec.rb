@@ -18,6 +18,7 @@ RSpec.describe PastaAtlas::Actions::API::Users::Show do
       response = action.call({user_name: "wube"})
 
       expect(response.status).to eq(200)
+      expect(response).to conform_to_openapi("GET /api/v1/users/{user_name}")
       body = JSON.parse(response.body.join, symbolize_names: true)
       expect(body[:user][:name]).to eq("wube")
       expect(body[:user][:display_name]).to eq("Wube")
@@ -34,6 +35,7 @@ RSpec.describe PastaAtlas::Actions::API::Users::Show do
       response = action.call({user_name: "guest"})
 
       expect(response.status).to eq(403)
+      expect(response).to conform_to_openapi("GET /api/v1/users/{user_name}")
     end
   end
 
@@ -44,6 +46,7 @@ RSpec.describe PastaAtlas::Actions::API::Users::Show do
       response = action.call({user_name: "nobody"})
 
       expect(response.status).to eq(404)
+      expect(response).to conform_to_openapi("GET /api/v1/users/{user_name}")
     end
   end
 end

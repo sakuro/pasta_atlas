@@ -3,6 +3,18 @@
 import type { Client, ClientMeta, Options as Options2, RequestResult, TDataShape } from "./client";
 import { client } from "./client.gen";
 import type {
+  CreateAvatarPresignedPostData,
+  CreateAvatarPresignedPostErrors,
+  CreateAvatarPresignedPostResponses,
+  DeleteAvatarData,
+  DeleteAvatarErrors,
+  DeleteAvatarResponses,
+  DeleteUserData,
+  DeleteUserErrors,
+  DeleteUserResponses,
+  ListCredentialsData,
+  ListCredentialsErrors,
+  ListCredentialsResponses,
   ListMapsData,
   ListMapsResponses,
   ListRecentMapsOfUserData,
@@ -16,9 +28,27 @@ import type {
   ShowMapData,
   ShowMapErrors,
   ShowMapResponses,
+  ShowPreferencesData,
+  ShowPreferencesErrors,
+  ShowPreferencesResponses,
+  ShowProfileData,
+  ShowProfileErrors,
+  ShowProfileResponses,
+  ShowUserData,
+  ShowUserErrors,
+  ShowUserResponses,
+  UnlinkCredentialData,
+  UnlinkCredentialErrors,
+  UnlinkCredentialResponses,
   UpdateMapNameData,
   UpdateMapNameErrors,
   UpdateMapNameResponses,
+  UpdatePreferencesData,
+  UpdatePreferencesErrors,
+  UpdatePreferencesResponses,
+  UpdateProfileData,
+  UpdateProfileErrors,
+  UpdateProfileResponses,
 } from "./types.gen";
 
 export type Options<
@@ -96,6 +126,65 @@ export const requestMapDeletion = <ThrowOnError extends boolean = false>(
   });
 
 /**
+ * Deletes the own account, queues the S3 prefixes of its maps and avatar for cleanup and clears the session
+ */
+export const deleteUser = <ThrowOnError extends boolean = false>(
+  options: Options<DeleteUserData, ThrowOnError>
+): RequestResult<DeleteUserResponses, DeleteUserErrors, ThrowOnError> =>
+  (options.client ?? client).delete<DeleteUserResponses, DeleteUserErrors, ThrowOnError>({
+    url: "/api/v1/users/{user_name}",
+    ...options,
+    headers: {
+      "Content-Type": "application/json",
+      ...options.headers,
+    },
+  });
+
+/**
+ * Public information of a user
+ */
+export const showUser = <ThrowOnError extends boolean = false>(
+  options: Options<ShowUserData, ThrowOnError>
+): RequestResult<ShowUserResponses, ShowUserErrors, ThrowOnError> =>
+  (options.client ?? client).get<ShowUserResponses, ShowUserErrors, ThrowOnError>({
+    url: "/api/v1/users/{user_name}",
+    ...options,
+  });
+
+/**
+ * Removes the own avatar and queues its object for cleanup
+ */
+export const deleteAvatar = <ThrowOnError extends boolean = false>(
+  options: Options<DeleteAvatarData, ThrowOnError>
+): RequestResult<DeleteAvatarResponses, DeleteAvatarErrors, ThrowOnError> =>
+  (options.client ?? client).delete<DeleteAvatarResponses, DeleteAvatarErrors, ThrowOnError>({
+    url: "/api/v1/users/{user_name}/avatar",
+    ...options,
+  });
+
+/**
+ * The OAuth providers and those linked to the own account
+ */
+export const listCredentials = <ThrowOnError extends boolean = false>(
+  options: Options<ListCredentialsData, ThrowOnError>
+): RequestResult<ListCredentialsResponses, ListCredentialsErrors, ThrowOnError> =>
+  (options.client ?? client).get<ListCredentialsResponses, ListCredentialsErrors, ThrowOnError>({
+    url: "/api/v1/users/{user_name}/credentials",
+    ...options,
+  });
+
+/**
+ * Unlinks an OAuth provider from the own account
+ */
+export const unlinkCredential = <ThrowOnError extends boolean = false>(
+  options: Options<UnlinkCredentialData, ThrowOnError>
+): RequestResult<UnlinkCredentialResponses, UnlinkCredentialErrors, ThrowOnError> =>
+  (options.client ?? client).delete<UnlinkCredentialResponses, UnlinkCredentialErrors, ThrowOnError>({
+    url: "/api/v1/users/{user_name}/credentials/{provider}",
+    ...options,
+  });
+
+/**
  * Up to 3 maps of the user that have a complete generation, most recently completed upload first
  */
 export const listRecentMapsOfUser = <ThrowOnError extends boolean = false>(
@@ -104,4 +193,73 @@ export const listRecentMapsOfUser = <ThrowOnError extends boolean = false>(
   (options.client ?? client).get<ListRecentMapsOfUserResponses, ListRecentMapsOfUserErrors, ThrowOnError>({
     url: "/api/v1/users/{user_name}/maps",
     ...options,
+  });
+
+/**
+ * The own preferences
+ */
+export const showPreferences = <ThrowOnError extends boolean = false>(
+  options: Options<ShowPreferencesData, ThrowOnError>
+): RequestResult<ShowPreferencesResponses, ShowPreferencesErrors, ThrowOnError> =>
+  (options.client ?? client).get<ShowPreferencesResponses, ShowPreferencesErrors, ThrowOnError>({
+    url: "/api/v1/users/{user_name}/preferences",
+    ...options,
+  });
+
+/**
+ * Updates the own preferences
+ */
+export const updatePreferences = <ThrowOnError extends boolean = false>(
+  options: Options<UpdatePreferencesData, ThrowOnError>
+): RequestResult<UpdatePreferencesResponses, UpdatePreferencesErrors, ThrowOnError> =>
+  (options.client ?? client).patch<UpdatePreferencesResponses, UpdatePreferencesErrors, ThrowOnError>({
+    url: "/api/v1/users/{user_name}/preferences",
+    ...options,
+    headers: {
+      "Content-Type": "application/json",
+      ...options.headers,
+    },
+  });
+
+/**
+ * The own profile as stored, for the edit form
+ */
+export const showProfile = <ThrowOnError extends boolean = false>(
+  options: Options<ShowProfileData, ThrowOnError>
+): RequestResult<ShowProfileResponses, ShowProfileErrors, ThrowOnError> =>
+  (options.client ?? client).get<ShowProfileResponses, ShowProfileErrors, ThrowOnError>({
+    url: "/api/v1/users/{user_name}/profile",
+    ...options,
+  });
+
+/**
+ * Updates the own display name and, optionally, the avatar
+ */
+export const updateProfile = <ThrowOnError extends boolean = false>(
+  options: Options<UpdateProfileData, ThrowOnError>
+): RequestResult<UpdateProfileResponses, UpdateProfileErrors, ThrowOnError> =>
+  (options.client ?? client).patch<UpdateProfileResponses, UpdateProfileErrors, ThrowOnError>({
+    url: "/api/v1/users/{user_name}/profile",
+    ...options,
+    headers: {
+      "Content-Type": "application/json",
+      ...options.headers,
+    },
+  });
+
+/**
+ * Issues a presigned S3 POST for an avatar image (own profile only)
+ *
+ * The policy fixes the content type and limits the object to 5 MiB. The key is recorded for the user and valid for PRESIGNED_URL_EXPIRY seconds; it can be applied once, with updateProfile.
+ */
+export const createAvatarPresignedPost = <ThrowOnError extends boolean = false>(
+  options: Options<CreateAvatarPresignedPostData, ThrowOnError>
+): RequestResult<CreateAvatarPresignedPostResponses, CreateAvatarPresignedPostErrors, ThrowOnError> =>
+  (options.client ?? client).post<CreateAvatarPresignedPostResponses, CreateAvatarPresignedPostErrors, ThrowOnError>({
+    url: "/api/v1/users/{user_name}/profile/avatar_presigned_post",
+    ...options,
+    headers: {
+      "Content-Type": "application/json",
+      ...options.headers,
+    },
   });
