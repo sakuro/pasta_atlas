@@ -154,7 +154,7 @@ Updates `display_name` (and optionally `avatar_s3_key`). Authenticated, own prof
 | Field | Notes |
 |---|---|
 | `display_name` | Max 30 grapheme clusters; no control characters, no whitespace other than a plain space and no format characters other than ZWJ and variation selectors (the same character rule applies to map names); empty clears it |
-| `avatar_s3_key` | Optional; a key from `avatar_presigned_post` that is unexpired, not applied yet and whose object is an image of the issued type within 5 MiB (see [PATCH avatar](#patch-apiv1usersuser_nameavatar)). Empty leaves the avatar as it is |
+| `avatar_s3_key` | Optional; a key from `avatar_presigned_post` that is unexpired, not applied yet and whose object is an image of the issued type within 5 MiB. Empty leaves the avatar as it is |
 
 **Response `200 OK`:**
 
@@ -209,26 +209,6 @@ Updates timezone, locale, and relative_timestamps. Authenticated, own preference
 | Status | Condition |
 |---|---|
 | `403 Forbidden` | Not logged in, or not own preferences |
-
-### PATCH /api/v1/users/:user_name/avatar
-
-Sets `avatar_s3_key` on the UserProfile. The key must have been issued to the user by `avatar_presigned_post` and be unexpired and not applied yet, and its object must exist, be at most 5 MiB, have the issued content type and start with the signature of that image format. The key is consumed. The previous avatar object is queued for S3 cleanup. Authenticated, own profile only.
-
-**Request params:**
-
-| Field | Notes |
-|---|---|
-| `s3_key` | A key issued to the user by `avatar_presigned_post` |
-
-**Response:** `204 No Content`
-
-**Error responses:**
-
-| Status | Condition |
-|---|---|
-| `403 Forbidden` | Not authenticated or not own profile |
-| `422 Unprocessable Entity` | The key was not issued to the user, has expired or was applied, or the object is missing, too large, of another type or not an image |
-| `502 Bad Gateway` | S3 could not be reached to check the object |
 
 ### DELETE /api/v1/users/:user_name/avatar
 

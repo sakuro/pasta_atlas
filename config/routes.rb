@@ -31,7 +31,6 @@ module PastaAtlas
 
     get "/api/v1/users/:name", to: "api.users.show"
     delete "/api/v1/users/:user_name", to: "api.users.destroy"
-    patch "/api/v1/users/:user_name/avatar", to: "api.users.avatar.update"
     delete "/api/v1/users/:user_name/avatar", to: "api.users.avatar.destroy"
     get "/api/v1/users/:user_name/credentials", to: "api.users.credentials.index"
     delete "/api/v1/users/:user_name/credentials/:provider", to: "api.users.credentials.destroy"
