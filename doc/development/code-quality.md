@@ -18,12 +18,12 @@
 
 | Tool | Command | Purpose |
 |---|---|---|
-| TypeScript | `npm run type-check` | Static typing (`tsc --noEmit`) |
-| ESLint + `eslint-plugin-solid` | `npm run lint:frontend` | Static analysis for `frontend/**/*.{ts,tsx}`, with the `v2` configuration |
-| Vitest | `npm run test:frontend` | Unit tests (jsdom); add `-- --run` for a single run |
-| Vite + `@solidjs/vite-plugin` | `npm run build:frontend` | Build; compiles Solid JSX |
-| Prettier | `npm run format:frontend` | Formats `frontend/**/*.{ts,tsx}` in place (`.prettierrc`, 120 columns); the `pre-commit` hook checks it, CI does not |
-| Hey API (`@hey-api/openapi-ts`) | `npm run generate:api` | Generates the typed client in `frontend/lib/api/gen/` from `openapi.yaml` (`openapi-ts.config.ts`); commit the result. ESLint skips the generated files |
+| TypeScript | `mise run frontend:type-check` | Static typing (`tsc --noEmit`) |
+| ESLint + `eslint-plugin-solid` | `mise run frontend:lint` | Static analysis for `frontend/**/*.{ts,tsx}`, with the `v2` configuration |
+| Vitest | `mise run frontend:test` | Unit tests (jsdom), run once; add `--watch` to keep watching |
+| Vite + `@solidjs/vite-plugin` | `mise run frontend:build` | Build; compiles Solid JSX |
+| Prettier | `mise run frontend:format` | Formats `frontend/**/*.{ts,tsx}` in place (`.prettierrc`, 120 columns); the `pre-commit` hook checks it, CI does not |
+| Hey API (`@hey-api/openapi-ts`) | `mise run frontend:generate-api` | Generates the typed client in `frontend/lib/api/gen/` from `openapi.yaml` (`openapi-ts.config.ts`); commit the result. ESLint skips the generated files |
 
 ## Git hooks
 
@@ -40,4 +40,4 @@ The hooks check only; they do not rewrite files. RSpec and the type check are no
 
 ## CI
 
-`.github/workflows/ci.yml` runs three jobs. `backend` prepares PostgreSQL 18, compiles the assets, loads the test database structure and seeds, then runs RSpec and RuboCop with the commands of the `spec` and `rubocop` mise tasks (CI does not install mise). `frontend` checks that the generated API client is current, then runs the type check, the lint and the Vitest run. `actions-lock` verifies `.github/workflows/actions.lock` with `gh actions-lock --verify`, so regenerate the lockfile after editing a workflow or bumping an action.
+`.github/workflows/ci.yml` runs three jobs. `backend` prepares PostgreSQL 18, compiles the assets, loads the test database structure and seeds, then runs RSpec and RuboCop with the commands of the `spec` and `rubocop` mise tasks (CI does not install mise). `frontend` checks that the generated API client is current, then runs the type check, the lint and the Vitest run, with the commands of the `frontend:*` mise tasks. `actions-lock` verifies `.github/workflows/actions.lock` with `gh actions-lock --verify`, so regenerate the lockfile after editing a workflow or bumping an action.

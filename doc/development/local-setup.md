@@ -133,7 +133,7 @@ Starts all services concurrently through the `dev` mise task. The web server and
 |---|---|
 | Hanami web server | `bundle exec hanami server` |
 | Asset watch (esbuild) | `bundle exec hanami assets watch` |
-| Frontend watch (Vite) | `npm run dev:frontend` |
+| Frontend watch (Vite) | `vite build --watch` |
 | Docker Compose (Floci) | `docker compose up` |
 | SQS queue worker (S3 cleanup) | `bundle exec rake s3:process_queues` |
 
@@ -162,6 +162,6 @@ For tests, `.env.test` provides all dummy values and no additional configuration
 mise run check                   # RSpec, RuboCop, type check, ESLint and Vitest
 ```
 
-Each check also runs alone: `mise run spec`, `mise run rubocop`, `npm run type-check`, `npm run lint:frontend` and `npm run test:frontend -- --run` (without `--run`, Vitest stays in watch mode).
+Each check also runs alone: `mise run spec`, `mise run rubocop`, `mise run frontend:type-check`, `mise run frontend:lint` and `mise run frontend:test` (add `--watch` to keep Vitest watching).
 
 Request specs need compiled assets (`bundle exec hanami assets compile`) and a prepared test database (`HANAMI_ENV=test bundle exec hanami db structure load` and `db seed`); CI does both before running the specs.

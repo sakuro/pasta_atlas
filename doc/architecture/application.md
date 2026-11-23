@@ -116,6 +116,6 @@ Two build pipelines write to `public/assets/`:
 | Pipeline | Tool | Handles |
 |---|---|---|
 | General assets | hanami-assets (esbuild), configured in `config/assets.js` | `app/assets/`: `js/app.ts` (imports Bulma, FontAwesome and `css/app.css`), images, and the `.ftl` translation files (fingerprinted and listed in `ftl-manifest.json`) |
-| SPA bundle | Vite + `@solidjs/vite-plugin` (`npm run build:frontend`, `npm run dev:frontend`) | The single entry `frontend/app.tsx`; it imports the same CSS again, so the bundle emits its own `app.css` |
+| SPA bundle | Vite + `@solidjs/vite-plugin` (`mise run frontend:build`; `bin/dev` watches with `vite build --watch`) | The single entry `frontend/app.tsx`; it imports the same CSS again, so the bundle emits its own `app.css` |
 
 Hanami serves both from the same origin. The `hanamiViteEntries` plugin in `vite.config.ts` writes `vite-entries.json` with the hashed `app.js` and `app.css` names, and `config/assets.js` merges it into `assets.json` after each hanami-assets build. The `javascript_tag "app"` and `stylesheet_tag "app"` helpers in the layout therefore resolve to the Vite bundle.
