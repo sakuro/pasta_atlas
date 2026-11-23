@@ -3,13 +3,71 @@ info:
   title: pasta_atlas JSON API
   version: "1"
   description: |
-    The JSON API used by the SPA. Endpoints that are not listed here yet are described in doc/architecture/api.md.
+    The JSON API used by the SPA. The OmniAuth endpoints, which redirect instead of answering JSON, are
+    described in doc/architecture/api.md.
     Write responses inline under each operation (no `$ref` to `components/responses`): the RSpec
     matcher `conform_to_openapi` reads them by JSON pointer.
 servers:
   - url: /
     description: The same origin as the SPA
 paths:
+  /api/v1/auth/current:
+    get:
+      operationId: getCurrentAuth
+      summary: The current user and preferences, for the SPA on load
+      description: >-
+        A guest gets user null and empty preferences. A session whose user no longer exists is
+        cleared of the user and answered as a guest.
+      responses:
+        "200":
+          description: The current user, or null for a guest
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: false
+                required: [user, preferences]
+                properties:
+                  user:
+                    oneOf:
+                      - $ref: "#/components/schemas/UserInfo"
+                      - type: "null"
+                  preferences:
+                    type: object
+                    additionalProperties: false
+                    required: [locale, timezone, relative_timestamps]
+                    properties:
+                      locale:
+                        description: BCP 47 tag; null to use the browser's
+                        type: [string, "null"]
+                      timezone:
+                        description: IANA identifier; null to use the browser's
+                        type: [string, "null"]
+                      relative_timestamps:
+                        type: boolean
+  /api/v1/auth/registration:
+    get:
+      operationId: getPendingRegistration
+      summary: The OAuth identity waiting to be registered, for the registration form
+      responses:
+        "200":
+          description: The pending identity
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: false
+                required: [provider, login_name]
+                properties:
+                  provider:
+                    $ref: "#/components/schemas/Provider"
+                  login_name:
+                    description: >-
+                      The login name at the provider, lowercased, suggested as the user name; empty if
+                      the provider gave none
+                    type: string
+        "403":
+          description: No registration is pending
   /api/v1/maps:
     get:
       operationId: listMaps
@@ -144,6 +202,34 @@ paths:
           description: Guest, or not the own map
         "404":
           description: The map does not exist
+  /api/v1/pages/{slug}:
+    parameters:
+      - name: slug
+        in: path
+        required: true
+        schema:
+          type: string
+          enum: [about, privacy, terms]
+    get:
+      operationId: showPage
+      summary: The HTML of a static page
+      description: >-
+        In the user's locale, or the language negotiated from Accept-Language, falling back to English.
+      responses:
+        "200":
+          description: The page
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: false
+                required: [content]
+                properties:
+                  content:
+                    description: HTML written by the maintainers
+                    type: string
+        "404":
+          description: The slug is not one of the above
   /api/v1/uploads:
     post:
       operationId: createUpload
@@ -716,6 +802,67 @@ paths:
           description: Guest, or not the own profile
         "429":
           description: The user holds 10 keys that are unexpired and not applied
+  /auth/register:
+    post:
+      operationId: register
+      summary: Registers the pending OAuth identity as a new user and logs in
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              required: [name, terms]
+              properties:
+                name:
+                  description: >-
+                    Lowercased, then at most 15 characters of ASCII letters, digits, - and _, starting and
+                    ending with a letter or digit; guest, compilatron, api and admin are reserved
+                  type: string
+                timezone:
+                  description: IANA identifier; empty, null, absent or unknown is stored as UTC
+                  type: [string, "null"]
+                terms:
+                  description: Acceptance of the terms of service; must be true
+                  type: boolean
+      responses:
+        "200":
+          description: Registered; the session is reset and holds the new user
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: false
+                required: [redirect_to]
+                properties:
+                  redirect_to:
+                    type: string
+        "400":
+          description: >-
+            The body is not valid JSON or does not match the schema: name is missing or not a string,
+            terms is missing or not a JSON boolean (the string "1" is rejected too), or timezone is
+            neither a string nor null
+        "403":
+          description: No registration is pending
+        "422":
+          description: The terms were not accepted, or the name was rejected
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: false
+                required: [error]
+                properties:
+                  error:
+                    type: string
+                    enum:
+                      - error-terms-required
+                      - error-username-empty
+                      - error-username-too-long
+                      - error-username-invalid-chars
+                      - error-username-reserved
+                      - error-username-taken
 components:
   parameters:
     MapUlid:

@@ -18,6 +18,11 @@ import type {
   DeleteUserData,
   DeleteUserErrors,
   DeleteUserResponses,
+  GetCurrentAuthData,
+  GetCurrentAuthResponses,
+  GetPendingRegistrationData,
+  GetPendingRegistrationErrors,
+  GetPendingRegistrationResponses,
   IssuePresignedPostsData,
   IssuePresignedPostsErrors,
   IssuePresignedPostsResponses,
@@ -32,11 +37,17 @@ import type {
   LookupMapData,
   LookupMapErrors,
   LookupMapResponses,
+  RegisterData,
+  RegisterErrors,
+  RegisterResponses,
   RequestMapDeletionData,
   RequestMapDeletionErrors,
   ShowMapData,
   ShowMapErrors,
   ShowMapResponses,
+  ShowPageData,
+  ShowPageErrors,
+  ShowPageResponses,
   ShowPreferencesData,
   ShowPreferencesErrors,
   ShowPreferencesResponses,
@@ -80,6 +91,30 @@ export type Options<
    */
   meta?: keyof ClientMeta extends never ? Record<string, unknown> : ClientMeta;
 };
+
+/**
+ * The current user and preferences, for the SPA on load
+ *
+ * A guest gets user null and empty preferences. A session whose user no longer exists is cleared of the user and answered as a guest.
+ */
+export const getCurrentAuth = <ThrowOnError extends boolean = false>(
+  options?: Options<GetCurrentAuthData, ThrowOnError>
+): RequestResult<GetCurrentAuthResponses, unknown, ThrowOnError> =>
+  (options?.client ?? client).get<GetCurrentAuthResponses, unknown, ThrowOnError>({
+    url: "/api/v1/auth/current",
+    ...options,
+  });
+
+/**
+ * The OAuth identity waiting to be registered, for the registration form
+ */
+export const getPendingRegistration = <ThrowOnError extends boolean = false>(
+  options?: Options<GetPendingRegistrationData, ThrowOnError>
+): RequestResult<GetPendingRegistrationResponses, GetPendingRegistrationErrors, ThrowOnError> =>
+  (options?.client ?? client).get<GetPendingRegistrationResponses, GetPendingRegistrationErrors, ThrowOnError>({
+    url: "/api/v1/auth/registration",
+    ...options,
+  });
 
 /**
  * Maps with at least one complete generation, most recently completed upload first
@@ -134,6 +169,19 @@ export const requestMapDeletion = <ThrowOnError extends boolean = false>(
 ): RequestResult<unknown, RequestMapDeletionErrors, ThrowOnError> =>
   (options.client ?? client).post<unknown, RequestMapDeletionErrors, ThrowOnError>({
     url: "/api/v1/maps/{ulid}/deletion_requests",
+    ...options,
+  });
+
+/**
+ * The HTML of a static page
+ *
+ * In the user's locale, or the language negotiated from Accept-Language, falling back to English.
+ */
+export const showPage = <ThrowOnError extends boolean = false>(
+  options: Options<ShowPageData, ThrowOnError>
+): RequestResult<ShowPageResponses, ShowPageErrors, ThrowOnError> =>
+  (options.client ?? client).get<ShowPageResponses, ShowPageErrors, ThrowOnError>({
+    url: "/api/v1/pages/{slug}",
     ...options,
   });
 
@@ -335,6 +383,21 @@ export const createAvatarPresignedPost = <ThrowOnError extends boolean = false>(
 ): RequestResult<CreateAvatarPresignedPostResponses, CreateAvatarPresignedPostErrors, ThrowOnError> =>
   (options.client ?? client).post<CreateAvatarPresignedPostResponses, CreateAvatarPresignedPostErrors, ThrowOnError>({
     url: "/api/v1/users/{user_name}/profile/avatar_presigned_post",
+    ...options,
+    headers: {
+      "Content-Type": "application/json",
+      ...options.headers,
+    },
+  });
+
+/**
+ * Registers the pending OAuth identity as a new user and logs in
+ */
+export const register = <ThrowOnError extends boolean = false>(
+  options: Options<RegisterData, ThrowOnError>
+): RequestResult<RegisterResponses, RegisterErrors, ThrowOnError> =>
+  (options.client ?? client).post<RegisterResponses, RegisterErrors, ThrowOnError>({
+    url: "/auth/register",
     ...options,
     headers: {
       "Content-Type": "application/json",

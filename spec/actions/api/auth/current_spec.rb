@@ -14,6 +14,7 @@ RSpec.describe PastaAtlas::Actions::API::Auth::Current do
       response = action.call({})
 
       expect(response.status).to eq(200)
+      expect(response).to conform_to_openapi("GET /api/v1/auth/current")
       body = JSON.parse(response.body.join)
       expect(body["user"]).to be_nil
       expect(body["preferences"]).to include(
@@ -41,6 +42,7 @@ RSpec.describe PastaAtlas::Actions::API::Auth::Current do
       response = action.call(env)
 
       expect(response.status).to eq(200)
+      expect(response).to conform_to_openapi("GET /api/v1/auth/current")
       body = JSON.parse(response.body.join)
       expect(body["user"]).to include(
         "name" => "wube",
@@ -98,9 +100,28 @@ RSpec.describe PastaAtlas::Actions::API::Auth::Current do
       response = action.call(env)
 
       expect(response.status).to eq(200)
+      expect(response).to conform_to_openapi("GET /api/v1/auth/current")
       body = JSON.parse(response.body.join)
       expect(body["user"]).to be_nil
       expect(body["preferences"]).to include("locale" => nil, "timezone" => nil)
+    end
+  end
+
+  context "when the user is deleted between the lookup and loading the profile" do
+    let(:env) { {"rack.session" => {"user_id" => 42}} }
+
+    before do
+      allow(find_user).to receive(:call).with(user_id: 42).and_return(Success(double("User", name: "wube")))
+      allow(load_profile).to receive(:call).with(user_id: 42).and_raise(ROM::TupleCountMismatchError)
+    end
+
+    it "drops the user id and answers as a guest" do
+      response = action.call(env)
+
+      expect(response.status).to eq(200)
+      expect(response).to conform_to_openapi("GET /api/v1/auth/current")
+      expect(JSON.parse(response.body.join)["user"]).to be_nil
+      expect(env["rack.session"]).not_to have_key("user_id")
     end
   end
 end

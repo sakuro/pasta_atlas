@@ -58,16 +58,6 @@ RSpec.describe OpenAPIDocument do
   describe "the document of the repository" do
     let(:document) { OpenAPIDocument.default }
 
-    # Operations not moved from doc/architecture/api.md yet. Remove an entry when it is added to openapi.yaml.
-    let(:pending_operations) do
-      [
-        "GET /api/v1/auth/current",
-        "GET /api/v1/auth/registration",
-        "GET /api/v1/pages/{slug}",
-        "POST /auth/register"
-      ]
-    end
-
     # Built from the route definitions, because Hanami.app.router is memoized without an inspector.
     # POST /auth/register is the only JSON route outside /api; the other /auth routes redirect.
     let(:json_operations) do
@@ -85,12 +75,8 @@ RSpec.describe OpenAPIDocument do
       expect(document.document_errors).to eq([])
     end
 
-    it "documents every JSON route that is not pending" do
-      expect(document.operations).to match_array(json_operations - pending_operations)
-    end
-
-    it "lists only existing routes as pending" do
-      expect(pending_operations - json_operations).to eq([])
+    it "documents every JSON route" do
+      expect(document.operations).to match_array(json_operations)
     end
   end
 end

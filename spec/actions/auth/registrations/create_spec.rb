@@ -4,7 +4,7 @@ RSpec.describe PastaAtlas::Actions::Auth::Registrations::Create do
   let(:create_registration) { instance_double(PastaAtlas::Operations::Registrations::Create) }
   let(:action) { PastaAtlas::Actions::Auth::Registrations::Create.new(create_registration:) }
 
-  let(:pending_auth) { {"provider" => "github", "uid" => "12345", "avatar_url" => ""} }
+  let(:pending_auth) { {"provider" => "github", "uid" => "12345", "login" => "alice", "avatar_url" => ""} }
   let(:base_env) { {"rack.session" => {"pending_auth" => pending_auth}, :name => "alice", :terms => true} }
 
   context "when pending_auth is missing from session" do
@@ -14,6 +14,7 @@ RSpec.describe PastaAtlas::Actions::Auth::Registrations::Create do
       response = action.call(env)
 
       expect(response.status).to eq(403)
+      expect(response).to conform_to_openapi("POST /auth/register")
     end
   end
 
@@ -24,6 +25,7 @@ RSpec.describe PastaAtlas::Actions::Auth::Registrations::Create do
       response = action.call(env)
 
       expect(response.status).to eq(422)
+      expect(response).to conform_to_openapi("POST /auth/register")
       body = JSON.parse(response.body.join)
       expect(body["error"]).to eq("error-terms-required")
     end
@@ -38,6 +40,7 @@ RSpec.describe PastaAtlas::Actions::Auth::Registrations::Create do
       response = action.call(env)
 
       expect(response.status).to eq(400)
+      expect(response).to conform_to_openapi("POST /auth/register")
       expect(create_registration).not_to have_received(:call)
     end
   end
@@ -51,6 +54,7 @@ RSpec.describe PastaAtlas::Actions::Auth::Registrations::Create do
       response = action.call(env)
 
       expect(response.status).to eq(400)
+      expect(response).to conform_to_openapi("POST /auth/register")
       expect(create_registration).not_to have_received(:call)
     end
   end
@@ -64,6 +68,7 @@ RSpec.describe PastaAtlas::Actions::Auth::Registrations::Create do
       response = action.call(env)
 
       expect(response.status).to eq(400)
+      expect(response).to conform_to_openapi("POST /auth/register")
       expect(create_registration).not_to have_received(:call)
     end
   end
@@ -81,6 +86,7 @@ RSpec.describe PastaAtlas::Actions::Auth::Registrations::Create do
       response = action.call(env)
 
       expect(response.status).to eq(422)
+      expect(response).to conform_to_openapi("POST /auth/register")
       body = JSON.parse(response.body.join)
       expect(body["error"]).to eq("error-username-empty")
     end
@@ -95,6 +101,7 @@ RSpec.describe PastaAtlas::Actions::Auth::Registrations::Create do
       response = action.call(base_env)
 
       expect(response.status).to eq(422)
+      expect(response).to conform_to_openapi("POST /auth/register")
       body = JSON.parse(response.body.join)
       expect(body["error"]).to eq("error-username-taken")
     end
@@ -111,6 +118,7 @@ RSpec.describe PastaAtlas::Actions::Auth::Registrations::Create do
       response = action.call(base_env)
 
       expect(response.status).to eq(200)
+      expect(response).to conform_to_openapi("POST /auth/register")
       body = JSON.parse(response.body.join)
       expect(body["redirect_to"]).to eq("/")
     end

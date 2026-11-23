@@ -11,6 +11,7 @@ RSpec.describe PastaAtlas::Actions::API::Pages::Show do
       response = action.call({slug: "unknown"})
 
       expect(response.status).to eq(404)
+      expect(response).to conform_to_openapi("GET /api/v1/pages/{slug}")
     end
   end
 
@@ -19,6 +20,7 @@ RSpec.describe PastaAtlas::Actions::API::Pages::Show do
       response = action.call({slug: "about"})
 
       expect(response.status).to eq(200)
+      expect(response).to conform_to_openapi("GET /api/v1/pages/{slug}")
       body = JSON.parse(response.body.join)
       expect(body["content"]).to include("<section")
       expect(body["content"]).to include("data-l10n-id")
@@ -31,6 +33,7 @@ RSpec.describe PastaAtlas::Actions::API::Pages::Show do
         response = action.call({slug: "about"})
 
         expect(response.status).to eq(200)
+        expect(response).to conform_to_openapi("GET /api/v1/pages/{slug}")
         body = JSON.parse(response.body.join)
         expect(body["content"]).to include("について")
       end
