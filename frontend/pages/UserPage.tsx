@@ -10,14 +10,9 @@ import { UserCredentialsTab } from "./user/UserCredentialsTab";
 import { UserDangerTab } from "./user/UserDangerTab";
 import { useAuth } from "../contexts/AuthContext";
 import { useToast } from "../contexts/ToastContext";
+import { showUser, type UserInfo } from "../lib/api/client";
 
-type UserData = {
-  name: string;
-  display_name: string;
-  avatar_url: string | null;
-};
-
-type UserFetchResult = { status: "ok"; user: UserData } | { status: "not_found" } | { status: "forbidden" };
+type UserFetchResult = { status: "ok"; user: UserInfo } | { status: "not_found" } | { status: "forbidden" };
 
 type TabDef = {
   id: string;
@@ -47,12 +42,11 @@ export const UserPage = () => {
 
   // Writable so a profile save can patch the displayed user without refetching.
   const [userData, setUserData] = createSignal(async (): Promise<UserFetchResult> => {
-    const res = await fetch(`/api/v1/users/${userName()}`);
-    if (res.status === 404) return { status: "not_found" };
-    if (res.status === 403) return { status: "forbidden" };
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    const json = (await res.json()) as { user: UserData };
-    return { status: "ok", user: json.user };
+    const { data, error, response } = await showUser({ path: { user_name: userName() } });
+    if (response?.status === 404) return { status: "not_found" };
+    if (response?.status === 403) return { status: "forbidden" };
+    if (!data) throw new Error(`HTTP ${response?.status}`, { cause: error });
+    return { status: "ok", user: data.user };
   });
 
   const user = () => {

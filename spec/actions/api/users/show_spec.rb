@@ -15,9 +15,10 @@ RSpec.describe PastaAtlas::Actions::API::Users::Show do
     before { allow(find_by_name).to receive(:call).with(user_name: "wube").and_return(Success(user)) }
 
     it "returns 200 with user data" do
-      response = action.call({name: "wube"})
+      response = action.call({user_name: "wube"})
 
       expect(response.status).to eq(200)
+      expect(response).to conform_to_openapi("GET /api/v1/users/{user_name}")
       body = JSON.parse(response.body.join, symbolize_names: true)
       expect(body[:user][:name]).to eq("wube")
       expect(body[:user][:display_name]).to eq("Wube")
@@ -31,9 +32,10 @@ RSpec.describe PastaAtlas::Actions::API::Users::Show do
     before { allow(find_by_name).to receive(:call).with(user_name: "guest").and_return(Success(guest)) }
 
     it "returns 403" do
-      response = action.call({name: "guest"})
+      response = action.call({user_name: "guest"})
 
       expect(response.status).to eq(403)
+      expect(response).to conform_to_openapi("GET /api/v1/users/{user_name}")
     end
   end
 
@@ -41,9 +43,10 @@ RSpec.describe PastaAtlas::Actions::API::Users::Show do
     before { allow(find_by_name).to receive(:call).with(user_name: "nobody").and_return(Failure(:not_found)) }
 
     it "returns 404" do
-      response = action.call({name: "nobody"})
+      response = action.call({user_name: "nobody"})
 
       expect(response.status).to eq(404)
+      expect(response).to conform_to_openapi("GET /api/v1/users/{user_name}")
     end
   end
 end

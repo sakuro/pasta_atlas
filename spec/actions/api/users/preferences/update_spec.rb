@@ -10,7 +10,7 @@ RSpec.describe PastaAtlas::Actions::API::Users::Preferences::Update do
   let(:user) { double("User", id: 1, name: "wube") }
 
   context "when not logged in" do
-    let(:env) { {"rack.session" => {}, :user_name => "wube"} }
+    let(:env) { {"rack.session" => {}, :user_name => "wube", :relative_timestamps => false} }
 
     before do
       allow(user_resolver).to receive(:call).with(nil).and_return(guest)
@@ -23,12 +23,13 @@ RSpec.describe PastaAtlas::Actions::API::Users::Preferences::Update do
       response = action.call(env)
 
       expect(response.status).to eq(403)
+      expect(response).to conform_to_openapi("PATCH /api/v1/users/{user_name}/preferences")
     end
   end
 
   context "when logged in as a different user" do
     let(:other_user) { double("User", id: 1, name: "bob") }
-    let(:env) { {"rack.session" => {"user_id" => 1}, :user_name => "wube"} }
+    let(:env) { {"rack.session" => {"user_id" => 1}, :user_name => "wube", :relative_timestamps => false} }
 
     before do
       allow(user_resolver).to receive(:call).with(1).and_return(other_user)
@@ -41,11 +42,14 @@ RSpec.describe PastaAtlas::Actions::API::Users::Preferences::Update do
       response = action.call(env)
 
       expect(response.status).to eq(403)
+      expect(response).to conform_to_openapi("PATCH /api/v1/users/{user_name}/preferences")
     end
   end
 
   context "when logged in" do
-    let(:env) { {"rack.session" => {"user_id" => 1}, :user_name => "wube", :timezone => "Asia/Tokyo", :locale => "ja"} }
+    let(:env) do
+      {"rack.session" => {"user_id" => 1}, :user_name => "wube", :timezone => "Asia/Tokyo", :locale => "ja", :relative_timestamps => true}
+    end
 
     before do
       allow(user_resolver).to receive(:call).with(1).and_return(user)
@@ -53,7 +57,7 @@ RSpec.describe PastaAtlas::Actions::API::Users::Preferences::Update do
         .with(current_user: user, user_name: "wube")
         .and_return(Success(user))
       allow(update_preferences).to receive(:call)
-        .with(hash_including(user:))
+        .with(user:, timezone: "Asia/Tokyo", locale: "ja", relative_timestamps: true)
         .and_return(Success({user:, locale: "ja"}))
     end
 
@@ -61,8 +65,30 @@ RSpec.describe PastaAtlas::Actions::API::Users::Preferences::Update do
       response = action.call(env)
 
       expect(response.status).to eq(200)
+      expect(response).to conform_to_openapi("PATCH /api/v1/users/{user_name}/preferences")
       body = JSON.parse(response.body.join)
       expect(body["locale"]).to eq("ja")
+    end
+
+    it "returns 400 when relative_timestamps is missing" do
+      response = action.call(env.except(:relative_timestamps))
+
+      expect(response.status).to eq(400)
+      expect(response).to conform_to_openapi("PATCH /api/v1/users/{user_name}/preferences")
+    end
+
+    it "returns 400 when relative_timestamps is not a boolean" do
+      response = action.call(env.merge(relative_timestamps: "true"))
+
+      expect(response.status).to eq(400)
+      expect(response).to conform_to_openapi("PATCH /api/v1/users/{user_name}/preferences")
+    end
+
+    it "returns 400 when timezone is neither a string nor null" do
+      response = action.call(env.merge(timezone: 9))
+
+      expect(response.status).to eq(400)
+      expect(response).to conform_to_openapi("PATCH /api/v1/users/{user_name}/preferences")
     end
   end
 end

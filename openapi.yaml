@@ -144,13 +144,131 @@ paths:
           description: Guest, or not the own map
         "404":
           description: The map does not exist
-  /api/v1/users/{user_name}/maps:
+  /api/v1/users/{user_name}:
     parameters:
-      - name: user_name
+      - $ref: "#/components/parameters/UserName"
+    get:
+      operationId: showUser
+      summary: Public information of a user
+      responses:
+        "200":
+          description: The user
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: false
+                required: [user]
+                properties:
+                  user:
+                    $ref: "#/components/schemas/UserInfo"
+        "403":
+          description: The user is a system account (guest or compilatron)
+        "404":
+          description: The user does not exist
+    delete:
+      operationId: deleteUser
+      summary: Deletes the own account, queues the S3 prefixes of its maps and avatar for cleanup and clears the session
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              required: [confirm_user_name]
+              properties:
+                confirm_user_name:
+                  description: Must equal user_name
+                  type: string
+      responses:
+        "200":
+          description: Deleted
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: false
+                required: [redirect_to]
+                properties:
+                  redirect_to:
+                    type: string
+        "400":
+          description: The body is not valid JSON, or confirm_user_name does not match user_name
+        "403":
+          description: Guest, or not the own account
+        "502":
+          description: A cleanup message could not be queued; the account is kept and the request can be repeated
+  /api/v1/users/{user_name}/avatar:
+    parameters:
+      - $ref: "#/components/parameters/UserName"
+    delete:
+      operationId: deleteAvatar
+      summary: Removes the own avatar and queues its object for cleanup
+      responses:
+        "204":
+          description: Removed (also when there was no avatar)
+        "403":
+          description: Guest, or not the own profile
+  /api/v1/users/{user_name}/credentials:
+    parameters:
+      - $ref: "#/components/parameters/UserName"
+    get:
+      operationId: listCredentials
+      summary: The OAuth providers and those linked to the own account
+      responses:
+        "200":
+          description: The providers
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: false
+                required: [providers, connected_providers]
+                properties:
+                  providers:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Provider"
+                  connected_providers:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Provider"
+        "403":
+          description: Guest, or not the own account
+  /api/v1/users/{user_name}/credentials/{provider}:
+    parameters:
+      - $ref: "#/components/parameters/UserName"
+      - name: provider
         in: path
         required: true
         schema:
-          type: string
+          $ref: "#/components/schemas/Provider"
+    delete:
+      operationId: unlinkCredential
+      summary: Unlinks an OAuth provider from the own account
+      responses:
+        "204":
+          description: Unlinked
+        "403":
+          description: Guest, or not the own account
+        "404":
+          description: The provider is not supported
+        "422":
+          description: It is the last credential of the account
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: false
+                required: [error]
+                properties:
+                  error:
+                    type: string
+                    enum: [error-credential-last]
+  /api/v1/users/{user_name}/maps:
+    parameters:
+      - $ref: "#/components/parameters/UserName"
     get:
       operationId: listRecentMapsOfUser
       summary: Up to 3 maps of the user that have a complete generation, most recently completed upload first
@@ -171,6 +289,203 @@ paths:
                       $ref: "#/components/schemas/MapSummary"
         "404":
           description: The user does not exist or is a system account (guest or compilatron)
+  /api/v1/users/{user_name}/preferences:
+    parameters:
+      - $ref: "#/components/parameters/UserName"
+    get:
+      operationId: showPreferences
+      summary: The own preferences
+      responses:
+        "200":
+          description: The preferences
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: false
+                required: [timezone, timezone_identifiers, locale, relative_timestamps]
+                properties:
+                  timezone:
+                    description: IANA identifier; null to use the browser's
+                    type: [string, "null"]
+                  timezone_identifiers:
+                    description: Every IANA identifier the server accepts
+                    type: array
+                    items:
+                      type: string
+                  locale:
+                    description: BCP 47 tag; null to use the browser's
+                    type: [string, "null"]
+                  relative_timestamps:
+                    type: boolean
+        "403":
+          description: Guest, or not the own account
+    patch:
+      operationId: updatePreferences
+      summary: Updates the own preferences
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              required: [relative_timestamps]
+              properties:
+                timezone:
+                  description: IANA identifier; empty, null or unknown is stored as null
+                  type: [string, "null"]
+                locale:
+                  description: Supported BCP 47 tag; empty, null or unsupported is stored as null
+                  type: [string, "null"]
+                relative_timestamps:
+                  type: boolean
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: false
+                required: [locale]
+                properties:
+                  locale:
+                    description: The stored locale
+                    type: [string, "null"]
+        "400":
+          description: >-
+            The body is not valid JSON or does not match the schema: relative_timestamps is missing or not
+            a JSON boolean (the string "true" is rejected too), or timezone or locale is neither a string
+            nor null
+        "403":
+          description: Guest, or not the own account
+  /api/v1/users/{user_name}/profile:
+    parameters:
+      - $ref: "#/components/parameters/UserName"
+    get:
+      operationId: showProfile
+      summary: The own profile as stored, for the edit form
+      responses:
+        "200":
+          description: The profile
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: false
+                required: [user_name, display_name, avatar_url]
+                properties:
+                  user_name:
+                    type: string
+                  display_name:
+                    description: null if not set (other endpoints fall back to user_name)
+                    type: [string, "null"]
+                  avatar_url:
+                    type: [string, "null"]
+        "403":
+          description: Guest, or not the own profile
+    patch:
+      operationId: updateProfile
+      summary: Updates the own display name and, optionally, the avatar
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              required: [display_name]
+              properties:
+                display_name:
+                  description: >-
+                    At most 30 grapheme clusters; no control characters, no whitespace other than a plain
+                    space and no format characters other than ZWJ and variation selectors (the same rule as
+                    map names). Empty clears it.
+                  type: string
+                avatar_s3_key:
+                  description: >-
+                    A key from createAvatarPresignedPost that is unexpired and not applied yet, whose object
+                    is an image of the issued type within 5 MiB. It is checked before anything is written.
+                    The previous avatar object is queued for cleanup. Empty or absent keeps the avatar.
+                  type: string
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: false
+                required: [display_name, avatar_url]
+                properties:
+                  display_name:
+                    description: The display name, or user_name if it is not set
+                    type: string
+                  avatar_url:
+                    type: [string, "null"]
+        "400":
+          description: The body is not valid JSON (the fields are not validated otherwise)
+        "403":
+          description: Guest, or not the own profile
+        "422":
+          description: The display name or the avatar was rejected; nothing is changed
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: false
+                required: [error]
+                properties:
+                  error:
+                    type: string
+                    enum:
+                      - error-profile-display-name-too-long
+                      - error-profile-display-name-invalid-chars
+                      - error-profile-avatar-invalid
+        "502":
+          description: S3 could not be reached to check the avatar object
+  /api/v1/users/{user_name}/profile/avatar_presigned_post:
+    parameters:
+      - $ref: "#/components/parameters/UserName"
+    post:
+      operationId: createAvatarPresignedPost
+      summary: Issues a presigned S3 POST for an avatar image (own profile only)
+      description: >-
+        The policy fixes the content type and limits the object to 5 MiB. The key is recorded for the
+        user and valid for PRESIGNED_URL_EXPIRY seconds; it can be applied once, with updateProfile.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              required: [content_type]
+              properties:
+                content_type:
+                  type: string
+                  enum: [image/jpeg, image/png, image/webp]
+      responses:
+        "200":
+          description: The presigned POST
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: false
+                required: [presigned_post, s3_key]
+                properties:
+                  presigned_post:
+                    $ref: "#/components/schemas/PresignedPost"
+                  s3_key:
+                    type: string
+        "400":
+          description: The body is not valid JSON, or the content type is missing or not supported
+        "403":
+          description: Guest, or not the own profile
+        "429":
+          description: The user holds 10 keys that are unexpired and not applied
 components:
   parameters:
     MapUlid:
@@ -179,7 +494,29 @@ components:
       required: true
       schema:
         type: string
+    UserName:
+      name: user_name
+      in: path
+      required: true
+      schema:
+        type: string
   schemas:
+    Provider:
+      type: string
+      enum: [discord, github, steam]
+    PresignedPost:
+      description: >-
+        Submit the file as multipart/form-data to url, with every field first and the file part last
+      type: object
+      additionalProperties: false
+      required: [url, fields]
+      properties:
+        url:
+          type: string
+        fields:
+          type: object
+          additionalProperties:
+            type: string
     MapSummary:
       type: object
       additionalProperties: false

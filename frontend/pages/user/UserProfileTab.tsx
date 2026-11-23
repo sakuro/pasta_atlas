@@ -1,18 +1,11 @@
 import { createMemo, createSignal, Errored, Loading, Show } from "solid-js";
 import { AvatarUpload, type AvatarUploadRef } from "./AvatarUpload";
+import { errorKey, showProfile, updateProfile } from "../../lib/api/client";
 import "../../lib/l10n";
 import { SpinnerBlock } from "../../components/SpinnerBlock";
 import { ErrorNotification } from "../../components/ErrorNotification";
 
 const segmenter = new Intl.Segmenter();
-
-type ProfileData = {
-  user_name: string;
-  display_name: string | null;
-  avatar_url: string | null;
-};
-
-const csrfToken = (): string => document.querySelector<HTMLMetaElement>('meta[name="csrf-token"]')?.content ?? "";
 
 export type ProfileUpdate = { displayName: string; avatarUrl: string | null };
 
@@ -22,11 +15,11 @@ export const UserProfileTab = (props: {
   onSuccess?: (data: ProfileUpdate) => void;
   onError?: (msgKey: string) => void;
 }) => {
-  const data = createMemo(async (): Promise<ProfileData | undefined> => {
+  const data = createMemo(async () => {
     if (!props.active()) return undefined;
-    const res = await fetch(`/api/v1/users/${props.userName}/profile`);
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    return res.json() as Promise<ProfileData>;
+    const { data: profile, error, response } = await showProfile({ path: { user_name: props.userName } });
+    if (!profile) throw new Error(`HTTP ${response?.status}`, { cause: error });
+    return profile;
   });
 
   // Editable draft seeded from the fetched profile; re-seeded if the profile is refetched.
@@ -45,24 +38,18 @@ export const UserProfileTab = (props: {
       const avatarResult = avatarRef ? await avatarRef.prepareForSubmit() : null;
       if (avatarResult === false) return;
 
-      const body: Record<string, string | null> = {
-        user_name: props.userName,
-        display_name: displayName(),
-      };
-      if (typeof avatarResult === "string") body.avatar_s3_key = avatarResult;
-
-      const res = await fetch(`/api/v1/users/${props.userName}/profile`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json", "X-CSRF-Token": csrfToken() },
-        body: JSON.stringify(body),
+      const { data, error } = await updateProfile({
+        path: { user_name: props.userName },
+        body: {
+          display_name: displayName(),
+          ...(typeof avatarResult === "string" ? { avatar_s3_key: avatarResult } : {}),
+        },
       });
-      if (res.ok) {
-        const data = (await res.json()) as { display_name: string; avatar_url: string | null };
+      if (data) {
         setSavedAvatarUrl(data.avatar_url);
         props.onSuccess?.({ displayName: data.display_name, avatarUrl: data.avatar_url });
       } else {
-        const json = (await res.json()) as { error?: string };
-        props.onError?.(json.error ?? "error-unknown");
+        props.onError?.(errorKey(error) ?? "error-unknown");
       }
     } finally {
       avatarRef?.settle();

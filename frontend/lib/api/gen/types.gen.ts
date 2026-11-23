@@ -4,6 +4,18 @@ export type ClientOptions = {
   baseUrl: `${string}://${string}` | (string & {});
 };
 
+export type Provider = "discord" | "github" | "steam";
+
+/**
+ * Submit the file as multipart/form-data to url, with every field first and the file part last
+ */
+export type PresignedPost = {
+  url: string;
+  fields: {
+    [key: string]: string;
+  };
+};
+
 export type MapSummary = {
   ulid: string;
   display_name: string;
@@ -58,6 +70,8 @@ export type MapNameError = {
 };
 
 export type MapUlid = string;
+
+export type UserName = string;
 
 export type ListMapsData = {
   body?: never;
@@ -206,6 +220,168 @@ export type RequestMapDeletionErrors = {
   404: unknown;
 };
 
+export type DeleteUserData = {
+  body: {
+    /**
+     * Must equal user_name
+     */
+    confirm_user_name: string;
+  };
+  path: {
+    user_name: string;
+  };
+  query?: never;
+  url: "/api/v1/users/{user_name}";
+};
+
+export type DeleteUserErrors = {
+  /**
+   * The body is not valid JSON, or confirm_user_name does not match user_name
+   */
+  400: unknown;
+  /**
+   * Guest, or not the own account
+   */
+  403: unknown;
+  /**
+   * A cleanup message could not be queued; the account is kept and the request can be repeated
+   */
+  502: unknown;
+};
+
+export type DeleteUserResponses = {
+  /**
+   * Deleted
+   */
+  200: {
+    redirect_to: string;
+  };
+};
+
+export type DeleteUserResponse = DeleteUserResponses[keyof DeleteUserResponses];
+
+export type ShowUserData = {
+  body?: never;
+  path: {
+    user_name: string;
+  };
+  query?: never;
+  url: "/api/v1/users/{user_name}";
+};
+
+export type ShowUserErrors = {
+  /**
+   * The user is a system account (guest or compilatron)
+   */
+  403: unknown;
+  /**
+   * The user does not exist
+   */
+  404: unknown;
+};
+
+export type ShowUserResponses = {
+  /**
+   * The user
+   */
+  200: {
+    user: UserInfo;
+  };
+};
+
+export type ShowUserResponse = ShowUserResponses[keyof ShowUserResponses];
+
+export type DeleteAvatarData = {
+  body?: never;
+  path: {
+    user_name: string;
+  };
+  query?: never;
+  url: "/api/v1/users/{user_name}/avatar";
+};
+
+export type DeleteAvatarErrors = {
+  /**
+   * Guest, or not the own profile
+   */
+  403: unknown;
+};
+
+export type DeleteAvatarResponses = {
+  /**
+   * Removed (also when there was no avatar)
+   */
+  204: void;
+};
+
+export type DeleteAvatarResponse = DeleteAvatarResponses[keyof DeleteAvatarResponses];
+
+export type ListCredentialsData = {
+  body?: never;
+  path: {
+    user_name: string;
+  };
+  query?: never;
+  url: "/api/v1/users/{user_name}/credentials";
+};
+
+export type ListCredentialsErrors = {
+  /**
+   * Guest, or not the own account
+   */
+  403: unknown;
+};
+
+export type ListCredentialsResponses = {
+  /**
+   * The providers
+   */
+  200: {
+    providers: Array<Provider>;
+    connected_providers: Array<Provider>;
+  };
+};
+
+export type ListCredentialsResponse = ListCredentialsResponses[keyof ListCredentialsResponses];
+
+export type UnlinkCredentialData = {
+  body?: never;
+  path: {
+    user_name: string;
+    provider: Provider;
+  };
+  query?: never;
+  url: "/api/v1/users/{user_name}/credentials/{provider}";
+};
+
+export type UnlinkCredentialErrors = {
+  /**
+   * Guest, or not the own account
+   */
+  403: unknown;
+  /**
+   * The provider is not supported
+   */
+  404: unknown;
+  /**
+   * It is the last credential of the account
+   */
+  422: {
+    error: "error-credential-last";
+  };
+};
+
+export type UnlinkCredentialError = UnlinkCredentialErrors[keyof UnlinkCredentialErrors];
+
+export type UnlinkCredentialResponses = {
+  /**
+   * Unlinked
+   */
+  204: void;
+};
+
+export type UnlinkCredentialResponse = UnlinkCredentialResponses[keyof UnlinkCredentialResponses];
+
 export type ListRecentMapsOfUserData = {
   body?: never;
   path: {
@@ -232,3 +408,216 @@ export type ListRecentMapsOfUserResponses = {
 };
 
 export type ListRecentMapsOfUserResponse = ListRecentMapsOfUserResponses[keyof ListRecentMapsOfUserResponses];
+
+export type ShowPreferencesData = {
+  body?: never;
+  path: {
+    user_name: string;
+  };
+  query?: never;
+  url: "/api/v1/users/{user_name}/preferences";
+};
+
+export type ShowPreferencesErrors = {
+  /**
+   * Guest, or not the own account
+   */
+  403: unknown;
+};
+
+export type ShowPreferencesResponses = {
+  /**
+   * The preferences
+   */
+  200: {
+    /**
+     * IANA identifier; null to use the browser's
+     */
+    timezone: string | null;
+    /**
+     * Every IANA identifier the server accepts
+     */
+    timezone_identifiers: Array<string>;
+    /**
+     * BCP 47 tag; null to use the browser's
+     */
+    locale: string | null;
+    relative_timestamps: boolean;
+  };
+};
+
+export type ShowPreferencesResponse = ShowPreferencesResponses[keyof ShowPreferencesResponses];
+
+export type UpdatePreferencesData = {
+  body: {
+    /**
+     * IANA identifier; empty, null or unknown is stored as null
+     */
+    timezone?: string | null;
+    /**
+     * Supported BCP 47 tag; empty, null or unsupported is stored as null
+     */
+    locale?: string | null;
+    relative_timestamps: boolean;
+  };
+  path: {
+    user_name: string;
+  };
+  query?: never;
+  url: "/api/v1/users/{user_name}/preferences";
+};
+
+export type UpdatePreferencesErrors = {
+  /**
+   * The body is not valid JSON or does not match the schema: relative_timestamps is missing or not a JSON boolean (the string "true" is rejected too), or timezone or locale is neither a string nor null
+   */
+  400: unknown;
+  /**
+   * Guest, or not the own account
+   */
+  403: unknown;
+};
+
+export type UpdatePreferencesResponses = {
+  /**
+   * Updated
+   */
+  200: {
+    /**
+     * The stored locale
+     */
+    locale: string | null;
+  };
+};
+
+export type UpdatePreferencesResponse = UpdatePreferencesResponses[keyof UpdatePreferencesResponses];
+
+export type ShowProfileData = {
+  body?: never;
+  path: {
+    user_name: string;
+  };
+  query?: never;
+  url: "/api/v1/users/{user_name}/profile";
+};
+
+export type ShowProfileErrors = {
+  /**
+   * Guest, or not the own profile
+   */
+  403: unknown;
+};
+
+export type ShowProfileResponses = {
+  /**
+   * The profile
+   */
+  200: {
+    user_name: string;
+    /**
+     * null if not set (other endpoints fall back to user_name)
+     */
+    display_name: string | null;
+    avatar_url: string | null;
+  };
+};
+
+export type ShowProfileResponse = ShowProfileResponses[keyof ShowProfileResponses];
+
+export type UpdateProfileData = {
+  body: {
+    /**
+     * At most 30 grapheme clusters; no control characters, no whitespace other than a plain space and no format characters other than ZWJ and variation selectors (the same rule as map names). Empty clears it.
+     */
+    display_name: string;
+    /**
+     * A key from createAvatarPresignedPost that is unexpired and not applied yet, whose object is an image of the issued type within 5 MiB. It is checked before anything is written. The previous avatar object is queued for cleanup. Empty or absent keeps the avatar.
+     */
+    avatar_s3_key?: string;
+  };
+  path: {
+    user_name: string;
+  };
+  query?: never;
+  url: "/api/v1/users/{user_name}/profile";
+};
+
+export type UpdateProfileErrors = {
+  /**
+   * The body is not valid JSON (the fields are not validated otherwise)
+   */
+  400: unknown;
+  /**
+   * Guest, or not the own profile
+   */
+  403: unknown;
+  /**
+   * The display name or the avatar was rejected; nothing is changed
+   */
+  422: {
+    error:
+      | "error-profile-display-name-too-long"
+      | "error-profile-display-name-invalid-chars"
+      | "error-profile-avatar-invalid";
+  };
+  /**
+   * S3 could not be reached to check the avatar object
+   */
+  502: unknown;
+};
+
+export type UpdateProfileError = UpdateProfileErrors[keyof UpdateProfileErrors];
+
+export type UpdateProfileResponses = {
+  /**
+   * Updated
+   */
+  200: {
+    /**
+     * The display name, or user_name if it is not set
+     */
+    display_name: string;
+    avatar_url: string | null;
+  };
+};
+
+export type UpdateProfileResponse = UpdateProfileResponses[keyof UpdateProfileResponses];
+
+export type CreateAvatarPresignedPostData = {
+  body: {
+    content_type: "image/jpeg" | "image/png" | "image/webp";
+  };
+  path: {
+    user_name: string;
+  };
+  query?: never;
+  url: "/api/v1/users/{user_name}/profile/avatar_presigned_post";
+};
+
+export type CreateAvatarPresignedPostErrors = {
+  /**
+   * The body is not valid JSON, or the content type is missing or not supported
+   */
+  400: unknown;
+  /**
+   * Guest, or not the own profile
+   */
+  403: unknown;
+  /**
+   * The user holds 10 keys that are unexpired and not applied
+   */
+  429: unknown;
+};
+
+export type CreateAvatarPresignedPostResponses = {
+  /**
+   * The presigned POST
+   */
+  200: {
+    presigned_post: PresignedPost;
+    s3_key: string;
+  };
+};
+
+export type CreateAvatarPresignedPostResponse =
+  CreateAvatarPresignedPostResponses[keyof CreateAvatarPresignedPostResponses];

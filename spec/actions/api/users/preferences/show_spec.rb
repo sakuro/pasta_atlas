@@ -24,6 +24,7 @@ RSpec.describe PastaAtlas::Actions::API::Users::Preferences::Show do
       response = action.call(env)
 
       expect(response.status).to eq(403)
+      expect(response).to conform_to_openapi("GET /api/v1/users/{user_name}/preferences")
     end
   end
 
@@ -42,6 +43,7 @@ RSpec.describe PastaAtlas::Actions::API::Users::Preferences::Show do
       response = action.call(env)
 
       expect(response.status).to eq(403)
+      expect(response).to conform_to_openapi("GET /api/v1/users/{user_name}/preferences")
     end
   end
 
@@ -62,6 +64,7 @@ RSpec.describe PastaAtlas::Actions::API::Users::Preferences::Show do
       response = action.call(env)
 
       expect(response.status).to eq(200)
+      expect(response).to conform_to_openapi("GET /api/v1/users/{user_name}/preferences")
       body = JSON.parse(response.body.join)
       expect(body).to include(
         "timezone" => "Asia/Tokyo",

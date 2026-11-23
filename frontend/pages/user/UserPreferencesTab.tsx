@@ -1,17 +1,9 @@
 import { createMemo, createSignal, Errored, For, Loading, onSettled, Show } from "solid-js";
 import { l10n, SUPPORTED_LOCALES } from "../../lib/l10n";
 import { applyPreferences, lang } from "../../lib/display-settings";
+import { showPreferences, updatePreferences } from "../../lib/api/client";
 import { SpinnerBlock } from "../../components/SpinnerBlock";
 import { ErrorNotification } from "../../components/ErrorNotification";
-
-type PreferencesData = {
-  timezone: string | null;
-  timezone_identifiers: string[];
-  locale: string | null;
-  relative_timestamps: boolean;
-};
-
-const csrfToken = (): string => document.querySelector<HTMLMetaElement>('meta[name="csrf-token"]')?.content ?? "";
 
 const browserTimezone = (): string => Intl.DateTimeFormat().resolvedOptions().timeZone;
 
@@ -49,11 +41,11 @@ export const UserPreferencesTab = (props: {
   onSuccess?: () => void;
   onError?: (msgKey: string) => void;
 }) => {
-  const data = createMemo(async (): Promise<PreferencesData | undefined> => {
+  const data = createMemo(async () => {
     if (!props.active()) return undefined;
-    const res = await fetch(`/api/v1/users/${props.userName}/preferences`);
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    return res.json() as Promise<PreferencesData>;
+    const { data: preferences, error, response } = await showPreferences({ path: { user_name: props.userName } });
+    if (!preferences) throw new Error(`HTTP ${response?.status}`, { cause: error });
+    return preferences;
   });
 
   // Form drafts seeded from the fetched preferences; re-seeded if they are refetched.
@@ -95,20 +87,13 @@ export const UserPreferencesTab = (props: {
     const formData = new FormData(form);
     const relTs = relativeTimestamps();
     try {
-      const res = await fetch(`/api/v1/users/${props.userName}/preferences`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json", "X-CSRF-Token": csrfToken() },
-        body: JSON.stringify({
-          user_name: props.userName,
-          timezone: (formData.get("timezone") as string) || null,
-          locale: (formData.get("locale") as string) || null,
-          relative_timestamps: String(relTs),
-        }),
+      const timezone = (formData.get("timezone") as string) || null;
+      const { data } = await updatePreferences({
+        path: { user_name: props.userName },
+        body: { timezone, locale: (formData.get("locale") as string) || null, relative_timestamps: relTs },
       });
-      if (res.ok) {
-        const json = (await res.json()) as { locale: string | null };
-        const tz = (formData.get("timezone") as string) || null;
-        applyPreferences(json.locale, tz, relTs);
+      if (data) {
+        applyPreferences(data.locale, timezone, relTs);
         l10n.onChange();
         props.onSuccess?.();
       } else {

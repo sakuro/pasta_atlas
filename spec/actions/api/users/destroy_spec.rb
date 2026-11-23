@@ -22,6 +22,7 @@ RSpec.describe PastaAtlas::Actions::API::Users::Destroy do
       response = action.call(env)
 
       expect(response.status).to eq(200)
+      expect(response).to conform_to_openapi("DELETE /api/v1/users/{user_name}")
       expect(JSON.parse(response.body.join)).to eq("redirect_to" => "/")
       expect(session).to be_empty
     end
@@ -34,6 +35,7 @@ RSpec.describe PastaAtlas::Actions::API::Users::Destroy do
       response = action.call(env)
 
       expect(response.status).to eq(502)
+      expect(response).to conform_to_openapi("DELETE /api/v1/users/{user_name}")
       expect(session).to eq({"user_id" => 1})
     end
   end
@@ -45,6 +47,7 @@ RSpec.describe PastaAtlas::Actions::API::Users::Destroy do
       response = action.call(env.merge(confirm_user_name: "other"))
 
       expect(response.status).to eq(400)
+      expect(response).to conform_to_openapi("DELETE /api/v1/users/{user_name}")
       expect(destroy_user).not_to have_received(:call)
     end
   end

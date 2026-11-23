@@ -1,15 +1,7 @@
 import { createSignal, onSettled, Show } from "solid-js";
+import { createAvatarPresignedPost, deleteAvatar } from "../../lib/api/client";
 import "../../lib/l10n";
 import { Spinner } from "../../components/Spinner";
-
-const csrfToken = (): string => document.querySelector<HTMLMetaElement>('meta[name="csrf-token"]')?.content ?? "";
-
-const jsonHeaders = (): HeadersInit => ({
-  "Content-Type": "application/json",
-  "X-CSRF-Token": csrfToken(),
-});
-
-type PresignedPost = { url: string; fields: Record<string, string> };
 
 type I18nError = { msgId: string; msgArgs?: Record<string, string | number> };
 
@@ -21,12 +13,19 @@ type State =
   | { type: "uploading"; previewUrl: string | null }
   | { type: "error"; error: I18nError };
 
+const CONTENT_TYPES = ["image/jpeg", "image/png", "image/webp"] as const;
+type ContentType = (typeof CONTENT_TYPES)[number];
+const isContentType = (type: string): type is ContentType => (CONTENT_TYPES as readonly string[]).includes(type);
 const MAX_BYTES = 5 * 1024 * 1024;
 const MIN_PX = 64;
 const MAX_PX = 1024;
 
 const validateImage = (file: File): Promise<I18nError | null> =>
   new Promise((resolve) => {
+    if (!isContentType(file.type)) {
+      resolve({ msgId: "avatar-error-read" });
+      return;
+    }
     if (file.size > MAX_BYTES) {
       resolve({ msgId: "avatar-error-too-large-file-size" });
       return;
@@ -59,8 +58,6 @@ export type AvatarUploadRef = {
 interface Props {
   currentAvatarUrl: string | null;
   userName: string;
-  form?: HTMLFormElement | null;
-  onAvatarChanged?: (s3Key: string | null) => void;
   onRef?: (ref: AvatarUploadRef) => void;
 }
 
@@ -119,54 +116,42 @@ export const AvatarUpload = (props: Props) => {
         setState({ type: "idle" });
       },
     });
-
-    const form = props.form;
-    if (!form) return;
-    const handler = (e: SubmitEvent) => {
-      void handleFormSubmit(e);
-    };
-    form.addEventListener("submit", handler);
-    return () => form.removeEventListener("submit", handler);
   });
 
   const removeAvatar = async (): Promise<boolean> => {
     setState({ type: "uploading", previewUrl: null });
-    try {
-      const resp = await fetch(`/api/v1/users/${props.userName}/avatar`, {
-        method: "DELETE",
-        headers: { "X-CSRF-Token": csrfToken() },
-      });
-      if (!resp.ok) {
-        setState({ type: "error", error: { msgId: "avatar-error-remove-http", msgArgs: { status: resp.status } } });
-        return false;
-      }
-      return true;
-    } catch {
-      setState({ type: "error", error: { msgId: "avatar-error-network" } });
-      return false;
-    }
+    const { response } = await deleteAvatar({ path: { user_name: props.userName } });
+    if (response?.ok) return true;
+    setState({
+      type: "error",
+      error: response
+        ? { msgId: "avatar-error-remove-http", msgArgs: { status: response.status } }
+        : { msgId: "avatar-error-network" },
+    });
+    return false;
   };
 
   const uploadAvatar = async (file: File, previewUrl: string): Promise<string | null> => {
     setState({ type: "uploading", previewUrl });
-    let presignedPost: PresignedPost, s3Key: string;
-    try {
-      const resp = await fetch(`/api/v1/users/${props.userName}/profile/avatar_presigned_post`, {
-        method: "POST",
-        headers: jsonHeaders(),
-        body: JSON.stringify({ content_type: file.type }),
-      });
-      if (!resp.ok) {
-        setState({ type: "error", error: { msgId: "avatar-error-url-http", msgArgs: { status: resp.status } } });
-        return null;
-      }
-      const data = (await resp.json()) as { presigned_post: PresignedPost; s3_key: string };
-      presignedPost = data.presigned_post;
-      s3Key = data.s3_key;
-    } catch {
-      setState({ type: "error", error: { msgId: "avatar-error-network" } });
+    const contentType = file.type;
+    if (!isContentType(contentType)) {
+      setState({ type: "error", error: { msgId: "avatar-error-read" } });
       return null;
     }
+    const { data, response } = await createAvatarPresignedPost({
+      path: { user_name: props.userName },
+      body: { content_type: contentType },
+    });
+    if (!data) {
+      setState({
+        type: "error",
+        error: response
+          ? { msgId: "avatar-error-url-http", msgArgs: { status: response.status } }
+          : { msgId: "avatar-error-network" },
+      });
+      return null;
+    }
+    const { presigned_post: presignedPost, s3_key: s3Key } = data;
     try {
       // S3 requires the file field to come last; fetch sets the multipart Content-Type itself.
       const form = new FormData();
@@ -182,46 +167,6 @@ export const AvatarUpload = (props: Props) => {
       return null;
     }
     return s3Key;
-  };
-
-  const handleFormSubmit = async (e: SubmitEvent) => {
-    const s = state();
-
-    if (s.type === "removing") {
-      e.preventDefault();
-      const ok = await removeAvatar();
-      if (!ok) return;
-      if (props.onAvatarChanged) {
-        setState({ type: "idle" });
-        props.onAvatarChanged(null);
-      } else {
-        props.form!.submit();
-      }
-      return;
-    }
-
-    if (s.type !== "selected") return;
-
-    e.preventDefault();
-    const { file, previewUrl } = s;
-    const s3Key = await uploadAvatar(file, previewUrl);
-    if (!s3Key) return;
-
-    URL.revokeObjectURL(previewUrl);
-
-    if (props.onAvatarChanged) {
-      setState({ type: "idle" });
-      props.onAvatarChanged(s3Key);
-    } else {
-      const existing = props.form!.querySelector<HTMLInputElement>('input[name="avatar_s3_key"]');
-      if (existing) existing.remove();
-      const hidden = document.createElement("input");
-      hidden.type = "hidden";
-      hidden.name = "avatar_s3_key";
-      hidden.value = s3Key;
-      props.form!.appendChild(hidden);
-      props.form!.submit();
-    }
   };
 
   const avatarStyle = "border-radius:50%;object-fit:cover";
