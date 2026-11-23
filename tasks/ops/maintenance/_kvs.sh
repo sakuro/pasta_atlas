@@ -69,8 +69,9 @@ kvs_validate_ip() {
   fi
 }
 
-# Only .sss is accepted for fractions of a second: Date.parse, in the function and in the browser,
-# is defined only for the ECMAScript date time string format.
+# The function parses ends_at itself with the same pattern (ENDS_AT_FORMAT in maintenance.js), so a
+# value accepted here is one it understands. Only .sss is accepted for fractions of a second, the
+# ECMAScript date time string format that the page's script reads with new Date().
 # `date -d` needs GNU date; BSD date (macOS) has no -d for parsing.
 kvs_validate_ends_at() {
   local pattern='^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}(:[0-9]{2}(\.[0-9]{3})?)?(Z|[+-][0-9]{2}:[0-9]{2})$'
