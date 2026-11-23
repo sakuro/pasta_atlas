@@ -1,9 +1,8 @@
 #!/usr/bin/env bash
+#MISE description="Regenerate the rich text icon CSS from frontend/factorio-icons"
 # Regenerates frontend/pages/map_viewer/richtext/richtext-icons.css from the sprites in
-# frontend/factorio-icons. Run it from anywhere after adding or removing sprites.
+# frontend/factorio-icons. Run it after adding or removing sprites; mise runs it in the project root.
 set -euo pipefail
-
-cd "$(dirname "$0")/.."
 
 {
   echo "/* Auto-generated from frontend/factorio-icons — do not edit manually */"

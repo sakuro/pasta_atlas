@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+#MISE description="Run terraform plan for local"
+set -euo pipefail
+
+exec terraform -chdir=terraform/environments/local plan "$@"

@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+#MISE description="Run RuboCop"
+set -euo pipefail
+
+echo "Running RuboCop..."
+exec bundle exec rubocop "$@"

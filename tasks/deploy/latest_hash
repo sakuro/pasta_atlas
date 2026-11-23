@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+#MISE description="Show the commit hash of the last successful deploy"
+set -euo pipefail
+
+gh run list --workflow=deploy.yml --status=success --limit=1 --json headSha --jq '.[0].headSha'

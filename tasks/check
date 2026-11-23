@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+#MISE description="Run the backend and frontend checks: RSpec, RuboCop, type check, ESLint and Vitest"
+set -euo pipefail
+
+mise run spec
+mise run rubocop
+npm run type-check
+npm run lint:frontend
+npm run test:frontend -- --run

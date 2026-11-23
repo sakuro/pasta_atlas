@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+#MISE description="Install the dependencies and prepare the databases"
+set -euo pipefail
+
+bundle check || bundle install
+npm install
+hanami db prepare

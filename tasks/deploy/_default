@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+#MISE description="Trigger the deploy workflow once CI has passed for HEAD"
+set -euo pipefail
+
+head_sha=$(git rev-parse HEAD)
+# The conclusion is empty while the run is in progress, so read leaves it unset then.
+read -r ci_sha ci_status ci_conclusion < <(
+  gh run list --workflow=ci.yml --limit=1 --json headSha,status,conclusion \
+    --jq '.[0] | "\(.headSha) \(.status) \(.conclusion)"'
+)
+
+if [ "$ci_sha" != "$head_sha" ]; then
+  echo "CI has not run for current HEAD (${head_sha:0:7}). Latest CI was for ${ci_sha:0:7}." >&2
+  exit 1
+fi
+
+if [ "$ci_status" != "completed" ]; then
+  echo "CI is still ${ci_status} for ${head_sha:0:7}." >&2
+  exit 1
+fi
+
+if [ "${ci_conclusion:-}" != "success" ]; then
+  echo "CI ${ci_conclusion:-} for ${head_sha:0:7}. Deploy aborted." >&2
+  exit 1
+fi
+
+gh workflow run deploy.yml
