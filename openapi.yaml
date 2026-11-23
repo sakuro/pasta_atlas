@@ -173,10 +173,12 @@ paths:
                       type: string
                       pattern: "^[0-9a-f]{8}$"
                     tick:
+                      description: A JSON integer; a number with a fraction part, such as 1000.0, is rejected too
                       type: integer
                       minimum: 0
                       maximum: 4294967295
                 total_image_count:
+                  description: A JSON integer; a number with a fraction part, such as 5.0, is rejected too
                   type: integer
                   minimum: 1
                   maximum: 10000
@@ -188,7 +190,9 @@ paths:
                   minLength: 1
       responses:
         "201":
-          description: The upload (new, or the pending one of the same generation)
+          description: >-
+            The upload: a new one, or the existing upload of the same generation if it is not complete
+            (a failed upload from old data is answered too, and issuePresignedPosts then answers 422)
           content:
             application/json:
               schema:
@@ -217,7 +221,9 @@ paths:
               schema:
                 $ref: "#/components/schemas/MapNameError"
         "502":
-          description: mapshot.json could not be written to S3; nothing is created
+          description: >-
+            mapshot.json could not be written to S3; the generation and the upload are rolled back, but a
+            new map is kept and an existing map keeps the new name
   /api/v1/uploads/{ulid}:
     parameters:
       - $ref: "#/components/parameters/UploadUlid"

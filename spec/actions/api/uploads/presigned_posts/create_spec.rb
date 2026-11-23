@@ -10,14 +10,15 @@ RSpec.describe PastaAtlas::Actions::API::Uploads::PresignedPosts::Create, :db do
   let(:action_params) { {ulid: "01UPLOAD", filenames:} }
 
   context "when no session" do
+    # The guest cannot create uploads, so the ownership check of the operation rejects it.
     before do
-      allow(issue_presigned_posts).to receive(:call).and_return(Success({}))
+      allow(issue_presigned_posts).to receive(:call).and_return(Failure(:forbidden))
     end
 
-    it "allows guest requests" do
+    it "leaves the guest to the ownership check of the operation" do
       response = action.call({"rack.session" => {}}.merge(action_params))
 
-      expect(response.status).to eq(200)
+      expect(response.status).to eq(403)
       expect(response).to conform_to_openapi("POST /api/v1/uploads/{ulid}/presigned_posts")
       expect(issue_presigned_posts).to have_received(:call).with(upload_ulid: "01UPLOAD", filenames:, user_id: 99)
     end

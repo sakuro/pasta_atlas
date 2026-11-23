@@ -9,16 +9,15 @@ RSpec.describe PastaAtlas::Actions::API::Uploads::Update, :db do
   let(:action_params) { {ulid: "01UPLOAD", status: "complete"} }
 
   context "when no session" do
-    let(:upload) { double("Upload", ulid: "01UPLOAD", status: "complete", completed_at: Time.now) }
-
+    # The guest cannot create uploads, so the ownership check of the operation rejects it.
     before do
-      allow(update_status).to receive(:call).and_return(Success(upload))
+      allow(update_status).to receive(:call).and_return(Failure(:forbidden))
     end
 
-    it "allows guest requests" do
+    it "leaves the guest to the ownership check of the operation" do
       response = action.call({"rack.session" => {}}.merge(action_params))
 
-      expect(response.status).to eq(200)
+      expect(response.status).to eq(403)
       expect(response).to conform_to_openapi("PATCH /api/v1/uploads/{ulid}")
       expect(update_status).to have_received(:call).with(upload_ulid: "01UPLOAD", user_id: 99)
     end

@@ -230,8 +230,14 @@ export type CreateUploadData = {
     metadata: {
       map_id: string;
       unique_id: string;
+      /**
+       * A JSON integer; a number with a fraction part, such as 1000.0, is rejected too
+       */
       tick: number;
     };
+    /**
+     * A JSON integer; a number with a fraction part, such as 5.0, is rejected too
+     */
     total_image_count: number;
     /**
      * Leading and trailing whitespace is stripped, and the stripped name must not be empty; at most 30 grapheme clusters and the same character rule as updateMapName.
@@ -261,7 +267,7 @@ export type CreateUploadErrors = {
    */
   422: MapNameError;
   /**
-   * mapshot.json could not be written to S3; nothing is created
+   * mapshot.json could not be written to S3; the generation and the upload are rolled back, but a new map is kept and an existing map keeps the new name
    */
   502: unknown;
 };
@@ -270,7 +276,7 @@ export type CreateUploadError = CreateUploadErrors[keyof CreateUploadErrors];
 
 export type CreateUploadResponses = {
   /**
-   * The upload (new, or the pending one of the same generation)
+   * The upload: a new one, or the existing upload of the same generation if it is not complete (a failed upload from old data is answered too, and issuePresignedPosts then answers 422)
    */
   201: {
     ulid: string;
