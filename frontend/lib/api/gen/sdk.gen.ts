@@ -3,15 +3,24 @@
 import type { Client, ClientMeta, Options as Options2, RequestResult, TDataShape } from "./client";
 import { client } from "./client.gen";
 import type {
+  CompleteUploadData,
+  CompleteUploadErrors,
+  CompleteUploadResponses,
   CreateAvatarPresignedPostData,
   CreateAvatarPresignedPostErrors,
   CreateAvatarPresignedPostResponses,
+  CreateUploadData,
+  CreateUploadErrors,
+  CreateUploadResponses,
   DeleteAvatarData,
   DeleteAvatarErrors,
   DeleteAvatarResponses,
   DeleteUserData,
   DeleteUserErrors,
   DeleteUserResponses,
+  IssuePresignedPostsData,
+  IssuePresignedPostsErrors,
+  IssuePresignedPostsResponses,
   ListCredentialsData,
   ListCredentialsErrors,
   ListCredentialsResponses,
@@ -49,6 +58,9 @@ import type {
   UpdateProfileData,
   UpdateProfileErrors,
   UpdateProfileResponses,
+  VerifyUploadBatchData,
+  VerifyUploadBatchErrors,
+  VerifyUploadBatchResponses,
 } from "./types.gen";
 
 export type Options<
@@ -123,6 +135,72 @@ export const requestMapDeletion = <ThrowOnError extends boolean = false>(
   (options.client ?? client).post<unknown, RequestMapDeletionErrors, ThrowOnError>({
     url: "/api/v1/maps/{ulid}/deletion_requests",
     ...options,
+  });
+
+/**
+ * Starts an upload, creating the map (if new for the user), the generation and the upload
+ *
+ * Logged-in users only. If a pending upload exists for the same generation, it is answered again with 201, so that an interrupted upload can be resumed. The name replaces the stored name of an existing map.
+ */
+export const createUpload = <ThrowOnError extends boolean = false>(
+  options: Options<CreateUploadData, ThrowOnError>
+): RequestResult<CreateUploadResponses, CreateUploadErrors, ThrowOnError> =>
+  (options.client ?? client).post<CreateUploadResponses, CreateUploadErrors, ThrowOnError>({
+    url: "/api/v1/uploads",
+    ...options,
+    headers: {
+      "Content-Type": "application/json",
+      ...options.headers,
+    },
+  });
+
+/**
+ * Completes an upload whose files are all verified (own upload only)
+ *
+ * Completing an upload that is already complete answers it again and changes nothing.
+ */
+export const completeUpload = <ThrowOnError extends boolean = false>(
+  options: Options<CompleteUploadData, ThrowOnError>
+): RequestResult<CompleteUploadResponses, CompleteUploadErrors, ThrowOnError> =>
+  (options.client ?? client).patch<CompleteUploadResponses, CompleteUploadErrors, ThrowOnError>({
+    url: "/api/v1/uploads/{ulid}",
+    ...options,
+    headers: {
+      "Content-Type": "application/json",
+      ...options.headers,
+    },
+  });
+
+/**
+ * Issues presigned S3 POSTs for tile images of a pending upload (own upload only)
+ *
+ * Generated locally, without an S3 call. Each policy requires image/jpeg and 1 byte to 640 KB. Asking again for a file already issued is a retry and does not count toward total_image_count.
+ */
+export const issuePresignedPosts = <ThrowOnError extends boolean = false>(
+  options: Options<IssuePresignedPostsData, ThrowOnError>
+): RequestResult<IssuePresignedPostsResponses, IssuePresignedPostsErrors, ThrowOnError> =>
+  (options.client ?? client).post<IssuePresignedPostsResponses, IssuePresignedPostsErrors, ThrowOnError>({
+    url: "/api/v1/uploads/{ulid}/presigned_posts",
+    ...options,
+    headers: {
+      "Content-Type": "application/json",
+      ...options.headers,
+    },
+  });
+
+/**
+ * Checks that the files of one batch exist in S3 and records their sizes (own upload only)
+ */
+export const verifyUploadBatch = <ThrowOnError extends boolean = false>(
+  options: Options<VerifyUploadBatchData, ThrowOnError>
+): RequestResult<VerifyUploadBatchResponses, VerifyUploadBatchErrors, ThrowOnError> =>
+  (options.client ?? client).post<VerifyUploadBatchResponses, VerifyUploadBatchErrors, ThrowOnError>({
+    url: "/api/v1/uploads/{ulid}/verify_batch",
+    ...options,
+    headers: {
+      "Content-Type": "application/json",
+      ...options.headers,
+    },
   });
 
 /**

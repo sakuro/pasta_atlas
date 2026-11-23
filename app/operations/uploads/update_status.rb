@@ -12,14 +12,19 @@ module PastaAtlas
           "repos.upload_verification_key_repo"
         ]
 
-        def call(upload_ulid:, status:, user_id:)
+        def call(upload_ulid:, user_id:)
           upload = step find_upload(upload_ulid)
           step validate_ownership(upload, user_id)
-          step validate_completeness(upload) if status == "complete"
-          step append_event(upload, status)
-          finalize_verification(upload) if status == "complete"
+          return upload if upload.complete?
+
+          step validate_pending(upload)
+          step validate_completeness(upload)
+          step append_event(upload, "complete")
+          finalize_verification(upload)
           step find_upload(upload_ulid)
         end
+
+        private def validate_pending(upload) = upload.pending? ? Success() : Failure(:unprocessable_entity)
 
         private def validate_ownership(upload, user_id)
           generation = generation_repo.find_by_id!(upload.generation_id)

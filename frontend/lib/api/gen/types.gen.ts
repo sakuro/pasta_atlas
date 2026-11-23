@@ -71,6 +71,8 @@ export type MapNameError = {
 
 export type MapUlid = string;
 
+export type UploadUlid = string;
+
 export type UserName = string;
 
 export type ListMapsData = {
@@ -219,6 +221,212 @@ export type RequestMapDeletionErrors = {
    */
   404: unknown;
 };
+
+export type CreateUploadData = {
+  body: {
+    /**
+     * The content of mapshot.json, stored as it is
+     */
+    metadata: {
+      map_id: string;
+      unique_id: string;
+      /**
+       * A JSON integer; a number with a fraction part, such as 1000.0, is rejected too
+       */
+      tick: number;
+    };
+    /**
+     * A JSON integer; a number with a fraction part, such as 5.0, is rejected too
+     */
+    total_image_count: number;
+    /**
+     * Leading and trailing whitespace is stripped, and the stripped name must not be empty; at most 30 grapheme clusters and the same character rule as updateMapName.
+     */
+    name: string;
+  };
+  path?: never;
+  query?: never;
+  url: "/api/v1/uploads";
+};
+
+export type CreateUploadErrors = {
+  /**
+   * The body is not valid JSON or does not match the schema (the string "5" or the float 5.0 is rejected as total_image_count), or the name is empty after stripping
+   */
+  400: unknown;
+  /**
+   * Guest
+   */
+  403: unknown;
+  /**
+   * The generation already has a complete upload
+   */
+  409: unknown;
+  /**
+   * The name was rejected
+   */
+  422: MapNameError;
+  /**
+   * mapshot.json could not be written to S3; the generation and the upload are rolled back, but a new map is kept and an existing map keeps the new name
+   */
+  502: unknown;
+};
+
+export type CreateUploadError = CreateUploadErrors[keyof CreateUploadErrors];
+
+export type CreateUploadResponses = {
+  /**
+   * The upload: a new one, or the existing upload of the same generation if it is not complete (a failed upload from old data is answered too, and issuePresignedPosts then answers 422)
+   */
+  201: {
+    ulid: string;
+    map_ulid: string;
+    generation_ulid: string;
+  };
+};
+
+export type CreateUploadResponse = CreateUploadResponses[keyof CreateUploadResponses];
+
+export type CompleteUploadData = {
+  body: {
+    status: "complete";
+  };
+  path: {
+    ulid: string;
+  };
+  query?: never;
+  url: "/api/v1/uploads/{ulid}";
+};
+
+export type CompleteUploadErrors = {
+  /**
+   * The body is not valid JSON, or status is not complete
+   */
+  400: unknown;
+  /**
+   * Not the own upload (the guest cannot create uploads, so this includes the guest)
+   */
+  403: unknown;
+  /**
+   * The upload does not exist
+   */
+  404: unknown;
+  /**
+   * Not every file has been verified, or the upload failed
+   */
+  422: unknown;
+};
+
+export type CompleteUploadResponses = {
+  /**
+   * The complete upload
+   */
+  200: {
+    ulid: string;
+    status: "complete";
+    completed_at: string;
+  };
+};
+
+export type CompleteUploadResponse = CompleteUploadResponses[keyof CompleteUploadResponses];
+
+export type IssuePresignedPostsData = {
+  body: {
+    filenames: Array<string>;
+  };
+  path: {
+    ulid: string;
+  };
+  query?: never;
+  url: "/api/v1/uploads/{ulid}/presigned_posts";
+};
+
+export type IssuePresignedPostsErrors = {
+  /**
+   * The body is not valid JSON, or a filename is invalid, or there are more than 200
+   */
+  400: unknown;
+  /**
+   * Not the own upload (the guest cannot create uploads, so this includes the guest)
+   */
+  403: unknown;
+  /**
+   * The upload does not exist
+   */
+  404: unknown;
+  /**
+   * The upload is not pending (checked before the owner), or the new filenames would take the files requested for the upload above its total_image_count
+   */
+  422: unknown;
+};
+
+export type IssuePresignedPostsResponses = {
+  /**
+   * One presigned POST per distinct filename
+   */
+  200: {
+    /**
+     * Keyed by filename
+     */
+    presigned_posts: {
+      [key: string]: PresignedPost;
+    };
+  };
+};
+
+export type IssuePresignedPostsResponse = IssuePresignedPostsResponses[keyof IssuePresignedPostsResponses];
+
+export type VerifyUploadBatchData = {
+  body: {
+    filenames: Array<string>;
+  };
+  path: {
+    ulid: string;
+  };
+  query?: never;
+  url: "/api/v1/uploads/{ulid}/verify_batch";
+};
+
+export type VerifyUploadBatchErrors = {
+  /**
+   * The body is not valid JSON, or filenames is empty or has more than 200 entries
+   */
+  400: unknown;
+  /**
+   * Guest, or not the own upload
+   */
+  403: unknown;
+  /**
+   * The upload does not exist
+   */
+  404: unknown;
+  /**
+   * verification_failed: an object is missing, so the generation is deleted and its S3 prefix is queued for cleanup. not_pending: the upload is not pending, and nothing is checked.
+   */
+  422: {
+    error: "verification_failed" | "not_pending";
+  };
+  /**
+   * The cleanup message could not be queued; the generation is kept
+   */
+  500: unknown;
+};
+
+export type VerifyUploadBatchError = VerifyUploadBatchErrors[keyof VerifyUploadBatchErrors];
+
+export type VerifyUploadBatchResponses = {
+  /**
+   * Every file exists
+   */
+  200: {
+    /**
+     * The bytes of the objects of this batch (not a running total)
+     */
+    verified_bytes: number;
+  };
+};
+
+export type VerifyUploadBatchResponse = VerifyUploadBatchResponses[keyof VerifyUploadBatchResponses];
 
 export type DeleteUserData = {
   body: {

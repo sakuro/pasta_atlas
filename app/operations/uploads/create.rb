@@ -22,7 +22,7 @@ module PastaAtlas
         def call(user_id:, metadata:, total_image_count:, name: nil)
           mapshot_map_id = metadata["map_id"]
           mapshot_unique_id = metadata["unique_id"]
-          tick = Integer(metadata["tick"])
+          tick = metadata["tick"]
           user = user_repo.find_by_id!(user_id)
 
           step validate_name(name) if name

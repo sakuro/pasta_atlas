@@ -98,7 +98,7 @@ The request sequence is described in [upload-flow.md](upload-flow.md).
 
 | Trigger | Outcome |
 |---|---|
-| No `mapshot.json`, invalid JSON, or more than 10,000 `.jpg` files | `instructions → error` |
+| No `mapshot.json`, invalid JSON, a `mapshot.json` without string `map_id`/`unique_id` or an integer `tick`, or more than 10,000 `.jpg` files | `instructions → error` |
 | User cancels the directory picker | Stays in `instructions` |
 | `POST /uploads` fails (409 conflict, 422 with the server's error key, other statuses, network) | `error` with a matching message |
 | `presigned_posts`, S3 POST, `verify_batch` or the final `PATCH` fails | `error` with a generic message |

@@ -144,6 +144,236 @@ paths:
           description: Guest, or not the own map
         "404":
           description: The map does not exist
+  /api/v1/uploads:
+    post:
+      operationId: createUpload
+      summary: Starts an upload, creating the map (if new for the user), the generation and the upload
+      description: >-
+        Logged-in users only. If a pending upload exists for the same generation, it is answered
+        again with 201, so that an interrupted upload can be resumed. The name replaces the stored
+        name of an existing map.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              required: [metadata, total_image_count, name]
+              properties:
+                metadata:
+                  description: The content of mapshot.json, stored as it is
+                  type: object
+                  required: [map_id, unique_id, tick]
+                  properties:
+                    map_id:
+                      type: string
+                      pattern: "^[0-9a-f]{8}$"
+                    unique_id:
+                      type: string
+                      pattern: "^[0-9a-f]{8}$"
+                    tick:
+                      description: A JSON integer; a number with a fraction part, such as 1000.0, is rejected too
+                      type: integer
+                      minimum: 0
+                      maximum: 4294967295
+                total_image_count:
+                  description: A JSON integer; a number with a fraction part, such as 5.0, is rejected too
+                  type: integer
+                  minimum: 1
+                  maximum: 10000
+                name:
+                  description: >-
+                    Leading and trailing whitespace is stripped, and the stripped name must not be empty;
+                    at most 30 grapheme clusters and the same character rule as updateMapName.
+                  type: string
+                  minLength: 1
+      responses:
+        "201":
+          description: >-
+            The upload: a new one, or the existing upload of the same generation if it is not complete
+            (a failed upload from old data is answered too, and issuePresignedPosts then answers 422)
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: false
+                required: [ulid, map_ulid, generation_ulid]
+                properties:
+                  ulid:
+                    type: string
+                  map_ulid:
+                    type: string
+                  generation_ulid:
+                    type: string
+        "400":
+          description: >-
+            The body is not valid JSON or does not match the schema (the string "5" or the float 5.0
+            is rejected as total_image_count), or the name is empty after stripping
+        "403":
+          description: Guest
+        "409":
+          description: The generation already has a complete upload
+        "422":
+          description: The name was rejected
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MapNameError"
+        "502":
+          description: >-
+            mapshot.json could not be written to S3; the generation and the upload are rolled back, but a
+            new map is kept and an existing map keeps the new name
+  /api/v1/uploads/{ulid}:
+    parameters:
+      - $ref: "#/components/parameters/UploadUlid"
+    patch:
+      operationId: completeUpload
+      summary: Completes an upload whose files are all verified (own upload only)
+      description: Completing an upload that is already complete answers it again and changes nothing.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              required: [status]
+              properties:
+                status:
+                  type: string
+                  const: complete
+      responses:
+        "200":
+          description: The complete upload
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: false
+                required: [ulid, status, completed_at]
+                properties:
+                  ulid:
+                    type: string
+                  status:
+                    type: string
+                    const: complete
+                  completed_at:
+                    type: string
+                    format: date-time
+        "400":
+          description: The body is not valid JSON, or status is not complete
+        "403":
+          description: Not the own upload (the guest cannot create uploads, so this includes the guest)
+        "404":
+          description: The upload does not exist
+        "422":
+          description: Not every file has been verified, or the upload failed
+  /api/v1/uploads/{ulid}/presigned_posts:
+    parameters:
+      - $ref: "#/components/parameters/UploadUlid"
+    post:
+      operationId: issuePresignedPosts
+      summary: Issues presigned S3 POSTs for tile images of a pending upload (own upload only)
+      description: >-
+        Generated locally, without an S3 call. Each policy requires image/jpeg and 1 byte to 640 KB.
+        Asking again for a file already issued is a retry and does not count toward total_image_count.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              required: [filenames]
+              properties:
+                filenames:
+                  type: array
+                  maxItems: 200
+                  items:
+                    type: string
+                    pattern: "^s[0-9]+zoom_[0-9]+/tile_-?[0-9]+_-?[0-9]+\\.jpg$"
+      responses:
+        "200":
+          description: One presigned POST per distinct filename
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: false
+                required: [presigned_posts]
+                properties:
+                  presigned_posts:
+                    description: Keyed by filename
+                    type: object
+                    additionalProperties:
+                      $ref: "#/components/schemas/PresignedPost"
+        "400":
+          description: The body is not valid JSON, or a filename is invalid, or there are more than 200
+        "403":
+          description: Not the own upload (the guest cannot create uploads, so this includes the guest)
+        "404":
+          description: The upload does not exist
+        "422":
+          description: >-
+            The upload is not pending (checked before the owner), or the new filenames would take the
+            files requested for the upload above its total_image_count
+  /api/v1/uploads/{ulid}/verify_batch:
+    parameters:
+      - $ref: "#/components/parameters/UploadUlid"
+    post:
+      operationId: verifyUploadBatch
+      summary: Checks that the files of one batch exist in S3 and records their sizes (own upload only)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              required: [filenames]
+              properties:
+                filenames:
+                  type: array
+                  minItems: 1
+                  maxItems: 200
+                  items:
+                    type: string
+      responses:
+        "200":
+          description: Every file exists
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: false
+                required: [verified_bytes]
+                properties:
+                  verified_bytes:
+                    description: The bytes of the objects of this batch (not a running total)
+                    type: integer
+        "400":
+          description: The body is not valid JSON, or filenames is empty or has more than 200 entries
+        "403":
+          description: Guest, or not the own upload
+        "404":
+          description: The upload does not exist
+        "422":
+          description: >-
+            verification_failed: an object is missing, so the generation is deleted and its S3 prefix
+            is queued for cleanup. not_pending: the upload is not pending, and nothing is checked.
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: false
+                required: [error]
+                properties:
+                  error:
+                    type: string
+                    enum: [verification_failed, not_pending]
+        "500":
+          description: The cleanup message could not be queued; the generation is kept
   /api/v1/users/{user_name}:
     parameters:
       - $ref: "#/components/parameters/UserName"
@@ -489,6 +719,12 @@ paths:
 components:
   parameters:
     MapUlid:
+      name: ulid
+      in: path
+      required: true
+      schema:
+        type: string
+    UploadUlid:
       name: ulid
       in: path
       required: true

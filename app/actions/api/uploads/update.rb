@@ -9,7 +9,7 @@ module PastaAtlas
 
           params do
             required(:ulid).filled(:string)
-            required(:status).filled(:string, included_in?: %w[complete failed])
+            required(:status).filled(:string, included_in?: %w[complete])
           end
 
           def handle(request, response)
@@ -17,7 +17,6 @@ module PastaAtlas
 
             result = update_status.call(
               upload_ulid: request.params[:ulid],
-              status: request.params[:status],
               user_id: current_user_id(request)
             )
 
@@ -26,7 +25,7 @@ module PastaAtlas
               json_response(response, {
                 ulid: upload.ulid,
                 status: upload.status,
-                completed_at: upload.completed_at&.iso8601
+                completed_at: upload.completed_at.iso8601
               })
             in Failure(:incomplete)
               halt :unprocessable_content

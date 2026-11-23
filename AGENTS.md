@@ -54,7 +54,7 @@ Actions handle HTTP concerns (params, session, response codes). The JSON API con
 
 - **Map** — a Factorio world tracked by `mapshot_map_id` (unique per user); `id` is bigserial primary key, `ulid` is a separate public identifier column
 - **Generation** — a snapshot of a Map at a given game tick; references S3 `metadata_s3_key` (mapshot.json)
-- **Upload** — tracks a tile-image upload session for a Generation (status pending/complete/failed, derived from upload events; verification status pending/passed/failed)
+- **Upload** — tracks a tile-image upload session for a Generation (status pending/complete, or failed in old data, derived from upload events; verification status pending/passed/failed)
 - **User / UserProfile / UserPreference / Credential** — account, display info, locale+timezone preferences, OAuth credential
 
 ### Authentication
