@@ -4,6 +4,6 @@ set -euo pipefail
 
 mise run spec
 mise run rubocop
-npm run type-check
-npm run lint:frontend
-npm run test:frontend -- --run
+mise run frontend:type-check
+mise run frontend:lint
+mise run frontend:test

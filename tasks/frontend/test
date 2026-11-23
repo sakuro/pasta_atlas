@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+#MISE description="Run the frontend tests with Vitest once (--watch keeps watching)"
+set -euo pipefail
+
+# `vitest run` cannot be combined with --watch, so watching uses plain `vitest`.
+for arg in "$@"; do
+  if [ "$arg" = --watch ]; then
+    exec vitest "$@"
+  fi
+done
+
+exec vitest run "$@"

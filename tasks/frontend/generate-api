@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+#MISE description="Regenerate the API client in frontend/lib/api/gen/ from openapi.yaml"
+set -euo pipefail
+
+openapi-ts
+prettier --write frontend/lib/api/gen

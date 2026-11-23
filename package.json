@@ -2,15 +2,6 @@
   "name": "pasta_atlas",
   "private": true,
   "type": "module",
-  "scripts": {
-    "build:frontend": "vite build",
-    "dev:frontend": "vite build --watch",
-    "type-check": "tsc --noEmit",
-    "lint:frontend": "find frontend -path frontend/lib/api/gen -prune -o \\( -name '*.ts' -o -name '*.tsx' \\) -print | xargs -r eslint",
-    "format:frontend": "prettier --write \"frontend/**/*.{ts,tsx}\"",
-    "generate:api": "openapi-ts && prettier --write frontend/lib/api/gen",
-    "test:frontend": "vitest"
-  },
   "dependencies": {
     "@fluent/bundle": "^0.19.1",
     "@fluent/dom": "^0.10.2",

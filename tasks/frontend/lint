@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+#MISE description="Lint the frontend with ESLint"
+# eslint.config.js selects frontend/**/*.{ts,tsx} and ignores the generated API client.
+set -euo pipefail
+
+exec eslint frontend "$@"
