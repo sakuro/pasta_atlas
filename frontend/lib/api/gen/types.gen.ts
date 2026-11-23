@@ -75,6 +75,64 @@ export type UploadUlid = string;
 
 export type UserName = string;
 
+export type GetCurrentAuthData = {
+  body?: never;
+  path?: never;
+  query?: never;
+  url: "/api/v1/auth/current";
+};
+
+export type GetCurrentAuthResponses = {
+  /**
+   * The current user, or null for a guest
+   */
+  200: {
+    user: UserInfo | null;
+    preferences: {
+      /**
+       * BCP 47 tag; null to use the browser's
+       */
+      locale: string | null;
+      /**
+       * IANA identifier; null to use the browser's
+       */
+      timezone: string | null;
+      relative_timestamps: boolean;
+    };
+  };
+};
+
+export type GetCurrentAuthResponse = GetCurrentAuthResponses[keyof GetCurrentAuthResponses];
+
+export type GetPendingRegistrationData = {
+  body?: never;
+  path?: never;
+  query?: never;
+  url: "/api/v1/auth/registration";
+};
+
+export type GetPendingRegistrationErrors = {
+  /**
+   * No registration is pending
+   */
+  403: unknown;
+};
+
+export type GetPendingRegistrationResponses = {
+  /**
+   * The pending identity
+   */
+  200: {
+    provider: Provider;
+    /**
+     * The login name at the provider, lowercased, suggested as the user name; empty if the provider gave none
+     */
+    login_name: string;
+  };
+};
+
+export type GetPendingRegistrationResponse = GetPendingRegistrationResponses[keyof GetPendingRegistrationResponses];
+
 export type ListMapsData = {
   body?: never;
   path?: never;
@@ -221,6 +279,36 @@ export type RequestMapDeletionErrors = {
    */
   404: unknown;
 };
+
+export type ShowPageData = {
+  body?: never;
+  path: {
+    slug: "about" | "privacy" | "terms";
+  };
+  query?: never;
+  url: "/api/v1/pages/{slug}";
+};
+
+export type ShowPageErrors = {
+  /**
+   * The slug is not one of the above
+   */
+  404: unknown;
+};
+
+export type ShowPageResponses = {
+  /**
+   * The page
+   */
+  200: {
+    /**
+     * HTML written by the maintainers
+     */
+    content: string;
+  };
+};
+
+export type ShowPageResponse = ShowPageResponses[keyof ShowPageResponses];
 
 export type CreateUploadData = {
   body: {
@@ -829,3 +917,59 @@ export type CreateAvatarPresignedPostResponses = {
 
 export type CreateAvatarPresignedPostResponse =
   CreateAvatarPresignedPostResponses[keyof CreateAvatarPresignedPostResponses];
+
+export type RegisterData = {
+  body: {
+    /**
+     * Lowercased, then at most 15 characters of ASCII letters, digits, - and _, starting and ending with a letter or digit; guest, compilatron, api and admin are reserved
+     */
+    name: string;
+    /**
+     * IANA identifier; empty, null, absent or unknown is stored as UTC
+     */
+    timezone?: string | null;
+    /**
+     * Acceptance of the terms of service; must be true
+     */
+    terms: boolean;
+  };
+  path?: never;
+  query?: never;
+  url: "/auth/register";
+};
+
+export type RegisterErrors = {
+  /**
+   * The body is not valid JSON or does not match the schema: name is missing or not a string, terms is missing or not a JSON boolean (the string "1" is rejected too), or timezone is neither a string nor null
+   */
+  400: unknown;
+  /**
+   * No registration is pending
+   */
+  403: unknown;
+  /**
+   * The terms were not accepted, or the name was rejected
+   */
+  422: {
+    error:
+      | "error-terms-required"
+      | "error-username-empty"
+      | "error-username-too-long"
+      | "error-username-invalid-chars"
+      | "error-username-reserved"
+      | "error-username-taken";
+  };
+};
+
+export type RegisterError = RegisterErrors[keyof RegisterErrors];
+
+export type RegisterResponses = {
+  /**
+   * Registered; the session is reset and holds the new user
+   */
+  200: {
+    redirect_to: string;
+  };
+};
+
+export type RegisterResponse = RegisterResponses[keyof RegisterResponses];

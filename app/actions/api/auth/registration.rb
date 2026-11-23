@@ -7,7 +7,7 @@ module PastaAtlas
         class Registration < PastaAtlas::Action
           def handle(request, response)
             pending = request.session[:pending_auth]
-            halt :unauthorized unless pending
+            halt :forbidden unless pending
 
             json_response(response, {
               provider: pending["provider"],

@@ -2,16 +2,16 @@ import { createMemo, Errored, isPending, Loading, Show } from "solid-js";
 import { lang } from "../lib/display-settings";
 import { SpinnerBlock } from "../components/SpinnerBlock";
 import { ErrorNotification } from "../components/ErrorNotification";
+import { showPage, type ShowPageData } from "../lib/api/client";
 
-export const StaticPage = (props: { slug: string }) => {
+export const StaticPage = (props: { slug: ShowPageData["path"]["slug"] }) => {
   const content = createMemo(async () => {
     const slug = props.slug;
     // The server picks the page language from the user's locale, so a locale change refetches.
     lang();
-    const res = await fetch(`/api/v1/pages/${slug}`);
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    const json = (await res.json()) as { content: string };
-    return json.content;
+    const { data, error, response } = await showPage({ path: { slug } });
+    if (!data) throw new Error(`HTTP ${response?.status}`, { cause: error });
+    return data.content;
   });
 
   return (

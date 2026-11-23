@@ -2,13 +2,7 @@ import { createMemo, createSignal, Errored, Loading, onSettled, Show } from "sol
 import { useNavigate } from "@solidjs/router";
 import { SpinnerBlock } from "../components/SpinnerBlock";
 import { ErrorNotification } from "../components/ErrorNotification";
-
-type PendingAuth = {
-  provider: string;
-  login_name: string;
-};
-
-const csrfToken = (): string => document.querySelector<HTMLMetaElement>('meta[name="csrf-token"]')?.content ?? "";
+import { errorKey, getPendingRegistration, register } from "../lib/api/client";
 
 const RedirectHome = () => {
   const navigate = useNavigate();
@@ -22,11 +16,11 @@ const RedirectHome = () => {
 export const RegistrationPage = () => {
   const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
-  const pending = createMemo(async (): Promise<PendingAuth | null> => {
-    const res = await fetch("/api/v1/auth/registration");
-    if (res.status === 401) return null;
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    return res.json() as Promise<PendingAuth>;
+  const pending = createMemo(async () => {
+    const { data, error, response } = await getPendingRegistration();
+    if (response?.status === 403) return null;
+    if (!data) throw new Error(`HTTP ${response?.status}`, { cause: error });
+    return data;
   });
 
   const [submitting, setSubmitting] = createSignal(false);
@@ -39,22 +33,19 @@ export const RegistrationPage = () => {
     setSubmitting(true);
     setError(null);
     try {
-      const res = await fetch("/auth/register", {
-        method: "POST",
-        headers: { "Content-Type": "application/json", "X-CSRF-Token": csrfToken() },
-        body: JSON.stringify({
+      const { data, error } = await register({
+        body: {
           name: formData.get("name") as string,
           timezone,
-          terms: formData.get("terms") as string,
-        }),
+          terms: formData.has("terms"),
+        },
       });
-      if (res.ok) {
+      if (data) {
         // The server clears the session, which invalidates the CSRF token in this page's
         // meta tag. A full page load picks up the new token.
-        window.location.assign("/");
+        window.location.assign(data.redirect_to);
       } else {
-        const json = (await res.json()) as { error?: string };
-        setError(json.error ?? "error-unknown");
+        setError(errorKey(error) ?? "error-unknown");
       }
     } finally {
       setSubmitting(false);
@@ -65,7 +56,7 @@ export const RegistrationPage = () => {
     <section class="section">
       <Errored fallback={<ErrorNotification l10nId="error-load-failed" />}>
         <Loading fallback={<SpinnerBlock />}>
-          {/* The registration endpoint answers 401 when no OAuth data is pending. */}
+          {/* The registration endpoint answers 403 when no OAuth data is pending. */}
           <Show when={pending()} keyed fallback={<RedirectHome />}>
             {(auth) => {
               const [nameValue, setNameValue] = createSignal(auth.login_name);

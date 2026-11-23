@@ -47,6 +47,20 @@ RSpec.describe PastaAtlas::Resolvers::LocaleResolver do
         it "returns the highest-quality supported locale" do
           expect(resolver.call(user_id: 42, accept_language: "xx;q=0.9,ja;q=0.8,en;q=0.7")).to eq("ja")
         end
+
+        it "reads a q-value after a space" do
+          expect(resolver.call(user_id: 42, accept_language: "en; q=0.5, ja; q=0.8")).to eq("ja")
+        end
+
+        it "reads a q-value with an uppercase name or spaces around =" do
+          expect(resolver.call(user_id: 42, accept_language: "ja;Q=0.1,ko;q = 0.2,cs;q=0.5")).to eq("cs")
+        end
+      end
+
+      context "with a malformed q-value" do
+        it "skips that locale instead of raising" do
+          expect(resolver.call(user_id: 42, accept_language: "ja;q=abc,cs;q=0.5")).to eq("cs")
+        end
       end
     end
   end

@@ -8,16 +8,19 @@ module PastaAtlas
           include Deps[create_registration: "operations.registrations.create"]
 
           params do
-            required(:name).filled(:string)
+            # Not filled: an empty name is left to the operation, which answers error-username-empty.
+            required(:name).value(:string)
             optional(:timezone).maybe(:string)
-            optional(:terms).maybe(:string)
+            required(:terms).value(PastaAtlas::Types::Strict::Bool)
           end
 
           def handle(request, response)
+            halt :bad_request unless request.params.valid?
+
             pending = request.session[:pending_auth]
             halt :forbidden unless pending
 
-            unless request.params[:terms] == "1"
+            unless request.params[:terms]
               return json_response(response, {error: "error-terms-required"}, status: 422)
             end
 
