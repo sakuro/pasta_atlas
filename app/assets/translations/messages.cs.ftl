@@ -288,6 +288,7 @@ avatar-change = Změnit
 avatar-remove = Odebrat
 avatar-cancel = Zrušit
 avatar-error-too-large-file-size = Soubor musí být menší nebo roven 5 MiB.
+avatar-error-unsupported-type = Obrázek musí být ve formátu JPEG, PNG nebo WebP.
 avatar-error-too-small-pixel-size = Obrázek musí být alespoň { $min }×{ $min } pixelů.
 avatar-error-too-large-pixel-size = Obrázek musí být nejvýše { $max }×{ $max } pixelů.
 avatar-error-read = Nepodařilo se načíst obrázek.

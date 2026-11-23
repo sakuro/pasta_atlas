@@ -253,6 +253,7 @@ avatar-change = 변경
 avatar-remove = 삭제
 avatar-cancel = 취소
 avatar-error-too-large-file-size = 파일 크기는 5 MiB 이하여야 합니다.
+avatar-error-unsupported-type = 이미지는 JPEG, PNG, WebP 중 하나여야 합니다.
 avatar-error-too-small-pixel-size = 이미지는 { $min }×{ $min } 픽셀 이상이어야 합니다.
 avatar-error-too-large-pixel-size = 이미지는 { $max }×{ $max } 픽셀 이하여야 합니다.
 avatar-error-read = 이미지를 읽는 데 실패했습니다.

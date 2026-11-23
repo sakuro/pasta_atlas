@@ -253,6 +253,7 @@ avatar-change = 變更
 avatar-remove = 移除
 avatar-cancel = 取消
 avatar-error-too-large-file-size = 檔案大小不得超過 5 MiB。
+avatar-error-unsupported-type = 圖片必須為 JPEG、PNG 或 WebP 格式。
 avatar-error-too-small-pixel-size = 圖片尺寸必須為 { $min }×{ $min } 像素以上。
 avatar-error-too-large-pixel-size = 圖片尺寸必須為 { $max }×{ $max } 像素以下。
 avatar-error-read = 無法讀取圖片。

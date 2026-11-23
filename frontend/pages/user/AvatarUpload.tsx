@@ -23,7 +23,7 @@ const MAX_PX = 1024;
 const validateImage = (file: File): Promise<I18nError | null> =>
   new Promise((resolve) => {
     if (!isContentType(file.type)) {
-      resolve({ msgId: "avatar-error-read" });
+      resolve({ msgId: "avatar-error-unsupported-type" });
       return;
     }
     if (file.size > MAX_BYTES) {
@@ -135,7 +135,7 @@ export const AvatarUpload = (props: Props) => {
     setState({ type: "uploading", previewUrl });
     const contentType = file.type;
     if (!isContentType(contentType)) {
-      setState({ type: "error", error: { msgId: "avatar-error-read" } });
+      setState({ type: "error", error: { msgId: "avatar-error-unsupported-type" } });
       return null;
     }
     const { data, response } = await createAvatarPresignedPost({
