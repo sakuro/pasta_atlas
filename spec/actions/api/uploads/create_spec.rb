@@ -69,6 +69,46 @@ RSpec.describe PastaAtlas::Actions::API::Uploads::Create, :db do
         expect(response).to conform_to_openapi("POST /api/v1/uploads")
         expect(create_upload).not_to have_received(:call)
       end
+
+      it "passes the name to the operation without leading and trailing whitespace" do
+        action.call(session.merge(action_params.merge(name: "  My Map  ")))
+
+        expect(create_upload).to have_received(:call).with(hash_including(name: "My Map"))
+      end
+
+      it "returns 400 when name is only whitespace" do
+        response = action.call(session.merge(action_params.merge(name: "   ")))
+
+        expect(response.status).to eq(400)
+        expect(response).to conform_to_openapi("POST /api/v1/uploads")
+        expect(create_upload).not_to have_received(:call)
+      end
+
+      it "returns 400 when total_image_count is a string" do
+        response = action.call(session.merge(action_params.merge(total_image_count: "5")))
+
+        expect(response.status).to eq(400)
+        expect(response).to conform_to_openapi("POST /api/v1/uploads")
+        expect(create_upload).not_to have_received(:call)
+      end
+
+      it "returns 400 when total_image_count is a float" do
+        response = action.call(session.merge(action_params.merge(total_image_count: 5.0)))
+
+        expect(response.status).to eq(400)
+        expect(response).to conform_to_openapi("POST /api/v1/uploads")
+        expect(create_upload).not_to have_received(:call)
+      end
+
+      it "returns 400 when total_image_count is out of range" do
+        [0, 10_001].each do |total_image_count|
+          response = action.call(session.merge(action_params.merge(total_image_count:)))
+
+          expect(response.status).to eq(400)
+          expect(response).to conform_to_openapi("POST /api/v1/uploads")
+        end
+        expect(create_upload).not_to have_received(:call)
+      end
     end
 
     context "when the operation returns a conflict failure" do

@@ -234,7 +234,7 @@ export type CreateUploadData = {
     };
     total_image_count: number;
     /**
-     * At most 30 grapheme clusters; the same character rule as updateMapName. Unlike updateMapName, the name is stored as given, without stripping whitespace.
+     * Leading and trailing whitespace is stripped, and the stripped name must not be empty; at most 30 grapheme clusters and the same character rule as updateMapName.
      */
     name: string;
   };
@@ -245,7 +245,7 @@ export type CreateUploadData = {
 
 export type CreateUploadErrors = {
   /**
-   * The body is not valid JSON or does not match the schema
+   * The body is not valid JSON or does not match the schema (the string "5" or the float 5.0 is rejected as total_image_count), or the name is empty after stripping
    */
   400: unknown;
   /**
