@@ -18,6 +18,7 @@ RSpec.describe PastaAtlas::Actions::API::Uploads::PresignedPosts::Create, :db do
       response = action.call({"rack.session" => {}}.merge(action_params))
 
       expect(response.status).to eq(200)
+      expect(response).to conform_to_openapi("POST /api/v1/uploads/{ulid}/presigned_posts")
       expect(issue_presigned_posts).to have_received(:call).with(upload_ulid: "01UPLOAD", filenames:, user_id: 99)
     end
   end
@@ -37,6 +38,7 @@ RSpec.describe PastaAtlas::Actions::API::Uploads::PresignedPosts::Create, :db do
         response = action.call(session.merge(action_params))
 
         expect(response.status).to eq(200)
+        expect(response).to conform_to_openapi("POST /api/v1/uploads/{ulid}/presigned_posts")
         body = JSON.parse(response.body.join)
         expect(body["presigned_posts"].keys).to match_array(filenames)
       end
@@ -48,12 +50,14 @@ RSpec.describe PastaAtlas::Actions::API::Uploads::PresignedPosts::Create, :db do
       it "returns 400 for a path traversal attempt without calling the operation" do
         response = action.call(session.merge(ulid: "01UPLOAD", filenames: ["../../other/file.jpg"]))
         expect(response.status).to eq(400)
+        expect(response).to conform_to_openapi("POST /api/v1/uploads/{ulid}/presigned_posts")
         expect(issue_presigned_posts).not_to have_received(:call)
       end
 
       it "returns 400 for a filename not matching the tile pattern without calling the operation" do
         response = action.call(session.merge(ulid: "01UPLOAD", filenames: ["mapshot.json"]))
         expect(response.status).to eq(400)
+        expect(response).to conform_to_openapi("POST /api/v1/uploads/{ulid}/presigned_posts")
         expect(issue_presigned_posts).not_to have_received(:call)
       end
     end
@@ -65,6 +69,7 @@ RSpec.describe PastaAtlas::Actions::API::Uploads::PresignedPosts::Create, :db do
         response = action.call(session.merge(action_params))
 
         expect(response.status).to eq(404)
+        expect(response).to conform_to_openapi("POST /api/v1/uploads/{ulid}/presigned_posts")
       end
     end
 
@@ -75,6 +80,7 @@ RSpec.describe PastaAtlas::Actions::API::Uploads::PresignedPosts::Create, :db do
         response = action.call(session.merge(action_params))
 
         expect(response.status).to eq(422)
+        expect(response).to conform_to_openapi("POST /api/v1/uploads/{ulid}/presigned_posts")
       end
     end
 
@@ -85,6 +91,7 @@ RSpec.describe PastaAtlas::Actions::API::Uploads::PresignedPosts::Create, :db do
         response = action.call(session.merge(action_params))
 
         expect(response.status).to eq(403)
+        expect(response).to conform_to_openapi("POST /api/v1/uploads/{ulid}/presigned_posts")
       end
     end
   end

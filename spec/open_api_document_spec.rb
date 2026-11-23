@@ -64,10 +64,6 @@ RSpec.describe OpenAPIDocument do
         "GET /api/v1/auth/current",
         "GET /api/v1/auth/registration",
         "GET /api/v1/pages/{slug}",
-        "POST /api/v1/uploads",
-        "PATCH /api/v1/uploads/{ulid}",
-        "POST /api/v1/uploads/{ulid}/presigned_posts",
-        "POST /api/v1/uploads/{ulid}/verify_batch",
         "POST /auth/register"
       ]
     end

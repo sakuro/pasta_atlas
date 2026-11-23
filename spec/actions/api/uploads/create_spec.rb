@@ -21,6 +21,7 @@ RSpec.describe PastaAtlas::Actions::API::Uploads::Create, :db do
       response = action.call({"rack.session" => {}}.merge(action_params))
 
       expect(response.status).to eq(403)
+      expect(response).to conform_to_openapi("POST /api/v1/uploads")
     end
   end
 
@@ -34,6 +35,7 @@ RSpec.describe PastaAtlas::Actions::API::Uploads::Create, :db do
         response = action.call(session.merge(action_params))
 
         expect(response.status).to eq(201)
+        expect(response).to conform_to_openapi("POST /api/v1/uploads")
         body = JSON.parse(response.body.join)
         expect(body).to include("ulid" => "01UPLOAD", "map_ulid" => "01MAP", "generation_ulid" => "01GEN")
       end
@@ -56,6 +58,7 @@ RSpec.describe PastaAtlas::Actions::API::Uploads::Create, :db do
         response = action.call(session.merge(action_params.except(:name)))
 
         expect(response.status).to eq(400)
+        expect(response).to conform_to_openapi("POST /api/v1/uploads")
         expect(create_upload).not_to have_received(:call)
       end
 
@@ -63,6 +66,7 @@ RSpec.describe PastaAtlas::Actions::API::Uploads::Create, :db do
         response = action.call(session.merge(action_params.merge(name: "")))
 
         expect(response.status).to eq(400)
+        expect(response).to conform_to_openapi("POST /api/v1/uploads")
         expect(create_upload).not_to have_received(:call)
       end
     end
@@ -74,6 +78,19 @@ RSpec.describe PastaAtlas::Actions::API::Uploads::Create, :db do
         response = action.call(session.merge(action_params))
 
         expect(response.status).to eq(409)
+        expect(response).to conform_to_openapi("POST /api/v1/uploads")
+      end
+    end
+
+    context "when the operation rejects the name" do
+      before { allow(create_upload).to receive(:call).and_return(Failure([:invalid, "error-map-name-too-long"])) }
+
+      it "returns 422 with the error key" do
+        response = action.call(session.merge(action_params))
+
+        expect(response.status).to eq(422)
+        expect(response).to conform_to_openapi("POST /api/v1/uploads")
+        expect(JSON.parse(response.body.join)).to eq({"error" => "error-map-name-too-long"})
       end
     end
 
@@ -84,6 +101,7 @@ RSpec.describe PastaAtlas::Actions::API::Uploads::Create, :db do
         params = action_params.merge(metadata: action_params[:metadata].merge("map_id" => "xyz!"))
         response = action.call(session.merge(params))
         expect(response.status).to eq(400)
+        expect(response).to conform_to_openapi("POST /api/v1/uploads")
         expect(create_upload).not_to have_received(:call)
       end
 
@@ -91,6 +109,7 @@ RSpec.describe PastaAtlas::Actions::API::Uploads::Create, :db do
         params = action_params.merge(metadata: action_params[:metadata].merge("unique_id" => "xyz!"))
         response = action.call(session.merge(params))
         expect(response.status).to eq(400)
+        expect(response).to conform_to_openapi("POST /api/v1/uploads")
         expect(create_upload).not_to have_received(:call)
       end
 
@@ -98,6 +117,7 @@ RSpec.describe PastaAtlas::Actions::API::Uploads::Create, :db do
         params = action_params.merge(metadata: action_params[:metadata].merge("tick" => "abc"))
         response = action.call(session.merge(params))
         expect(response.status).to eq(400)
+        expect(response).to conform_to_openapi("POST /api/v1/uploads")
         expect(create_upload).not_to have_received(:call)
       end
 
@@ -105,6 +125,7 @@ RSpec.describe PastaAtlas::Actions::API::Uploads::Create, :db do
         params = action_params.merge(metadata: action_params[:metadata].merge("tick" => "1000"))
         response = action.call(session.merge(params))
         expect(response.status).to eq(400)
+        expect(response).to conform_to_openapi("POST /api/v1/uploads")
         expect(create_upload).not_to have_received(:call)
       end
 
@@ -112,6 +133,7 @@ RSpec.describe PastaAtlas::Actions::API::Uploads::Create, :db do
         params = action_params.merge(metadata: action_params[:metadata].merge("tick" => -1))
         response = action.call(session.merge(params))
         expect(response.status).to eq(400)
+        expect(response).to conform_to_openapi("POST /api/v1/uploads")
         expect(create_upload).not_to have_received(:call)
       end
 
@@ -119,6 +141,7 @@ RSpec.describe PastaAtlas::Actions::API::Uploads::Create, :db do
         params = action_params.merge(metadata: action_params[:metadata].merge("tick" => 4_294_967_296))
         response = action.call(session.merge(params))
         expect(response.status).to eq(400)
+        expect(response).to conform_to_openapi("POST /api/v1/uploads")
         expect(create_upload).not_to have_received(:call)
       end
     end
@@ -130,6 +153,7 @@ RSpec.describe PastaAtlas::Actions::API::Uploads::Create, :db do
         response = action.call(session.merge(action_params))
 
         expect(response.status).to eq(502)
+        expect(response).to conform_to_openapi("POST /api/v1/uploads")
       end
     end
   end
