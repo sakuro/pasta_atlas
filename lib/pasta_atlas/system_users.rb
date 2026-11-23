@@ -7,7 +7,7 @@ module PastaAtlas
     Definition = Data.define(:name, :display_name, :avatar_s3_key)
 
     SEEDED = [
-      Definition[name: "guest", display_name: "Guest", avatar_s3_key: "guest/avatar/guest.png"],
+      Definition[name: "guest", display_name: "Guest", avatar_s3_key: nil],
       Definition[name: "compilatron", display_name: "Compilatron", avatar_s3_key: "compilatron/avatar/compilatron.png"]
     ].freeze
     public_constant :SEEDED
