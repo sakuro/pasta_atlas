@@ -64,7 +64,11 @@ module PastaAtlas
           Failure([:invalid, "error-username-taken"])
         end
 
-        private def constraint_name(error) = error.original_exception.wrapped_exception.result.error_field(PG::PG_DIAG_CONSTRAINT_NAME)
+        # Read from the PostgreSQL error; anything not shaped like one gives nil and is re-raised.
+        private def constraint_name(error)
+          wrapped = error.original_exception&.wrapped_exception
+          wrapped.result&.error_field(PG::PG_DIAG_CONSTRAINT_NAME) if wrapped.respond_to?(:result)
+        end
 
         private def import_avatar_for(user, avatar_url)
           avatar_result = import_avatar.call(user:, avatar_url:)
