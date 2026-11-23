@@ -257,7 +257,6 @@ share-copy-link =
 avatar-change = Change
 avatar-remove = Remove
 avatar-cancel = Cancel
-avatar-dismiss = Dismiss
 avatar-error-too-large-file-size = File must be 5 MiB or smaller.
 avatar-error-too-small-pixel-size = Image must be { $min }×{ $min } or larger.
 avatar-error-too-large-pixel-size = Image must be { $max }×{ $max } or smaller.

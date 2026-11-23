@@ -232,16 +232,14 @@ export const AvatarUpload = (props: Props) => {
           <Show when={state().type === "uploading"}>
             <Spinner />
           </Show>
+          {/* No dismiss button: choosing a file or removing the avatar replaces the error. */}
           <Show when={errorState()} keyed>
             {(s) => (
-              <div>
-                <p
-                  class="has-text-danger is-size-7"
-                  data-l10n-id={s.error.msgId}
-                  data-l10n-args={s.error.msgArgs ? JSON.stringify(s.error.msgArgs) : undefined}
-                />
-                <button class="button is-small mt-1" type="button" data-l10n-id="avatar-dismiss" onClick={cancel} />
-              </div>
+              <p
+                class="has-text-danger is-size-7"
+                data-l10n-id={s.error.msgId}
+                data-l10n-args={s.error.msgArgs ? JSON.stringify(s.error.msgArgs) : undefined}
+              />
             )}
           </Show>
         </div>
