@@ -4,10 +4,10 @@ RSpec.describe PastaAtlas::Actions::API::Auth::Registration do
   let(:action) { PastaAtlas::Actions::API::Auth::Registration.new }
 
   context "when no pending_auth in session" do
-    it "returns 401" do
+    it "returns 403" do
       response = action.call({})
 
-      expect(response.status).to eq(401)
+      expect(response.status).to eq(403)
     end
   end
 

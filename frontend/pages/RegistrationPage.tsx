@@ -24,7 +24,7 @@ export const RegistrationPage = () => {
 
   const pending = createMemo(async (): Promise<PendingAuth | null> => {
     const res = await fetch("/api/v1/auth/registration");
-    if (res.status === 401) return null;
+    if (res.status === 403) return null;
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     return res.json() as Promise<PendingAuth>;
   });
@@ -65,7 +65,7 @@ export const RegistrationPage = () => {
     <section class="section">
       <Errored fallback={<ErrorNotification l10nId="error-load-failed" />}>
         <Loading fallback={<SpinnerBlock />}>
-          {/* The registration endpoint answers 401 when no OAuth data is pending. */}
+          {/* The registration endpoint answers 403 when no OAuth data is pending. */}
           <Show when={pending()} keyed fallback={<RedirectHome />}>
             {(auth) => {
               const [nameValue, setNameValue] = createSignal(auth.login_name);

@@ -99,7 +99,7 @@ Returns pending OAuth data for the registration form. Requires `session[:pending
 
 | Status | Condition |
 |---|---|
-| `401 Unauthorized` | No `session[:pending_auth]` |
+| `403 Forbidden` | No `session[:pending_auth]` |
 
 ## Pages
 
