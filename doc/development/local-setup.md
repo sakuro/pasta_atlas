@@ -31,7 +31,7 @@ aws_access_key_id = dummy
 aws_secret_access_key = dummy
 ```
 
-This provides dummy credentials and region for Floci. No real AWS account is needed. `.env.development` selects the profile through `AWS_PROFILE`, and both Terraform and `bin/dev` (the `wait-floci` task) use it.
+This provides dummy credentials and region for Floci. No real AWS account is needed. `.env.development` selects the profile through `AWS_PROFILE`, and both Terraform and `bin/dev` (the `dev:wait-floci` task) use it.
 
 ### 2. Start Docker services
 
@@ -127,7 +127,7 @@ This runs the `setup` mise task: `bundle install`, `npm install`, and `hanami db
 bin/dev
 ```
 
-Starts all services concurrently through the `dev` mise task. The web server and the queue worker first wait until the RDS instance accepts connections (the `wait-postgres` task), and the queue worker also waits until Floci serves its queue (`wait-floci`):
+Starts all services concurrently through the `dev` mise task. The web server and the queue worker first wait until the RDS instance accepts connections (the `dev:wait-postgres` task), and the queue worker also waits until Floci serves its queue (`dev:wait-floci`):
 
 | Process | Command |
 |---|---|

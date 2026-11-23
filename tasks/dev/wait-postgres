@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+#MISE description="Wait until the RDS instance served by Floci accepts connections"
+#MISE hide=true
+# The instance is created by `terraform apply` and served by Floci, so the tasks that need it wait for it.
+set -euo pipefail
+
+until pg_isready -h localhost -p 7001 -U pasta_atlas -q; do sleep 1; done

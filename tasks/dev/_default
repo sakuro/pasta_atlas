@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+#MISE description="Start the development services"
+#MISE depends=["dev:web", "dev:assets", "dev:frontend", "dev:floci", "dev:s3-queue-worker"]
