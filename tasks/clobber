@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+#MISE description="Remove any generated files"
+#MISE depends=["clean"]
+# The CLOBBER list the Rakefile defined.
+set -euo pipefail
+
+rm -rf -- public/assets public/assets.json

@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+#MISE description="Remove any temporary products"
+# The CLEAN list of rake/clean (rake 13.4.2) together with what the Rakefile added to it.
+set -euo pipefail
+shopt -s globstar nullglob
+
+rm -rf -- **/*~ **/*.bak coverage .rspec_status log/*.log* spec/examples.txt
+
+# rake/clean removes files named core, not directories.
+for file in **/core; do
+  [ -d "$file" ] || rm -f -- "$file"
+done

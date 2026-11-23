@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+#MISE description="Autocorrect RuboCop offenses (safe and unsafe)."
+set -euo pipefail
+
+exec bundle exec rubocop --autocorrect-all "$@"

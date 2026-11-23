@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+#MISE description="Run RSpec code examples"
+# Runs what RSpec::Core::RakeTask, registered as `spec` by hanami-rspec, ran: the files named by SPEC,
+# or its default pattern.
+set -euo pipefail
+
+if [ -n "${SPEC:-}" ]; then
+  # Unquoted on purpose: SPEC is a glob, as for the Rake task.
+  set -- $SPEC "$@"
+else
+  set -- --pattern 'spec/**{,/*/**}/*_spec.rb' "$@"
+fi
+
+exec bundle exec rspec "$@"

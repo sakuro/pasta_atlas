@@ -31,6 +31,6 @@ namespace :factorio do
 
     puts "Imported #{result.sprites} sprites in #{result.types} types from #{source} " \
          "(previously #{result.previous_sprites} sprites)"
-    puts "Next: scripts/generate-richtext-icons-css"
+    puts "Next: mise run icons:css"
   end
 end

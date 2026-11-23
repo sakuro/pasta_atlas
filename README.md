@@ -19,10 +19,7 @@ The AWS profile, the OAuth settings and the details of each step are in [doc/dev
 ## Testing
 
 ```sh
-bundle exec rake                 # RSpec and RuboCop
-npm run type-check
-npm run lint:frontend
-npm run test:frontend -- --run
+mise run check                   # RSpec, RuboCop, type check, ESLint and Vitest
 ```
 
 ## Documentation

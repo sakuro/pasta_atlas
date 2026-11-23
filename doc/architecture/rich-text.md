@@ -113,4 +113,4 @@ Then replace `frontend/factorio-icons` with the dump using the `factorio:import_
 
 ### Regenerating CSS
 
-Run `scripts/generate-richtext-icons-css` after adding or removing sprites.
+Run `mise run icons:css` after adding or removing sprites.
