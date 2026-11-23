@@ -1,0 +1,36 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+# [MISE] description="Replace frontend/factorio-icons with the output of `factorio --dump-icon-sprites` and regenerate the CSS"
+# [USAGE] arg "[source]" help="The dump directory; defaults to the script output directory reported by factorix"
+
+require "open3"
+require_relative "../../lib/pasta_atlas/factorio_icon_importer"
+
+source_arg = ENV.fetch("usage_source", "")
+source =
+  if source_arg.empty?
+    output, status = Open3.capture2("factorix", "path")
+    abort "factorix path failed" unless status.success?
+
+    line = output.lines.find {|l| l.start_with?("script_output_dir") }
+    abort "script_output_dir is not reported by factorix path" unless line
+
+    Pathname(line.split(nil, 2).last.strip)
+  else
+    Pathname(source_arg)
+  end
+abort "Not a directory: #{source}" unless source.directory?
+
+destination = Pathname(__dir__).join("../../frontend/factorio-icons").expand_path
+
+begin
+  result = PastaAtlas::FactorioIconImporter.new(destination:).call(source)
+rescue PastaAtlas::FactorioIconImporter::NoSpritesError => e
+  abort e.message
+end
+
+puts "Imported #{result.sprites} sprites in #{result.types} types from #{source} " \
+     "(previously #{result.previous_sprites} sprites)"
+
+system("mise", "run", "icons:css", exception: true)

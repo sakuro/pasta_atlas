@@ -109,8 +109,8 @@ Vite rewrites these relative paths during bundling and emits the PNG files along
 
 The sprites are the output of Factorio's `--dump-icon-sprites`. Run it with only the official mods enabled (`base`, `elevated-rails`, `quality`, `recycler`, `space-age`); other mods add or change icons. Delete the sprite directories of the previous dump from the script output directory first; the import takes everything it finds there, so removed icons would otherwise stay. The Steam build restarts itself through Steam and drops the arguments, so start it in a way that keeps them.
 
-Then replace `frontend/factorio-icons` with the dump using the `factorio:import_icons` rake task, and regenerate the CSS. The task reads the script output directory reported by factorix unless given another directory. It takes the subdirectories that hold PNG files directly and ignores the rest.
+Then run `mise run factorio:import_icons [dir]`. It replaces `frontend/factorio-icons` with the dump and regenerates the CSS. The task reads the script output directory reported by factorix unless given another directory. It takes the subdirectories that hold PNG files directly and ignores the rest.
 
 ### Regenerating CSS
 
-Run `mise run icons:css` after adding or removing sprites.
+The import regenerates the CSS. After adding or removing sprites by hand, run `mise run icons:css`.
