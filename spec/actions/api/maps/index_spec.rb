@@ -30,6 +30,7 @@ RSpec.describe PastaAtlas::Actions::API::Maps::Index do
     expect(body[:page]).to eq(1)
     expect(body[:per_page]).to eq(20)
     expect(body[:total]).to eq(1)
+    expect(response).to conform_to_openapi("GET /api/v1/maps")
   end
 
   it "calls the operation with the requested page" do

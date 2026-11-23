@@ -28,6 +28,7 @@ RSpec.describe PastaAtlas::Actions::API::Users::Maps::Index do
       response = action.call(env)
 
       expect(response.status).to eq(404)
+      expect(response).to conform_to_openapi("GET /api/v1/users/{user_name}/maps")
     end
   end
 
@@ -41,6 +42,7 @@ RSpec.describe PastaAtlas::Actions::API::Users::Maps::Index do
       response = action.call(env)
 
       expect(response.status).to eq(404)
+      expect(response).to conform_to_openapi("GET /api/v1/users/{user_name}/maps")
     end
   end
 
@@ -64,6 +66,7 @@ RSpec.describe PastaAtlas::Actions::API::Users::Maps::Index do
         "user_name" => "wube",
         "author_display_name" => "Wube"
       )
+      expect(response).to conform_to_openapi("GET /api/v1/users/{user_name}/maps")
     end
 
     context "when the user has no maps" do
@@ -74,6 +77,7 @@ RSpec.describe PastaAtlas::Actions::API::Users::Maps::Index do
 
         body = JSON.parse(response.body.join)
         expect(body["maps"]).to eq([])
+        expect(response).to conform_to_openapi("GET /api/v1/users/{user_name}/maps")
       end
     end
   end

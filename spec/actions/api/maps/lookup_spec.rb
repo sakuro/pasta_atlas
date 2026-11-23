@@ -21,6 +21,7 @@ RSpec.describe PastaAtlas::Actions::API::Maps::Lookup do
       expect(response.status).to eq(200)
       body = JSON.parse(response.body.join)
       expect(body).to include("name" => "My Custom Map")
+      expect(response).to conform_to_openapi("GET /api/v1/maps/lookup")
     end
   end
 
@@ -37,6 +38,7 @@ RSpec.describe PastaAtlas::Actions::API::Maps::Lookup do
       expect(response.status).to eq(200)
       body = JSON.parse(response.body.join)
       expect(body).to include("name" => nil)
+      expect(response).to conform_to_openapi("GET /api/v1/maps/lookup")
     end
   end
 
@@ -47,6 +49,7 @@ RSpec.describe PastaAtlas::Actions::API::Maps::Lookup do
       response = action.call(session.merge(action_params))
 
       expect(response.status).to eq(404)
+      expect(response).to conform_to_openapi("GET /api/v1/maps/lookup")
     end
   end
 

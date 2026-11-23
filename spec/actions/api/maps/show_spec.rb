@@ -38,6 +38,7 @@ RSpec.describe PastaAtlas::Actions::API::Maps::Show do
         "tick" => 1000
       )
       expect(body["generations"].first["metadata_url"]).to end_with("ae8ec3ab/550f41a9/mapshot.json")
+      expect(response).to conform_to_openapi("GET /api/v1/maps/{ulid}")
     end
   end
 
@@ -48,6 +49,7 @@ RSpec.describe PastaAtlas::Actions::API::Maps::Show do
       response = action.call(action_params)
 
       expect(response.status).to eq(404)
+      expect(response).to conform_to_openapi("GET /api/v1/maps/{ulid}")
     end
   end
 end
