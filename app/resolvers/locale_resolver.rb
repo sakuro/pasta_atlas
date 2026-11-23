@@ -32,8 +32,9 @@ module PastaAtlas
         tag, *params = part.split(";").map(&:strip)
         return if tag.nil? || tag.empty?
 
-        q_param = params.find {|param| param.start_with?("q=") }
-        q = q_param ? Float(q_param.delete_prefix("q="), exception: false) : 1.0
+        # Parameter names are case-insensitive (RFC 9110).
+        q_value = params.filter_map {|param| param[/\Aq\s*=\s*(.*)\z/i, 1] }.first
+        q = q_value ? Float(q_value, exception: false) : 1.0
         [tag, q] if q
       end
     end
