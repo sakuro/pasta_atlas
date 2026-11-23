@@ -14,7 +14,7 @@ docker run --rm --platform linux/arm64 --entrypoint /bin/bash \
     rm -rf /build && mkdir -p /build/public/assets
     cd /src
     tar -cf - Gemfile Gemfile.lock Rakefile app config config.ru lib lambda_function.rb run.sh \
-      public/404.html public/500.html \
+      public/500.html \
       | tar -C /build -xf -
     # public/assets is served from S3/CloudFront; the app only needs the manifest.
     cp public/assets/assets.json /build/public/assets/
