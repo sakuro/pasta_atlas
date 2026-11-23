@@ -31,10 +31,10 @@ RSpec.describe PastaAtlas::Actions::API::Users::Show do
 
     before { allow(find_by_name).to receive(:call).with(user_name: "guest").and_return(Success(guest)) }
 
-    it "returns 403" do
+    it "returns 404" do
       response = action.call({user_name: "guest"})
 
-      expect(response.status).to eq(403)
+      expect(response.status).to eq(404)
       expect(response).to conform_to_openapi("GET /api/v1/users/{user_name}")
     end
   end

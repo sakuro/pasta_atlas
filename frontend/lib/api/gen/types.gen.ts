@@ -567,11 +567,7 @@ export type ShowUserData = {
 
 export type ShowUserErrors = {
   /**
-   * The user is a system account (guest or compilatron)
-   */
-  403: unknown;
-  /**
-   * The user does not exist
+   * The user does not exist or is a system account (guest or compilatron)
    */
   404: unknown;
 };

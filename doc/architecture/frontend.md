@@ -17,7 +17,7 @@ Defined with `createRouter` in `frontend/app.tsx`:
 | `/about`, `/privacy`, `/terms` | `StaticPage` |
 | `*` | `NotFoundPage` |
 
-The server renders the shell with status 404 for unknown maps, users and paths, and 403 for non-public profiles; the SPA shows the matching state.
+The server renders the shell with status 404 for unknown maps, users (system users included) and paths; the SPA shows the matching state.
 
 Map viewer query parameters (kept in the URL with `history.replaceState`; see `pages/map_viewer/url_params.ts`):
 
@@ -41,7 +41,7 @@ Changing the generation removes `s`, `x`, `y` and `z`.
 |---|---|
 | `MapsIndexPage` | `GET /api/v1/maps?page=N` (20 per page); client-side pagination through `?page=`. `MapCard` shows the thumbnail, `display_name`, the author (linked to the user page except for the guest), `updated_at`, and info and share buttons. |
 | `MapViewerPage` | `GET /api/v1/maps/:ulid`; 404 shows `error-map-not-found`. Passes the map data to `MapViewer`. |
-| `UserPage` | `GET /api/v1/users/:user_name` (404 and 403 have their own messages). The active tab is kept in the URL hash (`#tab-recent-maps`, `#tab-profile`, `#tab-preferences`, `#tab-credentials`, `#tab-danger`). Maps is visible to all; the others only on the own profile. |
+| `UserPage` | `GET /api/v1/users/:user_name` (404, also for a system user, shows its own message). The active tab is kept in the URL hash (`#tab-recent-maps`, `#tab-profile`, `#tab-preferences`, `#tab-credentials`, `#tab-danger`). Maps is visible to all; the others only on the own profile. |
 | `RegistrationPage` | `GET /api/v1/auth/registration` returns the pending OAuth data (403 redirects to `/`). Submits `POST /auth/register` with the name, the browser timezone and the terms agreement. On success it reloads the app at the returned `redirect_to` (`window.location.assign`), because the session changed and the CSRF token in the page is stale. |
 | `StaticPage` | `GET /api/v1/pages/:slug`; refetched when the display language changes, because the server picks the locale. |
 
