@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+#MISE description="Poll the SQS queues and process the S3 cleanup messages"
+#MISE hide=true
+#MISE depends=["dev:wait-postgres", "dev:wait-floci"]
+set -euo pipefail
+
+exec bundle exec rake s3:process_queues

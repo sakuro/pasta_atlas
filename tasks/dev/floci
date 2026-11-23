@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+#MISE description="Run Floci (S3, SQS and RDS) with Docker Compose"
+#MISE hide=true
+set -euo pipefail
+
+exec docker compose up

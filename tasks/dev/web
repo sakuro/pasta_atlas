@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+#MISE description="Run the Hanami web server"
+#MISE hide=true
+#MISE depends=["dev:wait-postgres"]
+set -euo pipefail
+
+exec bundle exec hanami server

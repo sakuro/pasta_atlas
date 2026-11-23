@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+#MISE description="Watch and compile the Hanami assets"
+#MISE hide=true
+set -euo pipefail
+
+exec bundle exec hanami assets watch
