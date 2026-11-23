@@ -23,6 +23,13 @@
       "matchPackageNames": ["public.ecr.aws/lambda/ruby"],
       "matchUpdateTypes": ["major", "minor"],
       "enabled": false
+    },
+    {
+      "description": "The PostgreSQL major version follows the production RDS engine_version (Terraform); update CI, compose.yml and RDS together.",
+      "matchDatasources": ["docker"],
+      "matchPackageNames": ["postgres"],
+      "matchUpdateTypes": ["major"],
+      "enabled": false
     }
   ],
   "lockFileMaintenance": {
