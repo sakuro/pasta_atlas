@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { errorKey, lookupMap, updateMapName } from "./client";
+import { deleteUser, errorKey, lookupMap, updateMapName } from "./client";
 
 describe("client", () => {
   afterEach(() => {
@@ -51,6 +51,24 @@ describe("client", () => {
     expect(data).toBeUndefined();
     expect(error).toBe("Not Found");
     expect(response?.status).toBe(404);
+  });
+
+  it("sends the body of a DELETE", async () => {
+    const fetchMock = vi.fn(
+      async (_request: Request) =>
+        new Response(JSON.stringify({ redirect_to: "/" }), {
+          status: 200,
+          headers: { "Content-Type": "application/json" },
+        })
+    );
+    vi.stubGlobal("fetch", fetchMock);
+
+    await deleteUser({ path: { user_name: "wube" }, body: { confirm_user_name: "wube" } });
+
+    const request = fetchMock.mock.calls[0][0];
+    expect(request.method).toBe("DELETE");
+    expect(new URL(request.url).pathname).toBe("/api/v1/users/wube");
+    expect(await request.json()).toEqual({ confirm_user_name: "wube" });
   });
 });
 

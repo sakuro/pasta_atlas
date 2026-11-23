@@ -1,14 +1,8 @@
 import { affects, createMemo, createSignal, Errored, For, isPending, Loading, refresh, Show } from "solid-js";
+import { errorKey, listCredentials, type Provider, unlinkCredential } from "../../lib/api/client";
 import "../../lib/l10n";
 import { SpinnerBlock } from "../../components/SpinnerBlock";
 import { ErrorNotification } from "../../components/ErrorNotification";
-
-type CredentialsData = {
-  providers: string[];
-  connected_providers: string[];
-};
-
-const csrfToken = (): string => document.querySelector<HTMLMetaElement>('meta[name="csrf-token"]')?.content ?? "";
 
 export const UserCredentialsTab = (props: {
   userName: string;
@@ -17,31 +11,27 @@ export const UserCredentialsTab = (props: {
   onSuccess?: () => void;
   onError?: (msgKey: string) => void;
 }) => {
-  const data = createMemo(async (): Promise<CredentialsData | undefined> => {
+  const data = createMemo(async () => {
     if (!props.active()) return undefined;
-    const res = await fetch(`/api/v1/users/${props.userName}/credentials`);
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    return res.json() as Promise<CredentialsData>;
+    const { data: credentials, error, response } = await listCredentials({ path: { user_name: props.userName } });
+    if (!credentials) throw new Error(`HTTP ${response?.status}`, { cause: error });
+    return credentials;
   });
 
-  const [disconnecting, setDisconnecting] = createSignal<string | null>(null);
+  const [disconnecting, setDisconnecting] = createSignal<Provider | null>(null);
 
-  const handleDisconnect = async (provider: string) => {
+  const handleDisconnect = async (provider: Provider) => {
     setDisconnecting(provider);
     try {
-      const res = await fetch(`/api/v1/users/${props.userName}/credentials/${provider}`, {
-        method: "DELETE",
-        headers: { "X-CSRF-Token": csrfToken() },
-      });
-      if (res.ok) {
+      const { error, response } = await unlinkCredential({ path: { user_name: props.userName, provider } });
+      if (response?.ok) {
         // affects() makes the reload read as pending, so the list is replaced by the spinner
         // until the fresh credentials arrive (a bare refresh() would swap them in silently).
         affects(data);
         void refresh(data);
         props.onSuccess?.();
       } else {
-        const json = (await res.json()) as { error?: string };
-        props.onError?.(json.error ?? "error-unknown");
+        props.onError?.(errorKey(error) ?? "error-unknown");
       }
     } finally {
       setDisconnecting(null);

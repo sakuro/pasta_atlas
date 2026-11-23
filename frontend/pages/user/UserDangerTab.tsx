@@ -1,7 +1,6 @@
 import { createSignal } from "solid-js";
+import { deleteUser } from "../../lib/api/client";
 import "../../lib/l10n";
-
-const csrfToken = (): string => document.querySelector<HTMLMetaElement>('meta[name="csrf-token"]')?.content ?? "";
 
 export const UserDangerTab = (props: { userName: string; onError?: (msgKey: string) => void }) => {
   const [confirmValue, setConfirmValue] = createSignal("");
@@ -12,14 +11,13 @@ export const UserDangerTab = (props: { userName: string; onError?: (msgKey: stri
     if (confirmValue() !== props.userName) return;
     setSubmitting(true);
     try {
-      const res = await fetch(`/api/v1/users/${props.userName}`, {
-        method: "DELETE",
-        headers: { "Content-Type": "application/json", "X-CSRF-Token": csrfToken() },
-        body: JSON.stringify({ user_name: props.userName, confirm_user_name: confirmValue() }),
+      const { data } = await deleteUser({
+        path: { user_name: props.userName },
+        body: { confirm_user_name: confirmValue() },
       });
-      if (res.ok) {
+      if (data) {
         // The server clears the session; reload so the page gets a fresh CSRF token.
-        window.location.assign("/");
+        window.location.assign(data.redirect_to);
       } else {
         props.onError?.("error-unknown");
       }
