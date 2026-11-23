@@ -17,10 +17,10 @@ steam-name = { -steam }
 
 ## Surfaces
 surface-nauvis = 新地星
-surface-vulcanus = 伏尔卡努斯
-surface-gleba = 格莱巴
-surface-fulgora = 富尔格拉
-surface-aquilo = 阿奎罗
+surface-vulcanus = 祝融星
+surface-gleba = 句芒星
+surface-fulgora = 雷神星
+surface-aquilo = 玄冥星
 
 ## Errors
 error-load-failed = 数据加载失败。
