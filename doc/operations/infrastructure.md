@@ -2,7 +2,7 @@
 
 ## Overview
 
-pasta_atlas runs on AWS Lambda behind CloudFront. DNS is managed by Gandi. The runtime design, networking, origin protection and deployment are described in [Lambda](lambda.md); this document covers the rest.
+Pasta Atlas runs on AWS Lambda behind CloudFront. DNS is managed by Gandi. The runtime design, networking, origin protection and deployment are described in [Lambda](lambda.md); this document covers the rest.
 
 ## AWS Services
 

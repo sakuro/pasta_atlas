@@ -1,4 +1,4 @@
-# PastaAtlas
+# Pasta Atlas
 
 A web application for browsing Factorio map screenshots captured by the [mapshot](https://github.com/Palats/mapshot) mod.
 

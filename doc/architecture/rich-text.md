@@ -1,6 +1,6 @@
 # Factorio Rich Text
 
-Factorio allows train stop names (`backer_name`) and map tags (`text`) to contain rich text tags that embed item icons, colors, and other visual elements. This document describes how pasta_atlas renders them in HTML.
+Factorio allows train stop names (`backer_name`) and map tags (`text`) to contain rich text tags that embed item icons, colors, and other visual elements. This document describes how Pasta Atlas renders them in HTML.
 
 ## Where It Appears
 

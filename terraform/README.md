@@ -1,4 +1,4 @@
-# Terraform — PastaAtlas Infrastructure
+# Terraform — Pasta Atlas Infrastructure
 
 ## Structure
 
