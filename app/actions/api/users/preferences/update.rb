@@ -15,10 +15,12 @@ module PastaAtlas
               required(:user_name).filled(:string)
               optional(:timezone).maybe(:string)
               optional(:locale).maybe(:string)
-              optional(:relative_timestamps).maybe(:string)
+              required(:relative_timestamps).value(PastaAtlas::Types::Strict::Bool)
             end
 
             def handle(request, response)
+              halt :bad_request unless request.params.valid?
+
               result = verify_ownership.call(
                 current_user: current_user(request),
                 user_name: request.params[:user_name]
@@ -31,7 +33,7 @@ module PastaAtlas
                   user:,
                   timezone: request.params[:timezone],
                   locale: request.params[:locale],
-                  relative_timestamps: request.params[:relative_timestamps] == "true"
+                  relative_timestamps: request.params[:relative_timestamps]
                 )
                 in Failure(Symbol => status)
                   halt status

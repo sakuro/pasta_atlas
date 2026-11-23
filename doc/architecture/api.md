@@ -196,7 +196,7 @@ Updates timezone, locale, and relative_timestamps. Authenticated, own preference
 |---|---|
 | `timezone` | IANA timezone identifier (e.g. `"Asia/Tokyo"`); empty or invalid is stored as null |
 | `locale` | Supported BCP 47 language tag (e.g. `"ja"`); empty or unsupported is stored as null (use browser locale) |
-| `relative_timestamps` | `"true"` enables; any other value or absence disables |
+| `relative_timestamps` | Boolean, required; a missing or non-boolean value is answered with `400 Bad Request` |
 
 **Response `200 OK`:**
 
@@ -208,6 +208,7 @@ Updates timezone, locale, and relative_timestamps. Authenticated, own preference
 
 | Status | Condition |
 |---|---|
+| `400 Bad Request` | `relative_timestamps` is missing or not a boolean |
 | `403 Forbidden` | Not logged in, or not own preferences |
 
 ### DELETE /api/v1/users/:user_name/avatar

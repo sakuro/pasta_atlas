@@ -102,7 +102,7 @@ export const UserPreferencesTab = (props: {
           user_name: props.userName,
           timezone: (formData.get("timezone") as string) || null,
           locale: (formData.get("locale") as string) || null,
-          relative_timestamps: String(relTs),
+          relative_timestamps: relTs,
         }),
       });
       if (res.ok) {
