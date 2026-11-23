@@ -6,7 +6,6 @@ require "aws-sdk-sqs"
 RSpec.describe PastaAtlas::Operations::Uploads::VerifyBatch do
   let(:generation_repo) { instance_double(PastaAtlas::Repos::GenerationRepo) }
   let(:map_repo) { instance_double(PastaAtlas::Repos::MapRepo) }
-  let(:upload_repo) { instance_double(PastaAtlas::Repos::UploadRepo) }
   let(:upload_verification_key_repo) { instance_double(PastaAtlas::Repos::UploadVerificationKeyRepo) }
   let(:user_repo) { instance_double(PastaAtlas::Repos::UserRepo) }
   let(:settings) do
@@ -22,7 +21,6 @@ RSpec.describe PastaAtlas::Operations::Uploads::VerifyBatch do
     PastaAtlas::Operations::Uploads::VerifyBatch.new(
       generation_repo:,
       map_repo:,
-      upload_repo:,
       upload_verification_key_repo:,
       user_repo:,
       settings:,
@@ -31,7 +29,7 @@ RSpec.describe PastaAtlas::Operations::Uploads::VerifyBatch do
     )
   end
 
-  let(:upload) { double("Upload", id: 1, generation_id: 10) }
+  let(:upload) { double("Upload", id: 1, generation_id: 10, pending?: true) }
   let(:generation) { double("Generation", id: 10, map_id: 20, mapshot_unique_id: "550f41a9") }
   let(:map) { double("Map", id: 20, user_id: 30, mapshot_map_id: "ae8ec3ab") }
   let(:user) { double("User", id: 30, name: "testuser") }
@@ -50,7 +48,6 @@ RSpec.describe PastaAtlas::Operations::Uploads::VerifyBatch do
       before do
         allow(s3_client).to receive(:head_object).and_return(head_response)
         allow(upload_verification_key_repo).to receive(:mark_verified_batch)
-        allow(upload_repo).to receive(:accumulate_verified_bytes)
       end
 
       it "returns verified_bytes for the batch" do
@@ -71,11 +68,28 @@ RSpec.describe PastaAtlas::Operations::Uploads::VerifyBatch do
           ]
         )
       end
+    end
 
-      it "accumulates bytes on the upload" do
+    context "when the upload is not pending" do
+      let(:upload) { double("Upload", id: 1, generation_id: 10, pending?: false) }
+
+      before do
+        allow(s3_client).to receive(:head_object)
+        allow(upload_verification_key_repo).to receive(:mark_verified_batch)
+      end
+
+      it "returns an unprocessable_entity failure" do
+        result = operation.call(upload:, filenames:)
+
+        expect(result).to be_failure
+        expect(result.failure).to eq(:unprocessable_entity)
+      end
+
+      it "does not check the files or mark keys" do
         operation.call(upload:, filenames:)
 
-        expect(upload_repo).to have_received(:accumulate_verified_bytes).with(id: 1, bytes: 2048)
+        expect(s3_client).not_to have_received(:head_object)
+        expect(upload_verification_key_repo).not_to have_received(:mark_verified_batch)
       end
     end
 

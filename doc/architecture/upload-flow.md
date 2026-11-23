@@ -87,7 +87,7 @@ Parameter validation and error responses are specified in [api.md](api.md#upload
    - If exists with a `failed` upload → it is returned too, but `presigned_posts` rejects it with `422`, so it cannot be resumed. The bundled client never sets `failed`; only the API can
    - If not exists → create `Generation`
 3. Write mapshot.json to S3 at `{user_name}/maps/{mapshot_map_id}/{mapshot_unique_id}/mapshot.json` and set `metadata_s3_key` on the Generation
-4. Create the `Upload` (`total_image_count` from the request, `verified_bytes` initialised to the size of mapshot.json) and append an `upload_events` row with `event_type: pending`
+4. Create the `Upload` (`total_image_count` from the request, `metadata_bytes` set to the size of mapshot.json) and append an `upload_events` row with `event_type: pending`
 5. Return `{ ulid, map_ulid, generation_ulid }`
 
 Steps 2–4 run inside a single transaction. Step 1 runs before it; if the transaction rolls back (e.g. S3 failure), the Map record is retained — Map creation is idempotent.
@@ -100,9 +100,10 @@ Steps 2–4 run inside a single transaction. Step 1 runs before it; if the trans
 
 ### POST /api/v1/uploads/:ulid/verify_batch
 
-1. Issue a `HeadObject` for each key (concurrency 20)
-2. If any object is missing: enqueue the generation's S3 prefix on the cleanup queue and delete the Generation. If the enqueue fails, the Generation is kept
-3. Otherwise mark the keys verified and add the summed object sizes of the batch to `uploads.verified_bytes`
+1. Reject the request unless the upload is `pending`
+2. Issue a `HeadObject` for each key (concurrency 20)
+3. If any object is missing: enqueue the generation's S3 prefix on the cleanup queue and delete the Generation. If the enqueue fails, the Generation is kept
+4. Otherwise mark the keys verified and record each object size on its `upload_verification_keys` row. A filename that `presigned_posts` did not issue has no row and is not recorded
 
 Verification makes the size recorded in the database reflect what is actually in S3, independent of the client.
 
@@ -110,7 +111,7 @@ Verification makes the size recorded in the database reflect what is actually in
 
 1. For `complete`: the number of verified keys must equal `total_image_count`
 2. Append an `upload_events` row (`complete` or `failed`)
-3. For `complete`: store `verified_bytes` as the generation's `storage_bytes` and mark the verification as passed
+3. For `complete`: set the generation's `storage_bytes` to `metadata_bytes` plus the sizes of the verified keys, so a key verified more than once counts once, and mark the verification as passed
 
 ## Operation Sequence
 
@@ -161,13 +162,14 @@ sequenceDiagram
         Note over Client,S3: Step 2c — POST /verify_batch
         Client->>Action: POST /verify_batch {filenames}
         Action->>VB: call(upload, filenames)
+        VB-->>Client: 422 if the upload is not pending
         VB->>S3: HeadObject per key
         alt any key missing
             VB->>S3: (cleanup queue) delete prefix
             VB->>DB: DELETE generation
             VB-->>Client: 422 verification_failed
         else all present
-            VB->>DB: mark verified, add verified_bytes
+            VB->>DB: mark verified, record sizes
             VB-->>Client: { verified_bytes }
         end
     end
@@ -177,7 +179,7 @@ sequenceDiagram
     Client->>Action: PATCH /uploads/:ulid {status: "complete"}
     Action->>UUS: call(upload_ulid, status, user_id)
     UUS->>DB: count verified keys == total_image_count
-    UUS->>DB: INSERT upload_event, set storage_bytes
+    UUS->>DB: INSERT upload_event, set storage_bytes (metadata + verified key sizes)
     UUS-->>Client: 200 OK
 ```
 

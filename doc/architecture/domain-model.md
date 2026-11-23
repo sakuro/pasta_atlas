@@ -101,7 +101,7 @@ A snapshot of a map at a specific point in game time.
 | mapshot_unique_id | `unique_id` from mapshot.json |
 | tick | `tick` from mapshot.json |
 | metadata_s3_key | S3 path to mapshot.json |
-| storage_bytes | nullable; total size of the tile images, copied from `Upload.verified_bytes` when verification passes |
+| storage_bytes | nullable; total size of mapshot.json and the verified tile images, set when the upload completes (see [upload flow](upload-flow.md#patch-apiv1uploadsulid)) |
 
 A map has at most one Generation per `mapshot_unique_id`.
 
@@ -115,7 +115,7 @@ Tracks an upload session for a generation's image files. It has no status column
 | generation_id | FK → Generation (1:1) |
 | total_image_count | number of tile images expected (1–10000) |
 | verification_status | enum: pending\|passed\|failed; defaults to `pending` |
-| verified_bytes | sum of the verified object sizes; defaults to 0 |
+| metadata_bytes | size of mapshot.json; defaults to 0 |
 | verified_at | nullable; set when verification passes |
 
 A Generation is not shown to viewers until its Upload's current status is `complete`.

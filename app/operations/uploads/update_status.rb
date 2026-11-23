@@ -43,7 +43,8 @@ module PastaAtlas
         end
 
         private def finalize_verification(upload)
-          generation_repo.update_storage_bytes(id: upload.generation_id, storage_bytes: upload.verified_bytes)
+          tile_bytes = upload_verification_key_repo.sum_verified_size_bytes(upload_id: upload.id)
+          generation_repo.update_storage_bytes(id: upload.generation_id, storage_bytes: upload.metadata_bytes + tile_bytes)
           upload_repo.update_verification(id: upload.id, verification_status: "passed", verified_at: Time.now)
         end
       end

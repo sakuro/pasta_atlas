@@ -35,4 +35,20 @@ RSpec.describe PastaAtlas::Repos::UploadVerificationKeyRepo, :db do
       expect(repo.count_verified(upload_id: upload.id)).to eq(1)
     end
   end
+
+  describe "#sum_verified_size_bytes" do
+    before { repo.create_many(upload_id: upload.id, s3_keys: keys) }
+
+    it "sums the sizes of the verified keys of the upload" do
+      repo.mark_verified_batch(upload_id: upload.id, results: [{s3_key: keys.first, size_bytes: 10}])
+      repo.mark_verified_batch(upload_id: upload.id, results: [{s3_key: "a/unissued.jpg", size_bytes: 20}])
+      Factory[:upload_verification_key, size_bytes: 40]
+
+      expect(repo.sum_verified_size_bytes(upload_id: upload.id)).to be(10)
+    end
+
+    it "returns 0 when no key is verified" do
+      expect(repo.sum_verified_size_bytes(upload_id: upload.id)).to be(0)
+    end
+  end
 end

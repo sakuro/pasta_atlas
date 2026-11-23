@@ -222,7 +222,7 @@ CREATE TABLE public.uploads (
     total_image_count integer NOT NULL,
     created_at timestamp with time zone DEFAULT now() NOT NULL,
     verification_status text DEFAULT 'pending'::text NOT NULL,
-    verified_bytes bigint DEFAULT 0 NOT NULL,
+    metadata_bytes bigint DEFAULT 0 NOT NULL,
     verified_at timestamp with time zone,
     CONSTRAINT verification_status_values CHECK ((verification_status = ANY (ARRAY['pending'::text, 'passed'::text, 'failed'::text])))
 );
@@ -626,4 +626,5 @@ INSERT INTO schema_migrations (filename) VALUES
 ('20260607010000_add_not_null_to_uploads_total_image_count.rb'),
 ('20260608000000_add_verification_to_uploads.rb'),
 ('20261120000000_drop_expires_at_from_generations.rb'),
-('20261122000000_create_avatar_uploads.rb');
+('20261122000000_create_avatar_uploads.rb'),
+('20261123000000_rename_verified_bytes_to_metadata_bytes_in_uploads.rb');

@@ -28,6 +28,54 @@ RSpec.describe PastaAtlas::Operations::Uploads::UpdateStatus, :db do
         end
       end
 
+      context "when computing the storage size of the generation" do
+        let!(:upload) { Factory[:upload, total_image_count: 2, metadata_bytes: 300] }
+        let(:prefix) { "#{user.name}/maps/#{map.mapshot_map_id}/#{generation.mapshot_unique_id}/" }
+        let(:tiles) { ["s0zoom_4/tile_0_0.jpg", "s0zoom_4/tile_0_1.jpg"] }
+        let(:s3_client) { Aws::S3::Client.new(stub_responses: {head_object: {content_length: 1000}}) }
+        let(:verify_batch) { PastaAtlas::Operations::Uploads::VerifyBatch.new(s3_client:) }
+        let(:key_repo) { Hanami.app["repos.upload_verification_key_repo"] }
+        let(:upload_repo) { Hanami.app["repos.upload_repo"] }
+
+        def complete_and_read_storage_bytes
+          operation.call(upload_ulid: upload.ulid, status: "complete", user_id: user.id)
+          generation_repo.find_by_id!(upload.generation_id).storage_bytes
+        end
+
+        def verify(filenames) = verify_batch.call(upload: upload_repo.find_by_ulid(upload.ulid), filenames:)
+
+        before do
+          Factory[:upload_event, upload:, event_type: "pending"]
+          key_repo.create_many(upload_id: upload.id, s3_keys: tiles.map {|tile| "#{prefix}#{tile}" })
+        end
+
+        it "stores the metadata bytes plus the sizes of the verified keys" do
+          verify(tiles)
+
+          expect(complete_and_read_storage_bytes).to eq(300 + 2000)
+        end
+
+        it "does not count a filename that presigned_posts did not issue" do
+          verify(tiles + ["mapshot.json"])
+
+          expect(complete_and_read_storage_bytes).to eq(300 + 2000)
+        end
+
+        it "counts a file verified twice once" do
+          verify(tiles)
+          verify(tiles.take(1))
+
+          expect(complete_and_read_storage_bytes).to eq(300 + 2000)
+        end
+
+        it "does not count the keys of another upload" do
+          Factory[:upload_verification_key, size_bytes: 5000]
+          verify(tiles)
+
+          expect(complete_and_read_storage_bytes).to eq(300 + 2000)
+        end
+      end
+
       context "when not all files are verified" do
         it "returns an incomplete failure" do
           result = operation.call(upload_ulid: upload.ulid, status: "complete", user_id: user.id)

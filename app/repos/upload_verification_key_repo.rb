@@ -27,9 +27,17 @@ module PastaAtlas
 
       def count_among(upload_id:, s3_keys:) = upload_verification_keys.where(upload_id:, s3_key: s3_keys).count
 
-      def count_verified(upload_id:)
-        upload_verification_keys.where(upload_id:).exclude(verified_at: nil).count
+      def count_verified(upload_id:) = verified_keys(upload_id).count
+
+      def sum_verified_size_bytes(upload_id:)
+        # An aggregate. SUM(bigint) is numeric (a BigDecimal) and NULL over no rows,
+        # hence the COALESCE and the cast back to bigint.
+        verified_keys(upload_id).dataset.unordered.get(
+          Sequel.function(:coalesce, Sequel.function(:sum, :size_bytes), 0).cast(:bigint)
+        )
       end
+
+      private def verified_keys(upload_id) = upload_verification_keys.where(upload_id:).exclude(verified_at: nil)
     end
   end
 end

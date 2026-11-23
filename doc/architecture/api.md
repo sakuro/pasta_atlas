@@ -189,7 +189,7 @@ Check that the files of one batch exist in S3 (one `HeadObject` call per file) a
 | `403 Forbidden` | Guest user, or the map belongs to another user |
 | `404 Not Found` | Upload with given ULID does not exist |
 | `400 Bad Request` | `filenames` is empty or has more than 200 entries |
-| `422 Unprocessable Entity` | An object is missing (`{ "error": "verification_failed" }`); the generation is deleted and its S3 prefix is queued for cleanup |
+| `422 Unprocessable Entity` | Upload status is `complete` or `failed` (no body; nothing is checked), or an object is missing (`{ "error": "verification_failed" }`); the generation is deleted and its S3 prefix is queued for cleanup |
 | `500 Internal Server Error` | The cleanup message could not be queued; the generation is kept |
 
 ### PATCH /api/v1/uploads/:ulid

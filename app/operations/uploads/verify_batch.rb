@@ -9,7 +9,6 @@ module PastaAtlas
         include Deps[
           "repos.generation_repo",
           "repos.map_repo",
-          "repos.upload_repo",
           "repos.upload_verification_key_repo",
           "repos.user_repo",
           "settings",
@@ -21,6 +20,8 @@ module PastaAtlas
         private_constant :CONCURRENCY
 
         def call(upload:, filenames:)
+          step Failure(:unprocessable_entity) unless upload.pending?
+
           generation = generation_repo.find_by_id!(upload.generation_id)
           map = map_repo.find_by_id!(generation.map_id)
           user = user_repo.find_by_id!(map.user_id)
@@ -36,10 +37,9 @@ module PastaAtlas
           end
 
           upload_verification_key_repo.mark_verified_batch(upload_id: upload.id, results:)
-          batch_bytes = results.sum {|r| r[:size_bytes] }
-          upload_repo.accumulate_verified_bytes(id: upload.id, bytes: batch_bytes)
-
-          {verified_bytes: batch_bytes}
+          # Unlike the storage size of the generation, this counts every object of the batch,
+          # including retried and unissued ones.
+          {verified_bytes: results.sum {|r| r[:size_bytes] }}
         end
 
         private def schedule_s3_cleanup(s3_prefix)
