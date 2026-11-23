@@ -85,7 +85,7 @@ Non-secret configuration is set as ordinary Lambda environment variables from Te
 
 ## One-off tasks
 
-`migrate.yml` (`db:migrate`), `seed.yml` (`db:seed`) and `delete-map.yml` (`maps:delete`, workflow input `ulid`, event key `map_ulid`) are manual (`workflow_dispatch`) workflows that invoke the `task` function through `scripts/invoke-lambda-task`; `scripts/seed-db` does the same with `AWS_PROFILE=terraform`. The function accepts an event naming one of these allow-listed tasks and runs it in-process (`lib/lambda_support/task_runner.rb`); the fourth to sixth, `cleanup:stale_uploads`, `cleanup:orphaned_avatars` and `cleanup:orphaned_maps`, are run by the schedules below. `cleanup:orphaned_maps` only lists the S3 prefixes of maps missing from the database unless the event sets `"dry_run": false`, so a manual invocation without it is a dry run. The 15-minute maximum timeout applies. The structure dump after migration is skipped because the image has no `pg_dump`.
+`migrate.yml` (`db:migrate`), `seed.yml` (`db:seed`) and `delete-map.yml` (`maps:delete`, workflow input `ulid`, event key `map_ulid`) are manual (`workflow_dispatch`) workflows that invoke the `task` function through `scripts/invoke-lambda-task`; the `ops:seed` mise task does the same locally with `AWS_PROFILE=terraform`. The function accepts an event naming one of these allow-listed tasks and runs it in-process (`lib/lambda_support/task_runner.rb`); the fourth to sixth, `cleanup:stale_uploads`, `cleanup:orphaned_avatars` and `cleanup:orphaned_maps`, are run by the schedules below. `cleanup:orphaned_maps` only lists the S3 prefixes of maps missing from the database unless the event sets `"dry_run": false`, so a manual invocation without it is a dry run. The 15-minute maximum timeout applies. The structure dump after migration is skipped because the image has no `pg_dump`.
 
 The function is invoked with `--cli-read-timeout 0` and without CLI retries, since a retry after a client timeout would run the task, for example a migration, a second time.
 
@@ -99,7 +99,7 @@ At 04:00 JST the same function runs `{"task": "cleanup:orphaned_maps", "dry_run"
 
 ## Deployment
 
-`deploy.yml` is run manually on `ubuntu-24.04-arm`. It:
+`deploy.yml` is run manually on `ubuntu-24.04-arm`; `mise run deploy` starts it after checking that CI passed for `HEAD`, and `mise run deploy:latest_hash` prints the commit of the last successful deployment. It:
 
 1. Compiles the assets and builds the zip in the Lambda base image, then uploads it to `pasta-atlas-production-lambda-artifacts` as `<sha>.zip` (90-day lifecycle).
 2. Syncs assets to `pasta-atlas-production-assets/assets/` without `--delete`, and uploads `ftl-manifest.json` with `max-age=300`.

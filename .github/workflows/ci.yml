@@ -54,8 +54,12 @@ jobs:
         env:
           HANAMI_ENV: test
 
-      - name: Run RuboCop and RSpec
-        run: bundle exec rake
+      # The same commands as the spec and rubocop mise tasks; CI does not install mise.
+      - name: Run RSpec
+        run: bundle exec rspec --pattern 'spec/**{,/*/**}/*_spec.rb'
+
+      - name: Run RuboCop
+        run: bundle exec rubocop
 
   frontend:
     runs-on: ubuntu-latest

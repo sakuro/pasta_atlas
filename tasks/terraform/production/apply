@@ -1,9 +1,0 @@
-#!/usr/bin/env bash
-#MISE description="Run terraform apply for production"
-set -euo pipefail
-
-# The development environment points the AWS CLI at Floci.
-unset AWS_ENDPOINT_URL
-export AWS_PROFILE=terraform
-
-exec terraform -chdir=terraform/environments/production apply "$@"

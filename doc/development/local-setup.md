@@ -119,7 +119,7 @@ Without at least one provider configured, the app starts but login is unavailabl
 bin/setup
 ```
 
-This runs `bundle install`, `npm install`, and `hanami db prepare`.
+This runs the `setup` mise task: `bundle install`, `npm install`, and `hanami db prepare`.
 
 ## Starting the dev server
 
@@ -127,7 +127,7 @@ This runs `bundle install`, `npm install`, and `hanami db prepare`.
 bin/dev
 ```
 
-Starts all services concurrently via mise. The web server and the queue worker first wait until the RDS instance accepts connections (the `wait-postgres` task), and the queue worker also waits until Floci serves its queue (`wait-floci`):
+Starts all services concurrently through the `dev` mise task. The web server and the queue worker first wait until the RDS instance accepts connections (the `wait-postgres` task), and the queue worker also waits until Floci serves its queue (`wait-floci`):
 
 | Process | Command |
 |---|---|
@@ -159,10 +159,9 @@ For tests, `.env.test` provides all dummy values and no additional configuration
 ## Running the tests
 
 ```bash
-bundle exec rake                 # RSpec and RuboCop
-npm run type-check
-npm run lint:frontend
-npm run test:frontend -- --run   # without --run, Vitest stays in watch mode
+mise run check                   # RSpec, RuboCop, type check, ESLint and Vitest
 ```
+
+Each check also runs alone: `mise run spec`, `mise run rubocop`, `npm run type-check`, `npm run lint:frontend` and `npm run test:frontend -- --run` (without `--run`, Vitest stays in watch mode).
 
 Request specs need compiled assets (`bundle exec hanami assets compile`) and a prepared test database (`HANAMI_ENV=test bundle exec hanami db structure load` and `db seed`); CI does both before running the specs.

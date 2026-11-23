@@ -49,11 +49,11 @@ No `terraform.tfvars` is required; all variables have defaults. `alarm_email` de
 
 ```bash
 terraform -chdir=terraform/environments/production init   # or local
-rake terraform:production:plan                            # or terraform:local:plan
-rake terraform:production:apply                           # or terraform:local:apply
+mise run terraform:plan production                        # or local
+mise run terraform:apply production                       # or local
 ```
 
-`.env.development` points `AWS_PROFILE` and `AWS_ENDPOINT_URL` at Floci. The `terraform:production:*` tasks set `AWS_PROFILE=terraform` and unset `AWS_ENDPOINT_URL`; any other Terraform or AWS CLI command against production must do the same.
+`.env.development` points `AWS_PROFILE` and `AWS_ENDPOINT_URL` at Floci. For `production`, the `terraform:plan` and `terraform:apply` mise tasks set `AWS_PROFILE=terraform` and unset `AWS_ENDPOINT_URL`; any other Terraform or AWS CLI command against production must do the same.
 
 ### 2. Set secrets in SSM (production only)
 

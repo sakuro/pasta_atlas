@@ -8,14 +8,19 @@ Pasta Atlas is a Hanami 3.0 (Ruby) web application for viewing screenshots captu
 
 ## Commands
 
+Tasks are mise tasks, one executable script each in `tasks/` (`mise tasks` lists them). Rake keeps only the tasks that need the application, such as `cleanup:*` and `maps:delete` (`rake -T`). `bin/setup` and `bin/dev` run the `setup` and `dev` tasks.
+
+```bash
+mise run check            # RSpec, RuboCop, type check, ESLint and Vitest
+```
+
 ### Backend (Ruby)
 
 ```bash
-bundle exec rake          # Run all tests + RuboCop (default)
-bundle exec rake spec     # Run all RSpec tests
+mise run spec             # Run all RSpec tests (SPEC=<glob> selects the files)
 bundle exec rspec path/to/spec.rb:LINE  # Run a single test
-bundle exec rake rubocop  # Run RuboCop linter
-bundle exec rake rubocop:autocorrect    # Auto-fix safe offenses
+mise run rubocop          # Run RuboCop linter
+mise run rubocop:autocorrect          # Auto-fix safe offenses
 ```
 
 ### Frontend (TypeScript/SolidJS)

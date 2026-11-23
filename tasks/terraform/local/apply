@@ -1,5 +1,0 @@
-#!/usr/bin/env bash
-#MISE description="Run terraform apply for local"
-set -euo pipefail
-
-exec terraform -chdir=terraform/environments/local apply "$@"

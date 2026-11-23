@@ -12,7 +12,7 @@
 | gitleaks | Secret scanning (`.gitleaks.toml`) |
 | json_schemer | Checks action responses against `openapi.yaml` (`conform_to_openapi` in `spec/support/openapi.rb`); `spec/open_api_document_spec.rb` checks that the document is valid and covers the JSON routes |
 
-`rake` runs `spec` and then `rubocop`. `rake rubocop:autocorrect` applies the safe corrections.
+`mise run spec` and `mise run rubocop` run RSpec and RuboCop, and `mise run rubocop:autocorrect` applies the safe corrections. `mise run check` runs both together with the frontend checks.
 
 ## Frontend (TypeScript / Solid.js)
 
@@ -36,8 +36,8 @@
 | `pre-commit` | `gitleaks` (staged changes), `no-commit-to-branch`, `rubocop`, `eslint` and `prettier` (`frontend/`), `terraform fmt`, `tflint` |
 | `pre-push` | `case-conflict`, `newlines` |
 
-The hooks check only; they do not rewrite files. RSpec and the type check are not hooks: run `rake` and `npm run type-check` before committing.
+The hooks check only; they do not rewrite files. RSpec and the type check are not hooks: run `mise run check` before committing.
 
 ## CI
 
-`.github/workflows/ci.yml` runs three jobs. `backend` prepares PostgreSQL 18, compiles the assets, loads the test database structure and seeds, then runs `bundle exec rake`. `frontend` checks that the generated API client is current, then runs the type check, the lint and the Vitest run. `actions-lock` verifies `.github/workflows/actions.lock` with `gh actions-lock --verify`, so regenerate the lockfile after editing a workflow or bumping an action.
+`.github/workflows/ci.yml` runs three jobs. `backend` prepares PostgreSQL 18, compiles the assets, loads the test database structure and seeds, then runs RSpec and RuboCop with the commands of the `spec` and `rubocop` mise tasks (CI does not install mise). `frontend` checks that the generated API client is current, then runs the type check, the lint and the Vitest run. `actions-lock` verifies `.github/workflows/actions.lock` with `gh actions-lock --verify`, so regenerate the lockfile after editing a workflow or bumping an action.
