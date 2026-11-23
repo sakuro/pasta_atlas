@@ -83,5 +83,12 @@ RSpec.describe PastaAtlas::Actions::API::Users::Preferences::Update do
       expect(response.status).to eq(400)
       expect(response).to conform_to_openapi("PATCH /api/v1/users/{user_name}/preferences")
     end
+
+    it "returns 400 when timezone is neither a string nor null" do
+      response = action.call(env.merge(timezone: 9))
+
+      expect(response.status).to eq(400)
+      expect(response).to conform_to_openapi("PATCH /api/v1/users/{user_name}/preferences")
+    end
   end
 end
