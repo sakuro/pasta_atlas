@@ -1,0 +1,41 @@
+openapi: 3.1.0
+info:
+  title: Fixture for spec/open_api_document_spec.rb
+  version: "1"
+paths:
+  /things/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+    get:
+      responses:
+        "200":
+          description: A thing
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: false
+                required: [id]
+                properties:
+                  id:
+                    type: string
+        "404":
+          description: No content documented
+        "409":
+          $ref: "#/components/responses/Conflict"
+        "415":
+          description: Another media type only
+          content:
+            text/csv:
+              schema:
+                type: string
+        500:
+          description: Unquoted status key
+components:
+  responses:
+    Conflict:
+      description: Conflict

@@ -74,5 +74,8 @@ group :test do
   gem "capybara"
   gem "rack-test"
 
+  # API contract
+  gem "json_schemer", "~> 2.5"
+
   gem "simplecov", "~> 1.3.0"
 end

@@ -1,0 +1,9 @@
+openapi: 3.1.0
+info:
+  title: pasta_atlas JSON API
+  version: "1"
+  description: |
+    The JSON API used by the SPA. Endpoints that are not listed here yet are described in doc/architecture/api.md.
+    Write responses inline under each operation (no `$ref` to `components/responses`): the RSpec
+    matcher `conform_to_openapi` reads them by JSON pointer.
+paths: {}
