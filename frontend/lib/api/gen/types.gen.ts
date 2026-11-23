@@ -31,7 +31,7 @@ export type MapSummary = {
    */
   metadata_url: string;
   /**
-   * The creation time of the newest complete generation, which is not the one shown when an older save (lower tick) was uploaded later
+   * When the last upload of the map completed, the time the map lists are ordered by. It belongs to another generation than the one shown when an older save (lower tick) was uploaded later.
    */
   updated_at: string;
 };

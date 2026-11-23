@@ -18,10 +18,10 @@ module PastaAtlas
           recent_maps = map_repo.list_with_complete_generation_by_user(user_id:, limit: LIMIT)
           map_ids = recent_maps.map(&:id)
           latest_generations = generation_repo.find_latest_complete_by_map_ids(map_ids)
-          max_created_at_by_map_id = generation_repo.find_max_complete_created_at_by_map_ids(map_ids)
+          completed_at_by_map_id = generation_repo.find_last_completed_at_by_map_ids(map_ids)
           recent_maps.filter_map {|m|
             g = latest_generations[m.id]
-            updated_at = max_created_at_by_map_id[m.id]
+            updated_at = completed_at_by_map_id[m.id]
             # A generation can vanish between the queries above; the map is then left out.
             next unless g && updated_at
 

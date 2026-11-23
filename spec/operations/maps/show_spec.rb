@@ -11,8 +11,8 @@ RSpec.describe PastaAtlas::Operations::Maps::Show do
   let(:map) { double("Map", id: 1, ulid: "01MAP1", display_name: "Test Map", user_id: 1) }
   let(:user) { double("User", id: 1, name: "alice") }
   let(:profile) { double("UserProfile", display_name: "Alice", avatar_s3_key: nil) }
-  let(:generation_time) { Time.now }
-  let(:generation) { double("Generation", ulid: "01GEN1", tick: 100, created_at: generation_time) }
+  let(:completed_at) { Time.now }
+  let(:generation) { double("Generation", ulid: "01GEN1", tick: 100, upload: double("Upload", completed_at:)) }
   let(:generations) { [generation] }
 
   describe "#call" do
@@ -31,7 +31,7 @@ RSpec.describe PastaAtlas::Operations::Maps::Show do
         expect(result).to be_success
         payload = result.value!
         expect(payload[:map]).to eq(map)
-        expect(payload[:updated_at]).to eq(generation_time)
+        expect(payload[:updated_at]).to eq(completed_at)
         owner = payload[:owner]
         expect(owner).to be_a(PastaAtlas::Values::UserInfo)
         expect(owner.name).to eq("alice")
@@ -41,19 +41,19 @@ RSpec.describe PastaAtlas::Operations::Maps::Show do
       end
 
       context "when an older save was uploaded after a newer one" do
-        let(:older_save_time) { generation_time + 60 }
-        let(:older_save) { double("Generation", ulid: "01GEN0", tick: 50, created_at: older_save_time) }
+        let(:older_save_completed_at) { completed_at + 60 }
+        let(:older_save) { double("Generation", ulid: "01GEN0", tick: 50, upload: double("Upload", completed_at: older_save_completed_at)) }
         let(:generations) { [generation, older_save] }
 
         before do
           allow(older_save).to receive(:metadata_url).with("https://cdn.example.com").and_return("https://cdn.example.com/alice/map1/gen0/mapshot.json")
         end
 
-        it "keeps the highest tick first and takes updated_at from the newest upload" do
+        it "keeps the highest tick first and takes updated_at from the last completed upload" do
           payload = operation.call(ulid: "01MAP1").value!
 
           expect(payload[:generations].map {|g| g[:ulid] }).to eq(%w[01GEN1 01GEN0])
-          expect(payload[:updated_at]).to eq(older_save_time)
+          expect(payload[:updated_at]).to eq(older_save_completed_at)
         end
       end
 

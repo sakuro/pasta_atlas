@@ -23,8 +23,8 @@ module PastaAtlas
           owner = Values::UserInfo[name: user.name, display_name: profile.display_name || user.name, avatar_url:]
           generation_list = generations.map {|g| {ulid: g.ulid, tick: g.tick, metadata_url: g.metadata_url(cloudfront_base_url)} }
           # As in the map lists, the generation shown first is the one with the highest tick (generations
-          # are sorted by tick), while updated_at is when the newest one was uploaded.
-          {map:, owner:, updated_at: generations.map(&:created_at).max, generations: generation_list}
+          # are sorted by tick), while updated_at is when the last upload completed.
+          {map:, owner:, updated_at: generations.map {|g| g.upload.completed_at }.max, generations: generation_list}
         end
 
         private def find_map(ulid)

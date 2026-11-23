@@ -16,11 +16,11 @@ RSpec.describe PastaAtlas::Repos::GenerationRepo, :db do
     end
   end
 
-  describe "#find_max_complete_created_at_by_map_ids" do
-    def generation_with_status(map, event_type, created_at)
+  describe "#find_last_completed_at_by_map_ids" do
+    def generation_with_status(map, event_type, occurred_at, created_at: occurred_at)
       gen = Factory[:generation, map:, created_at:]
       upload = Factory[:upload, generation: gen]
-      Factory[:upload_event, upload:, event_type:]
+      Factory[:upload_event, upload:, event_type:, occurred_at:]
       gen
     end
 
@@ -29,28 +29,35 @@ RSpec.describe PastaAtlas::Repos::GenerationRepo, :db do
     let(:new_time) { Time.at(Time.now.to_i - 3600) }
 
     it "returns an empty hash for no map ids" do
-      expect(repo.find_max_complete_created_at_by_map_ids([])).to eq({})
+      expect(repo.find_last_completed_at_by_map_ids([])).to eq({})
     end
 
-    it "ignores pending and failed generations newer than the complete one" do
+    it "ignores pending and failed uploads newer than the complete one" do
       generation_with_status(map, "complete", old_time)
       generation_with_status(map, "pending", new_time)
       generation_with_status(map, "failed", new_time)
 
-      expect(repo.find_max_complete_created_at_by_map_ids([map.id])).to eq({map.id => old_time})
+      expect(repo.find_last_completed_at_by_map_ids([map.id])).to eq({map.id => old_time})
     end
 
-    it "uses the newest complete generation" do
+    it "uses the latest completion" do
       generation_with_status(map, "complete", old_time)
       generation_with_status(map, "complete", new_time)
 
-      expect(repo.find_max_complete_created_at_by_map_ids([map.id])).to eq({map.id => new_time})
+      expect(repo.find_last_completed_at_by_map_ids([map.id])).to eq({map.id => new_time})
+    end
+
+    it "uses when an upload completed, not when it started" do
+      generation_with_status(map, "complete", new_time, created_at: old_time - 3600)
+      generation_with_status(map, "complete", old_time, created_at: old_time)
+
+      expect(repo.find_last_completed_at_by_map_ids([map.id])).to eq({map.id => new_time})
     end
 
     it "omits maps without a complete generation" do
       generation_with_status(map, "pending", new_time)
 
-      expect(repo.find_max_complete_created_at_by_map_ids([map.id])).to eq({})
+      expect(repo.find_last_completed_at_by_map_ids([map.id])).to eq({})
     end
   end
 

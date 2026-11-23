@@ -932,8 +932,8 @@ components:
           type: string
         updated_at:
           description: >-
-            The creation time of the newest complete generation, which is not the one shown when an older
-            save (lower tick) was uploaded later
+            When the last upload of the map completed, the time the map lists are ordered by. It belongs to
+            another generation than the one shown when an older save (lower tick) was uploaded later.
           type: string
           format: date-time
     MapDetail:
