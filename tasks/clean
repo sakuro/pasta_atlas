@@ -4,7 +4,7 @@
 set -euo pipefail
 shopt -s globstar nullglob
 
-rm -rf -- **/*~ **/*.bak coverage .rspec_status .yardoc log/*.log* spec/examples.txt
+rm -rf -- **/*~ **/*.bak coverage .rspec_status log/*.log* spec/examples.txt
 
 # rake/clean removes files named core, not directories.
 for file in **/core; do

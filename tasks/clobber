@@ -4,4 +4,4 @@
 # The CLOBBER list the Rakefile defined.
 set -euo pipefail
 
-rm -rf -- doc/api public/assets public/assets.json
+rm -rf -- public/assets public/assets.json

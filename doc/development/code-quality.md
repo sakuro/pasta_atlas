@@ -9,7 +9,6 @@
 | rubocop-capybara, rubocop-performance, rubocop-rake, rubocop-rspec, rubocop-sequel, rubocop-thread_safety | RuboCop plugins |
 | RSpec | Unit and integration testing; factories use `rom-factory` |
 | simplecov | Code coverage with branch coverage; the run fails below 80% line coverage (`.simplecov`) |
-| YARD + redcarpet | API documentation (`rake doc`, output in `doc/api/`) |
 | gitleaks | Secret scanning (`.gitleaks.toml`) |
 | json_schemer | Checks action responses against `openapi.yaml` (`conform_to_openapi` in `spec/support/openapi.rb`); `spec/open_api_document_spec.rb` checks that the document is valid and covers the JSON routes |
 
