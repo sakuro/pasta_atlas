@@ -12,7 +12,7 @@ import { useAuth } from "../contexts/AuthContext";
 import { useToast } from "../contexts/ToastContext";
 import { showUser, type UserInfo } from "../lib/api/client";
 
-type UserFetchResult = { status: "ok"; user: UserInfo } | { status: "not_found" } | { status: "forbidden" };
+type UserFetchResult = { status: "ok"; user: UserInfo } | { status: "not_found" };
 
 type TabDef = {
   id: string;
@@ -44,7 +44,6 @@ export const UserPage = () => {
   const [userData, setUserData] = createSignal(async (): Promise<UserFetchResult> => {
     const { data, error, response } = await showUser({ path: { user_name: userName() } });
     if (response?.status === 404) return { status: "not_found" };
-    if (response?.status === 403) return { status: "forbidden" };
     if (!data) throw new Error(`HTTP ${response?.status}`, { cause: error });
     return { status: "ok", user: data.user };
   });
@@ -91,9 +90,6 @@ export const UserPage = () => {
           </Show>
           <Show when={userData().status === "not_found"}>
             <ErrorNotification l10nId="error-user-not-found" type="warning" />
-          </Show>
-          <Show when={userData().status === "forbidden"}>
-            <ErrorNotification l10nId="error-user-forbidden" type="warning" />
           </Show>
           <Show when={user()} keyed>
             {(u) => (

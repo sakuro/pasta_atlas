@@ -16,7 +16,7 @@ module PastaAtlas
             in Failure(Symbol => status)
               halt status
             in Success(user)
-              halt :forbidden unless user.public_profile?
+              halt :not_found unless user.public_profile?
 
               profile_data = load_profile.call(user_id: user.id).value!
               json_response(response, {

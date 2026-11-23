@@ -479,10 +479,8 @@ paths:
                 properties:
                   user:
                     $ref: "#/components/schemas/UserInfo"
-        "403":
-          description: The user is a system account (guest or compilatron)
         "404":
-          description: The user does not exist
+          description: The user does not exist or is a system account (guest or compilatron)
     delete:
       operationId: deleteUser
       summary: Deletes the own account, queues the S3 prefixes of its maps and avatar for cleanup and clears the session

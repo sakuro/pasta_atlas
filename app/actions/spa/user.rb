@@ -8,14 +8,8 @@ module PastaAtlas
 
         def handle(request, response)
           result = find_by_name.call(user_name: request.params[:user_name])
-          case result
-          in Failure(:not_found)
-            response.status = 404
-          in Success(user) if !user.public_profile?
-            response.status = 403
-          in Success
-            # 200 - default
-          end
+          # A system user has no page, so it is answered as if it did not exist.
+          response.status = 404 unless result.value_or(nil)&.public_profile?
         end
       end
     end
