@@ -11,6 +11,9 @@ RSpec.describe PastaAtlas::Operations::Uploads::UpdateStatus, :db do
   let(:map) { map_repo.find_by_id!(generation.map_id) }
   let(:user) { user_repo.find_by_id!(map.user_id) }
 
+  # Earlier than the transaction time, which the database uses for the events the operation appends.
+  before { Factory[:upload_event, upload:, event_type: "pending", occurred_at: Time.new(2020, 1, 1, 0, 0, 0, "+00:00")] }
+
   describe "#call" do
     context "when updating to complete" do
       context "when all files are verified" do
@@ -19,7 +22,7 @@ RSpec.describe PastaAtlas::Operations::Uploads::UpdateStatus, :db do
         end
 
         it "sets completed_at and returns the updated upload" do
-          result = operation.call(upload_ulid: upload.ulid, status: "complete", user_id: user.id)
+          result = operation.call(upload_ulid: upload.ulid, user_id: user.id)
 
           expect(result).to be_success
           updated = result.value!
@@ -38,14 +41,13 @@ RSpec.describe PastaAtlas::Operations::Uploads::UpdateStatus, :db do
         let(:upload_repo) { Hanami.app["repos.upload_repo"] }
 
         def complete_and_read_storage_bytes
-          operation.call(upload_ulid: upload.ulid, status: "complete", user_id: user.id)
+          operation.call(upload_ulid: upload.ulid, user_id: user.id)
           generation_repo.find_by_id!(upload.generation_id).storage_bytes
         end
 
         def verify(filenames) = verify_batch.call(upload: upload_repo.find_by_ulid(upload.ulid), filenames:)
 
         before do
-          Factory[:upload_event, upload:, event_type: "pending"]
           key_repo.create_many(upload_id: upload.id, s3_keys: tiles.map {|tile| "#{prefix}#{tile}" })
         end
 
@@ -78,7 +80,7 @@ RSpec.describe PastaAtlas::Operations::Uploads::UpdateStatus, :db do
 
       context "when not all files are verified" do
         it "returns an incomplete failure" do
-          result = operation.call(upload_ulid: upload.ulid, status: "complete", user_id: user.id)
+          result = operation.call(upload_ulid: upload.ulid, user_id: user.id)
 
           expect(result).to be_failure
           expect(result.failure).to eq(:incomplete)
@@ -86,14 +88,35 @@ RSpec.describe PastaAtlas::Operations::Uploads::UpdateStatus, :db do
       end
     end
 
-    context "when updating to failed" do
-      it "updates the status without setting completed_at" do
-        result = operation.call(upload_ulid: upload.ulid, status: "failed", user_id: user.id)
+    context "when the upload is already complete" do
+      let(:upload_event_repo) { Hanami.app["repos.upload_event_repo"] }
+      let(:event_count) { -> { upload_event_repo.upload_events.where(upload_id: upload.id).count } }
+
+      before do
+        Factory[:upload_verification_key, upload:, s3_key: "k", verified_at: Time.now, size_bytes: 10]
+        generation_repo.update_storage_bytes(id: upload.generation_id, storage_bytes: 12_345)
+        Factory[:upload_event, upload:, event_type: "complete", occurred_at: Time.new(2025, 1, 1, 0, 0, 0, "+00:00")]
+      end
+
+      it "returns the upload with the same completed_at and changes nothing" do
+        result = nil
+
+        expect { result = operation.call(upload_ulid: upload.ulid, user_id: user.id) }.not_to change(event_count, :call)
 
         expect(result).to be_success
-        updated = result.value!
-        expect(updated.status).to eq("failed")
-        expect(updated.completed_at).to be_nil
+        expect(result.value!.completed_at).to eq(Time.new(2025, 1, 1, 0, 0, 0, "+00:00"))
+        expect(generation_repo.find_by_id!(upload.generation_id).storage_bytes).to eq(12_345)
+      end
+    end
+
+    context "when the upload has failed" do
+      before { Factory[:upload_event, upload:, event_type: "failed", occurred_at: Time.now + 1] }
+
+      it "returns an unprocessable_entity failure" do
+        result = operation.call(upload_ulid: upload.ulid, user_id: user.id)
+
+        expect(result).to be_failure
+        expect(result.failure).to eq(:unprocessable_entity)
       end
     end
 
@@ -101,7 +124,7 @@ RSpec.describe PastaAtlas::Operations::Uploads::UpdateStatus, :db do
       let(:other_user) { Factory[:user] }
 
       it "returns a forbidden failure" do
-        result = operation.call(upload_ulid: upload.ulid, status: "complete", user_id: other_user.id)
+        result = operation.call(upload_ulid: upload.ulid, user_id: other_user.id)
 
         expect(result).to be_failure
         expect(result.failure).to eq(:forbidden)
@@ -110,7 +133,7 @@ RSpec.describe PastaAtlas::Operations::Uploads::UpdateStatus, :db do
 
     context "when the upload does not exist" do
       it "returns a not_found failure" do
-        result = operation.call(upload_ulid: "nonexistent", status: "complete", user_id: user.id)
+        result = operation.call(upload_ulid: "nonexistent", user_id: user.id)
 
         expect(result).to be_failure
         expect(result.failure).to eq(:not_found)

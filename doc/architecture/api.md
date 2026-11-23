@@ -194,7 +194,7 @@ Check that the files of one batch exist in S3 (one `HeadObject` call per file) a
 
 ### PATCH /api/v1/uploads/:ulid
 
-Mark an upload as `complete` or `failed`. `complete` requires every expected file to be verified.
+Mark an upload as `complete`. This requires every expected file to be verified. Completing a complete upload answers `200` and changes nothing, so a client that lost the response can retry.
 
 **Request body:**
 
@@ -214,16 +214,14 @@ Mark an upload as `complete` or `failed`. `complete` requires every expected fil
 }
 ```
 
-`completed_at` is `null` unless the upload is `complete`.
-
 **Error responses:**
 
 | Status | Condition |
 |---|---|
-| `400 Bad Request` | `status` is not `complete` or `failed` |
+| `400 Bad Request` | `status` is not `complete` |
 | `403 Forbidden` | Guest, or the map belongs to another user |
 | `404 Not Found` | Upload with given ULID does not exist |
-| `422 Unprocessable Entity` | `status` is `complete` but not all files have been verified |
+| `422 Unprocessable Entity` | Not all files have been verified, or the upload failed |
 
 ## Pages
 

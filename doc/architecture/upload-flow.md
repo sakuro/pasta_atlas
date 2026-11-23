@@ -84,7 +84,7 @@ Parameter validation and error responses are specified in [api.md](api.md#upload
 2. Check if `Generation` with `(map_id, mapshot_unique_id)` already exists
    - If exists with a `complete` upload → return `409 Conflict`
    - If exists with a `pending` upload → return the existing upload (allow retry)
-   - If exists with a `failed` upload → it is returned too, but `presigned_posts` rejects it with `422`, so it cannot be resumed. The bundled client never sets `failed`; only the API can
+   - If exists with a `failed` upload → it is returned too, but `presigned_posts` rejects it with `422`, so it cannot be resumed. The API no longer writes `failed`, so only old data has one
    - If not exists → create `Generation`
 3. Write mapshot.json to S3 at `{user_name}/maps/{mapshot_map_id}/{mapshot_unique_id}/mapshot.json` and set `metadata_s3_key` on the Generation
 4. Create the `Upload` (`total_image_count` from the request, `metadata_bytes` set to the size of mapshot.json) and append an `upload_events` row with `event_type: pending`
@@ -109,9 +109,11 @@ Verification makes the size recorded in the database reflect what is actually in
 
 ### PATCH /api/v1/uploads/:ulid
 
-1. For `complete`: the number of verified keys must equal `total_image_count`
-2. Append an `upload_events` row (`complete` or `failed`)
-3. For `complete`: set the generation's `storage_bytes` to `metadata_bytes` plus the sizes of the verified keys, so a key verified more than once counts once, and mark the verification as passed
+1. If the upload is already `complete`, return it and stop: no event is appended and `storage_bytes` is not recomputed
+2. If the upload is not `pending` (a `failed` one), fail with `422`
+3. The number of verified keys must equal `total_image_count`
+4. Append an `upload_events` row (`complete`)
+5. Set the generation's `storage_bytes` to `metadata_bytes` plus the sizes of the verified keys, so a key verified more than once counts once, and mark the verification as passed
 
 ## Operation Sequence
 
@@ -200,7 +202,7 @@ sequenceDiagram
 Resume relies on S3 overwrite semantics:
 
 - On error, the Upload remains `pending`. On retry (same or different session), `POST /api/v1/uploads` returns the existing Upload; the client sends all filenames again through Steps 2a–2c and already-uploaded files are overwritten harmlessly.
-- `failed` is set only through the API. It is not required for the retry flow.
+- A `failed` event can exist in old data, but the API no longer writes one.
 
 ## Stale upload cleanup
 
