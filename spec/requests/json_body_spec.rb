@@ -33,6 +33,21 @@ RSpec.describe "JSON request bodies", :db, type: :request do
     expect(last_response.status).to be(400)
   end
 
+  it "rejects a body that repeats a path parameter with 400" do
+    header "Content-Type", "application/json"
+    patch "/api/v1/uploads/unknown", JSON.generate({ulid: "other", status: "complete"})
+
+    # Without the check, the body's ulid would replace the one in the path.
+    expect(last_response.status).to be(400)
+  end
+
+  it "rejects a body that repeats a query parameter with 400" do
+    header "Content-Type", "application/json"
+    patch "/api/v1/uploads/unknown?status=complete", JSON.generate({status: "complete"})
+
+    expect(last_response.status).to be(400)
+  end
+
   it "still serves HTML pages to a browser" do
     header "Accept", "text/html"
     get "/about"

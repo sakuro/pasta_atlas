@@ -5,6 +5,7 @@ info:
   description: |
     The JSON API used by the SPA. The authentication endpoints that redirect instead of answering JSON
     (the OmniAuth callbacks and logout) are described in doc/architecture/api.md.
+    Every operation answers 400 for a JSON body that is not valid JSON or repeats a path or query parameter.
     Write responses inline under each operation (no `$ref` to `components/responses`): the RSpec
     matcher `conform_to_openapi` reads them by JSON pointer.
 servers:

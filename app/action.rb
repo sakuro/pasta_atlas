@@ -16,6 +16,16 @@ module PastaAtlas
 
     private def handle_body_parsing_error(_request, _response, _exception) = halt :bad_request
 
+    before :reject_body_overriding_router_params
+
+    # hanami-action merges the parsed body after router.params (the path and query parameters), so a
+    # body key of the same name would replace, for example, the user_name in the path.
+    private def reject_body_overriding_router_params(request, _response)
+      router_keys = request.env.fetch("router.params", {}).keys.map(&:to_s)
+      body_keys = request.env.fetch(Hanami::Action::ACTION_BODY_PARAMS, {}).keys.map(&:to_s)
+      halt :bad_request if router_keys.intersect?(body_keys)
+    end
+
     private def json_response(response, data, status: :ok)
       response.status = status
       response.headers["Content-Type"] = "application/json"
