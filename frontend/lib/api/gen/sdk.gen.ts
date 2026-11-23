@@ -95,7 +95,7 @@ export type Options<
 /**
  * The current user and preferences, for the SPA on load
  *
- * A guest gets user null and empty preferences. A session whose user no longer exists is cleared of the user and answered as a guest.
+ * A guest gets user null, a null locale and timezone, and relative_timestamps false. A session whose user no longer exists is cleared of the user and answered as a guest.
  */
 export const getCurrentAuth = <ThrowOnError extends boolean = false>(
   options?: Options<GetCurrentAuthData, ThrowOnError>

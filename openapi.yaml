@@ -3,8 +3,8 @@ info:
   title: pasta_atlas JSON API
   version: "1"
   description: |
-    The JSON API used by the SPA. The OmniAuth endpoints, which redirect instead of answering JSON, are
-    described in doc/architecture/api.md.
+    The JSON API used by the SPA. The authentication endpoints that redirect instead of answering JSON
+    (the OmniAuth callbacks and logout) are described in doc/architecture/api.md.
     Write responses inline under each operation (no `$ref` to `components/responses`): the RSpec
     matcher `conform_to_openapi` reads them by JSON pointer.
 servers:
@@ -16,7 +16,8 @@ paths:
       operationId: getCurrentAuth
       summary: The current user and preferences, for the SPA on load
       description: >-
-        A guest gets user null and empty preferences. A session whose user no longer exists is
+        A guest gets user null, a null locale and timezone, and relative_timestamps false. A session
+        whose user no longer exists is
         cleared of the user and answered as a guest.
       responses:
         "200":
