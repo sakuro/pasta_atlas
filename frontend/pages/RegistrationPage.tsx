@@ -75,6 +75,9 @@ export const RegistrationPage = () => {
                         </span>
                       </label>
                       <div class="field has-addons mb-0">
+                        <p class="control">
+                          <span class="button is-static">@</span>
+                        </p>
                         <div class="control is-expanded">
                           <input
                             class="input"
