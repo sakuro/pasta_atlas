@@ -531,53 +531,53 @@ PLATFORMS
   x86_64-linux-musl
 
 DEPENDENCIES
-  aws-sdk-s3
-  aws-sdk-sqs
-  aws-sdk-ssm
-  capybara
-  cgi
-  concurrent-ruby
-  database_cleaner-sequel
-  debug (~> 1.11)
-  docquet (~> 1.4)
-  dotenv
-  dry-operation (>= 1.0.1)
-  dry-types (~> 1.7)
-  dry-validation
-  foxtail-tools
-  hanami (~> 3.0)
-  hanami-action (~> 3.0)
-  hanami-assets (~> 3.0)
-  hanami-db (~> 3.0)
-  hanami-reloader (~> 3.0)
-  hanami-router (~> 3.0)
-  hanami-rspec (~> 3.0)
-  hanami-view (~> 3.0)
-  hanami-webconsole (~> 3.0)
-  irb
-  json_schemer (~> 2.5)
-  omniauth (~> 2.2)
-  omniauth-discord (~> 1.2)
-  omniauth-github (~> 2.0)
-  omniauth-steam (~> 1.0)
-  pg
-  puma
-  rack-test
-  rake
-  repl_type_completor
-  rexml
-  rom-factory
-  rubocop (~> 1.86)
-  rubocop-capybara (~> 3.0)
-  rubocop-performance (~> 1.26)
-  rubocop-rake (~> 0.7.1)
-  rubocop-rspec
-  rubocop-sequel (~> 0.4.1)
-  rubocop-thread_safety (~> 0.8.0)
-  ruby-lsp (~> 0.26.9)
-  simplecov (~> 1.3.0)
-  tzinfo
-  ulid
+  aws-sdk-s3 (= 1.245.1)
+  aws-sdk-sqs (= 1.131.0)
+  aws-sdk-ssm (= 1.237.0)
+  capybara (= 3.40.0)
+  cgi (= 0.5.2)
+  concurrent-ruby (= 1.3.8)
+  database_cleaner-sequel (= 2.0.2)
+  debug (= 1.11.1)
+  docquet (= 1.4.0)
+  dotenv (= 3.2.0)
+  dry-operation (= 1.2.0)
+  dry-types (= 1.9.2)
+  dry-validation (= 1.11.1)
+  foxtail-tools (= 0.6.1)
+  hanami (= 3.0.2)
+  hanami-action (= 3.0.1)
+  hanami-assets (= 3.0.0)
+  hanami-db (= 3.0.0)
+  hanami-reloader (= 3.0.0)
+  hanami-router (= 3.0.0)
+  hanami-rspec (= 3.0.0)
+  hanami-view (= 3.0.2)
+  hanami-webconsole (= 3.0.0)
+  irb (= 1.19.0)
+  json_schemer (= 2.5.0)
+  omniauth (= 2.4.2)
+  omniauth-discord (= 1.2.0)
+  omniauth-github (= 2.0.1)
+  omniauth-steam (= 1.0.6)
+  pg (= 1.7.0)
+  puma (= 8.1.2)
+  rack-test (= 2.3.0)
+  rake (= 13.4.2)
+  repl_type_completor (= 0.1.18)
+  rexml (= 3.4.4)
+  rom-factory (= 0.14.1)
+  rubocop (= 1.92.3)
+  rubocop-capybara (= 3.1.0)
+  rubocop-performance (= 1.27.0)
+  rubocop-rake (= 0.7.1)
+  rubocop-rspec (= 3.10.2)
+  rubocop-sequel (= 0.4.1)
+  rubocop-thread_safety (= 0.8.0)
+  ruby-lsp (= 0.26.11)
+  simplecov (= 1.3.2)
+  tzinfo (= 2.0.6)
+  ulid (= 1.4.0)
 
 CHECKSUMS
   addressable (2.9.1) sha256=f1212365945455c84e8d031eea40fc6bedf0c663a78d95b3ab93591040bc5c35
