@@ -235,7 +235,7 @@ GEM
       concurrent-ruby (~> 1.0)
       dry-core (~> 1.0, < 2)
       dry-transformer (~> 1.0, < 2)
-    hanami-view (3.0.2)
+    hanami-view (3.0.3)
       dry-configurable (~> 1.4)
       dry-core (~> 1.0)
       dry-inflector (~> 1.0, < 2)
@@ -499,7 +499,7 @@ GEM
       version_gem (>= 1.1.8, < 3)
     stringio (3.2.0)
     strscan (3.1.8)
-    temple (0.10.4)
+    temple (0.10.7)
     thor (1.5.0)
     tilt (2.7.0)
     transproc (1.1.1)
@@ -552,7 +552,7 @@ DEPENDENCIES
   hanami-reloader (= 3.0.0)
   hanami-router (= 3.0.0)
   hanami-rspec (= 3.0.0)
-  hanami-view (= 3.0.2)
+  hanami-view (= 3.0.3)
   hanami-webconsole (= 3.0.0)
   irb (= 1.19.0)
   json_schemer (= 2.5.0)
@@ -659,7 +659,7 @@ CHECKSUMS
   hanami-router (3.0.0) sha256=2438db070c7ed7d3f28f1777fc32bdc86e7a9b744a29ab51098f4fa41408210b
   hanami-rspec (3.0.0) sha256=14d3ffb2dd4b5a028007ddf5442028c3d05ea8126c95def1cd83c23fd3c82ee7
   hanami-utils (3.0.1) sha256=0d46181bd86115127a04a6d0481df819eb558714ce58c6b4da7e0bb65c5dcd9b
-  hanami-view (3.0.2) sha256=b145c23a720e76b05f178ef087340ffe27ea00495ec4d4a53bd1bd391fbb0592
+  hanami-view (3.0.3) sha256=aba79f0ee943526eb7589776901682693800029bab6f30bf430de2eeb845a85f
   hanami-webconsole (3.0.0) sha256=5d8f46e1e2783e03403c58500cbad6274e2022cbc60867a7354442e6b60c2bdd
   hashie (5.2.0) sha256=357a22635195c2e3911fbbc3de9a7d528843d1f42ab0aae02171048f16332d72
   i18n (1.15.2) sha256=00f9eb62412fe593b2a65a97daa75300d37abb8f7202ec748e94b6d46a9dd1b5
@@ -765,7 +765,7 @@ CHECKSUMS
   snaky_hash (2.0.5) sha256=70e74137d6738aef067950a3bb9a4d2655778be4bc9725efc36e7607feb22cdd
   stringio (3.2.0) sha256=c37cb2e58b4ffbd33fe5cd948c05934af997b36e0b6ca6fdf43afa234cf222e1
   strscan (3.1.8) sha256=aae2db611a225559f21ffbb71765c9a4e60fd262534a9ea84f4f11c7f32f679e
-  temple (0.10.4) sha256=b7a1e94b6f09038ab0b6e4fe0126996055da2c38bec53a8a336f075748fff72c
+  temple (0.10.7) sha256=369fe560adb6534674ce232899c2232df614bcb29c5359b05efedff7a57ed9c0
   thor (1.5.0) sha256=e3a9e55fe857e44859ce104a84675ab6e8cd59c650a49106a05f55f136425e73
   tilt (2.7.0) sha256=0d5b9ba69f6a36490c64b0eee9f6e9aad517e20dcc848800a06eb116f08c6ab3
   transproc (1.1.1) sha256=b2f9a85ecaf7064f0b3893ffac929de9fd713b13f5aaf822b0bd091fd6f5c8c2
