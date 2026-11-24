@@ -25,9 +25,16 @@
       "enabled": false
     },
     {
-      "description": "The PostgreSQL major version follows the production RDS engine_version (Terraform); update CI, compose.yml and RDS together.",
-      "matchDatasources": ["docker"],
-      "matchPackageNames": ["postgres"],
+      "description": "mise resolves postgres to conda:postgresql on conda-forge, but Renovate looks it up without the channel.",
+      "matchManagers": ["mise"],
+      "matchDatasources": ["conda"],
+      "matchPackageNames": ["postgresql"],
+      "overridePackageName": "conda-forge/postgresql"
+    },
+    {
+      "description": "The PostgreSQL major version follows the production RDS engine_version (Terraform); update CI, compose.yml, mise.toml and RDS together.",
+      "matchDatasources": ["docker", "conda"],
+      "matchPackageNames": ["postgres", "postgresql", "conda-forge/postgresql"],
       "matchUpdateTypes": ["major"],
       "enabled": false
     }
