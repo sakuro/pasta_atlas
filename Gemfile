@@ -7,7 +7,7 @@ gem "hanami-action", "3.0.2"
 gem "hanami-assets", "3.0.0"
 gem "hanami-db", "3.0.0"
 gem "hanami-router", "3.0.0"
-gem "hanami-view", "3.0.2"
+gem "hanami-view", "3.0.3"
 
 gem "aws-sdk-s3", "1.245.1"
 gem "aws-sdk-sqs", "1.131.0"
