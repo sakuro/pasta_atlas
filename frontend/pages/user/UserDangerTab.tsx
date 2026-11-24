@@ -32,15 +32,21 @@ export const UserDangerTab = (props: { userName: string; onError?: (msgKey: stri
       <form onSubmit={(e) => void handleSubmit(e)}>
         <div class="field">
           <label class="label" for="confirm-user-name" data-l10n-id="account-delete-confirm-label" />
-          <div class="control">
-            <input
-              class="input"
-              type="text"
-              id="confirm-user-name"
-              name="confirm_user_name"
-              autocomplete="off"
-              onInput={(e) => setConfirmValue(e.currentTarget.value)}
-            />
+          <div class="field has-addons">
+            <p class="control">
+              <span class="button is-static">@</span>
+            </p>
+            <div class="control is-expanded">
+              <input
+                class="input"
+                type="text"
+                id="confirm-user-name"
+                name="confirm_user_name"
+                autocomplete="off"
+                placeholder={props.userName}
+                onInput={(e) => setConfirmValue(e.currentTarget.value)}
+              />
+            </div>
           </div>
         </div>
         <div class="field">
