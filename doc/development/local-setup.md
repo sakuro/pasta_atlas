@@ -116,10 +116,10 @@ Without at least one provider configured, the app starts but login is unavailabl
 ### 5. Install dependencies and prepare the database
 
 ```bash
-bin/setup
+mise run setup
 ```
 
-This runs the `setup` mise task: `bundle install`, `npm install`, and `hanami db prepare`.
+This task runs `bundle install`, `npm install`, and `hanami db prepare`.
 
 ## Starting the dev server
 

@@ -8,7 +8,7 @@ Pasta Atlas is a Hanami 3.0 (Ruby) web application for viewing screenshots captu
 
 ## Commands
 
-Tasks are mise tasks, one executable script each in `tasks/` (`mise tasks` lists them). Rake keeps only the tasks that need the application, such as `cleanup:*` and `maps:delete` (`rake -T`). `bin/setup` runs the `setup` task.
+Tasks are mise tasks, one executable script each in `tasks/` (`mise tasks` lists them). Rake keeps only the tasks that need the application, such as `cleanup:*` and `maps:delete` (`bundle exec rake -T`).
 
 ```bash
 mise run check            # RSpec, RuboCop, type check, ESLint and Vitest

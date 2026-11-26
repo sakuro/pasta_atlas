@@ -3,7 +3,6 @@ AllCops:
   DisplayStyleGuide: true
   EnabledByDefault: true
   Exclude:
-    - bin/**/*
     - dist/**/*
     - vendor/**/*
   ExtraDetails: true

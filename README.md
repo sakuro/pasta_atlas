@@ -10,7 +10,7 @@ Prerequisites: [mise](https://mise.jdx.dev/) (it installs Ruby and Node.js), Doc
 docker compose up -d                    # floci (S3, SQS and RDS)
 (cd terraform/environments/local && terraform init && terraform apply)   # S3 bucket, SQS queue and RDS instance (takes about a minute)
 # add OAuth credentials to .env.development.local
-bin/setup                               # dependencies and database
+mise run setup                          # dependencies and database
 pitchfork start --local                 # http://localhost:2300
 ```
 
