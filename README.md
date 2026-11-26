@@ -4,7 +4,7 @@ A web application for browsing Factorio map screenshots captured by the [mapshot
 
 ## Getting started
 
-Prerequisites: [mise](https://mise.jdx.dev/) (it installs Ruby and Node.js), Docker, and an OAuth app or API key for at least one of GitHub, Discord and Steam.
+Prerequisites: [mise](https://mise.jdx.dev/), Docker, and an OAuth app or API key for at least one of GitHub, Discord and Steam.
 
 ```sh
 mise trust                              # allow mise.toml (env files, hooks, plugins)
