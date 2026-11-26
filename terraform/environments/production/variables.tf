@@ -15,22 +15,23 @@ variable "aws_region" {
 
 variable "app_domain_name" {
   type    = string
-  default = "pasta-atlas.layer8.works"
+  default = "pasta-atlas.app"
 }
 
+# Served by the same distribution, but the maintenance function redirects them to app_domain_name.
 variable "app_additional_domain_names" {
   type    = list(string)
-  default = ["pasta-atlas.app"]
+  default = ["pasta-atlas.layer8.works"]
 }
 
 variable "maps_domain_name" {
   type    = string
-  default = "maps.pasta-atlas.layer8.works"
+  default = "maps.pasta-atlas.app"
 }
 
 variable "maps_additional_domain_names" {
   type    = list(string)
-  default = ["maps.pasta-atlas.app"]
+  default = ["maps.pasta-atlas.layer8.works"]
 }
 
 variable "cloudflare_zone_name" {
@@ -40,7 +41,7 @@ variable "cloudflare_zone_name" {
 
 variable "allowed_origins" {
   type    = list(string)
-  default = ["https://pasta-atlas.layer8.works", "https://pasta-atlas.app"]
+  default = ["https://pasta-atlas.app", "https://pasta-atlas.layer8.works"]
 }
 
 variable "db_username" {
@@ -86,11 +87,6 @@ variable "create_bastion" {
 variable "private_subnet_cidrs" {
   type    = list(string)
   default = ["172.31.128.0/20", "172.31.144.0/20"]
-}
-
-variable "app_dns_enabled" {
-  type    = bool
-  default = true
 }
 
 variable "lambda_runtime" {

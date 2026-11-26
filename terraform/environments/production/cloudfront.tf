@@ -37,7 +37,7 @@ resource "aws_cloudfront_distribution" "app" {
   enabled         = true
   is_ipv6_enabled = true
   price_class     = var.cloudfront_price_class
-  aliases         = concat([var.app_domain_name], var.app_additional_domain_names)
+  aliases         = local.app_domain_names
 
   ordered_cache_behavior {
     path_pattern           = "/assets/*"
@@ -107,7 +107,7 @@ resource "aws_cloudfront_distribution" "mapshots" {
   enabled         = true
   is_ipv6_enabled = true
   price_class     = var.cloudfront_price_class
-  aliases         = concat([var.maps_domain_name], var.maps_additional_domain_names)
+  aliases         = local.maps_domain_names
 
   default_cache_behavior {
     allowed_methods            = ["GET", "HEAD"]

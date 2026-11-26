@@ -2,11 +2,11 @@
 
 ## Overview
 
-Maintenance mode answers requests to `pasta-atlas.layer8.works` with a fixed 503 response, except for requests from allowed IP addresses. It is switched with the `ops:maintenance:*` mise tasks and needs no deployment.
+Maintenance mode answers requests to `pasta-atlas.app` with a fixed 503 response, except for requests from allowed IP addresses. It is switched with the `ops:maintenance:*` mise tasks and needs no deployment.
 
 A CloudFront Function (`pasta-atlas-production-maintenance`, `cloudfront-js-2.0`, viewer request) runs on the default behavior of the `app` distribution, which forwards to the Lambda Function URL. `/assets/*` and the `mapshots` distribution (tiles) are not affected. The function reads its settings from a CloudFront KeyValueStore of the same name; while maintenance mode is off, it reads one key per request.
 
-The code is in `terraform/environments/production/functions/`. Terraform builds the function from `maintenance.js` followed by `const PAGE = <maintenance.html as a JSON string>;`, so the page can be edited and opened in a browser as plain HTML. Terraform creates the store but not its keys, which change at run time.
+The code is in `terraform/environments/production/functions/`. Terraform builds the function from `maintenance.js` followed by `const PAGE = <maintenance.html as a JSON string>;` and `const CANONICAL_HOST = <app_domain_name>;`, so the page can be edited and opened in a browser as plain HTML. Before the maintenance check, the function redirects requests for any other host to `CANONICAL_HOST`; see [Infrastructure](infrastructure.md#app--application-domain-pasta-atlasapp). Terraform creates the store but not its keys, which change at run time.
 
 ## Keys
 

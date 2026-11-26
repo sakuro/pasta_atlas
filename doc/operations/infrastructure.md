@@ -26,7 +26,7 @@ ACM certificates for CloudFront must be provisioned in us-east-1 (AWS requiremen
 
 | Environment | Application (`app` distribution) | Tiles (`mapshots` distribution) |
 |---|---|---|
-| production | `pasta-atlas.layer8.works`, `pasta-atlas.app` | `maps.pasta-atlas.layer8.works`, `maps.pasta-atlas.app` |
+| production | `pasta-atlas.app` (`pasta-atlas.layer8.works` redirects to it) | `maps.pasta-atlas.app`, `maps.pasta-atlas.layer8.works` |
 
 ## S3 Buckets
 
@@ -41,7 +41,7 @@ The key layout is described in [Upload Flow](../architecture/upload-flow.md#s3-k
 
 ## DNS
 
-Gandi manages DNS for `layer8.works` and Cloudflare for `pasta-atlas.app` (TTL 300); Route 53 is not used. The CNAMEs for the application and tiles domains point to their CloudFront distributions (the application record is controlled by `app_dns_enabled`), and the ACM validation records are created in the zone of each domain. Cloudflare records are not proxied, so CloudFront is the only CDN.
+Gandi manages DNS for `layer8.works` and Cloudflare for `pasta-atlas.app` (TTL 300); Route 53 is not used. The CNAMEs for the application and tiles domains point to their CloudFront distributions, and the ACM validation records are created in the zone of each domain. Cloudflare records are not proxied, so CloudFront is the only CDN.
 
 ## Deployment and CI/CD
 
@@ -74,7 +74,7 @@ CORS allows `POST` from `allowed_origins` (presigned uploads) and exposes the `E
 
 Two distributions are provisioned:
 
-### `app` — application domains (`pasta-atlas.layer8.works`, `pasta-atlas.app`)
+### `app` — application domain (`pasta-atlas.app`)
 
 | Path | Origin | Cache policy |
 |---|---|---|
@@ -83,9 +83,9 @@ Two distributions are provisioned:
 
 Static assets are safe to cache long-term because Vite fingerprints filenames with a content hash. Dynamic responses are not cached. See [Lambda](lambda.md#origin-protection) for how the Function URL is protected.
 
-The default behavior runs the `maintenance` CloudFront Function on viewer requests; see [Maintenance Mode](maintenance.md).
+The default behavior runs the `maintenance` CloudFront Function on viewer requests; see [Maintenance Mode](maintenance.md). The function also answers requests to the other aliases (`pasta-atlas.layer8.works`) with a 301 to the same path and query on `pasta-atlas.app`.
 
-### `mapshots` — CDN domains (`maps.pasta-atlas.layer8.works`, `maps.pasta-atlas.app`)
+### `mapshots` — CDN domains (`maps.pasta-atlas.app`, `maps.pasta-atlas.layer8.works`)
 
 Single origin: S3 bucket via OAC. All requests use CachingOptimized. A CORS response headers policy adds `Access-Control-Allow-Origin` for allowed origins.
 
