@@ -41,7 +41,7 @@ pitchfork start --local   # Start the pitchfork.toml daemons: Hanami server, han
 pitchfork stop --local    # Stop them
 ```
 
-Daemon output is stored by pitchfork, not in `log/`. Read it with `pitchfork logs <daemon> -n 100 --no-pager` (`--since 10min` and `--grep` narrow it); `pitchfork list` shows the daemon states.
+Daemon output is stored by pitchfork, not in `log/`. Read it with `pitchfork logs <daemon> -n 100 --no-pager` (`--since 10min` and `--grep` narrow it); `pitchfork list --project` shows their states (without `--project` it lists the daemons of every project).
 
 ## Architecture
 
