@@ -1,6 +1,0 @@
-#!/usr/bin/env bash
-#MISE description="Watch and build the frontend with Vite"
-#MISE hide=true
-set -euo pipefail
-
-exec vite build --watch

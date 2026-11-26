@@ -37,7 +37,7 @@ mise run frontend:test          # Run Vitest tests once (--watch keeps watching)
 ### Development server
 
 ```bash
-bin/dev   # Start all dev services via mise: Hanami server, hanami assets watch, Vite watch, Docker Compose (PostgreSQL and the floci AWS emulator), and the SQS cleanup worker (rake s3:process_queues)
+bin/dev   # Start the pitchfork.toml daemons and follow their logs: Hanami server, hanami assets watch, Vite watch, Docker Compose (PostgreSQL and the floci AWS emulator), and the SQS cleanup worker (rake s3:process_queues)
 ```
 
 ## Architecture

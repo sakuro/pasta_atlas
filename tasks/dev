@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+#MISE description="Start the development services (pitchfork.toml) and follow their logs; Ctrl-C stops them"
+set -euo pipefail
+
+pitchfork start --group dev
+exec pitchfork wait --kill --group dev
