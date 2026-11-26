@@ -1,0 +1,2 @@
+[secrets]
+CLOUDFLARE_API_TOKEN = { value = "CLOUDFLARE_API_TOKEN_pasta-atlas-terraform/credential" }

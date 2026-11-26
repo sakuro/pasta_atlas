@@ -18,8 +18,8 @@ terraform/
 | `s3.tf` | mapshots bucket, CORS, the Compilatron avatar object |
 | `assets.tf` | Assets bucket |
 | `cloudfront.tf` | CloudFront distributions |
-| `acm.tf` | ACM certificates (us-east-1) and their Gandi validation records |
-| `dns.tf` | Gandi CNAME records for the application and tiles domains |
+| `acm.tf` | ACM certificates (us-east-1) and their Gandi and Cloudflare validation records |
+| `dns.tf` | Gandi and Cloudflare CNAME records for the application and tiles domains |
 | `network.tf` | Private subnets, fck-nat, S3 endpoint |
 | `lambda.tf` | Lambda functions, Function URL, event source mapping |
 | `lambda_support.tf` | Origin secret, artifacts bucket, log groups |
@@ -40,6 +40,8 @@ The production state is stored in the `pasta-atlas-production` workspace of the 
 HCP Terraform authenticates with a team API token (organization tokens cannot lock or write state). Store it in the global fnox configuration as `TF_TOKEN_app_terraform_io`; the `fnox-env` plugin in `mise.toml` exports it.
 
 The Gandi provider (`provider "gandi" {}` in `main.tf`) reads its personal access token from `GANDI_PERSONAL_ACCESS_TOKEN`, which is supplied the same way. `plan` and `apply` need it for the DNS records in `acm.tf` and `dns.tf`.
+
+The Cloudflare provider reads its API token from `CLOUDFLARE_API_TOKEN`. Unlike the tokens above, it is defined in the project's `fnox.toml`, because the token is limited to the `pasta-atlas.app` zone (DNS Write and Zone Read).
 
 ## Before First Use
 

@@ -23,6 +23,16 @@ variable "maps_domain_name" {
   default = "maps.pasta-atlas.layer8.works"
 }
 
+variable "maps_additional_domain_names" {
+  type    = list(string)
+  default = ["maps.pasta-atlas.app"]
+}
+
+variable "cloudflare_zone_name" {
+  type    = string
+  default = "pasta-atlas.app"
+}
+
 variable "allowed_origins" {
   type    = list(string)
   default = ["https://pasta-atlas.layer8.works"]

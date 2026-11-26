@@ -107,7 +107,7 @@ resource "aws_cloudfront_distribution" "mapshots" {
   enabled         = true
   is_ipv6_enabled = true
   price_class     = var.cloudfront_price_class
-  aliases         = [var.maps_domain_name]
+  aliases         = concat([var.maps_domain_name], var.maps_additional_domain_names)
 
   default_cache_behavior {
     allowed_methods            = ["GET", "HEAD"]
