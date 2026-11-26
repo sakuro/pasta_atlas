@@ -4,4 +4,4 @@ set -euo pipefail
 
 bundle check || bundle install
 npm install
-hanami db prepare
+bundle exec hanami db prepare
