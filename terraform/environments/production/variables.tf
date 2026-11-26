@@ -18,6 +18,11 @@ variable "app_domain_name" {
   default = "pasta-atlas.layer8.works"
 }
 
+variable "app_additional_domain_names" {
+  type    = list(string)
+  default = ["pasta-atlas.app"]
+}
+
 variable "maps_domain_name" {
   type    = string
   default = "maps.pasta-atlas.layer8.works"
@@ -35,7 +40,7 @@ variable "cloudflare_zone_name" {
 
 variable "allowed_origins" {
   type    = list(string)
-  default = ["https://pasta-atlas.layer8.works"]
+  default = ["https://pasta-atlas.layer8.works", "https://pasta-atlas.app"]
 }
 
 variable "db_username" {

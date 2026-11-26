@@ -27,3 +27,15 @@ resource "cloudflare_dns_record" "maps" {
   # Proxying through Cloudflare would put a second CDN in front of CloudFront.
   proxied = false
 }
+
+# A CNAME at the zone apex is allowed because Cloudflare flattens it.
+resource "cloudflare_dns_record" "app" {
+  for_each = toset(var.app_additional_domain_names)
+
+  zone_id = data.cloudflare_zone.main.id
+  name    = each.value
+  type    = "CNAME"
+  content = aws_cloudfront_distribution.app.domain_name
+  ttl     = 300
+  proxied = false
+}

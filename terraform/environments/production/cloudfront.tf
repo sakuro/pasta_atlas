@@ -37,7 +37,7 @@ resource "aws_cloudfront_distribution" "app" {
   enabled         = true
   is_ipv6_enabled = true
   price_class     = var.cloudfront_price_class
-  aliases         = [var.app_domain_name]
+  aliases         = concat([var.app_domain_name], var.app_additional_domain_names)
 
   ordered_cache_behavior {
     path_pattern           = "/assets/*"
