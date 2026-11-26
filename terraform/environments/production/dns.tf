@@ -15,3 +15,15 @@ resource "gandi_livedns_record" "maps" {
   ttl    = 300
   values = ["${aws_cloudfront_distribution.mapshots.domain_name}."]
 }
+
+resource "cloudflare_dns_record" "maps" {
+  for_each = toset(var.maps_additional_domain_names)
+
+  zone_id = data.cloudflare_zone.main.id
+  name    = each.value
+  type    = "CNAME"
+  content = aws_cloudfront_distribution.mapshots.domain_name
+  ttl     = 300
+  # Proxying through Cloudflare would put a second CDN in front of CloudFront.
+  proxied = false
+}

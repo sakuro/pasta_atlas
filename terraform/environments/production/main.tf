@@ -18,6 +18,10 @@ terraform {
       source  = "go-gandi/gandi"
       version = "~> 2.0"
     }
+    cloudflare = {
+      source  = "cloudflare/cloudflare"
+      version = "~> 5.0"
+    }
   }
 
   cloud {
@@ -55,3 +59,11 @@ provider "aws" {
 }
 
 provider "gandi" {}
+
+provider "cloudflare" {}
+
+data "cloudflare_zone" "main" {
+  filter = {
+    name = var.cloudflare_zone_name
+  }
+}

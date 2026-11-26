@@ -2,7 +2,7 @@
 
 ## Overview
 
-Pasta Atlas runs on AWS Lambda behind CloudFront. DNS is managed by Gandi. The runtime design, networking, origin protection and deployment are described in [Lambda](lambda.md); this document covers the rest.
+Pasta Atlas runs on AWS Lambda behind CloudFront. DNS is managed by Gandi and Cloudflare. The runtime design, networking, origin protection and deployment are described in [Lambda](lambda.md); this document covers the rest.
 
 ## AWS Services
 
@@ -26,7 +26,7 @@ ACM certificates for CloudFront must be provisioned in us-east-1 (AWS requiremen
 
 | Environment | Application (`app` distribution) | Tiles (`mapshots` distribution) |
 |---|---|---|
-| production | `pasta-atlas.layer8.works` | `maps.pasta-atlas.layer8.works` |
+| production | `pasta-atlas.layer8.works` | `maps.pasta-atlas.layer8.works`, `maps.pasta-atlas.app` |
 
 ## S3 Buckets
 
@@ -41,7 +41,7 @@ The key layout is described in [Upload Flow](../architecture/upload-flow.md#s3-k
 
 ## DNS
 
-Gandi manages DNS (TTL 300); Route 53 is not used. The CNAMEs for the application and tiles domains point to their CloudFront distributions (the application record is controlled by `app_dns_enabled`), and the ACM validation records are created in Gandi too.
+Gandi manages DNS for `layer8.works` and Cloudflare for `pasta-atlas.app` (TTL 300); Route 53 is not used. The CNAMEs for the application and tiles domains point to their CloudFront distributions (the application record is controlled by `app_dns_enabled`), and the ACM validation records are created in the zone of each domain. Cloudflare records are not proxied, so CloudFront is the only CDN.
 
 ## Deployment and CI/CD
 
@@ -85,7 +85,7 @@ Static assets are safe to cache long-term because Vite fingerprints filenames wi
 
 The default behavior runs the `maintenance` CloudFront Function on viewer requests; see [Maintenance Mode](maintenance.md).
 
-### `mapshots` — CDN domain (`maps.pasta-atlas.layer8.works`)
+### `mapshots` — CDN domains (`maps.pasta-atlas.layer8.works`, `maps.pasta-atlas.app`)
 
 Single origin: S3 bucket via OAC. All requests use CachingOptimized. A CORS response headers policy adds `Access-Control-Allow-Origin` for allowed origins.
 
