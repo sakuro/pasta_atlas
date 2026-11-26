@@ -26,7 +26,7 @@ ACM certificates for CloudFront must be provisioned in us-east-1 (AWS requiremen
 
 | Environment | Application (`app` distribution) | Tiles (`mapshots` distribution) |
 |---|---|---|
-| production | `pasta-atlas.layer8.works` | `maps.pasta-atlas.layer8.works`, `maps.pasta-atlas.app` |
+| production | `pasta-atlas.layer8.works`, `pasta-atlas.app` | `maps.pasta-atlas.layer8.works`, `maps.pasta-atlas.app` |
 
 ## S3 Buckets
 
@@ -74,7 +74,7 @@ CORS allows `POST` from `allowed_origins` (presigned uploads) and exposes the `E
 
 Two distributions are provisioned:
 
-### `app` — application domain (`pasta-atlas.layer8.works`)
+### `app` — application domains (`pasta-atlas.layer8.works`, `pasta-atlas.app`)
 
 | Path | Origin | Cache policy |
 |---|---|---|
