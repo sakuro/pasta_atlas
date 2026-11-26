@@ -23,16 +23,13 @@ fnox = "1.50.0"
 gitleaks = "8.30.1"
 hk = "2.13.0"
 node = "26.13.1"
+pitchfork = "2.36.0"
 postgres = "18.7"
 ruby = "4.0.10"
 terraform = "1.17.2"
 tflint = "0.66.0"
 
 # Tasks are executable scripts in tasks/ (a subdirectory becomes a namespace, and _default names the
-# namespace itself). The services that `dev` starts are in tasks/dev/ and are hidden.
+# namespace itself).
 [task_config]
 includes = ["tasks"]
-
-[tasks.default]
-depends = ["dev"]
-hide = true

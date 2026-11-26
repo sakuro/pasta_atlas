@@ -8,7 +8,7 @@ Pasta Atlas is a Hanami 3.0 (Ruby) web application for viewing screenshots captu
 
 ## Commands
 
-Tasks are mise tasks, one executable script each in `tasks/` (`mise tasks` lists them). Rake keeps only the tasks that need the application, such as `cleanup:*` and `maps:delete` (`rake -T`). `bin/setup` and `bin/dev` run the `setup` and `dev` tasks.
+Tasks are mise tasks, one executable script each in `tasks/` (`mise tasks` lists them). Rake keeps only the tasks that need the application, such as `cleanup:*` and `maps:delete` (`rake -T`). `bin/setup` runs the `setup` task.
 
 ```bash
 mise run check            # RSpec, RuboCop, type check, ESLint and Vitest
@@ -37,8 +37,11 @@ mise run frontend:test          # Run Vitest tests once (--watch keeps watching)
 ### Development server
 
 ```bash
-bin/dev   # Start all dev services via mise: Hanami server, hanami assets watch, Vite watch, Docker Compose (PostgreSQL and the floci AWS emulator), and the SQS cleanup worker (rake s3:process_queues)
+pitchfork start --local   # Start the pitchfork.toml daemons: Hanami server, hanami assets watch, Vite watch, Docker Compose (PostgreSQL and the floci AWS emulator), and the SQS cleanup worker (rake s3:process_queues)
+pitchfork stop --local    # Stop them
 ```
+
+Daemon output is stored by pitchfork, not in `log/`. Read it with `pitchfork logs <daemon> -n 100 --no-pager` (`--since 10min` and `--grep` narrow it); `pitchfork list` shows the daemon states.
 
 ## Architecture
 
