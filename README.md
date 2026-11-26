@@ -11,7 +11,7 @@ docker compose up -d                    # floci (S3, SQS and RDS)
 (cd terraform/environments/local && terraform init && terraform apply)   # S3 bucket, SQS queue and RDS instance (takes about a minute)
 # add OAuth credentials to .env.development.local
 bin/setup                               # dependencies and database
-bin/dev                                 # http://localhost:2300
+pitchfork start --local                 # http://localhost:2300
 ```
 
 The AWS profile, the OAuth settings and the details of each step are in [doc/development/local-setup.md](doc/development/local-setup.md).

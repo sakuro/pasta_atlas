@@ -5,9 +5,6 @@
 # no matter which shell started the supervisor.
 mise = true
 
-[groups.dev]
-daemons = ["floci", "database", "web", "assets", "frontend", "s3-queue-worker"]
-
 [daemons.floci]
 run = "exec docker compose up"
 # Floci answers before it has loaded its stored queues, and the worker would get "queue does not exist".

@@ -13,7 +13,7 @@ Local development uses Docker-based substitutes for AWS services. No AWS account
 
 ## Prerequisites
 
-- [mise](https://mise.jdx.dev/) — manages Ruby, Node.js (with npm), Terraform, the AWS CLI, the PostgreSQL client tools and other tools; `mise install` installs the versions in `mise.toml`, so no global Node.js is needed. `hanami db` runs `psql` and `pg_dump` from the `PATH`, and `bin/dev` uses `pg_isready`; `bin/dev` also runs [pitchfork](https://pitchfork.jdx.dev/); all three come from the `postgres` entry of `mise.toml`
+- [mise](https://mise.jdx.dev/) — manages Ruby, Node.js (with npm), Terraform, the AWS CLI, the PostgreSQL client tools and other tools; `mise install` installs the versions in `mise.toml`, so no global Node.js is needed. `hanami db` runs `psql` and `pg_dump` from the `PATH`, and the `database` daemon of `pitchfork.toml` uses `pg_isready`; all three come from the `postgres` entry of `mise.toml`. mise also installs [pitchfork](https://pitchfork.jdx.dev/), which runs the dev services
 - Docker
 
 `mise.toml` pins every tool to an exact version. Renovate updates the pins, and both Renovate (`minimumReleaseAge`) and mise (`minimum_release_age`) skip releases younger than three days.
@@ -31,7 +31,7 @@ aws_access_key_id = dummy
 aws_secret_access_key = dummy
 ```
 
-This provides dummy credentials and region for Floci. No real AWS account is needed. `.env.development` selects the profile through `AWS_PROFILE`, and both Terraform and `bin/dev` (the readiness check of the `floci` daemon) use it.
+This provides dummy credentials and region for Floci. No real AWS account is needed. `.env.development` selects the profile through `AWS_PROFILE`, and both Terraform and the readiness check of the `floci` daemon use it.
 
 ### 2. Start Docker services
 
@@ -124,10 +124,10 @@ This runs the `setup` mise task: `bundle install`, `npm install`, and `hanami db
 ## Starting the dev server
 
 ```bash
-bin/dev
+pitchfork start --local
 ```
 
-Starts the daemons of [`pitchfork.toml`](../../pitchfork.toml) through the `dev` mise task and follows their logs; Ctrl-C stops them all. [pitchfork](https://pitchfork.jdx.dev/) starts each daemon once its dependencies are ready: the web server and the queue worker wait until the RDS instance accepts connections (the `database` daemon), and the queue worker also waits until Floci serves its queue:
+Starts the daemons of [`pitchfork.toml`](../../pitchfork.toml) and returns once they are ready; they keep running in the pitchfork supervisor until `pitchfork stop --local`. pitchfork starts each daemon once its dependencies are ready: the web server and the queue worker wait until the RDS instance accepts connections (the `database` daemon), and the queue worker also waits until Floci serves its queue:
 
 | Daemon | Command |
 |---|---|

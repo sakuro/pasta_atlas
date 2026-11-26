@@ -30,10 +30,6 @@ terraform = "1.17.2"
 tflint = "0.66.0"
 
 # Tasks are executable scripts in tasks/ (a subdirectory becomes a namespace, and _default names the
-# namespace itself). The services that `dev` starts are in tasks/dev/ and are hidden.
+# namespace itself).
 [task_config]
 includes = ["tasks"]
-
-[tasks.default]
-depends = ["dev"]
-hide = true
