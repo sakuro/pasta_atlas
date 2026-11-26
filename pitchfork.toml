@@ -14,7 +14,7 @@ ready_cmd = { run = 'aws sqs get-queue-attributes --queue-url "$SQS_S3_CLEANUP_Q
 # The RDS instance is created by `terraform apply` and served by Floci.
 # pg_isready succeeds even when the database does not exist, so connect to it once the server is up
 # and fail with a hint instead of letting the dependent daemons crash on the missing database.
-[daemons.database]
+[daemons.database-readiness]
 oneshot = true
 depends = ["floci"]
 run = '''
@@ -27,7 +27,7 @@ fi
 
 [daemons.web]
 run = "exec bundle exec hanami server"
-depends = ["database"]
+depends = ["database-readiness"]
 ready_port = 2300
 
 [daemons.assets]
@@ -38,4 +38,4 @@ run = "exec vite build --watch"
 
 [daemons.s3-queue-worker]
 run = "exec bundle exec rake s3:process_queues"
-depends = ["database", "floci"]
+depends = ["database-readiness", "floci"]
