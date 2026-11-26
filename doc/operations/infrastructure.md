@@ -41,7 +41,7 @@ The key layout is described in [Upload Flow](../architecture/upload-flow.md#s3-k
 
 ## DNS
 
-Gandi manages DNS for `layer8.works` and Cloudflare for `pasta-atlas.app` (TTL 300); Route 53 is not used. The CNAMEs for the application and tiles domains point to their CloudFront distributions, and the ACM validation records are created in the zone of each domain. Cloudflare records are not proxied, so CloudFront is the only CDN.
+Gandi manages DNS for `layer8.works` and Cloudflare for `pasta-atlas.app` (TTL 300); Route 53 is not used. The CNAMEs for the application and tiles domains point to their CloudFront distributions, and the ACM validation records are created in the zone of each domain. Cloudflare records are not proxied, so CloudFront is the only CDN. `pasta-atlas.app` has no mail: a null MX, an SPF record that allows no sender and a DMARC `p=reject` policy keep others from sending mail in its name.
 
 ## Deployment and CI/CD
 

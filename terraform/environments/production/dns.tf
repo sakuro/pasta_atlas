@@ -61,3 +61,30 @@ resource "cloudflare_dns_record" "maps" {
   ttl     = 300
   proxied = false
 }
+
+# pasta-atlas.app neither receives nor sends mail. A null MX (RFC 7505), an SPF record that allows
+# no sender and a rejecting DMARC policy keep others from sending mail in its name.
+resource "cloudflare_dns_record" "null_mx" {
+  zone_id  = data.cloudflare_zone.main.id
+  name     = var.cloudflare_zone_name
+  type     = "MX"
+  content  = "."
+  priority = 0
+  ttl      = 3600
+}
+
+resource "cloudflare_dns_record" "spf" {
+  zone_id = data.cloudflare_zone.main.id
+  name    = var.cloudflare_zone_name
+  type    = "TXT"
+  content = "\"v=spf1 -all\""
+  ttl     = 3600
+}
+
+resource "cloudflare_dns_record" "dmarc" {
+  zone_id = data.cloudflare_zone.main.id
+  name    = "_dmarc.${var.cloudflare_zone_name}"
+  type    = "TXT"
+  content = "\"v=DMARC1; p=reject;\""
+  ttl     = 3600
+}
