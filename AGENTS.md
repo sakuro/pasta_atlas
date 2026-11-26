@@ -40,6 +40,8 @@ mise run frontend:test          # Run Vitest tests once (--watch keeps watching)
 bin/dev   # Start the pitchfork.toml daemons and follow their logs: Hanami server, hanami assets watch, Vite watch, Docker Compose (PostgreSQL and the floci AWS emulator), and the SQS cleanup worker (rake s3:process_queues)
 ```
 
+Daemon output is stored by pitchfork, not in `log/`. Read it with `pitchfork logs <daemon> -n 100 --no-pager` (`--since 10min` and `--grep` narrow it); `pitchfork list` shows the daemon states.
+
 ## Architecture
 
 ### Request lifecycle
