@@ -20,7 +20,16 @@ Local development uses Docker-based substitutes for AWS services. No AWS account
 
 ## First-time setup
 
-### 1. Add AWS profile
+### 1. Install tools
+
+```bash
+mise trust
+mise install
+```
+
+`mise trust` allows `mise.toml`, which loads the env files and defines hooks and plugins; mise ignores an untrusted file. `mise install` installs the tools pinned in `mise.toml` and, through its `postinstall` hook, the git hooks (`hk install`). The following steps run `terraform` and `pitchfork` from these tools, so activate mise in your shell.
+
+### 2. Add AWS profile
 
 Add the following profile to `~/.aws/config`:
 
@@ -33,13 +42,13 @@ aws_secret_access_key = dummy
 
 This provides dummy credentials and region for Floci. No real AWS account is needed. `.env.development` selects the profile through `AWS_PROFILE`, and both Terraform and the readiness check of the `floci` daemon use it.
 
-### 2. Start Docker services
+### 3. Start Docker services
 
 ```bash
 docker compose up -d
 ```
 
-### 3. Provision local AWS resources
+### 4. Provision local AWS resources
 
 ```bash
 cd terraform/environments/local
@@ -78,7 +87,7 @@ terraform apply
 
 If `AWS_ENDPOINT_URL` points at Floci in your shell, `terraform` against real AWS (`environments/production`) must run with it unset.
 
-### 4. Configure OAuth providers
+### 5. Configure OAuth providers
 
 At least one provider must be configured. Create `.env.development.local` (gitignored) with credentials for the providers you want to use.
 
@@ -113,7 +122,7 @@ STEAM_WEB_API_KEY=<your api key>
 
 Without at least one provider configured, the app starts but login is unavailable.
 
-### 5. Install dependencies and prepare the database
+### 6. Install dependencies and prepare the database
 
 ```bash
 mise run setup

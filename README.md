@@ -4,9 +4,11 @@ A web application for browsing Factorio map screenshots captured by the [mapshot
 
 ## Getting started
 
-Prerequisites: [mise](https://mise.jdx.dev/) (it installs Ruby and Node.js), Docker, and an OAuth app or API key for at least one of GitHub, Discord and Steam.
+Prerequisites: [mise](https://mise.jdx.dev/), Docker, and an OAuth app or API key for at least one of GitHub, Discord and Steam.
 
 ```sh
+mise trust                              # allow mise.toml (env files, hooks, plugins)
+mise install                            # tools in mise.toml and the git hooks
 docker compose up -d                    # floci (S3, SQS and RDS)
 (cd terraform/environments/local && terraform init && terraform apply)   # S3 bucket, SQS queue and RDS instance (takes about a minute)
 # add OAuth credentials to .env.development.local
