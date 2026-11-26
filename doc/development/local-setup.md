@@ -13,7 +13,7 @@ Local development uses Docker-based substitutes for AWS services. No AWS account
 
 ## Prerequisites
 
-- [mise](https://mise.jdx.dev/) — manages Ruby, Node.js (with npm), Terraform, the AWS CLI, the PostgreSQL client tools and other tools; `mise install` installs the versions in `mise.toml`, so no global Node.js is needed. `hanami db` runs `psql` and `pg_dump` from the `PATH`, and the `wait-database` daemon of `pitchfork.toml` uses `pg_isready`; all three come from the `postgres` entry of `mise.toml`. mise also installs [pitchfork](https://pitchfork.jdx.dev/), which runs the dev services
+- [mise](https://mise.jdx.dev/) — manages Ruby, Node.js (with npm), Terraform, the AWS CLI, the PostgreSQL client tools and other tools; `mise install` installs the versions in `mise.toml`, so no global Node.js is needed. `hanami db` runs `psql` and `pg_dump` from the `PATH`, and the `database-readiness` daemon of `pitchfork.toml` uses `pg_isready`; all three come from the `postgres` entry of `mise.toml`. mise also installs [pitchfork](https://pitchfork.jdx.dev/), which runs the dev services
 - Docker
 
 `mise.toml` pins every tool to an exact version. Renovate updates the pins, and both Renovate (`minimumReleaseAge`) and mise (`minimum_release_age`) skip releases younger than three days.
@@ -127,7 +127,7 @@ This runs the `setup` mise task: `bundle install`, `npm install`, and `hanami db
 pitchfork start --local
 ```
 
-Starts the daemons of [`pitchfork.toml`](../../pitchfork.toml) and returns once they are ready; they keep running in the pitchfork supervisor until `pitchfork stop --local`. pitchfork starts each daemon once its dependencies are ready: the web server and the queue worker wait until the RDS instance accepts connections (the `wait-database` daemon), and the queue worker also waits until Floci serves its queue:
+Starts the daemons of [`pitchfork.toml`](../../pitchfork.toml) and returns once they are ready; they keep running in the pitchfork supervisor until `pitchfork stop --local`. pitchfork starts each daemon once its dependencies are ready: the web server and the queue worker wait until the RDS instance accepts connections (the `database-readiness` daemon), and the queue worker also waits until Floci serves its queue:
 
 | Daemon | Command |
 |---|---|
