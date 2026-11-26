@@ -1,5 +1,6 @@
-// Terraform appends `const PAGE = <maintenance.html as a JSON string>;` after this code,
-// so that the import stays the first statement as in AWS's examples.
+// Terraform appends `const PAGE = <maintenance.html as a JSON string>;` and
+// `const CANONICAL_HOST = <app_domain_name as a JSON string>;` after this code, so that the import
+// stays the first statement as in AWS's examples.
 import cf from "cloudfront";
 
 const kvs = cf.kvs();
@@ -44,6 +45,19 @@ function fill(template, placeholder, value) {
 
 async function handler(event) {
   const request = event.request;
+
+  // The other aliases of the distribution are former domains. The redirect comes before the
+  // maintenance check so that it costs no KeyValueStore read.
+  const host = request.headers.host ? request.headers.host.value : "";
+  if (host !== CANONICAL_HOST) {
+    // The query string as received, without the leading "?"; undefined when there is none.
+    const query = request.rawQueryString();
+    return {
+      statusCode: 301,
+      statusDescription: "Moved Permanently",
+      headers: { location: { value: `https://${CANONICAL_HOST}${request.uri}${query ? `?${query}` : ""}` } },
+    };
+  }
 
   // Keys are read one at a time: promise combinators can exceed the function's memory quota.
   if ((await read("maintenance")) !== "on") return request;

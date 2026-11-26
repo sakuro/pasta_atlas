@@ -105,7 +105,7 @@ The Lambda functions receive env vars from `lambda.tf`; secrets are fetched from
 | `SSM_PARAMETER_PREFIX` | `/pasta-atlas/production` |
 | `APP_BASE_URL` | `https://` + `app_domain_name` |
 | `S3_BUCKET` | mapshots bucket (`s3_bucket_name` output) |
-| `CLOUDFRONT_BASE_URL` | `https://` + the mapshots distribution domain (`cloudfront_domain_name` output) |
+| `CLOUDFRONT_BASE_URL` | `https://` + `maps_domain_name` |
 | `PRESIGNED_URL_EXPIRY` | `presigned_url_expiry` variable (3600) |
 | `GITHUB_CLIENT_ID`, `DISCORD_CLIENT_ID` | `github_client_id`, `discord_client_id` variables |
 | `HOME` | `/tmp` (the package directory is read-only) |

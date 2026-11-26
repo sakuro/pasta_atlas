@@ -16,7 +16,7 @@ locals {
     SSM_PARAMETER_PREFIX     = "/${var.app_name}/${var.environment}"
     APP_BASE_URL             = "https://${var.app_domain_name}"
     S3_BUCKET                = aws_s3_bucket.mapshots.bucket
-    CLOUDFRONT_BASE_URL      = "https://${aws_cloudfront_distribution.mapshots.domain_name}"
+    CLOUDFRONT_BASE_URL      = "https://${var.maps_domain_name}"
     SQS_S3_CLEANUP_QUEUE_URL = aws_sqs_queue.s3_cleanup.url
     PRESIGNED_URL_EXPIRY     = tostring(var.presigned_url_expiry)
     GITHUB_CLIENT_ID         = var.github_client_id
