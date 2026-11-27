@@ -70,7 +70,7 @@ GEM
       rubocop (>= 1.0)
       zeitwerk (~> 2.6)
     dotenv (3.2.0)
-    dry-auto_inject (1.2.1)
+    dry-auto_inject (1.2.2)
       dry-core (~> 1.1)
       zeitwerk (~> 2.6)
     dry-cli (1.4.1)
@@ -87,7 +87,7 @@ GEM
     dry-files (1.1.0)
     dry-inflector (1.3.1)
     dry-initializer (3.2.0)
-    dry-logger (1.2.2)
+    dry-logger (1.3.1)
       logger
     dry-logic (1.6.0)
       bigdecimal
@@ -182,12 +182,12 @@ GEM
       guard-compat (~> 1.2)
       puma (>= 4.0, < 9)
     hana (1.3.7)
-    hanami (3.0.2)
+    hanami (3.0.3)
       bundler (>= 2.0)
       dry-configurable (~> 1.0, >= 1.2.0, < 2)
       dry-core (~> 1.0, < 2)
       dry-inflector (~> 1.0, >= 1.1.0, < 2)
-      dry-logger (~> 1.2, < 2)
+      dry-logger (~> 1.3, >= 1.3.1)
       dry-monitor (~> 1.0, >= 1.0.1, < 2)
       dry-system (~> 1.1)
       hanami-cli (>= 2.3.1)
@@ -545,7 +545,7 @@ DEPENDENCIES
   dry-types (= 1.9.2)
   dry-validation (= 1.11.1)
   foxtail-tools (= 0.6.1)
-  hanami (= 3.0.2)
+  hanami (= 3.0.3)
   hanami-action (= 3.0.2)
   hanami-assets (= 3.0.0)
   hanami-db (= 3.0.0)
@@ -609,7 +609,7 @@ CHECKSUMS
   diff-lcs (1.6.2) sha256=9ae0d2cba7d4df3075fe8cd8602a8604993efc0dfa934cff568969efb1909962
   docquet (1.4.0) sha256=ab1ffc3221a3c9eb432909b11dcbf5dafe21014878040975fbcb66a9fd980f32
   dotenv (3.2.0) sha256=e375b83121ea7ca4ce20f214740076129ab8514cd81378161f11c03853fe619d
-  dry-auto_inject (1.2.1) sha256=dedddc8a13fcdf320def7d6741ce7d6da48d749c6d43175ef0072c0be2ba47c8
+  dry-auto_inject (1.2.2) sha256=e548b45177c12768a1cb7b18563da21252420cbfce8e415ae8bafa97ca12d152
   dry-cli (1.4.1) sha256=b8015bb76c708aa8705a36faf694973e75eeeffca39b89c8e172dc6f66a7d874
   dry-configurable (1.4.0) sha256=e35d1b5f3c081753ef361f564919db79000f32cfa6f20ee3a3ba5921b41b73ce
   dry-core (1.2.0) sha256=0cc5a7da88df397f153947eeeae42e876e999c1e30900f3c536fb173854e96a1
@@ -617,7 +617,7 @@ CHECKSUMS
   dry-files (1.1.0) sha256=4fe91d007ad78d303b7f3a8a2321bbfc554fcc01aa11a6b37246658bbf8d41de
   dry-inflector (1.3.1) sha256=7fb0c2bb04f67638f25c52e7ba39ab435d922a3a5c3cd196120f63accb682dcc
   dry-initializer (3.2.0) sha256=37d59798f912dc0a1efe14a4db4a9306989007b302dcd5f25d0a2a20c166c4e3
-  dry-logger (1.2.2) sha256=eaf91bbc131135b2148d779fb22b8aff4a1b1ad616c721dab6d113beaa5e41c7
+  dry-logger (1.3.1) sha256=0e1592ee517ab7561e49767758f7b7265cf715194d055e8c4749b39753b34c23
   dry-logic (1.6.0) sha256=da6fedbc0f90fc41f9b0cc7e6f05f5d529d1efaef6c8dcc8e0733f685745cea2
   dry-monads (1.11.1) sha256=d38f17407f0f122f63e0435e5b43cdb2ec47ea343dad5c849edfc4682853e100
   dry-monitor (1.0.1) sha256=4ac8ed1f85b14bfde1aa0bce9496d7d2fc699c5a4a1131010c8014d5f9e7a309
@@ -650,7 +650,7 @@ CHECKSUMS
   guard-compat (1.2.1) sha256=3ad21ab0070107f92edfd82610b5cdc2fb8e368851e72362ada9703443d646fe
   guard-puma (0.10.0) sha256=15d9e5621113b6fdf0f605677615d51038520640cd70e242d9e14d565ade5c31
   hana (1.3.7) sha256=5425db42d651fea08859811c29d20446f16af196308162894db208cac5ce9b0d
-  hanami (3.0.2) sha256=4fb9180c24fb1edd8932efc71848e9fe2e41e366286a0bf59a7938904a194e2b
+  hanami (3.0.3) sha256=9e08d54ff71829964728fa1570fdc333f56a5f69e1f88cc07a7f8610b8711163
   hanami-action (3.0.2) sha256=2105dd540a6b1d664fa47e93b532a0cc9b99856201c07e946a1d4f293e7505eb
   hanami-assets (3.0.0) sha256=b9ce246ca12ffa8e79f71194e312a484ffbb0d8fd28582b22869706c0afbd3da
   hanami-cli (3.0.0) sha256=9d51bb7b0f0b4eaf67ea1dc8b27774428ee831647b107d2e9f6ad3317b1598ec
