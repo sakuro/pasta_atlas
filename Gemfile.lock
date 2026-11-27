@@ -242,7 +242,7 @@ GEM
       temple (~> 0.10.0, >= 0.10.2)
       tilt (~> 2.3)
       zeitwerk (~> 2.6)
-    hanami-webconsole (3.0.0)
+    hanami-webconsole (3.0.1)
       better_errors (~> 2.10, >= 2.10.1)
       binding_of_caller (~> 2.0)
     hashie (5.2.0)
@@ -553,7 +553,7 @@ DEPENDENCIES
   hanami-router (= 3.0.1)
   hanami-rspec (= 3.0.0)
   hanami-view (= 3.0.3)
-  hanami-webconsole (= 3.0.0)
+  hanami-webconsole (= 3.0.1)
   irb (= 1.19.0)
   json_schemer (= 2.5.0)
   omniauth (= 2.4.2)
@@ -660,7 +660,7 @@ CHECKSUMS
   hanami-rspec (3.0.0) sha256=14d3ffb2dd4b5a028007ddf5442028c3d05ea8126c95def1cd83c23fd3c82ee7
   hanami-utils (3.0.1) sha256=0d46181bd86115127a04a6d0481df819eb558714ce58c6b4da7e0bb65c5dcd9b
   hanami-view (3.0.3) sha256=aba79f0ee943526eb7589776901682693800029bab6f30bf430de2eeb845a85f
-  hanami-webconsole (3.0.0) sha256=5d8f46e1e2783e03403c58500cbad6274e2022cbc60867a7354442e6b60c2bdd
+  hanami-webconsole (3.0.1) sha256=71b361dc081710fbc5cd2866c3dc4737e353de550a11d881a4bba48800759de3
   hashie (5.2.0) sha256=357a22635195c2e3911fbbc3de9a7d528843d1f42ab0aae02171048f16332d72
   i18n (1.15.2) sha256=00f9eb62412fe593b2a65a97daa75300d37abb8f7202ec748e94b6d46a9dd1b5
   ice_nine (0.11.2) sha256=5d506a7d2723d5592dc121b9928e4931742730131f22a1a37649df1c1e2e63db
