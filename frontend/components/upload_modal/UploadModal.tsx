@@ -134,6 +134,10 @@ export const UploadModal = (props: { isGuest: boolean }) => {
     }
 
     const imageFiles = allFiles.filter((f) => relPath(f).endsWith(".jpg"));
+    if (imageFiles.length === 0) {
+      setState({ type: "error", error: { msgId: "upload-error-no-images" } });
+      return;
+    }
     if (imageFiles.length > MAX_IMAGE_COUNT) {
       setState({
         type: "error",
