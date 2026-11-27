@@ -24,13 +24,9 @@ terraform {
     }
   }
 
-  cloud {
-    organization = "sakuro"
-
-    workspaces {
-      name = "pasta-atlas-production"
-    }
-  }
+  # The organization and workspace come from TF_CLOUD_ORGANIZATION and TF_WORKSPACE, which fnox.toml
+  # and the terraform:* tasks supply.
+  cloud {}
 }
 
 provider "aws" {

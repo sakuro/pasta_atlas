@@ -32,9 +32,9 @@ terraform/
 | `sqs.tf` | SQS queue for S3 cleanup and its dead-letter queue |
 | `outputs.tf` | Bucket, distribution, queue and RDS outputs |
 
-## State
+## Credentials
 
-The production state is stored in the `pasta-atlas-production` workspace of the `sakuro` organization on HCP Terraform (execution mode: Local, so plans and applies run on this machine). `local` uses local state.
+The HCP Terraform organization and workspace are not written in `main.tf`. The project's `fnox.toml` supplies `TF_CLOUD_ORGANIZATION` and `PRODUCTION_TF_WORKSPACE`, and the `terraform:*` tasks pass the latter as `TF_WORKSPACE` for `production` only; `TF_WORKSPACE` in the environment would make the local backend of `local` switch to a new, empty workspace.
 
 HCP Terraform authenticates with a team API token (organization tokens cannot lock or write state). Store it in the global fnox configuration as `TF_TOKEN_app_terraform_io`; the `fnox-env` plugin in `mise.toml` exports it.
 
@@ -49,12 +49,12 @@ The Cloudflare provider reads its API token from `CLOUDFLARE_API_TOKEN`. Unlike 
 No `terraform.tfvars` is required; all variables have defaults. `alarm_email` defaults to `null`; set it (locally through `TF_VAR_alarm_email`, which fnox supplies) to receive the dead-letter queue alarm by email, and confirm the subscription.
 
 ```bash
-terraform -chdir=terraform/production init   # or local
+mise run terraform:init production             # or local
 mise run terraform:plan production             # or local
 mise run terraform:apply production            # or local
 ```
 
-`.env.development` points `AWS_PROFILE` and `AWS_ENDPOINT_URL` at Floci. For `production`, the `terraform:plan` and `terraform:apply` mise tasks set `AWS_PROFILE=terraform` and unset `AWS_ENDPOINT_URL`; any other Terraform or AWS CLI command against production must do the same.
+`.env.development` points `AWS_PROFILE` and `AWS_ENDPOINT_URL` at Floci. For `production`, the `terraform:*` mise tasks set `AWS_PROFILE=terraform` and `TF_WORKSPACE` and unset `AWS_ENDPOINT_URL`; any other Terraform command against production must do the same, and any AWS CLI command must set `AWS_PROFILE` and unset `AWS_ENDPOINT_URL`.
 
 ### 2. Set secrets in SSM (production only)
 

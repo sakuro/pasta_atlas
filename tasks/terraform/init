@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+#MISE description="Run terraform init for an environment"
+#MISE raw=true
+#USAGE arg "<env>" help="local or production" {
+#USAGE   choices "local" "production"
+#USAGE }
+set -euo pipefail
+
+if [ "$usage_env" = production ]; then
+  # The development environment points the AWS CLI at Floci.
+  unset AWS_ENDPOINT_URL
+  export AWS_PROFILE=terraform
+  export TF_WORKSPACE="$PRODUCTION_TF_WORKSPACE"
+fi
+
+exec terraform -chdir="terraform/$usage_env" init

@@ -1,2 +1,6 @@
 [secrets]
 CLOUDFLARE_API_TOKEN = { value = "CLOUDFLARE_API_TOKEN_pasta-atlas-terraform/credential" }
+TF_CLOUD_ORGANIZATION = { value = "pasta-atlas-tf-cloud-organization/notesPlain" }
+# Not exported as TF_WORKSPACE, which would make terraform/local (local backend) silently use a new,
+# empty workspace of that name. The terraform:* tasks set TF_WORKSPACE for production only.
+PRODUCTION_TF_WORKSPACE = { value = "pasta-atlas-tf-workspace/notesPlain" }
