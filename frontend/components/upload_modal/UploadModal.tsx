@@ -1,7 +1,6 @@
 import { createSignal, onFlush, Show } from "solid-js";
 import { Portal } from "@solidjs/web";
 import { useNavigate } from "@solidjs/router";
-import { adjectives, animals, colors, uniqueNamesGenerator } from "unique-names-generator";
 import "../../lib/l10n";
 import {
   completeUpload,
@@ -11,11 +10,11 @@ import {
   lookupMap,
   verifyUploadBatch,
 } from "../../lib/api/client";
+import { countGraphemes, generateMapName, MAX_MAP_NAME_GRAPHEMES } from "../../lib/map-name";
 import { notifyUploadCompleted } from "../../lib/upload-events";
 import { CopyButton } from "../CopyButton";
 import { HowToUploadModal } from "./HowToUploadModal";
 
-const segmenter = new Intl.Segmenter();
 const MAX_IMAGE_COUNT = 10_000;
 
 interface MapshotJson {
@@ -75,11 +74,6 @@ type State =
   | { type: "done"; viewerUrl: string }
   | { type: "error"; error: I18nError };
 
-const generateMapName = (): string => {
-  const raw = uniqueNamesGenerator({ dictionaries: [adjectives, colors, animals], separator: " ", style: "lowerCase" });
-  return raw.charAt(0).toUpperCase() + raw.slice(1);
-};
-
 const formatBytes = (n: number): string => {
   if (n < 1024) return `${n} B`;
   if (n < 1048576) return `${(n / 1024).toFixed(1)} KiB`;
@@ -111,7 +105,7 @@ export const UploadModal = (props: { isGuest: boolean }) => {
   const [state, setState] = createSignal<State>({ type: "idle" });
   const [displayName, setDisplayName] = createSignal("");
   const uploadName = () => displayName().trim();
-  const uploadNameCount = () => [...segmenter.segment(uploadName())].length;
+  const uploadNameCount = () => countGraphemes(uploadName());
   const [showHowTo, setShowHowTo] = createSignal(false);
   let inputRef!: HTMLInputElement;
 
@@ -468,10 +462,12 @@ export const UploadModal = (props: { isGuest: boolean }) => {
                                 <span
                                   class={[
                                     "button is-static",
-                                    uploadNameCount() > 30 ? "has-text-danger" : "has-text-grey-light",
+                                    uploadNameCount() > MAX_MAP_NAME_GRAPHEMES
+                                      ? "has-text-danger"
+                                      : "has-text-grey-light",
                                   ]}
                                 >
-                                  {uploadNameCount()} / 30
+                                  {uploadNameCount()} / {MAX_MAP_NAME_GRAPHEMES}
                                 </span>
                               </div>
                             </div>
@@ -598,7 +594,7 @@ export const UploadModal = (props: { isGuest: boolean }) => {
                     <button
                       class="button is-primary"
                       onClick={startUpload}
-                      disabled={uploadNameCount() === 0 || uploadNameCount() > 30}
+                      disabled={uploadNameCount() === 0 || uploadNameCount() > MAX_MAP_NAME_GRAPHEMES}
                     >
                       <span class="icon">
                         <i class="fa-solid fa-upload" />
