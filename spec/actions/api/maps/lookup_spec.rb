@@ -9,18 +9,18 @@ RSpec.describe PastaAtlas::Actions::API::Maps::Lookup do
   let(:action_params) { {mapshot_map_id: "ae8ec3ab"} }
 
   context "when the map is found" do
-    let(:map) { double("Map", name: "My Custom Map") }
+    let(:map) { double("Map", display_name: "My Custom Map") }
 
     before do
       allow(find_map).to receive(:call).and_return(Success(map))
     end
 
-    it "returns 200 with the map name" do
+    it "returns 200 with the display name of the map" do
       response = action.call(session.merge(action_params))
 
       expect(response.status).to eq(200)
       body = JSON.parse(response.body.join)
-      expect(body).to include("name" => "My Custom Map")
+      expect(body).to include("display_name" => "My Custom Map")
       expect(response).to conform_to_openapi("GET /api/v1/maps/lookup")
     end
   end

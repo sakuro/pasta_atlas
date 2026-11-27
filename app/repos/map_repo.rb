@@ -59,18 +59,18 @@ module PastaAtlas
         ordered_ids.filter_map {|id| id_to_map[id] }
       end
 
-      def update_name(id:, name:)
-        maps.where(id:).command(:update).call(name:)
+      def update_display_name(id:, display_name:)
+        maps.where(id:).command(:update).call(display_name:)
       end
 
       def find_by_user_and_mapshot_id(user_id:, mapshot_map_id:)
         maps.by_user_and_mapshot_id(user_id, mapshot_map_id).one
       end
 
-      def find_or_create_by_user_and_mapshot_id(user_id:, mapshot_map_id:, name:)
+      def find_or_create_by_user_and_mapshot_id(user_id:, mapshot_map_id:, display_name:)
         # INSERT ... ON CONFLICT cannot be written with a ROM command.
         maps.dataset.insert_conflict(target: %i[user_id mapshot_map_id]).insert(
-          user_id:, mapshot_map_id:, ulid: ULID.generate, name:
+          user_id:, mapshot_map_id:, ulid: ULID.generate, display_name:
         )
         maps.by_user_and_mapshot_id(user_id, mapshot_map_id).one!
       end

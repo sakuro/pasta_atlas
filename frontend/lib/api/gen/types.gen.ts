@@ -180,7 +180,7 @@ export type LookupMapResponses = {
    * The map exists
    */
   200: {
-    name: string;
+    display_name: string;
   };
 };
 
@@ -216,7 +216,7 @@ export type UpdateMapNameData = {
     /**
      * Leading and trailing whitespace is stripped; must not be empty; at most 30 grapheme clusters; the same character rule as the profile display name.
      */
-    name: string;
+    display_name: string;
   };
   path: {
     ulid: string;
@@ -327,7 +327,7 @@ export type CreateUploadData = {
     /**
      * Leading and trailing whitespace is stripped, and the stripped name must not be empty; at most 30 grapheme clusters and the same character rule as updateMapName.
      */
-    name: string;
+    display_name: string;
   };
   path?: never;
   query?: never;

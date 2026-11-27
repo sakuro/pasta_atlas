@@ -36,7 +36,7 @@ module PastaAtlas
             thumbnail_url = g.thumbnail_url(settings.cloudfront_base_url)
             metadata_url = g.metadata_url(settings.cloudfront_base_url)
 
-            Values::MapInfo[ulid: m.ulid, display_name: m.name, user_info:, thumbnail_url:, metadata_url:, updated_at:]
+            Values::MapInfo[ulid: m.ulid, display_name: m.display_name, user_info:, thumbnail_url:, metadata_url:, updated_at:]
           }
 
           {map_infos:, page:, per_page: PER_PAGE, total:}

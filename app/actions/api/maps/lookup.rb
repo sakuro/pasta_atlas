@@ -15,7 +15,7 @@ module PastaAtlas
 
             case result
             in Success(map)
-              json_response(response, {name: map.name})
+              json_response(response, {display_name: map.display_name})
             in Failure(:not_found)
               halt :not_found
             end

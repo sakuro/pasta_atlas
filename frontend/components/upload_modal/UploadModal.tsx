@@ -157,7 +157,7 @@ export const UploadModal = (props: { isGuest: boolean }) => {
     const { data } = await lookupMap({ query: { mapshot_map_id: mapshotJson.map_id } });
     if (data) {
       existingMap = true;
-      initialName = data.name;
+      initialName = data.display_name;
     }
     setDisplayName(initialName);
     setState({
@@ -185,7 +185,7 @@ export const UploadModal = (props: { isGuest: boolean }) => {
       error,
       response,
     } = await createUpload({
-      body: { metadata: mapshotJson, total_image_count: imageCount, name: uploadName() },
+      body: { metadata: mapshotJson, total_image_count: imageCount, display_name: uploadName() },
     });
     if (!upload) {
       setState({ type: "error", error: createUploadError(response, error) });

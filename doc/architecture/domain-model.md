@@ -83,7 +83,7 @@ Represents a Factorio game world. One map can have multiple generations.
 | ulid | unique; used in public URLs |
 | user_id | FK → User |
 | mapshot_map_id | `map_id` from mapshot.json |
-| name | display name; not empty, set on upload and by renaming |
+| display_name | not empty; set on upload and by renaming |
 
 A user has at most one Map per `mapshot_map_id`.
 

@@ -19,19 +19,19 @@ module PastaAtlas
         MAP_NAME_MAX_GRAPHEME_CLUSTERS = 30
         private_constant :MAP_NAME_MAX_GRAPHEME_CLUSTERS
 
-        def call(user_id:, metadata:, total_image_count:, name:)
+        def call(user_id:, metadata:, total_image_count:, display_name:)
           mapshot_map_id = metadata["map_id"]
           mapshot_unique_id = metadata["unique_id"]
           tick = metadata["tick"]
           user = user_repo.find_by_id!(user_id)
 
-          step validate_name(name)
+          step validate_display_name(display_name)
 
           map = step find_or_create_map.call(
             user_id:,
             mapshot_map_id:,
-            name:,
-            update_name_on_conflict: user.can_rename_map?
+            display_name:,
+            update_display_name_on_conflict: user.can_rename_map?
           )
 
           step within_transaction(
@@ -45,9 +45,9 @@ module PastaAtlas
           )
         end
 
-        private def validate_name(name)
-          return Failure([:invalid, "error-map-name-too-long"]) if grapheme_clusters_exceed?(name, MAP_NAME_MAX_GRAPHEME_CLUSTERS)
-          return Failure([:invalid, "error-map-name-invalid-chars"]) if name.match?(DISALLOWED_CHARS)
+        private def validate_display_name(display_name)
+          return Failure([:invalid, "error-map-name-too-long"]) if grapheme_clusters_exceed?(display_name, MAP_NAME_MAX_GRAPHEME_CLUSTERS)
+          return Failure([:invalid, "error-map-name-invalid-chars"]) if display_name.match?(DISALLOWED_CHARS)
 
           Success()
         end

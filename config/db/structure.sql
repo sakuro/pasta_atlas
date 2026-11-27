@@ -141,7 +141,7 @@ CREATE TABLE public.maps (
     ulid character varying(26) NOT NULL,
     user_id bigint NOT NULL,
     mapshot_map_id text NOT NULL,
-    name text NOT NULL,
+    display_name text NOT NULL,
     created_at timestamp with time zone DEFAULT now() NOT NULL
 );
 
@@ -627,4 +627,4 @@ INSERT INTO schema_migrations (filename) VALUES
 ('20261120000000_drop_expires_at_from_generations.rb'),
 ('20261122000000_create_avatar_uploads.rb'),
 ('20261123000000_rename_verified_bytes_to_metadata_bytes_in_uploads.rb'),
-('20261127000000_require_map_name.rb');
+('20261127000000_require_map_display_name.rb');

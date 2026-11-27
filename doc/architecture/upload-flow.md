@@ -45,7 +45,7 @@ Avatar images use a separate prefix: `{user_name}/avatar/{ulid}.{ext}`
 
 [preparing → uploading → verifying]
   Step 1: POST /api/v1/uploads
-    Body: { metadata: <mapshot.json content>, total_image_count: N, name: <display name, trimmed> }
+    Body: { metadata: <mapshot.json content>, total_image_count: N, display_name: <trimmed> }
     → Receive: { ulid, map_ulid, generation_ulid }
 
   Step 2: For each batch of up to 200 image files (sequential):

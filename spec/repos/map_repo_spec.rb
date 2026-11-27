@@ -4,11 +4,11 @@ RSpec.describe PastaAtlas::Repos::MapRepo, :db do
   let(:repo) { Hanami.app["repos.map_repo"] }
   let!(:map) { Factory[:map] }
 
-  describe "#update_name" do
-    it "sets the name" do
-      repo.update_name(id: map.id, name: "My map")
+  describe "#update_display_name" do
+    it "sets the display name" do
+      repo.update_display_name(id: map.id, display_name: "My map")
 
-      expect(repo.find_by_id!(map.id).name).to eq("My map")
+      expect(repo.find_by_id!(map.id).display_name).to eq("My map")
     end
   end
 

@@ -188,7 +188,7 @@ export const showPage = <ThrowOnError extends boolean = false>(
 /**
  * Starts an upload, creating the map (if new for the user), the generation and the upload
  *
- * Logged-in users only. If a pending upload exists for the same generation, it is answered again with 201, so that an interrupted upload can be resumed. The name replaces the stored name of an existing map.
+ * Logged-in users only. If a pending upload exists for the same generation, it is answered again with 201, so that an interrupted upload can be resumed. The display name replaces the stored display name of an existing map.
  */
 export const createUpload = <ThrowOnError extends boolean = false>(
   options: Options<CreateUploadData, ThrowOnError>

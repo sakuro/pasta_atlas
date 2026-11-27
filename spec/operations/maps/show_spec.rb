@@ -8,7 +8,7 @@ RSpec.describe PastaAtlas::Operations::Maps::Show do
   let(:settings) { double("Settings", cloudfront_base_url: "https://cdn.example.com") }
   let(:operation) { PastaAtlas::Operations::Maps::Show.new(map_repo:, user_repo:, user_profile_repo:, generation_repo:, settings:) }
 
-  let(:map) { double("Map", id: 1, ulid: "01MAP1", name: "Test Map", user_id: 1) }
+  let(:map) { double("Map", id: 1, ulid: "01MAP1", display_name: "Test Map", user_id: 1) }
   let(:user) { double("User", id: 1, name: "alice") }
   let(:profile) { double("UserProfile", display_name: "Alice", avatar_s3_key: nil) }
   let(:completed_at) { Time.now }

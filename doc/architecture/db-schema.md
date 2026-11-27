@@ -70,7 +70,7 @@ Indexes:
 | ulid | varchar(26) | NOT NULL |
 | user_id | bigint | NOT NULL, REFERENCES users(id) ON DELETE CASCADE |
 | mapshot_map_id | text | NOT NULL |
-| name | text | NOT NULL |
+| display_name | text | NOT NULL |
 | created_at | timestamptz | NOT NULL DEFAULT now() |
 
 Indexes:

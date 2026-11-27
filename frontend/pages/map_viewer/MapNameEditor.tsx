@@ -42,8 +42,10 @@ export const MapNameEditor = (props: MapNameEditorProps) => {
 
   const saveEdit = async () => {
     if (!canSave()) return;
-    const name = editValue().trim();
-    const { data, error, response } = await updateMapName({ path: { ulid: props.ulid }, body: { name } });
+    const { data, error, response } = await updateMapName({
+      path: { ulid: props.ulid },
+      body: { display_name: editValue().trim() },
+    });
     if (data) {
       const prev = displayName();
       setDisplayName(data.display_name);

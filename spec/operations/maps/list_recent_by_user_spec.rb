@@ -18,7 +18,7 @@ RSpec.describe PastaAtlas::Operations::Maps::ListRecentByUser do
 
   describe "#call" do
     context "when the user has maps" do
-      let(:map) { double("Map", id: 1, ulid: "01MAP1", name: "Map 1") }
+      let(:map) { double("Map", id: 1, ulid: "01MAP1", display_name: "Map 1") }
       let(:generation) { double("Generation") }
       let(:updated_at) { Time.new(2025, 1, 15, 12, 0, 0, "+00:00") }
 
@@ -48,7 +48,7 @@ RSpec.describe PastaAtlas::Operations::Maps::ListRecentByUser do
     end
 
     context "when a map has no complete generation any more" do
-      let(:map) { double("Map", id: 1, ulid: "01MAP1", name: "Map 1") }
+      let(:map) { double("Map", id: 1, ulid: "01MAP1", display_name: "Map 1") }
 
       before do
         allow(map_repo).to receive(:list_with_complete_generation_by_user).with(user_id: 1, limit: 3).and_return([map])

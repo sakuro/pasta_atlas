@@ -11,7 +11,9 @@ ROM::SQL.migration do
     SQL
 
     alter_table :maps do
-      set_column_not_null :name
+      # Renamed first, so that the NOT NULL constraint is named after display_name.
+      rename_column :name, :display_name
+      set_column_not_null :display_name
       drop_column :savename
     end
   end
@@ -19,7 +21,8 @@ ROM::SQL.migration do
   down do
     alter_table :maps do
       add_column :savename, String, null: false, default: ""
-      set_column_allow_null :name
+      set_column_allow_null :display_name
+      rename_column :display_name, :name
     end
   end
 end

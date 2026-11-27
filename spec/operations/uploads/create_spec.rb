@@ -12,7 +12,7 @@ RSpec.describe PastaAtlas::Operations::Uploads::Create, :db do
   describe "#call" do
     context "when no generation exists" do
       it "creates a generation and pending upload" do
-        result = operation.call(user_id: user.id, metadata:, total_image_count: 5, name: "My Map")
+        result = operation.call(user_id: user.id, metadata:, total_image_count: 5, display_name: "My Map")
 
         expect(result).to be_success
         upload = result.value![:upload]
@@ -21,7 +21,7 @@ RSpec.describe PastaAtlas::Operations::Uploads::Create, :db do
       end
 
       it "records the size of mapshot.json as the metadata bytes" do
-        result = operation.call(user_id: user.id, metadata:, total_image_count: 5, name: "My Map")
+        result = operation.call(user_id: user.id, metadata:, total_image_count: 5, display_name: "My Map")
 
         expect(result.value![:upload].metadata_bytes).to eq(metadata.to_json.bytesize)
       end
@@ -41,7 +41,7 @@ RSpec.describe PastaAtlas::Operations::Uploads::Create, :db do
       before { Factory[:upload_event, upload: existing_upload, event_type: "pending"] }
 
       it "returns the existing upload" do
-        result = operation.call(user_id: user.id, metadata:, total_image_count: 5, name: "My Map")
+        result = operation.call(user_id: user.id, metadata:, total_image_count: 5, display_name: "My Map")
 
         expect(result).to be_success
         expect(result.value![:upload].id).to eq(existing_upload.id)
@@ -65,7 +65,7 @@ RSpec.describe PastaAtlas::Operations::Uploads::Create, :db do
       end
 
       it "returns a conflict failure" do
-        result = operation.call(user_id: user.id, metadata:, total_image_count: 5, name: "My Map")
+        result = operation.call(user_id: user.id, metadata:, total_image_count: 5, display_name: "My Map")
 
         expect(result).to be_failure
         expect(result.failure).to eq(:conflict)
@@ -79,7 +79,7 @@ RSpec.describe PastaAtlas::Operations::Uploads::Create, :db do
       end
 
       it "returns an S3 error failure and rolls back the generation" do
-        result = operation.call(user_id: user.id, metadata:, total_image_count: 5, name: "My Map")
+        result = operation.call(user_id: user.id, metadata:, total_image_count: 5, display_name: "My Map")
 
         expect(result).to be_failure
         expect(result.failure).to eq(:s3_error)

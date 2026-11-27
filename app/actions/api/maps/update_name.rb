@@ -10,12 +10,12 @@ module PastaAtlas
           def handle(request, response)
             result = update_map_name.call(
               ulid: request.params[:ulid],
-              name: request.params[:name].to_s.strip,
+              display_name: request.params[:display_name].to_s.strip,
               current_user_id: current_user_id(request)
             )
             case result
             in Success(map)
-              json_response(response, {display_name: map.name})
+              json_response(response, {display_name: map.display_name})
             in Failure(:invalid, error)
               json_response(response, {error:}, status: 422)
             in Failure(Symbol => status)

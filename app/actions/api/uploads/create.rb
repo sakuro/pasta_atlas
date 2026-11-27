@@ -12,10 +12,10 @@ module PastaAtlas
               required(:metadata).filled(:hash)
               # Strict, so that the string "5" or the float 5.0 is rejected rather than coerced.
               required(:total_image_count).value(PastaAtlas::Types::Strict::Integer, gteq?: 1, lteq?: 10_000)
-              required(:name).filled(:string)
+              required(:display_name).filled(:string)
             end
 
-            rule(:name) do
+            rule(:display_name) do
               key.failure("must not be blank") if value.strip.empty?
             end
 
@@ -43,7 +43,7 @@ module PastaAtlas
               user_id: current_user_id(request),
               metadata: request.params[:metadata].to_h,
               total_image_count: request.params[:total_image_count],
-              name: request.params[:name].strip
+              display_name: request.params[:display_name].strip
             )
 
             case result

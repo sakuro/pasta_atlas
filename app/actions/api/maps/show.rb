@@ -13,7 +13,7 @@ module PastaAtlas
             in Success({map:, owner:, updated_at:, generations:})
               json_response(response, {
                 ulid: map.ulid,
-                display_name: map.name,
+                display_name: map.display_name,
                 owner: owner.to_h,
                 updated_at: updated_at.iso8601,
                 generations:
