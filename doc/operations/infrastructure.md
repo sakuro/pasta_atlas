@@ -95,7 +95,7 @@ PostgreSQL 18 on `db.t4g.micro` (20 GB, single AZ, 7-day backups, deletion prote
 
 ## Terraform
 
-Infrastructure is managed under `terraform/environments/`.
+Infrastructure is managed under `terraform/`.
 
 - `production/` is the production root and directly declares the AWS resources used by the application.
 - `local/` creates the S3 bucket and the SQS queue used during development.
@@ -107,7 +107,7 @@ Terraform manages all infrastructure. Function code is updated by CI/CD on each 
 | Environment | Managed by |
 |---|---|
 | production | Terraform + GitHub Actions |
-| local | Hanami dev server, PostgreSQL and floci in Docker; S3 and SQS created by `terraform/environments/local` |
+| local | Hanami dev server, PostgreSQL and floci in Docker; S3 and SQS created by `terraform/local` |
 
 No staging environment is defined at this time.
 

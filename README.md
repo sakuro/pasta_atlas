@@ -10,7 +10,7 @@ Prerequisites: [mise](https://mise.jdx.dev/), Docker, and an OAuth app or API ke
 mise trust                              # allow mise.toml (env files, hooks, plugins)
 mise install                            # tools in mise.toml and the git hooks
 docker compose up -d                    # floci (S3, SQS and RDS)
-(cd terraform/environments/local && terraform init && terraform apply)   # S3 bucket, SQS queue and RDS instance (takes about a minute)
+(cd terraform/local && terraform init && terraform apply)   # S3 bucket, SQS queue and RDS instance (takes about a minute)
 # add OAuth credentials to .env.development.local
 mise run setup                          # dependencies and database
 pitchfork start --local                 # http://localhost:2300

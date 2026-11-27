@@ -2,7 +2,7 @@
 
 module PastaAtlas
   # Accounts the application owns. The seeds create SEEDED; the avatar objects are created by
-  # Terraform (terraform/environments/*/s3.tf) under the same keys.
+  # Terraform (terraform/*/s3.tf) under the same keys.
   module SystemUsers
     Definition = Data.define(:name, :display_name, :avatar_s3_key)
 
