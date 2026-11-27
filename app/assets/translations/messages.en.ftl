@@ -219,6 +219,7 @@ map-delete-confirm-button = Delete
 map-delete-cancel-button = Cancel
 
 ## Map errors
+error-map-name-blank = Map name must not be empty.
 error-map-name-too-long = Map name must be 30 characters or fewer.
 error-map-name-invalid-chars = Map name contains disallowed characters.
 

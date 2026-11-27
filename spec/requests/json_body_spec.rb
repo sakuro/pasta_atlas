@@ -13,7 +13,7 @@ RSpec.describe "JSON request bodies", :db, type: :request do
 
   it "validates the nested keys of a JSON body" do
     header "Content-Type", "application/json"
-    post "/api/v1/uploads", JSON.generate({metadata: {map_id: "abcd1234", unique_id: "abcd1234", tick: 100}, total_image_count: 3, name: "x"})
+    post "/api/v1/uploads", JSON.generate({metadata: {map_id: "abcd1234", unique_id: "abcd1234", tick: 100}, total_image_count: 3, display_name: "x"})
 
     # A guest is rejected with 403 only after the params validation has passed.
     expect(last_response.status).to be(403)

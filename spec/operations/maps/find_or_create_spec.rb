@@ -6,67 +6,34 @@ RSpec.describe PastaAtlas::Operations::Maps::FindOrCreate, :db do
 
   describe "#call" do
     context "when no map exists for the user and mapshot_map_id" do
-      it "creates and returns the map" do
-        result = operation.call(user_id: user.id, mapshot_map_id: "abc123")
+      it "creates the map with the display name" do
+        result = operation.call(user_id: user.id, mapshot_map_id: "abc123", display_name: "My Map")
 
         expect(result).to be_success
-        map = result.value!
-        expect(map.user_id).to eq(user.id)
-        expect(map.mapshot_map_id).to eq("abc123")
-      end
-
-      it "sets name when provided" do
-        result = operation.call(user_id: user.id, mapshot_map_id: "abc123", name: "My Map")
-
-        expect(result).to be_success
-        expect(result.value!.name).to eq("My Map")
+        expect(result.value!).to have_attributes(user_id: user.id, mapshot_map_id: "abc123", display_name: "My Map")
       end
     end
 
     context "when a map already exists" do
-      let!(:existing_map) { Factory[:map, user:, mapshot_map_id: "abc123", name: nil] }
+      let!(:existing_map) { Factory[:map, user:, mapshot_map_id: "abc123", display_name: "First"] }
 
       it "returns the existing map without creating a duplicate" do
-        result = operation.call(user_id: user.id, mapshot_map_id: "abc123")
+        result = operation.call(user_id: user.id, mapshot_map_id: "abc123", display_name: "First")
 
         expect(result).to be_success
         expect(result.value!.id).to eq(existing_map.id)
       end
 
-      it "updates name when provided" do
-        result = operation.call(user_id: user.id, mapshot_map_id: "abc123", name: "Updated Name")
+      it "replaces the display name" do
+        result = operation.call(user_id: user.id, mapshot_map_id: "abc123", display_name: "Second")
 
-        expect(result).to be_success
-        expect(result.value!.name).to eq("Updated Name")
+        expect(result.value!).to have_attributes(id: existing_map.id, display_name: "Second")
       end
 
-      it "keeps the name of a map that has one when the user may not rename" do
-        existing_map = Factory[:map, user:, mapshot_map_id: "named", name: "First"]
+      it "keeps the display name when the user may not rename" do
+        result = operation.call(user_id: user.id, mapshot_map_id: "abc123", display_name: "Second", update_display_name_on_conflict: false)
 
-        result = operation.call(user_id: user.id, mapshot_map_id: "named", name: "Second", update_name_on_conflict: false)
-
-        expect(result.value!).to have_attributes(id: existing_map.id, name: "First")
-      end
-
-      it "sets the name of a map that has none even when the user may not rename" do
-        result = operation.call(user_id: user.id, mapshot_map_id: "abc123", name: "Given", update_name_on_conflict: false)
-
-        expect(result.value!.name).to eq("Given")
-      end
-
-      it "keeps the savename of the first upload" do
-        operation.call(user_id: user.id, mapshot_map_id: "saved", savename: "first")
-
-        result = operation.call(user_id: user.id, mapshot_map_id: "saved", savename: "second")
-
-        expect(result.value!.savename).to eq("first")
-      end
-
-      it "does not overwrite name when not provided" do
-        result = operation.call(user_id: user.id, mapshot_map_id: "abc123")
-
-        expect(result).to be_success
-        expect(result.value!.name).to be_nil
+        expect(result.value!).to have_attributes(id: existing_map.id, display_name: "First")
       end
     end
   end

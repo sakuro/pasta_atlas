@@ -22,7 +22,6 @@ interface MapshotJson {
   map_id: string;
   unique_id: string;
   tick: number;
-  name?: string;
   savename?: string;
   surfaces?: unknown[];
   [key: string]: unknown;
@@ -41,15 +40,13 @@ const parseMapshotJson = (text: string): MapshotJson | undefined => {
   const mapId = fields.get("map_id");
   const uniqueId = fields.get("unique_id");
   const tick = fields.get("tick");
-  const name = fields.get("name");
   const savename = fields.get("savename");
   const surfaces = fields.get("surfaces");
   if (typeof mapId !== "string" || typeof uniqueId !== "string") return undefined;
   if (typeof tick !== "number" || !Number.isInteger(tick)) return undefined;
-  if (name !== undefined && typeof name !== "string") return undefined;
   if (savename !== undefined && typeof savename !== "string") return undefined;
   if (surfaces !== undefined && !Array.isArray(surfaces)) return undefined;
-  return { ...value, map_id: mapId, unique_id: uniqueId, tick, name, savename, surfaces };
+  return { ...value, map_id: mapId, unique_id: uniqueId, tick, savename, surfaces };
 };
 
 type I18nError = { msgId: string; msgArgs?: Record<string, string | number> };
@@ -68,7 +65,6 @@ type State =
       type: "confirming";
       mapshotJson: MapshotJson;
       fileMap: Map<string, File>;
-      mapName: string;
       surfaceCount: number;
       imageCount: number;
       totalBytes: number;
@@ -114,8 +110,7 @@ export const UploadModal = (props: { isGuest: boolean }) => {
   const navigate = useNavigate();
   const [state, setState] = createSignal<State>({ type: "idle" });
   const [displayName, setDisplayName] = createSignal("");
-  // The server strips the name and rejects an empty one, so an empty input falls back to the prefilled name.
-  const uploadName = () => displayName().trim() || (confirmingState()?.mapName ?? "");
+  const uploadName = () => displayName().trim();
   const uploadNameCount = () => [...segmenter.segment(uploadName())].length;
   const [showHowTo, setShowHowTo] = createSignal(false);
   let inputRef!: HTMLInputElement;
@@ -155,22 +150,20 @@ export const UploadModal = (props: { isGuest: boolean }) => {
     const fileMap = new Map<string, File>();
     for (const f of imageFiles) fileMap.set(relPath(f), f);
 
-    // The server strips the name and rejects an empty one, so a name of spaces must not be prefilled.
-    let initialName = mapshotJson.name?.trim() || mapshotJson.savename?.trim() || generateMapName();
+    // The server strips the name and rejects an empty one, so a savename of spaces must not be prefilled.
+    let initialName = mapshotJson.savename?.trim() || generateMapName();
     let existingMap = false;
-    // On any failure the name from mapshot.json stays.
+    // On any failure the savename or the generated name stays.
     const { data } = await lookupMap({ query: { mapshot_map_id: mapshotJson.map_id } });
     if (data) {
       existingMap = true;
-      const storedName = data.name?.trim();
-      if (storedName) initialName = storedName;
+      initialName = data.display_name;
     }
     setDisplayName(initialName);
     setState({
       type: "confirming",
       mapshotJson,
       fileMap,
-      mapName: initialName,
       surfaceCount: mapshotJson.surfaces?.length ?? 0,
       imageCount: imageFiles.length,
       totalBytes: imageFiles.reduce((sum, f) => sum + f.size, 0),
@@ -192,7 +185,7 @@ export const UploadModal = (props: { isGuest: boolean }) => {
       error,
       response,
     } = await createUpload({
-      body: { metadata: mapshotJson, total_image_count: imageCount, name: uploadName() },
+      body: { metadata: mapshotJson, total_image_count: imageCount, display_name: uploadName() },
     });
     if (!upload) {
       setState({ type: "error", error: createUploadError(response, error) });
@@ -468,7 +461,6 @@ export const UploadModal = (props: { isGuest: boolean }) => {
                                   class="input"
                                   type="text"
                                   value={displayName()}
-                                  placeholder={s.mapName}
                                   onInput={(e) => setDisplayName(e.currentTarget.value)}
                                 />
                               </span>
@@ -603,7 +595,11 @@ export const UploadModal = (props: { isGuest: boolean }) => {
                       </span>
                       <span data-l10n-id="upload-reselect-folder" />
                     </button>
-                    <button class="button is-primary" onClick={startUpload} disabled={uploadNameCount() > 30}>
+                    <button
+                      class="button is-primary"
+                      onClick={startUpload}
+                      disabled={uploadNameCount() === 0 || uploadNameCount() > 30}
+                    >
                       <span class="icon">
                         <i class="fa-solid fa-upload" />
                       </span>

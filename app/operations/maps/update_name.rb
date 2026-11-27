@@ -9,12 +9,12 @@ module PastaAtlas
         MAP_NAME_MAX_GRAPHEME_CLUSTERS = 30
         private_constant :MAP_NAME_MAX_GRAPHEME_CLUSTERS
 
-        def call(ulid:, name:, current_user_id:)
+        def call(ulid:, display_name:, current_user_id:)
           user = step find_user(current_user_id)
           map = step find_map(ulid)
           step check_owner(map, user)
-          step validate_name(name)
-          rename(map.id, name)
+          step validate_display_name(display_name)
+          rename(map.id, display_name)
         end
 
         private def find_user(user_id)
@@ -31,15 +31,16 @@ module PastaAtlas
           map.owned_by?(user) ? Success(map) : Failure(:forbidden)
         end
 
-        private def validate_name(name)
-          return Failure([:invalid, "error-map-name-too-long"]) if grapheme_clusters_exceed?(name, MAP_NAME_MAX_GRAPHEME_CLUSTERS)
-          return Failure([:invalid, "error-map-name-invalid-chars"]) if name.match?(DISALLOWED_CHARS)
+        private def validate_display_name(display_name)
+          return Failure([:invalid, "error-map-name-blank"]) if display_name.empty?
+          return Failure([:invalid, "error-map-name-too-long"]) if grapheme_clusters_exceed?(display_name, MAP_NAME_MAX_GRAPHEME_CLUSTERS)
+          return Failure([:invalid, "error-map-name-invalid-chars"]) if display_name.match?(DISALLOWED_CHARS)
 
           Success()
         end
 
-        private def rename(id, name)
-          map_repo.update_name(id:, name:)
+        private def rename(id, display_name)
+          map_repo.update_display_name(id:, display_name:)
           map_repo.find_by_id!(id)
         end
       end

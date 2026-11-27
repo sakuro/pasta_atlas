@@ -218,6 +218,7 @@ map-delete-confirm-button = 刪除
 map-delete-cancel-button = 取消
 
 ## Map errors
+error-map-name-blank = 地圖名稱不得為空。
 error-map-name-too-long = 地圖名稱不得超過 30 個字元。
 error-map-name-invalid-chars = 地圖名稱包含不允許的字元。
 

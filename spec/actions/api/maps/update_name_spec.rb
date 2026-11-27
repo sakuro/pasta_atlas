@@ -5,12 +5,12 @@ RSpec.describe PastaAtlas::Actions::API::Maps::UpdateName do
   let(:guest) { double("User", id: 0) }
   let(:action) { PastaAtlas::Actions::API::Maps::UpdateName.new(update_map_name:, guest:) }
 
-  let(:env) { {"rack.session" => {"user_id" => 1}, :ulid => "01MAP", :name => "  renamed  "} }
+  let(:env) { {"rack.session" => {"user_id" => 1}, :ulid => "01MAP", :display_name => "  renamed  "} }
 
   context "when the map is renamed" do
     before do
       allow(update_map_name).to receive(:call)
-        .with(ulid: "01MAP", name: "renamed", current_user_id: 1)
+        .with(ulid: "01MAP", display_name: "renamed", current_user_id: 1)
         .and_return(Success(double("Map", display_name: "renamed")))
     end
 

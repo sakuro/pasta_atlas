@@ -119,11 +119,10 @@ paths:
               schema:
                 type: object
                 additionalProperties: false
-                required: [name]
+                required: [display_name]
                 properties:
-                  name:
-                    description: null if the map has no user-set name
-                    type: [string, "null"]
+                  display_name:
+                    type: string
         "404":
           description: No map for this user and mapshot map id
   /api/v1/maps/{ulid}:
@@ -154,13 +153,12 @@ paths:
             schema:
               type: object
               additionalProperties: false
-              required: [name]
+              required: [display_name]
               properties:
-                name:
+                display_name:
                   description: >-
-                    Leading and trailing whitespace is stripped; at most 30 grapheme clusters; the same
-                    character rule as the profile display name. An empty name clears the user-set name,
-                    and display_name falls back to the savename or the mapshot map id.
+                    Leading and trailing whitespace is stripped; must not be empty; at most 30 grapheme
+                    clusters; the same character rule as the profile display name.
                   type: string
       responses:
         "200":
@@ -238,8 +236,8 @@ paths:
       summary: Starts an upload, creating the map (if new for the user), the generation and the upload
       description: >-
         Logged-in users only. If a pending upload exists for the same generation, it is answered
-        again with 201, so that an interrupted upload can be resumed. The name replaces the stored
-        name of an existing map.
+        again with 201, so that an interrupted upload can be resumed. The display name replaces the
+        stored display name of an existing map.
       requestBody:
         required: true
         content:
@@ -247,7 +245,7 @@ paths:
             schema:
               type: object
               additionalProperties: false
-              required: [metadata, total_image_count, name]
+              required: [metadata, total_image_count, display_name]
               properties:
                 metadata:
                   description: The content of mapshot.json, stored as it is
@@ -270,7 +268,7 @@ paths:
                   type: integer
                   minimum: 1
                   maximum: 10000
-                name:
+                display_name:
                   description: >-
                     Leading and trailing whitespace is stripped, and the stripped name must not be empty;
                     at most 30 grapheme clusters and the same character rule as updateMapName.
@@ -986,5 +984,6 @@ components:
         error:
           type: string
           enum:
+            - error-map-name-blank
             - error-map-name-too-long
             - error-map-name-invalid-chars

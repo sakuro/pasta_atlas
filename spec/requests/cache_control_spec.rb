@@ -28,7 +28,7 @@ RSpec.describe "Cache-Control of action responses", :db, type: :request do
 
   it "is set on a halted error response" do
     header "Content-Type", "application/json"
-    post "/api/v1/uploads", JSON.generate({metadata: {map_id: "abcd1234", unique_id: "abcd1234", tick: 100}, total_image_count: 3, name: "x"})
+    post "/api/v1/uploads", JSON.generate({metadata: {map_id: "abcd1234", unique_id: "abcd1234", tick: 100}, total_image_count: 3, display_name: "x"})
 
     expect(last_response.status).to be(403)
     expect(last_response.headers["Cache-Control"]).to eq(no_store)

@@ -9,7 +9,7 @@ RSpec.describe PastaAtlas::Actions::API::Uploads::Create, :db do
 
   let(:session) { {"rack.session" => {"user_id" => 1}} }
   let(:action_params) do
-    {metadata: {"map_id" => "ae8ec3ab", "unique_id" => "550f41a9", "tick" => 1000}, total_image_count: 5, name: "My Map"}
+    {metadata: {"map_id" => "ae8ec3ab", "unique_id" => "550f41a9", "tick" => 1000}, total_image_count: 5, display_name: "My Map"}
   end
 
   let(:upload) { double("Upload", ulid: "01UPLOAD") }
@@ -43,41 +43,41 @@ RSpec.describe PastaAtlas::Actions::API::Uploads::Create, :db do
       it "passes the metadata to the operation as parsed, with string keys" do
         metadata = {"map_id" => "ae8ec3ab", "unique_id" => "550f41a9", "tick" => 1000, "surfaces" => [{"name" => "nauvis"}]}
 
-        action.call(session.merge(metadata:, total_image_count: 5, name: "My Map"))
+        action.call(session.merge(metadata:, total_image_count: 5, display_name: "My Map"))
 
         expect(create_upload).to have_received(:call).with(hash_including(metadata:))
       end
 
-      it "passes name to the operation" do
+      it "passes the display name to the operation" do
         action.call(session.merge(action_params))
 
-        expect(create_upload).to have_received(:call).with(hash_including(name: "My Map"))
+        expect(create_upload).to have_received(:call).with(hash_including(display_name: "My Map"))
       end
 
-      it "returns 400 when name is not provided" do
-        response = action.call(session.merge(action_params.except(:name)))
+      it "returns 400 when the display name is not provided" do
+        response = action.call(session.merge(action_params.except(:display_name)))
 
         expect(response.status).to eq(400)
         expect(response).to conform_to_openapi("POST /api/v1/uploads")
         expect(create_upload).not_to have_received(:call)
       end
 
-      it "returns 400 when name is empty" do
-        response = action.call(session.merge(action_params.merge(name: "")))
+      it "returns 400 when the display name is empty" do
+        response = action.call(session.merge(action_params.merge(display_name: "")))
 
         expect(response.status).to eq(400)
         expect(response).to conform_to_openapi("POST /api/v1/uploads")
         expect(create_upload).not_to have_received(:call)
       end
 
-      it "passes the name to the operation without leading and trailing whitespace" do
-        action.call(session.merge(action_params.merge(name: "  My Map  ")))
+      it "passes the display name to the operation without leading and trailing whitespace" do
+        action.call(session.merge(action_params.merge(display_name: "  My Map  ")))
 
-        expect(create_upload).to have_received(:call).with(hash_including(name: "My Map"))
+        expect(create_upload).to have_received(:call).with(hash_including(display_name: "My Map"))
       end
 
-      it "returns 400 when name is only whitespace" do
-        response = action.call(session.merge(action_params.merge(name: "   ")))
+      it "returns 400 when the display name is only whitespace" do
+        response = action.call(session.merge(action_params.merge(display_name: "   ")))
 
         expect(response.status).to eq(400)
         expect(response).to conform_to_openapi("POST /api/v1/uploads")

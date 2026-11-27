@@ -6,7 +6,7 @@ RSpec.describe PastaAtlas::Operations::Maps::FindByMapshotId do
 
   describe "#call" do
     context "when a map is found" do
-      let(:map) { double("Map", id: 1, name: "My Custom Map") }
+      let(:map) { double("Map", id: 1, display_name: "My Custom Map") }
 
       before do
         allow(map_repo).to receive(:find_by_user_and_mapshot_id)

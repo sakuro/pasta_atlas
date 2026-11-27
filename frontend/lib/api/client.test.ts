@@ -18,13 +18,13 @@ describe("client", () => {
     );
     vi.stubGlobal("fetch", fetchMock);
 
-    const { data } = await updateMapName({ path: { ulid: "01MAP" }, body: { name: "renamed" } });
+    const { data } = await updateMapName({ path: { ulid: "01MAP" }, body: { display_name: "renamed" } });
 
     const request = fetchMock.mock.calls[0][0];
     expect(new URL(request.url).pathname).toBe("/api/v1/maps/01MAP/name");
     expect(request.headers.get("X-CSRF-Token")).toBe("token-1");
     expect(request.headers.get("Content-Type")).toBe("application/json");
-    expect(await request.json()).toEqual({ name: "renamed" });
+    expect(await request.json()).toEqual({ display_name: "renamed" });
     expect(data).toEqual({ display_name: "renamed" });
   });
 

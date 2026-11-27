@@ -37,7 +37,7 @@ Avatar images use a separate prefix: `{user_name}/avatar/{ulid}.{ext}`
   → Parse mapshot.json (validate structure)
   → Separate: mapshot.json | image files (files ending in `.jpg`)
   → Show summary to user:
-      - Map name (editable; default resolution: existing map name from `GET /api/v1/maps/lookup` → name → savename → generated name)
+      - Map name (editable; default resolution: existing map name from `GET /api/v1/maps/lookup` → savename → generated name; the upload cannot start while it is empty)
       - Surface count
       - Image file count
       - Total file size (sum of all image files)
@@ -45,7 +45,7 @@ Avatar images use a separate prefix: `{user_name}/avatar/{ulid}.{ext}`
 
 [preparing → uploading → verifying]
   Step 1: POST /api/v1/uploads
-    Body: { metadata: <mapshot.json content>, total_image_count: N, name: <display name, trimmed; the prefilled name if empty> }
+    Body: { metadata: <mapshot.json content>, total_image_count: N, display_name: <trimmed> }
     → Receive: { ulid, map_ulid, generation_ulid }
 
   Step 2: For each batch of up to 200 image files (sequential):

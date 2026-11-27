@@ -83,12 +83,11 @@ Represents a Factorio game world. One map can have multiple generations.
 | ulid | unique; used in public URLs |
 | user_id | FK → User |
 | mapshot_map_id | `map_id` from mapshot.json |
-| savename | `savename` from mapshot.json (may be empty); the value of the first upload, later uploads do not change it |
-| name | nullable; user-defined display name |
+| display_name | not empty; set on upload and by renaming |
 
 A user has at most one Map per `mapshot_map_id`.
 
-Display name priority: `name` → `savename` (if not empty) → `mapshot_map_id`. Maps are created or reused by `(user_id, mapshot_map_id)` on upload; see [upload flow](upload-flow.md).
+Maps are created or reused by `(user_id, mapshot_map_id)` on upload; see [upload flow](upload-flow.md).
 
 ### Generation
 
