@@ -51,7 +51,7 @@ docker compose up -d
 ### 4. Provision local AWS resources
 
 ```bash
-cd terraform/environments/local
+cd terraform/local
 terraform init
 terraform apply
 cd -
@@ -70,7 +70,7 @@ Floci starts the PostgreSQL container through the Docker socket and keeps its da
 Floci keeps its other data in the `floci_data` volume, while the Terraform state (`terraform.tfstate`) is a gitignored local file. If the state file is missing but the volume still has the resources, `terraform apply` fails because the bucket and queue already exist. Either import them:
 
 ```bash
-cd terraform/environments/local
+cd terraform/local
 terraform import aws_s3_bucket.mapshots pasta-atlas-local-mapshots
 terraform import aws_sqs_queue.s3_cleanup http://localhost:4566/000000000000/pasta-atlas-local-s3-cleanup
 terraform apply
@@ -85,7 +85,7 @@ docker compose up -d
 terraform apply
 ```
 
-If `AWS_ENDPOINT_URL` points at Floci in your shell, `terraform` against real AWS (`environments/production`) must run with it unset.
+If `AWS_ENDPOINT_URL` points at Floci in your shell, `terraform` against real AWS (`terraform/production`) must run with it unset.
 
 ### 5. Configure OAuth providers
 

@@ -1,8 +1,8 @@
 /.env.development.local
 /.env.test.local
-/terraform/environments/*/.terraform/
-/terraform/environments/local/terraform.tfstate
-/terraform/environments/local/terraform.tfstate.backup
+/terraform/*/.terraform/
+/terraform/local/terraform.tfstate
+/terraform/local/terraform.tfstate.backup
 /coverage/
 /log/*
 /node_modules/

@@ -4,12 +4,11 @@
 
 ```
 terraform/
-  environments/
-    production/   # production infrastructure root
-    local/        # S3 and SQS only — web app runs locally
+  production/   # production infrastructure root
+  local/        # S3 and SQS only — web app runs locally
 ```
 
-### environments/production
+### production
 
 | File | Description |
 |---|---|
@@ -35,7 +34,7 @@ terraform/
 
 ## State
 
-The production state is stored in the `pasta-atlas-production` workspace of the `sakuro` organization on HCP Terraform (execution mode: Local, so plans and applies run on this machine). `environments/local` uses local state.
+The production state is stored in the `pasta-atlas-production` workspace of the `sakuro` organization on HCP Terraform (execution mode: Local, so plans and applies run on this machine). `local` uses local state.
 
 HCP Terraform authenticates with a team API token (organization tokens cannot lock or write state). Store it in the global fnox configuration as `TF_TOKEN_app_terraform_io`; the `fnox-env` plugin in `mise.toml` exports it.
 
@@ -50,9 +49,9 @@ The Cloudflare provider reads its API token from `CLOUDFLARE_API_TOKEN`. Unlike 
 No `terraform.tfvars` is required; all variables have defaults. `alarm_email` defaults to `null`; set it (locally through `TF_VAR_alarm_email`, which fnox supplies) to receive the dead-letter queue alarm by email, and confirm the subscription.
 
 ```bash
-terraform -chdir=terraform/environments/production init   # or local
-mise run terraform:plan production                        # or local
-mise run terraform:apply production                       # or local
+terraform -chdir=terraform/production init   # or local
+mise run terraform:plan production             # or local
+mise run terraform:apply production            # or local
 ```
 
 `.env.development` points `AWS_PROFILE` and `AWS_ENDPOINT_URL` at Floci. For `production`, the `terraform:plan` and `terraform:apply` mise tasks set `AWS_PROFILE=terraform` and unset `AWS_ENDPOINT_URL`; any other Terraform or AWS CLI command against production must do the same.

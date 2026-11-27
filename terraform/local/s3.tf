@@ -1,5 +1,5 @@
 resource "aws_s3_bucket" "mapshots" {
-  bucket = "${var.app_name}-${var.environment}-mapshots"
+  bucket = "pasta-atlas-local-mapshots"
 }
 
 resource "aws_s3_bucket_ownership_controls" "mapshots" {
@@ -22,9 +22,9 @@ resource "aws_s3_bucket_public_access_block" "mapshots" {
 resource "aws_s3_object" "compilatron_avatar" {
   bucket       = aws_s3_bucket.mapshots.id
   key          = "compilatron/avatar/compilatron.png"
-  source       = "../../../app/assets/images/compilatron.png"
+  source       = "${path.module}/../../app/assets/images/compilatron.png"
   content_type = "image/png"
-  source_hash  = filemd5("../../../app/assets/images/compilatron.png")
+  source_hash  = filemd5("${path.module}/../../app/assets/images/compilatron.png")
 }
 
 resource "aws_s3_bucket_cors_configuration" "mapshots" {
@@ -32,9 +32,9 @@ resource "aws_s3_bucket_cors_configuration" "mapshots" {
 
   cors_rule {
     allowed_headers = ["*"]
-    allowed_methods = ["POST"]
+    allowed_methods = ["GET", "POST"]
     allowed_origins = var.allowed_origins
     expose_headers  = ["ETag"]
-    max_age_seconds = var.presigned_url_expiry
+    max_age_seconds = 3600
   }
 }
