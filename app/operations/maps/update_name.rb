@@ -32,6 +32,7 @@ module PastaAtlas
         end
 
         private def validate_name(name)
+          return Failure([:invalid, "error-map-name-blank"]) if name.empty?
           return Failure([:invalid, "error-map-name-too-long"]) if grapheme_clusters_exceed?(name, MAP_NAME_MAX_GRAPHEME_CLUSTERS)
           return Failure([:invalid, "error-map-name-invalid-chars"]) if name.match?(DISALLOWED_CHARS)
 

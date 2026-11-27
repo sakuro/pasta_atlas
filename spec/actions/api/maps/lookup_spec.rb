@@ -25,23 +25,6 @@ RSpec.describe PastaAtlas::Actions::API::Maps::Lookup do
     end
   end
 
-  context "when the map has no custom name" do
-    let(:map) { double("Map", name: nil) }
-
-    before do
-      allow(find_map).to receive(:call).and_return(Success(map))
-    end
-
-    it "returns 200 with null name" do
-      response = action.call(session.merge(action_params))
-
-      expect(response.status).to eq(200)
-      body = JSON.parse(response.body.join)
-      expect(body).to include("name" => nil)
-      expect(response).to conform_to_openapi("GET /api/v1/maps/lookup")
-    end
-  end
-
   context "when the map is not found" do
     before { allow(find_map).to receive(:call).and_return(Failure(:not_found)) }
 

@@ -8,7 +8,7 @@ RSpec.describe PastaAtlas::Actions::API::Maps::Show do
 
   context "when the map is found" do
     let(:updated_at) { Time.new(2024, 1, 15, 12, 0, 0, "+00:00") }
-    let(:map) { double("Map", ulid: "01MAP", display_name: "my-save") }
+    let(:map) { double("Map", ulid: "01MAP", name: "my-save") }
     let(:owner) { PastaAtlas::Values::UserInfo[name: "wube", display_name: "Wube", avatar_url: nil] }
     let(:generations) { [{ulid: "01GEN", tick: 1000, metadata_url: "https://cdn.example.com/ae8ec3ab/550f41a9/mapshot.json"}] }
 

@@ -15,7 +15,6 @@ module PastaAtlas
               required(:name).filled(:string)
             end
 
-            # Unlike renaming, where an empty name clears it, an upload must name the map.
             rule(:name) do
               key.failure("must not be blank") if value.strip.empty?
             end

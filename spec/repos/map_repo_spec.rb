@@ -10,13 +10,6 @@ RSpec.describe PastaAtlas::Repos::MapRepo, :db do
 
       expect(repo.find_by_id!(map.id).name).to eq("My map")
     end
-
-    it "clears the name when it is empty" do
-      repo.update_name(id: map.id, name: "My map")
-      repo.update_name(id: map.id, name: "")
-
-      expect(repo.find_by_id!(map.id).name).to be_nil
-    end
   end
 
   describe "#delete_by_id" do

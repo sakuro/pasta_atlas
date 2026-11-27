@@ -10,7 +10,7 @@ RSpec.describe PastaAtlas::Operations::Maps::List do
 
   describe "#call" do
     let(:generation) { double("Generation", tick: 100) }
-    let(:map) { double("Map", id: 1, ulid: "01MAP1", user_id: 1, display_name: "Map 1") }
+    let(:map) { double("Map", id: 1, ulid: "01MAP1", user_id: 1, name: "Map 1") }
     let(:user) { double("User", id: 1, name: "alice") }
     let(:profile) { double("UserProfile", user_id: 1, display_name: "Alice", avatar_s3_key: nil) }
     let(:updated_at) { Time.new(2025, 1, 15, 12, 0, 0, "+00:00") }

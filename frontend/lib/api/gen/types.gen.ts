@@ -66,7 +66,7 @@ export type UserInfo = {
 };
 
 export type MapNameError = {
-  error: "error-map-name-too-long" | "error-map-name-invalid-chars";
+  error: "error-map-name-blank" | "error-map-name-too-long" | "error-map-name-invalid-chars";
 };
 
 export type MapUlid = string;
@@ -180,10 +180,7 @@ export type LookupMapResponses = {
    * The map exists
    */
   200: {
-    /**
-     * null if the map has no user-set name
-     */
-    name: string | null;
+    name: string;
   };
 };
 
@@ -217,7 +214,7 @@ export type ShowMapResponse = ShowMapResponses[keyof ShowMapResponses];
 export type UpdateMapNameData = {
   body: {
     /**
-     * Leading and trailing whitespace is stripped; at most 30 grapheme clusters; the same character rule as the profile display name. An empty name clears the user-set name, and display_name falls back to the savename or the mapshot map id.
+     * Leading and trailing whitespace is stripped; must not be empty; at most 30 grapheme clusters; the same character rule as the profile display name.
      */
     name: string;
   };

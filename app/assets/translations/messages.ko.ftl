@@ -218,6 +218,7 @@ map-delete-confirm-button = 삭제
 map-delete-cancel-button = 취소
 
 ## Map errors
+error-map-name-blank = 맵 이름을 입력해 주세요.
 error-map-name-too-long = 맵 이름은 30자 이하여야 합니다.
 error-map-name-invalid-chars = 맵 이름에 허용되지 않는 문자가 포함되어 있습니다.
 

@@ -17,7 +17,8 @@ export const MapNameEditor = (props: MapNameEditorProps) => {
   const [displayName, setDisplayName] = createSignal(() => props.initialName);
   const [isEditing, setIsEditing] = createSignal(false);
   const [editValue, setEditValue] = createSignal("");
-  const editGraphemeCount = () => [...segmenter.segment(editValue())].length;
+  const editGraphemeCount = () => [...segmenter.segment(editValue().trim())].length;
+  const canSave = () => editGraphemeCount() > 0 && editGraphemeCount() <= MAX_GRAPHEMES;
   let inputEl: HTMLInputElement | undefined;
 
   // Ref callbacks run before the element is attached, where focus() has no effect;
@@ -40,6 +41,7 @@ export const MapNameEditor = (props: MapNameEditorProps) => {
   const cancelEdit = () => setIsEditing(false);
 
   const saveEdit = async () => {
+    if (!canSave()) return;
     const name = editValue().trim();
     const { data, error, response } = await updateMapName({ path: { ulid: props.ulid }, body: { name } });
     if (data) {
@@ -114,6 +116,7 @@ export const MapNameEditor = (props: MapNameEditorProps) => {
           <button
             class="button is-small is-success"
             onClick={() => void saveEdit()}
+            disabled={!canSave()}
             data-l10n-id="map-name-save-button"
           >
             <span class="icon is-small">

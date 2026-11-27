@@ -19,18 +19,17 @@ module PastaAtlas
         MAP_NAME_MAX_GRAPHEME_CLUSTERS = 30
         private_constant :MAP_NAME_MAX_GRAPHEME_CLUSTERS
 
-        def call(user_id:, metadata:, total_image_count:, name: nil)
+        def call(user_id:, metadata:, total_image_count:, name:)
           mapshot_map_id = metadata["map_id"]
           mapshot_unique_id = metadata["unique_id"]
           tick = metadata["tick"]
           user = user_repo.find_by_id!(user_id)
 
-          step validate_name(name) if name
+          step validate_name(name)
 
           map = step find_or_create_map.call(
             user_id:,
             mapshot_map_id:,
-            savename: metadata.fetch("savename", "").to_s,
             name:,
             update_name_on_conflict: user.can_rename_map?
           )

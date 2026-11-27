@@ -248,6 +248,7 @@ map-delete-confirm-button = Smazat
 map-delete-cancel-button = Zrušit
 
 ## Map errors
+error-map-name-blank = Název mapy nesmí být prázdný.
 error-map-name-too-long = Název mapy musí mít nejvýše 30 znaků.
 error-map-name-invalid-chars = Název mapy obsahuje nepovolené znaky.
 

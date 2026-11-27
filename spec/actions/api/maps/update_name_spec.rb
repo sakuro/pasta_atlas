@@ -11,7 +11,7 @@ RSpec.describe PastaAtlas::Actions::API::Maps::UpdateName do
     before do
       allow(update_map_name).to receive(:call)
         .with(ulid: "01MAP", name: "renamed", current_user_id: 1)
-        .and_return(Success(double("Map", display_name: "renamed")))
+        .and_return(Success(double("Map", name: "renamed")))
     end
 
     it "returns 200 with the new display name" do

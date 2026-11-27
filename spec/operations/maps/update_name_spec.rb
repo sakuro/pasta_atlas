@@ -7,7 +7,7 @@ RSpec.describe PastaAtlas::Operations::Maps::UpdateName do
 
   let(:user) { double("User", id: 1, can_rename_map?: true) }
   let(:map) { double("Map", id: 10, ulid: "01MAP1", user_id: 1, owned_by?: true) }
-  let(:renamed_map) { double("Map", id: 10, display_name: "New Name") }
+  let(:renamed_map) { double("Map", id: 10, name: "New Name") }
 
   before do
     allow(user_repo).to receive(:find_by_id!).with(1).and_return(user)
@@ -50,6 +50,17 @@ RSpec.describe PastaAtlas::Operations::Maps::UpdateName do
 
         expect(result).to be_failure
         expect(result.failure).to eq(:forbidden)
+      end
+    end
+
+    context "when the name is empty" do
+      it "returns Failure([:invalid, message])" do
+        result = operation.call(ulid: "01MAP1", name: "", current_user_id: 1)
+
+        expect(result).to be_failure
+        code, message = result.failure
+        expect(code).to eq(:invalid)
+        expect(message).to eq("error-map-name-blank")
       end
     end
 
