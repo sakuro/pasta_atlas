@@ -31,7 +31,7 @@ gem "tzinfo", "2.0.6"
 gem "ulid", "1.4.0"
 
 group :development do
-  gem "hanami-webconsole", "3.0.0"
+  gem "hanami-webconsole", "3.0.1"
 
   gem "docquet", "1.4.0"
   gem "foxtail-tools", "0.6.1"
