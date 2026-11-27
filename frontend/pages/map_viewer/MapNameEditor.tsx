@@ -1,9 +1,7 @@
 import { createEffect, createSignal, Show } from "solid-js";
 import { useToast } from "../../contexts/ToastContext";
 import { errorKey, updateMapName } from "../../lib/api/client";
-
-const segmenter = new Intl.Segmenter();
-const MAX_GRAPHEMES = 30;
+import { countGraphemes, MAX_MAP_NAME_GRAPHEMES } from "../../lib/map-name";
 
 interface MapNameEditorProps {
   ulid: string;
@@ -17,8 +15,8 @@ export const MapNameEditor = (props: MapNameEditorProps) => {
   const [displayName, setDisplayName] = createSignal(() => props.initialName);
   const [isEditing, setIsEditing] = createSignal(false);
   const [editValue, setEditValue] = createSignal("");
-  const editGraphemeCount = () => [...segmenter.segment(editValue().trim())].length;
-  const canSave = () => editGraphemeCount() > 0 && editGraphemeCount() <= MAX_GRAPHEMES;
+  const editGraphemeCount = () => countGraphemes(editValue().trim());
+  const canSave = () => editGraphemeCount() > 0 && editGraphemeCount() <= MAX_MAP_NAME_GRAPHEMES;
   let inputEl: HTMLInputElement | undefined;
 
   // Ref callbacks run before the element is attached, where focus() has no effect;
@@ -108,10 +106,10 @@ export const MapNameEditor = (props: MapNameEditorProps) => {
           <span
             class={[
               "button is-small is-static",
-              editGraphemeCount() > MAX_GRAPHEMES ? "has-text-danger" : "has-text-grey-light",
+              editGraphemeCount() > MAX_MAP_NAME_GRAPHEMES ? "has-text-danger" : "has-text-grey-light",
             ]}
           >
-            {editGraphemeCount()} / {MAX_GRAPHEMES}
+            {editGraphemeCount()} / {MAX_MAP_NAME_GRAPHEMES}
           </span>
         </div>
         <div class="control">
