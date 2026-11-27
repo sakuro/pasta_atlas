@@ -158,6 +158,7 @@ upload-complete = 上传完成！
 upload-view-map = 查看地图
 upload-close = 关闭
 upload-dismiss = 关闭
+upload-error-no-images = 文件夹中没有图片（.jpg）。
 upload-error-too-many-images = 图片过多（{ $count } 张）。上限为 { $max } 张。
 upload-error-not-found = 在选择的文件夹中未找到 mapshot.json。
 upload-error-parse = 无法解析 mapshot.json。

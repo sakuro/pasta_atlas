@@ -30,7 +30,7 @@ Avatar images use a separate prefix: `{user_name}/avatar/{ulid}.{ext}`
   → If user cancels: stay in instructions state (modal remains open)
   → If mapshot.json not found in FileList: show error state
   → If mapshot.json is not valid JSON, or lacks string map_id/unique_id or an integer tick: show error state
-  → If more than 10,000 images: show error state
+  → If no image or more than 10,000 images: show error state
   → If mapshot.json found: parse and proceed to confirming
 
 [confirming]
