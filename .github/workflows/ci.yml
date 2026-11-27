@@ -39,7 +39,7 @@ jobs:
 
       - run: npm ci
 
-      - uses: ruby/setup-ruby@v1.343.0
+      - uses: ruby/setup-ruby@v1.344.0
         with:
           ruby-version: "4.0"
           bundler-cache: true
