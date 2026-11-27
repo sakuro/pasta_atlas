@@ -52,7 +52,7 @@ GEM
     cgi (0.5.2)
     coderay (1.1.3)
     concurrent-ruby (1.3.8)
-    csv (3.3.5)
+    csv (3.3.7)
     database_cleaner-core (2.0.1)
     database_cleaner-sequel (2.0.2)
       database_cleaner-core (~> 2.0.0)
@@ -221,7 +221,7 @@ GEM
       guard-puma (~> 0.8)
       hanami-cli (~> 3.0.0)
       zeitwerk (~> 2.6)
-    hanami-router (3.0.0)
+    hanami-router (3.0.1)
       csv (~> 3.3)
       mustermann (~> 3.1)
       rack (>= 2.2.16)
@@ -550,7 +550,7 @@ DEPENDENCIES
   hanami-assets (= 3.0.0)
   hanami-db (= 3.0.0)
   hanami-reloader (= 3.0.0)
-  hanami-router (= 3.0.0)
+  hanami-router (= 3.0.1)
   hanami-rspec (= 3.0.0)
   hanami-view (= 3.0.3)
   hanami-webconsole (= 3.0.0)
@@ -600,7 +600,7 @@ CHECKSUMS
   cgi (0.5.2) sha256=61ca30298171190fd4fa0d8018e57ada456eae9b7a2b78526debf7f0a0e6f8bb
   coderay (1.1.3) sha256=dc530018a4684512f8f38143cd2a096c9f02a1fc2459edcfe534787a7fc77d4b
   concurrent-ruby (1.3.8) sha256=b2f1be836e968ccc78ccfce277ea79c72a88633f22306782c16ff23fb415d1e1
-  csv (3.3.5) sha256=6e5134ac3383ef728b7f02725d9872934f523cb40b961479f69cf3afa6c8e73f
+  csv (3.3.7) sha256=15a3f16f6628da8664d455eb634e7f22031bcf53044923caf56975109e71b9f8
   database_cleaner-core (2.0.1) sha256=8646574c32162e59ed7b5258a97a208d3c44551b854e510994f24683865d846c
   database_cleaner-sequel (2.0.2) sha256=f1e6566a1a34d7425ff94b447e2c16181bc215555aff3dfe463b7977b621d4bf
   date (3.6.0) sha256=18ac945c4e24ebd93534f8eab8c2fd8c5604b3e977105b3798d62a1e8d27b580
@@ -656,7 +656,7 @@ CHECKSUMS
   hanami-cli (3.0.0) sha256=9d51bb7b0f0b4eaf67ea1dc8b27774428ee831647b107d2e9f6ad3317b1598ec
   hanami-db (3.0.0) sha256=01d25fd514896b355c9677730e2a45bc3a0b847e2d569a67cb50954c17b1d499
   hanami-reloader (3.0.0) sha256=83ec74452e29dbae1670f515fb697795461d643dbcc4404ad0e319214e4fd37b
-  hanami-router (3.0.0) sha256=2438db070c7ed7d3f28f1777fc32bdc86e7a9b744a29ab51098f4fa41408210b
+  hanami-router (3.0.1) sha256=529d1bac93cbd842a2e0b7f916e0a19c9dcf269425ff281f53d060ec14a7ef0d
   hanami-rspec (3.0.0) sha256=14d3ffb2dd4b5a028007ddf5442028c3d05ea8126c95def1cd83c23fd3c82ee7
   hanami-utils (3.0.1) sha256=0d46181bd86115127a04a6d0481df819eb558714ce58c6b4da7e0bb65c5dcd9b
   hanami-view (3.0.3) sha256=aba79f0ee943526eb7589776901682693800029bab6f30bf430de2eeb845a85f
