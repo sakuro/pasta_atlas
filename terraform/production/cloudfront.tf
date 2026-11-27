@@ -10,6 +10,21 @@ data "aws_cloudfront_origin_request_policy" "all_viewer_except_host_header" {
   name = "Managed-AllViewerExceptHostHeader"
 }
 
+# Starts with a one-day max-age so that a mistake can be undone quickly. Raise it, and consider
+# includeSubDomains, once every subdomain of the zone is known to work over HTTPS.
+resource "aws_cloudfront_response_headers_policy" "app_hsts" {
+  name = "${var.app_name}-${var.environment}-app-hsts"
+
+  security_headers_config {
+    strict_transport_security {
+      access_control_max_age_sec = 86400
+      include_subdomains         = false
+      preload                    = false
+      override                   = true
+    }
+  }
+}
+
 resource "aws_cloudfront_distribution" "app" {
   origin {
     domain_name = trimsuffix(trimprefix(aws_lambda_function_url.app.function_url, "https://"), "/")
@@ -47,6 +62,8 @@ resource "aws_cloudfront_distribution" "app" {
     viewer_protocol_policy = "redirect-to-https"
     compress               = true
     cache_policy_id        = data.aws_cloudfront_cache_policy.caching_optimized.id
+
+    response_headers_policy_id = aws_cloudfront_response_headers_policy.app_hsts.id
   }
 
   default_cache_behavior {
@@ -57,7 +74,8 @@ resource "aws_cloudfront_distribution" "app" {
     compress               = true
     cache_policy_id        = data.aws_cloudfront_cache_policy.caching_disabled.id
     # The viewer Host header must not be forwarded: the Function URL answers 404 for it.
-    origin_request_policy_id = data.aws_cloudfront_origin_request_policy.all_viewer_except_host_header.id
+    origin_request_policy_id   = data.aws_cloudfront_origin_request_policy.all_viewer_except_host_header.id
+    response_headers_policy_id = aws_cloudfront_response_headers_policy.app_hsts.id
 
     function_association {
       event_type   = "viewer-request"
@@ -80,6 +98,15 @@ resource "aws_cloudfront_distribution" "app" {
 
 resource "aws_cloudfront_response_headers_policy" "mapshots_cors" {
   name = "${var.app_name}-${var.environment}-mapshots-cors"
+
+  security_headers_config {
+    strict_transport_security {
+      access_control_max_age_sec = 86400
+      include_subdomains         = false
+      preload                    = false
+      override                   = true
+    }
+  }
 
   cors_config {
     access_control_allow_credentials = false
