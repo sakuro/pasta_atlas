@@ -10,14 +10,16 @@ data "aws_cloudfront_origin_request_policy" "all_viewer_except_host_header" {
   name = "Managed-AllViewerExceptHostHeader"
 }
 
-# Starts with a one-day max-age so that a mistake can be undone quickly. Raise it, and consider
-# includeSubDomains, once every subdomain of the zone is known to work over HTTPS.
+# A one-year max-age is the usual value for HSTS. includeSubDomains and preload are left off: the
+# first needs every subdomain of the zone to work over HTTPS, and a preload entry takes months to
+# undo. While HSTS is in force an expired certificate cannot be clicked through, so the ACM
+# certificates must stay renewable (see the validation records in acm.tf).
 resource "aws_cloudfront_response_headers_policy" "app_hsts" {
   name = "${var.app_name}-${var.environment}-app-hsts"
 
   security_headers_config {
     strict_transport_security {
-      access_control_max_age_sec = 86400
+      access_control_max_age_sec = 31536000
       include_subdomains         = false
       preload                    = false
       override                   = true
@@ -101,7 +103,7 @@ resource "aws_cloudfront_response_headers_policy" "mapshots_cors" {
 
   security_headers_config {
     strict_transport_security {
-      access_control_max_age_sec = 86400
+      access_control_max_age_sec = 31536000
       include_subdomains         = false
       preload                    = false
       override                   = true
