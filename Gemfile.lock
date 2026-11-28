@@ -195,7 +195,7 @@ GEM
       json (>= 2.7.2)
       rack-session
       zeitwerk (~> 2.6)
-    hanami-action (3.0.2)
+    hanami-action (3.0.3)
       dry-configurable (~> 1.4)
       dry-core (~> 1.0)
       hanami-utils (~> 3.0.0.rc)
@@ -546,7 +546,7 @@ DEPENDENCIES
   dry-validation (= 1.11.1)
   foxtail-tools (= 0.6.1)
   hanami (= 3.0.3)
-  hanami-action (= 3.0.2)
+  hanami-action (= 3.0.3)
   hanami-assets (= 3.0.0)
   hanami-db (= 3.0.0)
   hanami-reloader (= 3.0.0)
@@ -651,7 +651,7 @@ CHECKSUMS
   guard-puma (0.10.0) sha256=15d9e5621113b6fdf0f605677615d51038520640cd70e242d9e14d565ade5c31
   hana (1.3.7) sha256=5425db42d651fea08859811c29d20446f16af196308162894db208cac5ce9b0d
   hanami (3.0.3) sha256=9e08d54ff71829964728fa1570fdc333f56a5f69e1f88cc07a7f8610b8711163
-  hanami-action (3.0.2) sha256=2105dd540a6b1d664fa47e93b532a0cc9b99856201c07e946a1d4f293e7505eb
+  hanami-action (3.0.3) sha256=c389d5831ecbd6cacdb63c57772df06cf0dda827c309813c65f3ce4fa740be18
   hanami-assets (3.0.0) sha256=b9ce246ca12ffa8e79f71194e312a484ffbb0d8fd28582b22869706c0afbd3da
   hanami-cli (3.0.0) sha256=9d51bb7b0f0b4eaf67ea1dc8b27774428ee831647b107d2e9f6ad3317b1598ec
   hanami-db (3.0.0) sha256=01d25fd514896b355c9677730e2a45bc3a0b847e2d569a67cb50954c17b1d499
