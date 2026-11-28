@@ -36,7 +36,7 @@ terraform/
 
 The HCP Terraform organization and workspace are not written in `main.tf`. The project's `fnox.toml` supplies `TF_CLOUD_ORGANIZATION` and `PRODUCTION_TF_WORKSPACE`, and the `terraform:*` tasks pass the latter as `TF_WORKSPACE` for `production` only; `TF_WORKSPACE` in the environment would make the local backend of `local` switch to a new, empty workspace.
 
-HCP Terraform authenticates with a team API token (organization tokens cannot lock or write state). Store it in the global fnox configuration as `TF_TOKEN_app_terraform_io`; the `fnox-env` plugin in `mise.toml` exports it.
+HCP Terraform authenticates with a team API token (organization tokens cannot lock or write state). Store it in the global fnox configuration as `TF_TOKEN_app_terraform_io`; the `terraform:*` tasks run terraform through `fnox exec` for `production`, which exports it.
 
 The Gandi provider (`provider "gandi" {}` in `main.tf`) reads its personal access token from `GANDI_PERSONAL_ACCESS_TOKEN`, which is supplied the same way. `plan` and `apply` need it for the DNS records in `acm.tf` and `dns.tf`.
 
@@ -46,7 +46,7 @@ The Cloudflare provider reads its API token from `CLOUDFLARE_API_TOKEN`. Unlike 
 
 ### 1. Initialize and apply
 
-No `terraform.tfvars` is required; all variables have defaults. `alarm_email` defaults to `null`; set it (locally through `TF_VAR_alarm_email`, which fnox supplies) to receive the dead-letter queue alarm by email, and confirm the subscription.
+No `terraform.tfvars` is required; all variables have defaults. `alarm_email` defaults to `null`; set it (locally through `TF_VAR_alarm_email` in the fnox configuration) to receive the dead-letter queue alarm by email, and confirm the subscription.
 
 ```bash
 mise run terraform:init production             # or local

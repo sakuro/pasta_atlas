@@ -4,7 +4,6 @@
 HK_MISE = "1"
 _.file = [".env", ".env.development", ".env.development.local", ".env.local"]
 _.path = ["node_modules/.bin"]
-_.fnox-env = { tools = true }
 
 [hooks]
 # Skipped in CI (GitHub Actions sets CI).
@@ -13,9 +12,6 @@ postinstall = 'test -n "$CI" || hk install'
 [settings]
 # Do not install a release that is younger than this, matching the Renovate setting.
 minimum_release_age = "3d"
-
-[plugins]
-fnox-env = "https://github.com/jdx/mise-env-fnox"
 
 [tools]
 aws-cli = "2.42.3"
