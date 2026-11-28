@@ -24,7 +24,7 @@ gem "omniauth-steam", "1.0.6"
 # Ruby 4.0 extracted them from stdlib into bundled gems that require explicit listing.
 gem "cgi", "0.5.2"
 gem "pg", "1.7.0"
-gem "puma", "8.1.2"
+gem "puma", "8.1.3"
 gem "rake", "13.4.2"
 gem "rexml", "3.4.4"
 gem "tzinfo", "2.0.6"
