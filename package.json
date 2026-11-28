@@ -7,7 +7,7 @@
     "@fluent/dom": "0.10.2",
     "@fortawesome/fontawesome-free": "7.3.1",
     "@solidjs/router": "2.0.1",
-    "@solidjs/web": "2.0.3",
+    "@solidjs/web": "2.0.4",
     "bulma": "1.0.4",
     "esbuild": "0.28.2",
     "hanami-assets": "3.0.0",
