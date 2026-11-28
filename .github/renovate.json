@@ -24,6 +24,16 @@
       "groupName": "Solid"
     },
     {
+      "description": "git-hooks is our own package, so its releases need no waiting period.",
+      "matchPackageNames": ["sakuro/git-hooks"],
+      "minimumReleaseAge": null
+    },
+    {
+      "description": "hk.pkl amends the Config.pkl and imports the Builtins.pkl of a specific hk release; keep them on the hk version in mise.toml.",
+      "matchDepNames": ["hk"],
+      "groupName": "hk"
+    },
+    {
       "description": "The Lambda runtime in Terraform must change together with the build image minor version.",
       "matchPackageNames": ["public.ecr.aws/lambda/ruby"],
       "matchUpdateTypes": ["major", "minor"],
@@ -42,6 +52,31 @@
       "matchPackageNames": ["postgres", "postgresql", "conda-forge/postgresql"],
       "matchUpdateTypes": ["major"],
       "enabled": false
+    }
+  ],
+  "customManagers": [
+    {
+      "customType": "regex",
+      "managerFilePatterns": ["/^hk\\.pkl$/"],
+      "matchStrings": [
+        "package://github\\.com/jdx/hk/releases/download/v(?<currentValue>[^/]+)/hk@[^#\"]+"
+      ],
+      "autoReplaceStringTemplate": "package://github.com/jdx/hk/releases/download/v{{{newValue}}}/hk@{{{newValue}}}",
+      "datasourceTemplate": "github-releases",
+      "depNameTemplate": "hk",
+      "packageNameTemplate": "jdx/hk",
+      "extractVersionTemplate": "^v(?<version>.+)$"
+    },
+    {
+      "customType": "regex",
+      "managerFilePatterns": ["/^hk\\.pkl$/"],
+      "matchStrings": [
+        "package://github\\.com/sakuro/git-hooks/releases/download/v(?<currentValue>[^/]+)/git-hooks@[^#\"]+"
+      ],
+      "autoReplaceStringTemplate": "package://github.com/sakuro/git-hooks/releases/download/v{{{newValue}}}/git-hooks@{{{newValue}}}",
+      "datasourceTemplate": "github-releases",
+      "depNameTemplate": "sakuro/git-hooks",
+      "extractVersionTemplate": "^v(?<version>.+)$"
     }
   ],
   "lockFileMaintenance": {
