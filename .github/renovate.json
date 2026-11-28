@@ -19,6 +19,11 @@
       "groupName": "Node.js"
     },
     {
+      "description": "Packages of the Solid monorepo are released in lockstep and @solidjs/web peer-depends on the same solid-js patch version.",
+      "matchSourceUrls": ["https://github.com/solidjs/solid"],
+      "groupName": "Solid"
+    },
+    {
       "description": "The Lambda runtime in Terraform must change together with the build image minor version.",
       "matchPackageNames": ["public.ecr.aws/lambda/ruby"],
       "matchUpdateTypes": ["major", "minor"],
